@@ -5,16 +5,54 @@
 ## Структура проекта
 
 ```plantuml
-[Front Main|dsmart-ui-main]
-[Backend Gateway|Websocket|dsmart-back-gateway]
+class "Front Main" as fm {
+ dsmart-ui-main
+}
 
-[Front Main]->[<<Front Component>>;UI Temperature|dsmaprt-ui-temperature]<-->[Backend Gateway]
+class "Backend Gateway" as bg {
+ dsmart-back-gateway
+}
 
-[Backend Gateway]<-->[<<Microservice>>; Back Temperature|dsmart-back-temperature]
 
-[Front Main]->[<<Front Component>>;UI Events|dsmart-ui-events]<-->[Backend Gateway]
-[Backend Gateway]<-->[<<Microservice>>;Back Events|dsmart-back-events]
+class "UI Temperature" as ftemp {
+  "Frontend Component"
+ dsmart-ui-temperature
+}
 
-[Front Main]->[<<Front Component>>;UI Messages|dsmart-ui-messages]<-->[Backend Gateway]
-[Backend Gateway]<-->[<<Microservice>>;Back Messages|dsmart-back-messages]
+class "UI Events" as fevent {
+  "Frontend Component"
+ dsmart-ui-events
+}
+
+class "UI Messages" as fmess {
+  "Frontend Component"
+ dsmart-ui-messages
+}
+
+fm -> ftemp
+fm -> fevent
+fm -> fmess
+
+class "MS Temperature" as btemp {
+  "Microservice"
+ dsmart-app-temperature
+}
+
+class "MS Events" as bevent {
+  "Microservice"
+ dsmart-app-events
+}
+
+class "MS Messages" as bmess {
+  "Microservice"
+ dsmart-app-messages
+}
+
+ftemp <--> bg
+fevent <--> bg
+fmess <--> bg
+
+bg -> btemp
+bg -> bevent
+bg -> bmess
 ```
