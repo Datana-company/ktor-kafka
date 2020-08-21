@@ -5,7 +5,7 @@
 /.gradle
 /yarn.lock
 /package-lock.json
-
+/dist
 
 /dist
 /tmp

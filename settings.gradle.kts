@@ -14,5 +14,5 @@ pluginManagement {
     }
 }
 
-include("dmart-ui-main")
+include("dsmart-ui-main")
 

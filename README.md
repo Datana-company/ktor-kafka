@@ -56,3 +56,8 @@ bg -> btemp
 bg -> bevent
 bg -> bmess
 ```
+
+## Модули
+
+1. [`dmart-ui-main`](dsmart-ui-main/README.md) - главный компонент интерфейса пользователя, который управляет всеми 
+компонентами UI.
