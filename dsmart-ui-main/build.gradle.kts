@@ -7,14 +7,31 @@ group = rootProject.group
 version = rootProject.version
 
 val DOCKER_GROUP = "docker"
+val dockerPort = System.getenv("DOCKER_REGISTRY_PORT")?.let { ":$it" } ?: ""
+val dockerHost = System.getenv("DOCKER_REGISTRY_HOST")?.plus("$dockerPort/") ?: ""
+val dockerUser = System.getenv("DOCKER_REGISTRY_USER")
+val dockerPass = System.getenv("DOCKER_REGISTRY_PASS")
 
 repositories {
   mavenCentral()
 }
 
 node {
-  download = true
-  version = "14.8.0"
+  val nodeVersion: String by project
+    download = true
+    version = nodeVersion
+}
+
+docker {
+//  url = 'https://192.168.59.103:2376'
+//  certPath = new File(System.properties['user.home'], '.boot2docker/certs/boot2docker-vm')
+
+  registryCredentials {
+    url.set("https://$dockerHost/v1/")
+    dockerUser?.also { username.set(it) }
+    dockerPass?.also { password.set(it) }
+//    email = 'benjamin.muschko@gmail.com'
+  }
 }
 
 dependencies {
@@ -73,7 +90,7 @@ tasks {
     dependsOn(buildDockerDir)
     group = DOCKER_GROUP
     from("nginx")
-    addFile("dist", "/usr/share/nginx/html")
+    addFile("dist/", "/usr/share/nginx/html/")
     exposePort(80)
   }
 
@@ -81,12 +98,22 @@ tasks {
     dependsOn(createDockerFile)
     group = DOCKER_GROUP
 //    inputDir.set(File(distDir))
-    val port = System.getenv("DOCKER_REGISTRY_PORT")?.let { ":$it" } ?: ""
-    val host = System.getenv("DOCKER_REGISTRY_HOST")?.plus("$port/") ?: ""
-    println("Dockder-image will be published to ${if (host.isBlank()) "localhost" else host}")
+    println("Dockder-image will be published to ${if (dockerHost.isBlank()) "localhost" else dockerHost}")
     println("To change this value use DOCKER_REGISTRY_HOST:DOCKER_REGISTRY_PORT environment variables")
-    val imageName = "$host${project.name}"
+    val imageName = "$dockerHost${project.name}"
     images.add("$imageName:${project.version}")
     images.add("$imageName:latest")
+  }
+
+  val ngDeploy by creating (com.bmuschko.gradle.docker.tasks.image.DockerPushImage::class.java) {
+    dependsOn(ngImage)
+    println("Dockder-image will be pushed to ${if (dockerHost.isBlank()) "localhost" else dockerHost}")
+    group = DOCKER_GROUP
+    images.set(ngImage.images)
+  }
+
+  val deploy by creating {
+    dependsOn(ngDeploy)
+    group = "build"
   }
 }
