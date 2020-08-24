@@ -78,7 +78,7 @@ tasks {
     ))
   }
 
-  val distDir = "$projectDir/dist"
+  val distDir = "$projectDir/dist/${project.name}"
 
   val buildDockerDir by creating(Copy::class.java) {
     dependsOn(ngBuild)
