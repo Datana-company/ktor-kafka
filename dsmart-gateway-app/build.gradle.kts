@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val ktorVersion: String by project
 val kotlinVersion: String by project
 val logbackVersion: String by project
+val frontConfig = "staticFront"
 
 plugins {
     application
@@ -13,6 +14,8 @@ plugins {
 
 group = rootProject.group
 version = rootProject.version
+
+val frontDist = "$buildDir/frontDist"
 
 application {
     mainClassName = "ru.datana.smart.ui.ApplicationKt"
@@ -32,7 +35,7 @@ docker {
 
     javaApplication {
         baseImage.set("adoptopenjdk/openjdk11:alpine-jre")
-//        maintainer = 'Benjamin Muschko "benjamin.muschko@gmail.com"'
+        maintainer.set("(c) Datana Ltd")
         ports.set(listOf(8080))
         images.set(listOf(
             "${dockerParams.imageName}:${project.version}",
@@ -49,6 +52,9 @@ repositories {
 }
 
 dependencies {
+
+    implementation(project(":dsmart-ui-main", configuration = frontConfig))
+
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -66,9 +72,21 @@ dependencies {
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
 kotlin.sourceSets["test"].kotlin.srcDirs("test")
 
-sourceSets["main"].resources.srcDirs("resources")
+sourceSets["main"].resources.srcDirs("resources", frontDist)
 sourceSets["test"].resources.srcDirs("testresources")
 
 tasks {
-
+    val copyFront by creating(Copy::class.java) {
+        dependsOn(project(":dsmart-ui-main").getTasksByName("createArtifact", false))
+        val frontFiles = project(":dsmart-ui-main")
+            .configurations
+            .getByName(frontConfig)
+            .artifacts
+            .files
+        from(
+            frontFiles
+        )
+        into("$frontDist/static")
+    }
+    compileKotlin.get().dependsOn(copyFront)
 }

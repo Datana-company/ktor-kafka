@@ -9,8 +9,10 @@ version = rootProject.version
 val DOCKER_GROUP = "docker"
 val dockerPort = System.getenv("DOCKER_REGISTRY_PORT")?.let { ":$it" } ?: ""
 val dockerHost = System.getenv("DOCKER_REGISTRY_HOST")?.plus("$dockerPort/") ?: ""
-val dockerUser = System.getenv("DOCKER_REGISTRY_USER")
-val dockerPass = System.getenv("DOCKER_REGISTRY_PASS")
+val dockerUser = System.getenv("DOCKER_REGISTRY_USER") as String?
+val dockerPass = System.getenv("DOCKER_REGISTRY_PASS") as String?
+val distDir = "$projectDir/dist/${project.name}"
+val distConfig = "staticFront"
 
 repositories {
     mavenCentral()
@@ -20,6 +22,17 @@ node {
     val nodeVersion: String by project
     download = true
     version = nodeVersion
+}
+
+val staticFront: Configuration by configurations.creating {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+    // If you want this configuration to share the same dependencies, otherwise omit this line
+    extendsFrom(configurations["implementation"], configurations["runtimeOnly"])
+}
+
+configurations.forEach {
+    println("Configuration $it")
 }
 
 docker {
@@ -36,8 +49,6 @@ docker {
 
 dependencies {
     implementation(kotlin("stdlib-js"))
-
-
 }
 
 tasks {
@@ -76,6 +87,18 @@ tasks {
     }
     build.get().dependsOn(ngBuild)
 
+    val createArtifact by creating {
+        dependsOn(ngBuild)
+        println("CREATING ARTIFACT")
+        configurations.forEach {
+            println("COnfiguration ${it}")
+        }
+        artifacts{
+            add(distConfig, fileTree(distDir).dir)
+        }
+    }
+    build.get().dependsOn(createArtifact)
+
     val ngStart by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
         dependsOn(jar2npm)
         command = "ng"
@@ -86,14 +109,13 @@ tasks {
         )
     }
 
-    val distDir = "$projectDir/dist/${project.name}"
-
     val buildDockerDir by creating(Copy::class.java) {
         dependsOn(ngBuild)
         group = DOCKER_GROUP
         from(distDir)
         into("$buildDir/docker/dist")
     }
+
     val createDockerFile by creating(com.bmuschko.gradle.docker.tasks.image.Dockerfile::class.java) {
         dependsOn(buildDockerDir)
         group = DOCKER_GROUP
@@ -120,8 +142,8 @@ tasks {
         images.set(ngImage.images)
     }
 
-    val deploy by creating {
-        dependsOn(ngDeploy)
-        group = "build"
-    }
+//    val deploy by creating {
+//        dependsOn(ngDeploy)
+//        group = "build"
+//    }
 }
