@@ -20,7 +20,6 @@ export class AppComponent {
     counter$: Observable<number>;
     texts$: Observable<string>;
 
-    value: string = '50';
 
     constructor(private wsService: WebsocketService) {
     }
