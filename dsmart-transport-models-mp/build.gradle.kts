@@ -13,10 +13,13 @@ kotlin {
     /* Targets configuration omitted.
     *  To find out how to configure the targets, please follow the link:
     *  https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#setting-up-targets */
-  js(IR) {
-    browser()
-  }
-  jvm()
+    js(IR) {
+        browser {
+
+        }
+        nodejs()
+    }
+    jvm()
 
     sourceSets {
         val commonMain by getting {
