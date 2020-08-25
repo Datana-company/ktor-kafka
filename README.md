@@ -61,3 +61,26 @@ bg -> bmess
 
 1. [`dmart-ui-main`](dsmart-ui-main/README.md) - главный компонент интерфейса пользователя, который управляет всеми 
 компонентами UI.
+
+## Сборка и деплой проекта
+
+Компиляция проекта:
+```bash
+./gradlew build
+```
+
+Деплой проекта в реестр докеров:
+```bash
+#export DOCKER_REGISTRY_PORT=
+export DOCKER_REGISTRY_HOST=registry.datana.ru
+export DOCKER_REGISTRY_USER=admin
+export DOCKER_REGISTRY_PASS=*****
+./gradlew deploy
+```
+
+## Запуск проекта
+
+Из докера:
+```bash
+ docker run -p 8080:8080 
+```
