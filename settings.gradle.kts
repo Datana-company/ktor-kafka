@@ -13,9 +13,12 @@ pluginManagement {
 
         id("com.crowdproj.plugins.jar2npm") version jar2npmVersion apply false
         id("com.bmuschko.docker-remote-api") version dockerPluginVersion apply false
+        id("com.bmuschko.docker-java-application") version dockerPluginVersion apply false
 
     }
 }
 
 include("dsmart-ui-main")
-
+include("dsmart-common")
+include("dsmart-transport-models-mp")
+include("dsmart-gateway-app")
