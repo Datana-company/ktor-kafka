@@ -61,12 +61,14 @@ fun Application.module(testing: Boolean = false) {
             resources("static")
         }
 
-        webSocket("/myws/echo") {
-            send(Frame.Text("Hi from server"))
+        webSocket("/ws") {
+            send(Frame.Text("{\"event\": \"update-texts\", \"data\": \"Hi From Server\"}"))
             while (true) {
                 val frame = incoming.receive()
                 if (frame is Frame.Text) {
-                    send(Frame.Text("Client said: " + frame.readText()))
+                    val message = frame.readText()
+                    log.info("A message is received: $message")
+                    send(Frame.Text("{\"event\": \"update-texts\", \"data\": \"Server received a message\"}"))
                 }
             }
         }

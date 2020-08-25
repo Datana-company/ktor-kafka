@@ -83,9 +83,7 @@ tasks {
             .getByName(frontConfig)
             .artifacts
             .files
-        from(
-            frontFiles
-        )
+        from(frontFiles)
         into("$frontDist/static")
     }
     compileKotlin.get().dependsOn(copyFront)
