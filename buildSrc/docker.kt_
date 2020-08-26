@@ -1,0 +1,113 @@
+import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+import com.bmuschko.gradle.docker.DockerExtension
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import org.gradle.api.Project
+
+class DockerConfig(
+    val dockerPort: String?,
+    val dockerHost: String?,
+    val dockerUser: String?,
+    val dockerPass: String?
+) {
+
+    var dockerFile: (Dockerfile.() -> Unit)? = null
+    var dockerImage: (DockerBuildImage.() -> Unit)? = null
+    var dockerPush: (DockerPushImage.() -> Unit)? = null
+
+    val dockerFullPort
+        get() = dockerPort?.let { ":$it" } ?: ""
+
+    val dockerFullHost
+        get() = dockerHost?.plus("$dockerPort/") ?: ""
+
+    val dockerUrl
+        get() = "https://$dockerFullHost/v1/"
+
+    fun dockerFile(block: Dockerfile.() -> Unit) {
+        dockerFile = block
+    }
+
+    fun dockerImage(block: DockerBuildImage.() -> Unit) {
+        dockerImage = block
+    }
+
+    fun dockerPush(block: DockerPushImage.() -> Unit) {
+        dockerPush = block
+    }
+}
+//plugins {
+//    apply(DockerRemoteApiPlugin::class.java))
+//}
+
+fun Project.applyDocker(body: DockerConfig.() -> Unit) {
+    plugins.apply {
+        apply(DockerRemoteApiPlugin::class.java)
+    }
+    val DOCKER_GROUP = "docker"
+
+    val dockerConfig = DockerConfig(
+        System.getenv("DOCKER_REGISTRY_PORT"),
+        System.getenv("DOCKER_REGISTRY_HOST"),
+        System.getenv("DOCKER_REGISTRY_USER"),
+        System.getenv("DOCKER_REGISTRY_PASS")
+    )
+    dockerConfig.body()
+
+    extensions.configure(DockerExtension::class.java) {
+//  url = 'https://192.168.59.103:2376'
+//  certPath = new File(System.properties['user.home'], '.boot2docker/certs/boot2docker-vm')
+
+        registryCredentials {
+            url.set(dockerConfig.dockerUrl)
+            dockerConfig.dockerUser?.also { username.set(it) }
+            dockerConfig.dockerPass?.also { password.set(it) }
+        }
+    }
+
+    tasks.register("createDockerFile", Dockerfile::class.java) {
+        group = DOCKER_GROUP
+        dockerConfig.dockerFile?.invoke(this)
+    }
+    val taskImage = tasks.register("buildDockerImage", DockerBuildImage::class.java) {
+        group = DOCKER_GROUP
+        val imageName = "${dockerConfig.dockerFullHost}${project.name}"
+        images.add("$imageName:${project.version}")
+        images.add("$imageName:latest")
+        dockerConfig.dockerImage?.invoke(this)
+    }
+    tasks.register("pushDockerImage", DockerPushImage::class.java) {
+        group = DOCKER_GROUP
+        dockerConfig.dockerPush?.invoke(this)
+//        dockerConfig.dockerPush?.invoke(this) ?: apply {
+//            images.set(taskImage.images)
+//        }
+    }
+//    val createDockerFile by creating(com.bmuschko.gradle.docker.tasks.image.Dockerfile::class.java) {
+//        dependsOn(buildDockerDir)
+//        group = DOCKER_GROUP
+//        from("nginx")
+//        addFile("dist/", "/usr/share/nginx/html/")
+//        exposePort(80)
+//    }
+//
+//    val ngImage by creating(com.bmuschko.gradle.docker.tasks.image.DockerBuildImage::class.java) {
+//        dependsOn(createDockerFile)
+//        group = DOCKER_GROUP
+////    inputDir.set(File(distDir))
+//        println("Dockder-image will be published to ${if (dockerHost.isBlank()) "localhost" else dockerHost}")
+//        println("To change this value use DOCKER_REGISTRY_HOST:DOCKER_REGISTRY_PORT environment variables")
+//        val imageName = "$dockerHost${project.name}"
+//        images.add("$imageName:${project.version}")
+//        images.add("$imageName:latest")
+//    }
+//
+//    val ngDeploy by creating (com.bmuschko.gradle.docker.tasks.image.DockerPushImage::class.java) {
+//        dependsOn(ngImage)
+//        println("Dockder-image will be pushed to ${if (dockerHost.isBlank()) "localhost" else dockerHost}")
+//        group = DOCKER_GROUP
+//        images.set(ngImage.images)
+//    }
+
+}
