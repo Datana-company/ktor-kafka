@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "dsmart-ui-main"
+    }
+  },
+  "defaultProject": "dsmart-ui-main",
+  "cli": {
+    "analytics": "489df0b6-1eb4-4a5c-a805-f072ba7e7c21"
+  }
 }
