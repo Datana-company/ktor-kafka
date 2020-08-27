@@ -33,3 +33,16 @@
 1. ngStart - запуск приложения локально на адресе http://localhost:4200
 1. ngImage - подготовка Docker-образа (_не готово_)
 1. ngDeploy - публикация Docker-образа в Docker-реестре (_не готово_)
+
+#Инструкция по настройке профилей npm и их использованию, у меня на windows почему то не заработало
+https://docs.npmjs.com/configuring-your-registry-settings-as-an-npm-enterprise-user
+
+#Инструкция по настройке профиля npm для загрузки и выгрузки библиотек в nexus
+Необходимо в корне проекта создать файл .npmrc и добавить в него следующую строку:
+```aidl
+registry=http://nexus.datana.ru:8081/repository/npm-private/
+_auth=YWRtaW46YWRtaW4xMjM=
+```
+где YWRtaW46YWRtaW4xMjM= кодированный логин и пароль admin/admin123, для использования дроугого пароля к его необходимо кодировать в base64.
+
+Для использования глобального npm репозитория необходимо удалить эту строку из файла.
