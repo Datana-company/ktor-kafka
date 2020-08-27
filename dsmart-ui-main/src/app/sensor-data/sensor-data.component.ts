@@ -14,8 +14,4 @@ export class SensorDataComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  setValue($event) {
-    console.log()
-  }
-
 }

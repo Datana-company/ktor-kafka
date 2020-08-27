@@ -4,16 +4,22 @@ import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {WebsocketModule} from "./websocket";
 import {environment} from '../environments/environment';
+import {TemperatureViewModule} from "temperature-view";
+import {SensorDataComponent} from "./sensor-data/sensor-data.component";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        SensorDataComponent
     ],
     imports: [
         BrowserModule,
         WebsocketModule.config({
             url: environment.ws
-        })
+        }),
+        TemperatureViewModule,
+        FormsModule
     ],
     providers: [],
     bootstrap: [AppComponent]
