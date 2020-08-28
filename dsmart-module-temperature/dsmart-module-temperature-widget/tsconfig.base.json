@@ -16,9 +16,9 @@
       "dom"
     ],
     "paths": {
-      "temperature-view": [
-        "dist/temperature-view/temperature-view",
-        "dist/temperature-view"
+      "@datana-smart/dsmart-module-temperature-widget": [
+        "dist/datana-smart/dsmart-module-temperature-widget/datana-smart-dsmart-module-temperature-widget",
+        "dist/datana-smart/dsmart-module-temperature-widget"
       ]
     }
   }

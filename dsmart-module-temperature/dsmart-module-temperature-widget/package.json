@@ -1,5 +1,5 @@
 {
-  "name": "temperature-view",
+  "name": "@datana-smart/dsmart-module-temperature-widget",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
