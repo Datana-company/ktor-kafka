@@ -1,0 +1,20 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": [],
+      "paths": {
+          "@datana-smart/dsmart-module-temperature-widget": ["build/ng-libs/datana-smart/dsmart-module-temperature-widget"],
+          "@datana-smart/dsmart-module-temperature-widget/*": ["build/ng-libs/datana-smart/dsmart-module-temperature-widget/*"]
+      }
+
+  },
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}

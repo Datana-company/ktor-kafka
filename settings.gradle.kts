@@ -18,7 +18,16 @@ pluginManagement {
     }
 }
 
-include("dsmart-ui-main")
-include("dsmart-common")
-include("dsmart-transport-models-mp")
-include("dsmart-gateway-app")
+include(":dsmart-common")
+include(":dsmart-common:dsmart-common-common")
+include(":dsmart-common:dsmart-common-transport-ws")
+
+include(":dsmart-ui-main")
+include(":dsmart-ui-main:dsmart-ui-main-front")
+include(":dsmart-ui-main:dsmart-gateway-app")
+
+include(":dsmart-module-temperature")
+include(":dsmart-module-temperature:dsmart-module-temperature-common")
+include(":dsmart-module-temperature:dsmart-module-temperature-ws-models")
+include(":dsmart-module-temperature:dsmart-module-temperature-widget")
+include(":dsmart-module-temperature:dsmart-module-temperature-app")
