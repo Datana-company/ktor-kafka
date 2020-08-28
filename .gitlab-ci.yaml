@@ -2,8 +2,8 @@ image: java:8-jdk
 
 stages:
     - build
-#    - test
-#    - deploy
+    #    - test
+    - deploy
 
 before_script:
     #  - echo `pwd` # debug
@@ -34,7 +34,10 @@ test:
 deploy:
     stage: deploy
     script:
-        - ./deploy
+        - ./gradlew deploy
+    only:
+        - dev
+        - master
 
 after_script:
     - echo "End CI"

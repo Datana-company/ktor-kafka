@@ -1,7 +1,7 @@
-import {Component} from '@angular/core';
-import {WebsocketService} from "./websocket";
-import {Observable} from "rxjs";
-import {WS} from "./websocket.events";
+import {Component, OnInit} from '@angular/core';
+import {WebsocketService} from './websocket';
+import {Observable} from 'rxjs';
+import {WS} from './websocket.events';
 
 export interface IMessage {
     id: number;
@@ -13,18 +13,19 @@ export interface IMessage {
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
     title = 'dsmart-ui-main';
 
     messages$: Observable<IMessage[]>;
     counter$: Observable<number>;
     texts$: Observable<string>;
 
+    value = '50';
 
     constructor(private wsService: WebsocketService) {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         // this.form = this.fb.group({
         //     text: [null, [
         //         Validators.required
@@ -42,7 +43,7 @@ export class AppComponent {
     }
 
     public sendText(): void {
-        this.wsService.send(WS.SEND.SEND_TEXT, "Hi From Client");
+        this.wsService.send(WS.SEND.SEND_TEXT, 'Hi From Client');
     }
 
     public removeText(index: number): void {

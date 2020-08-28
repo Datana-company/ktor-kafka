@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "ru.datana.smart.ui"
-version = "0.0.1"
+version = "0.0.3"
 
 subprojects {
 

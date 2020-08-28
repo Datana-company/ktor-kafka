@@ -54,7 +54,7 @@ repositories {
 
 dependencies {
 
-    implementation(project(":dsmart-ui-main:dsmart-ui-main-front", configuration = frontConfig))
+//    implementation(project(":dsmart-ui-main:dsmart-ui-main-front", configuration = frontConfig))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -73,12 +73,17 @@ dependencies {
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
 kotlin.sourceSets["test"].kotlin.srcDirs("test")
 
-sourceSets["main"].resources.srcDirs("resources", frontDist)
+//sourceSets["main"].resources.srcDirs("resources", frontDist)
+sourceSets["main"].resources.srcDirs("resources")
+sourceSets["main"].resources.srcDirs(frontDist)
 sourceSets["test"].resources.srcDirs("testresources")
 
 tasks {
     val copyFront by creating(Copy::class.java) {
-        dependsOn(project(":dsmart-ui-main:dsmart-ui-main-front").getTasksByName("createArtifact", false))
+        dependsOn(
+            project(":dsmart-ui-main:dsmart-ui-main-front")
+                .getTasksByName("createArtifact", false)
+        )
         val frontFiles = project(":dsmart-ui-main:dsmart-ui-main-front")
             .configurations
             .getByName(frontConfig)
@@ -87,5 +92,11 @@ tasks {
         from(frontFiles)
         into("$frontDist/static")
     }
-    compileKotlin.get().dependsOn(copyFront)
+//    compileKotlin.get().dependsOn(copyFront)
+    processResources.get().dependsOn(copyFront)
+
+    create("deploy") {
+        group = "build"
+        dependsOn(dockerPushImage)
+    }
 }
