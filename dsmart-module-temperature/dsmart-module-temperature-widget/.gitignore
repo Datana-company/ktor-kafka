@@ -2,7 +2,6 @@
 /yarn.lock
 /yarn-error.log
 /.gradle
-/.
 
 # compiled output
 /build
