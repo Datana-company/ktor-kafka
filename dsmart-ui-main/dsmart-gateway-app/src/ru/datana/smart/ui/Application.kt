@@ -20,12 +20,38 @@ import io.ktor.http.cio.websocket.Frame
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 import io.ktor.client.features.logging.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.stringify
+import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseTemperature
+import ru.datana.smart.ui.temperature.ws.models.WsDsmartTemperatures
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.random.Random
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+    val wsSessions = ConcurrentHashMap.newKeySet<DefaultWebSocketSession>()
+    val random = Random(System.currentTimeMillis())
+    val jsonMapper = Json
+
+    suspend fun sendToAll(temp: Double) {
+        wsSessions.forEach {
+            val data = WsDsmartResponseTemperature(data = WsDsmartTemperatures(temperature = temp))
+            val jsonString = Json.encodeToString(data)
+            log.info("Sending $jsonString")
+            it.send(jsonString)
+        }
+    }
+
+    launch {
+        while (true) {
+            sendToAll(random.nextDouble(15.0, 35.0))
+        }
+    }
+
     install(CallLogging) {
         level = Level.INFO
         filter { call -> call.request.path().startsWith("/") }
@@ -62,16 +88,26 @@ fun Application.module(testing: Boolean = false) {
         }
 
         webSocket("/ws") {
-            send(Frame.Text("{\"event\": \"update-texts\", \"data\": \"Hi From Server\"}"))
-            while (true) {
-                val frame = incoming.receive()
-                if (frame is Frame.Text) {
-                    val message = frame.readText()
-                    log.info("A message is received: $message")
-                    send(Frame.Text("{\"event\": \"update-texts\", \"data\": \"Server received a message\"}"))
+            println("onConnect")
+            wsSessions += this
+            try {
+                for (frame in incoming) {
+                    if (frame is Frame.Text) {
+//                        val message = frame.readText()
+//                        log.info("A message is received: $message")
+//                        send(Frame.Text("{\"event\": \"update-texts\", \"data\": \"Server received a message\"}"))
+                    }
                 }
+            } catch (e: ClosedReceiveChannelException) {
+                println("onClose ${closeReason.await()}")
+            } catch (e: Throwable) {
+                log.error("Error within websocket block due to: ${closeReason.await()}", e)
+            } finally {
+                wsSessions -= this
             }
         }
     }
+
 }
+
 

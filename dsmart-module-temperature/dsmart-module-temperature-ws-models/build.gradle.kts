@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
 }
 
 group = rootProject.group
@@ -13,17 +14,22 @@ kotlin {
     /* Targets configuration omitted.
     *  To find out how to configure the targets, please follow the link:
     *  https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#setting-up-targets */
-    js(BOTH) {
+    js() {
         browser {
-
         }
+        binaries.executable()
     }
     jvm()
 
     sourceSets {
+        val serializationVersion: String by project
+
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
+
+                api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
+//                api("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
 
                 implementation(project(":dsmart-common:dsmart-common-transport-ws"))
                 implementation(project(":dsmart-module-temperature:dsmart-module-temperature-common"))
@@ -39,6 +45,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-js"))
+//                api("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serializationVersion")
             }
         }
         val jsTest by getting {
@@ -50,6 +57,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
+//                api("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
             }
         }
         val jvmTest by getting {

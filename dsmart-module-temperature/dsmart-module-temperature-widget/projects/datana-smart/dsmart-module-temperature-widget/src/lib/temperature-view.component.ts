@@ -1,17 +1,28 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit, Input, Inject} from '@angular/core';
+import {configProvide, IWebsocketService} from './websocket';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Component({
-  selector: 'datana-temperature-view',
+  selector: 'lib-datana-temperature-view',
   templateUrl: './temperature-view.component.html',
   styleUrls: ['./temperature-view.component.css']
 })
 export class TemperatureViewComponent implements OnInit {
 
-  @Input() value: string = '0';
+  tempStream$: Observable<string>;
 
-  constructor() { }
+  constructor(
+    @Inject(configProvide) private wsService: IWebsocketService
+  ) { }
 
   ngOnInit(): void {
+    this.tempStream$ = this.wsService.on('temperature-update').pipe(
+      map((data: any) => {
+        const tempNum = (data?.temperature as number); // ?.toPrecision(1);
+        return tempNum?.toFixed(1);
+      })
+    );
   }
 
 }

@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SensorDataComponent implements OnInit {
 
-  value: string = '50';
+  value = '50';
 
   constructor() { }
 

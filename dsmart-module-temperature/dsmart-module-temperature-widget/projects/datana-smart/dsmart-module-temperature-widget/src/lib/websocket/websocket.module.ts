@@ -14,7 +14,7 @@ import {WebSocketConfig} from './websocket.interfaces';
   providers: [
     WebsocketService,
     {provide: configProvide, useClass: WebsocketService}
-  ],
+  ]
 })
 export class WebsocketModule {
   public static config(wsConfig: WebSocketConfig): ModuleWithProviders<WebsocketModule> {

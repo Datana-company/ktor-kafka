@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val ktorVersion: String by project
 val kotlinVersion: String by project
 val logbackVersion: String by project
+val serializationVersion: String by project
 val frontConfig = "staticFront"
 val projectMaintainer: String by project
 
@@ -11,6 +12,7 @@ plugins {
     application
     kotlin("jvm")
     id("com.bmuschko.docker-java-application")
+    kotlin("plugin.serialization")
 }
 
 group = rootProject.group
@@ -54,7 +56,10 @@ repositories {
 
 dependencies {
 
-//    implementation(project(":dsmart-ui-main:dsmart-ui-main-front", configuration = frontConfig))
+    // TODO Временная зависимость. Должна уйти в dsmart-module-temperature
+    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ws-models"))
+
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
