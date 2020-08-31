@@ -21,6 +21,7 @@ pluginManagement {
 include(":dsmart-common")
 include(":dsmart-common:dsmart-common-common")
 include(":dsmart-common:dsmart-common-transport-ws")
+include(":dsmart-common:dsmart-common-fm-websocket")
 
 include(":dsmart-ui-main")
 include(":dsmart-ui-main:dsmart-ui-main-front")

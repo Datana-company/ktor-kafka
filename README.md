@@ -5,71 +5,76 @@
 ## Структура проекта
 
 ```plantuml
-class "Front Main" as fm {
- dsmart-ui-main
+@startuml
+
+actor User
+(browser) as browser
+(Websocket) as ws
+(MQ) <<Kafka>> as mq
+
+package "Frontend" as front {
+  [UI Frontend] <<Home>> as umain
+  (Front comp) <<Temperature>> as utemp
+  (Front comp) <<Vibrations>> as uvib
+  (Front comp) <<Camera>> as ucam
+  (Front comp) <<Other>> as uoth
+
+  umain -up- uvib
+  umain -down- ucam
+  uvib -up- utemp
+  ucam -down- uoth
 }
 
-class "Backend Gateway" as bg {
- dsmart-back-gateway
+
+package "Backend" as back {
+  [UI Backend] <<Gateway>> as bgate
+  (Back module) <<Temperature>> as btemp
+  (Back module) <<Vibrations>> as bvib
+  (Back module cam) <<Camera>> as bcam
+  (Back module other) <<Other>> as both
+
+  bgate -up- bvib
+  bgate -down- bcam
+  bvib -up- btemp
+  bcam -down- both
 }
 
 
-class "UI Temperature" as ftemp {
-  "Frontend Component"
- dsmart-ui-temperature
-}
 
-class "UI Events" as fevent {
-  "Frontend Component"
- dsmart-ui-events
-}
+User -right- browser
+umain <-left- browser
+umain -right-> ws
+ws -right-> bgate
+bgate -right-> mq
 
-class "UI Messages" as fmess {
-  "Frontend Component"
- dsmart-ui-messages
-}
+utemp .left.> btemp
+uvib  .left.> bvib
+ucam  .left.> bcam
+uoth  .left.> both
 
-fm -> ftemp
-fm -> fevent
-fm -> fmess
-
-class "MS Temperature" as btemp {
-  "Microservice"
- dsmart-app-temperature
-}
-
-class "MS Events" as bevent {
-  "Microservice"
- dsmart-app-events
-}
-
-class "MS Messages" as bmess {
-  "Microservice"
- dsmart-app-messages
-}
-
-ftemp <--> bg
-fevent <--> bg
-fmess <--> bg
-
-bg -> btemp
-bg -> bevent
-bg -> bmess
+@enduml
 ```
 
 ## Модули
 
 1. [`dmart-common`](dsmart-common/README.md) - главный компонент интерфейса пользователя, который управляет всеми 
 компонентами UI.
-1. [`dmart-ui-main`](dsmart-ui-main/README.md) - главный компонент интерфейса пользователя, который управляет всеми 
+1. [`dmart-ui-main`](dsmart-ui-main/README.md) - корневой компонент (Home) интерфейса пользователя, который управляет всеми 
 компонентами UI.
-1. [`dmart-module-temperature`](dsmart-module-temperature/README.md) - главный компонент интерфейса пользователя, который управляет всеми 
-компонентами UI.
+1. [`dmart-module-temperature`](dsmart-module-temperature/README.md) - модуль для датчика температуры
 
 ## Сборка и деплой проекта
 
 Компиляция проекта:
 ```bash
+./gradlew build
+```
+
+Локальное построение образа:
+```bash
+# Опционально. При наличии, будет в 
+export DOCKER_REGISTRY_HOST=registry.datana.ru
+
 ./gradlew build
 ```
 
