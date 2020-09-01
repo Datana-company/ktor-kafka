@@ -14,8 +14,9 @@ import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.*
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.errors.WakeupException
@@ -40,14 +41,15 @@ fun Application.module(testing: Boolean = false) {
     val random = Random(System.currentTimeMillis())
     val jsonMapper = Json
 
-    suspend fun sendToAll(temp: Double) {
-        wsSessions.forEach {
-            val data = WsDsmartResponseTemperature(data = WsDsmartTemperatures(temperature = temp))
-            val jsonString = Json.encodeToString(data)
-            log.info("Sending $jsonString")
-            it.send(jsonString)
-        }
-    }
+//    suspend fun sendToAll(temp: Double) {
+//        wsSessions.forEach {
+//            log.info("sending to client ${it.hashCode()}")
+//            val data = WsDsmartResponseTemperature(data = WsDsmartTemperatures(temperature = temp))
+//            val jsonString = Json.encodeToString(data)
+//            log.info("Sending $jsonString")
+//            it.send(jsonString)
+//        }
+//    }
 
 //    launch {
 //        while (true) {
@@ -89,14 +91,14 @@ fun Application.module(testing: Boolean = false) {
             println("onConnect")
             wsSessions += this
             try {
-                incoming.consume {  }
-//                for (frame in incoming) {
+//                incoming.consume { }
+                for (frame in incoming) {
 //                    if (frame is Frame.Text) {
 //                        val message = frame.readText()
 //                        log.info("A message is received: $message")
 //                        send(Frame.Text("{\"event\": \"update-texts\", \"data\": \"Server received a message\"}"))
 //                    }
-//                }
+                }
             } catch (e: ClosedReceiveChannelException) {
                 println("onClose ${closeReason.await()}")
             } catch (e: Throwable) {
@@ -112,17 +114,34 @@ fun Application.module(testing: Boolean = false) {
     launch {
         try {
             while (!closed.get()) {
+//            while (false) {
                 val records = consumer.poll(Duration.of(1000, ChronoUnit.MILLIS))
-                for (record in records) {
-                    log.info("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
-                    parseKafkaInput(record.value())?.also { sendToAll(it) }
-                }
+
+                records
+                    .mapNotNull { record ->
+                        log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
+                        parseKafkaInput(record.value())
+                    }
+                    .average()
+                    .takeIf { it.isFinite() }
+                    ?.also { temp ->
+                        log.trace("sending temperature: $temp")
+                        wsSessions.forEach {
+                            log.info("sending to client ${it.hashCode()}")
+                            val data = WsDsmartResponseTemperature(data = WsDsmartTemperatures(temperature = temp))
+                            val jsonString = Json.encodeToString(data)
+                            log.trace("Sending $jsonString")
+                            it.send(jsonString)
+                        }
+//                        sendToAll(it)
+                    }
+
                 if (!records.isEmpty) {
                     consumer.commitAsync { offsets, exception ->
                         if (exception != null) {
                             log.error("Commit failed for offsets $offsets", exception)
                         } else {
-                            log.info("Offset committed  $offsets")
+                            log.trace("Offset committed  $offsets")
                         }
                     }
                 }
@@ -145,10 +164,22 @@ fun Application.module(testing: Boolean = false) {
 
 
 private fun Application.parseKafkaInput(value: String?): Double? {
-    if(value == null) return null
-    val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
-    log.trace("Parsing kafka json: $value -> ${obj.temperature}")
-    return obj.temperature
+    // {"info":{"id":"4a67082b-8bf4-48b7-88c0-0d542ffe2214","channelList":["clean"]},"content":[{"@class":"ru.datana.common.model.SingleSensorModel","request_id":"d076f100-3e96-4857-aba8-1c7f4c866dd5","request_datetime":1598962179670,"response_datetime":1598962179754,"sensor_id":"00000000-0000-4000-9000-000000000006","data":-247.14999999999998,"status":0,"errors":[]}]}
+    if (value == null) return null
+    val obj = Json.decodeFromString(JsonElement.serializer(), value)
+//    val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
+    val temp = obj.jsonObject["content"]
+        ?.jsonArray
+        ?.mapNotNull {
+            it.jsonObject["data"]
+                ?.jsonPrimitive
+                ?.doubleOrNull
+        }
+        ?.average()
+        ?.let { 273.15 + it }
+    log.trace("Parsing kafka json: $value -> $temp")
+//    return obj.temperature
+    return temp
 }
 
 @OptIn(KtorExperimentalAPI::class)
