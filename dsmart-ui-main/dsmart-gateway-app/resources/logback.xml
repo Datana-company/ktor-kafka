@@ -7,7 +7,9 @@
     <root level="trace">
         <appender-ref ref="STDOUT"/>
     </root>
+    <logger level="INFO"/>
     <logger name="org.eclipse.jetty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
+    <logger name="org.apache.kafka" level="INFO"/>
     <logger name="ru.datana.smart.ui" level="TRACE"/>
 </configuration>

@@ -1,36 +1,39 @@
 package ru.datana.smart.ui
 
 import io.ktor.application.*
-import io.ktor.response.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.http.cio.websocket.*
+import io.ktor.http.content.*
 import io.ktor.request.*
 import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.content.*
-import io.ktor.http.content.*
-import io.ktor.features.*
-import org.slf4j.event.*
+import io.ktor.util.*
 import io.ktor.websocket.*
-import io.ktor.http.cio.websocket.*
-import java.time.*
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.features.websocket.*
-import io.ktor.client.features.websocket.WebSockets
-import io.ktor.http.cio.websocket.Frame
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.*
-import io.ktor.client.features.logging.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonDecoder
-import kotlinx.serialization.stringify
+import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.common.errors.WakeupException
+import org.apache.kafka.common.serialization.StringDeserializer
+import org.slf4j.event.Level
+import ru.datana.smart.ui.temperature.kf.models.KfDsmartTemperatureData
 import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseTemperature
 import ru.datana.smart.ui.temperature.ws.models.WsDsmartTemperatures
+import java.time.Duration
+import java.time.temporal.ChronoUnit
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
     val wsSessions = ConcurrentHashMap.newKeySet<DefaultWebSocketSession>()
@@ -46,11 +49,12 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-    launch {
-        while (true) {
-            sendToAll(random.nextDouble(15.0, 35.0))
-        }
-    }
+//    launch {
+//        while (true) {
+//            sendToAll(random.nextDouble(15.0, 35.0))
+//            delay(500)
+//        }
+//    }
 
     install(CallLogging) {
         level = Level.INFO
@@ -75,12 +79,6 @@ fun Application.module(testing: Boolean = false) {
         masking = false
     }
 
-    val client = HttpClient(CIO) {
-        install(Logging) {
-            level = LogLevel.HEADERS
-        }
-    }
-
     routing {
         static("/") {
             defaultResource("static/index.html")
@@ -91,13 +89,14 @@ fun Application.module(testing: Boolean = false) {
             println("onConnect")
             wsSessions += this
             try {
-                for (frame in incoming) {
-                    if (frame is Frame.Text) {
+                incoming.consume {  }
+//                for (frame in incoming) {
+//                    if (frame is Frame.Text) {
 //                        val message = frame.readText()
 //                        log.info("A message is received: $message")
 //                        send(Frame.Text("{\"event\": \"update-texts\", \"data\": \"Server received a message\"}"))
-                    }
-                }
+//                    }
+//                }
             } catch (e: ClosedReceiveChannelException) {
                 println("onClose ${closeReason.await()}")
             } catch (e: Throwable) {
@@ -108,6 +107,64 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
+    val closed = AtomicBoolean(false)
+    val consumer = buildConsumer(this@module.environment)
+    launch {
+        try {
+            while (!closed.get()) {
+                val records = consumer.poll(Duration.of(1000, ChronoUnit.MILLIS))
+                for (record in records) {
+                    log.info("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
+                    parseKafkaInput(record.value())?.also { sendToAll(it) }
+                }
+                if (!records.isEmpty) {
+                    consumer.commitAsync { offsets, exception ->
+                        if (exception != null) {
+                            log.error("Commit failed for offsets $offsets", exception)
+                        } else {
+                            log.info("Offset committed  $offsets")
+                        }
+                    }
+                }
+            }
+            log.info("Finish consuming")
+        } catch (e: Throwable) {
+            when (e) {
+                is WakeupException -> log.info("Consumer waked up")
+                else -> log.error("Polling failed", e)
+            }
+        } finally {
+            log.info("Commit offset synchronously")
+            consumer.commitSync()
+            consumer.close()
+            log.info("Consumer successfully closed")
+        }
+    }
+
 }
 
 
+private fun Application.parseKafkaInput(value: String?): Double? {
+    if(value == null) return null
+    val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
+    log.trace("Parsing kafka json: $value -> ${obj.temperature}")
+    return obj.temperature
+}
+
+@OptIn(KtorExperimentalAPI::class)
+fun buildConsumer(environment: ApplicationEnvironment): KafkaConsumer<String, String> {
+    val consumerConfig = environment.config.config("ktor.kafka.consumer")
+    val consumerProps = Properties().apply {
+        this[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = consumerConfig.property("bootstrap.servers").getList()
+        this[ConsumerConfig.CLIENT_ID_CONFIG] = consumerConfig.property("client.id").getString()
+        this[ConsumerConfig.GROUP_ID_CONFIG] = consumerConfig.property("group.id").getString()
+//        this[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("key.deserializer").getString()
+//        this[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("value.deserializer").getString()
+        this[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java.name
+        this[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java.name
+    }
+    return KafkaConsumer<String, String>(consumerProps)
+        .apply {
+            subscribe(listOf(consumerConfig.property("topic").getString()))
+        }
+}

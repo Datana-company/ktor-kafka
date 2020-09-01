@@ -20,7 +20,7 @@ export class TemperatureViewComponent implements OnInit {
     this.tempStream$ = this.wsService.on('temperature-update').pipe(
       map((data: any) => {
         const tempNum = (data?.temperature as number); // ?.toPrecision(1);
-        return tempNum?.toFixed(1);
+        return tempNum?.toFixed(1) || 'NaN';
       })
     );
   }

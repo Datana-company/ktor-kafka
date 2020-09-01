@@ -58,6 +58,7 @@ dependencies {
 
     // TODO Временная зависимость. Должна уйти в dsmart-module-temperature
     implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ws-models"))
+    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-kf-models"))
 
 //    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
 
@@ -67,12 +68,16 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-    implementation("io.ktor:ktor-client-websockets:$ktorVersion")
-    implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
+//    implementation("io.ktor:ktor-client-core:$ktorVersion")
+//    implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
+//    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+//    implementation("io.ktor:ktor-client-websockets:$ktorVersion")
+//    implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
+
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+
+    //Kafka
+    implementation("org.apache.kafka:kafka-clients:2.5.0")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
