@@ -2,6 +2,7 @@ import {Component, OnInit, Input, Inject} from '@angular/core';
 import {configProvide, IWebsocketService} from './websocket';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {TemperatureModel} from "./models/temperature.model.ts";
 
 @Component({
   selector: 'lib-datana-temperature-view',
@@ -20,21 +21,19 @@ export class TemperatureViewComponent implements OnInit {
   ngOnInit(): void {
     this.tempStream$ = this.wsService.on('temperature-update').pipe(
       map((data: any) => {
-        const tempNum = data?.temperature as number;
-        return this.displayTemp(tempNum);
+        const tempStruct = new TemperatureModel(
+          data?.temperature as number,
+          new Date(data?.timeMillis as number),
+          data?.durationMillis as number,
+          data?.
+        );
+        return tempStruct;
       })
     );
   }
 
-  displayTemp(temp: number): string {
-    if (temp == null) { return 'NaN'; }
-    let tempScaled: number;
-    switch (this.scale) {
-      case 'C': { tempScaled = temp - 273.15; break; }
-      case 'F': { tempScaled = (temp - 273.15) * 9.0 / 5.0 + 32.0; break; }
-      default: { this.scale = 'K'; tempScaled = temp; break; }
-    }
-    return tempScaled?.toFixed(1) || 'NaN';
+  displayTemp(temp: TemperatureModel): string {
+    return temp.displayTemp(this.scale);
   }
 
   setKelvin(event: Event): void {
