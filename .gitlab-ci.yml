@@ -26,10 +26,10 @@ build:
 #    only:
 #        - master
 
-test:
-    stage: test
-    script:
-        - ./gradlew check
+# test:
+#     stage: test
+#     script:
+#         - ./gradlew check
 
 deploy:
     stage: deploy
