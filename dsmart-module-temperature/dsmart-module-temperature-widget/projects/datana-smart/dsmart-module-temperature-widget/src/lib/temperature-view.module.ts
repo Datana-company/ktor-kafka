@@ -2,13 +2,15 @@ import {ModuleWithProviders, NgModule} from '@angular/core';
 import { TemperatureViewComponent } from './temperature-view.component';
 import {WebSocketConfig, WebsocketModule, config} from './websocket';
 import {CommonModule} from '@angular/common';
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [TemperatureViewComponent],
-  imports: [
-    WebsocketModule,
-    CommonModule,
-  ],
+    imports: [
+        WebsocketModule,
+        CommonModule,
+        RouterModule,
+    ],
   providers: [
     TemperatureViewModule,
   ],

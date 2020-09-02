@@ -11,12 +11,9 @@ import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
-import kotlinx.coroutines.channels.consume
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.errors.WakeupException
@@ -30,7 +27,6 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.random.Random
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -38,25 +34,17 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
     val wsSessions = ConcurrentHashMap.newKeySet<DefaultWebSocketSession>()
-    val random = Random(System.currentTimeMillis())
-    val jsonMapper = Json
 
-//    suspend fun sendToAll(temp: Double) {
-//        wsSessions.forEach {
-//            log.info("sending to client ${it.hashCode()}")
-//            val data = WsDsmartResponseTemperature(data = WsDsmartTemperatures(temperature = temp))
-//            val jsonString = Json.encodeToString(data)
-//            log.info("Sending $jsonString")
-//            it.send(jsonString)
-//        }
-//    }
-
-//    launch {
-//        while (true) {
-//            sendToAll(random.nextDouble(15.0, 35.0))
-//            delay(500)
-//        }
-//    }
+    suspend fun sendToAll(temp: Double) {
+        log.trace("sending temperature: $temp")
+        wsSessions.forEach {
+            log.info("sending to client ${it.hashCode()}")
+            val data = WsDsmartResponseTemperature(data = WsDsmartTemperatures(temperature = temp))
+            val jsonString = Json.encodeToString(data)
+            log.trace("Sending $jsonString")
+            it.send(jsonString)
+        }
+    }
 
     install(CallLogging) {
         level = Level.INFO
@@ -124,17 +112,7 @@ fun Application.module(testing: Boolean = false) {
                     }
                     .average()
                     .takeIf { it.isFinite() }
-                    ?.also { temp ->
-                        log.trace("sending temperature: $temp")
-                        wsSessions.forEach {
-                            log.info("sending to client ${it.hashCode()}")
-                            val data = WsDsmartResponseTemperature(data = WsDsmartTemperatures(temperature = temp))
-                            val jsonString = Json.encodeToString(data)
-                            log.trace("Sending $jsonString")
-                            it.send(jsonString)
-                        }
-//                        sendToAll(it)
-                    }
+                    ?.also { temp -> sendToAll(temp) }
 
                 if (!records.isEmpty) {
                     consumer.commitAsync { offsets, exception ->
@@ -166,33 +144,32 @@ fun Application.module(testing: Boolean = false) {
 private fun Application.parseKafkaInput(value: String?): Double? {
     // {"info":{"id":"4a67082b-8bf4-48b7-88c0-0d542ffe2214","channelList":["clean"]},"content":[{"@class":"ru.datana.common.model.SingleSensorModel","request_id":"d076f100-3e96-4857-aba8-1c7f4c866dd5","request_datetime":1598962179670,"response_datetime":1598962179754,"sensor_id":"00000000-0000-4000-9000-000000000006","data":-247.14999999999998,"status":0,"errors":[]}]}
     if (value == null) return null
-    val obj = Json.decodeFromString(JsonElement.serializer(), value)
-//    val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
-    val temp = obj.jsonObject["content"]
-        ?.jsonArray
-        ?.mapNotNull {
-            it.jsonObject["data"]
-                ?.jsonPrimitive
-                ?.doubleOrNull
-        }
-        ?.average()
-        ?.let { 273.15 + it }
-    log.trace("Parsing kafka json: $value -> $temp")
-//    return obj.temperature
-    return temp
+    return try {
+        val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
+        val temp = obj.temperature?.let { it + 2*273.15  }
+        log.trace("Parsing kafka json: $value -> $temp")
+        temp
+    } catch (e: Throwable) {
+        log.error("Error parsing data for", value)
+        null
+    }
 }
 
 @OptIn(KtorExperimentalAPI::class)
 fun buildConsumer(environment: ApplicationEnvironment): KafkaConsumer<String, String> {
     val consumerConfig = environment.config.config("ktor.kafka.consumer")
+    val kafkaConfig = environment.config.config("ktor.kafka")
     val consumerProps = Properties().apply {
-        this[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = consumerConfig.property("bootstrap.servers").getList()
-        this[ConsumerConfig.CLIENT_ID_CONFIG] = consumerConfig.property("client.id").getString()
-        this[ConsumerConfig.GROUP_ID_CONFIG] = consumerConfig.property("group.id").getString()
+        put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.property("bootstrap.servers").getList())
+        kafkaConfig.propertyOrNull("client.id")
+            ?.getString()
+            ?.also { put(ConsumerConfig.CLIENT_ID_CONFIG, it) }
+
+        put(ConsumerConfig.GROUP_ID_CONFIG, consumerConfig.property("group.id").getString())
 //        this[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("key.deserializer").getString()
 //        this[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("value.deserializer").getString()
-        this[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java.name
-        this[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java.name
+        put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
+        put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
     }
     return KafkaConsumer<String, String>(consumerProps)
         .apply {

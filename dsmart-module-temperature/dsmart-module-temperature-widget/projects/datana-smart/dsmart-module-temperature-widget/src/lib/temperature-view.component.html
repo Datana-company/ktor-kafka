@@ -1,3 +1,8 @@
 <div>
-    {{tempStream$ | async}}°
+    {{tempStream$ | async}}°{{scale}}
 </div>
+<ul>
+    <li><a href="" (click)="setKelvin($event)">Кельвины</a></li>
+    <li><a href="" (click)="setCelsius($event)">Цельсий</a></li>
+    <li><a href="" (click)="setFarenheit($event)">Фаренгейт</a></li>
+</ul>
