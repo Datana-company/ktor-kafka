@@ -1,8 +1,8 @@
-import {Component, OnInit, Input, Inject} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {configProvide, IWebsocketService} from './websocket';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {TemperatureModel} from "./models/temperature.model.ts";
+import {TemperatureModel} from './models/temperature.model';
 
 @Component({
   selector: 'lib-datana-temperature-view',
@@ -11,7 +11,7 @@ import {TemperatureModel} from "./models/temperature.model.ts";
 })
 export class TemperatureViewComponent implements OnInit {
 
-  tempStream$: Observable<string>;
+  dataStream$: Observable<TemperatureModel>;
   scale = 'C';
 
   constructor(
@@ -19,21 +19,18 @@ export class TemperatureViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.tempStream$ = this.wsService.on('temperature-update').pipe(
+    this.dataStream$ = this.wsService.on('temperature-update').pipe(
       map((data: any) => {
-        const tempStruct = new TemperatureModel(
+        console.log('DATA', data);
+        return new TemperatureModel(
           data?.temperature as number,
           new Date(data?.timeMillis as number),
           data?.durationMillis as number,
-          data?.
+          data?.deviationPositive as number,
+          data?.deviationNegative as number,
         );
-        return tempStruct;
       })
     );
-  }
-
-  displayTemp(temp: TemperatureModel): string {
-    return temp.displayTemp(this.scale);
   }
 
   setKelvin(event: Event): void {

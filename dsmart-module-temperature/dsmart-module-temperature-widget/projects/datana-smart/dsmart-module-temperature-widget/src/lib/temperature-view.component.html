@@ -1,8 +1,20 @@
-<div>
-    {{tempStream$ | async}}°{{scale}}
-</div>
-<ul>
-    <li><a href="" (click)="setKelvin($event)">Кельвины</a></li>
-    <li><a href="" (click)="setCelsius($event)">Цельсий</a></li>
-    <li><a href="" (click)="setFarenheit($event)">Фаренгейт</a></li>
-</ul>
+<div>{{dataStream$ | async | json}}</div>
+<!--<div *ngIf="dataStream$ | async as tempModel; else noData">-->
+<!--    <div>-->
+<!--        {{tempModel.displayTemp(scale)}}°{{scale}}-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        Время: {{tempModel.displayTime()}}-->
+<!--    </div>-->
+<!--    <ul>-->
+<!--        <li><a href="" (click)="setKelvin($event)">Кельвины</a></li>-->
+<!--        <li><a href="" (click)="setCelsius($event)">Цельсий</a></li>-->
+<!--        <li><a href="" (click)="setFarenheit($event)">Фаренгейт</a></li>-->
+<!--    </ul>-->
+<!--</div>-->
+
+<!--<ng-template #noData>-->
+<!--    <div>-->
+<!--        No Data-->
+<!--    </div>-->
+<!--</ng-template>-->

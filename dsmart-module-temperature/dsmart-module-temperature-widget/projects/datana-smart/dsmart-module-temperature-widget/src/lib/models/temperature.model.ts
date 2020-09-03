@@ -20,4 +20,8 @@ export class TemperatureModel {
     }
     return tempScaled?.toFixed(1) || 'NaN';
   }
+
+  displayTime(): string {
+    return this.timeStart.toISOString();
+  }
 }

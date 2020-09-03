@@ -19,15 +19,10 @@ import {RouterModule} from "@angular/router";
 })
 export class TemperatureViewModule {
   public static config(wsConfig: WebSocketConfig): ModuleWithProviders<TemperatureViewModule> {
+    console.log('Setting up TemperatureViewModule', wsConfig);
     return {
       ngModule: TemperatureViewModule,
       providers: [{ provide: config, useValue: wsConfig }]
     };
   }
-  // public static config(wsConfig: WebSocketConfig): ModuleWithProviders<WebsocketModule> {
-  //   return {
-  //     ngModule: WebsocketModule,
-  //     providers: [{ provide: config, useValue: wsConfig }]
-  //   };
-  // }
 }

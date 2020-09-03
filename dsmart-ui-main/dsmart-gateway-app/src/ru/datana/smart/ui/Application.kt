@@ -35,11 +35,10 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module(testing: Boolean = false) {
     val wsSessions = ConcurrentHashMap.newKeySet<DefaultWebSocketSession>()
 
-    suspend fun sendToAll(temp: Double) {
-        log.trace("sending temperature: $temp")
+    suspend fun sendToAll(data: WsDsmartResponseTemperature) {
+        log.trace("sending temperature: $data")
         wsSessions.forEach {
-            log.info("sending to client ${it.hashCode()}")
-            val data = WsDsmartResponseTemperature(data = WsDsmartTemperatures(temperature = temp))
+            log.trace("sending to client ${it.hashCode()}")
             val jsonString = Json.encodeToString(data)
             log.trace("Sending $jsonString")
             it.send(jsonString)
@@ -102,16 +101,17 @@ fun Application.module(testing: Boolean = false) {
     launch {
         try {
             while (!closed.get()) {
-//            while (false) {
                 val records = consumer.poll(Duration.of(1000, ChronoUnit.MILLIS))
 
                 records
-                    .mapNotNull { record ->
+                    .firstOrNull()
+                    ?.let { record ->
                         log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
                         parseKafkaInput(record.value())
                     }
-                    .average()
-                    .takeIf { it.isFinite() }
+                    ?.takeIf {
+                        it.data?.temperature?.isFinite() ?: false
+                    }
                     ?.also { temp -> sendToAll(temp) }
 
                 if (!records.isEmpty) {
@@ -141,14 +141,20 @@ fun Application.module(testing: Boolean = false) {
 }
 
 
-private fun Application.parseKafkaInput(value: String?): Double? {
+private fun Application.parseKafkaInput(value: String?): WsDsmartResponseTemperature? {
     // {"info":{"id":"4a67082b-8bf4-48b7-88c0-0d542ffe2214","channelList":["clean"]},"content":[{"@class":"ru.datana.common.model.SingleSensorModel","request_id":"d076f100-3e96-4857-aba8-1c7f4c866dd5","request_datetime":1598962179670,"response_datetime":1598962179754,"sensor_id":"00000000-0000-4000-9000-000000000006","data":-247.14999999999998,"status":0,"errors":[]}]}
     if (value == null) return null
     return try {
         val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
-        val temp = obj.temperature?.let { it + 2*273.15  }
-        log.trace("Parsing kafka json: $value -> $temp")
-        temp
+        WsDsmartResponseTemperature(
+            data = WsDsmartTemperatures(
+                temperature = obj.temperature?.let { it + 2 * 273.15 },
+                timeMillis = obj.timeMillis,
+                durationMillis = obj.durationMillis,
+                deviationPositive = obj.deviationPositive,
+                deviationNegative = obj.deviationNegative
+            )
+        )
     } catch (e: Throwable) {
         log.error("Error parsing data for", value)
         null
@@ -161,9 +167,7 @@ fun buildConsumer(environment: ApplicationEnvironment): KafkaConsumer<String, St
     val kafkaConfig = environment.config.config("ktor.kafka")
     val consumerProps = Properties().apply {
         put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.property("bootstrap.servers").getList())
-        kafkaConfig.propertyOrNull("client.id")
-            ?.getString()
-            ?.also { put(ConsumerConfig.CLIENT_ID_CONFIG, it) }
+        put(ConsumerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString())
 
         put(ConsumerConfig.GROUP_ID_CONFIG, consumerConfig.property("group.id").getString())
 //        this[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("key.deserializer").getString()

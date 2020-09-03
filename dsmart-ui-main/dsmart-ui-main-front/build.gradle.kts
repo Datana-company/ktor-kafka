@@ -110,10 +110,11 @@ tasks {
             add(distConfig, fileTree(distDir).dir)
         }
     }
-    build.get().dependsOn(createArtifact)
+//    build.get().dependsOn(createArtifact)
 
     val ngStart by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
         dependsOn(jar2npm)
+        dependsOn(extractNgLibs)
         command = "ng"
         setArgs(
             listOf(

@@ -31,8 +31,8 @@ kotlin {
                 api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
 //                api("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
 
-                implementation(project(":dsmart-common:dsmart-common-transport-ws"))
-                implementation(project(":dsmart-module-temperature:dsmart-module-temperature-common"))
+                api(project(":dsmart-common:dsmart-common-transport-ws"))
+                api(project(":dsmart-module-temperature:dsmart-module-temperature-common"))
             }
         }
         val commonTest by getting {

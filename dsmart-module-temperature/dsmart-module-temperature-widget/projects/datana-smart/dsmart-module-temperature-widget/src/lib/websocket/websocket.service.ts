@@ -31,6 +31,7 @@ export class WebsocketService implements IWebsocketService, OnDestroy {
   public status: Observable<boolean>;
 
   constructor(@Inject(config) private wsConfig: WebSocketConfig) {
+    console.log('websocket is started', wsConfig);
     this.wsMessages$ = new Subject<IWsMessage<any>>();
 
     this.reconnectInterval = wsConfig.reconnectInterval || 5000; // pause between connections
@@ -85,10 +86,14 @@ export class WebsocketService implements IWebsocketService, OnDestroy {
   * */
   private connect(): void {
     try {
+      console.log('starting connection to', this.config);
       this.websocket$ = new WebSocketSubject(this.config);
 
       this.websocket$.subscribe(
-        (message) => this.wsMessages$.next(message),
+        (message) => {
+          console.log('message: ', message);
+          return this.wsMessages$.next(message);
+        },
         (error: Event) => {
           if (!this.websocket$) {
             // run reconnect if errors
@@ -107,6 +112,7 @@ export class WebsocketService implements IWebsocketService, OnDestroy {
   * reconnect if not connecting or errors
   * */
   private reconnect(): void {
+    console.log('reconnect');
     this.reconnection$ = interval(this.reconnectInterval)
       .pipe(takeWhile((v, index) => index < this.reconnectAttempts && !this.websocket$));
 
@@ -132,7 +138,7 @@ export class WebsocketService implements IWebsocketService, OnDestroy {
     if (event) {
       return this.wsMessages$.pipe(
         map((message) => {
-          console.log(message as IWsMessage<T>);
+          console.log(message);
           return message as IWsMessage<T>;
         }),
         filter((message: IWsMessage<T>) => {
