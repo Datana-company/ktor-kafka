@@ -1,19 +1,16 @@
 package ru.datana.smart.common.ktor.kafka
 
 import io.ktor.application.feature
-import io.ktor.application.log
 import io.ktor.routing.Route
 import io.ktor.routing.application
 import javafx.application.Application.launch
-import kotlinx.coroutines.launch
 import org.apache.kafka.common.errors.WakeupException
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 fun Route.kafka(protocol: String? = null, handler: suspend () -> Unit) {
-    val kafka =application.feature(Kafka) // early require
-    kafka.pingIntervalMillis=1
+    val kafka = application.feature(DatanaKafkaConsumer) // early require
 
     val closed = AtomicBoolean(false)
     val consumer = buildConsumer(this@module.environment)
