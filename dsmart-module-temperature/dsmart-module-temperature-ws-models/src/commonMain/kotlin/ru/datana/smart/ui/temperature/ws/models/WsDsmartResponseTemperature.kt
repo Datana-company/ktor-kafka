@@ -1,9 +1,11 @@
 package ru.datana.smart.ui.temperature.ws.models
 
+import kotlinx.serialization.*
 import ru.datana.smart.common.transport.models.ws.IWsDsmartResponse
 import ru.datana.smart.common.transport.models.ws.IWsDsmartResponseError
 import ru.datana.smart.ui.temperature.common.Config
 
+@Serializable
 data class WsDsmartResponseTemperature(
     override val data: WsDsmartTemperatures? = null,
     override val errors: List<IWsDsmartResponseError>? = null,

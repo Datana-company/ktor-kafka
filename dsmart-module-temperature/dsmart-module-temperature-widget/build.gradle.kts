@@ -28,10 +28,7 @@ val ngLibs: Configuration by configurations.creating
 
 dependencies {
     implementation(kotlin("stdlib-js"))
-
-//    ngLibs(files(distDir) {
-//        builtBy("ngBuild")
-//    })
+//    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ws-models"))
 }
 
 tasks {
@@ -43,8 +40,8 @@ tasks {
                 "build"
             )
         )
+        outputs.dir(distDir)
     }
-    build.get().dependsOn(ngBuild)
 
 //    val npmPublish by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
 //        dependsOn(ngBuild)
