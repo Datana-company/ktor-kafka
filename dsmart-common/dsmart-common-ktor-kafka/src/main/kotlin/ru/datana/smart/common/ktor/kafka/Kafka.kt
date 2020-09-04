@@ -36,7 +36,8 @@ import kotlin.coroutines.CoroutineContext
 class Kafka(
     val pingIntervalMillis: Long,
     val timeoutMillis: Long,
-    val masking: Boolean
+    val masking: Boolean,
+    val kafkaConsumer: KafkaConsumer<String,String>
 ) : CoroutineScope {
     private val parent: CompletableJob = Job()
 
@@ -46,6 +47,7 @@ class Kafka(
     init {
         require(pingIntervalMillis >= 0)
         require(timeoutMillis >= 0)
+        //require(kafkaConsumer.en)
     }
 
     private fun shutdown() {
@@ -88,14 +90,13 @@ class Kafka(
 
         override fun install(pipeline: Application, configure: KafkaOptions.() -> Unit): Kafka {
             val config = KafkaOptions().also(configure)
+            val kafkaConsumer = buildConsumer(pipeline.environment)
             with(config) {
-                val kafka = Kafka(pingPeriodMillis, timeoutMillis, masking)
+                val kafka = Kafka(pingPeriodMillis, timeoutMillis, masking, kafkaConsumer)
 
                 pipeline.environment.monitor.subscribe(ApplicationStopPreparing) {
                     kafka.shutdown()
                 }
-
-                kafkaConsumer = buildConsumer(pipeline.environment)
 
                 return kafka
             }
