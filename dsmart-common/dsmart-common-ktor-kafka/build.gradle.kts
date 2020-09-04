@@ -21,4 +21,11 @@ dependencies {
 
     //Kafka
     implementation("org.apache.kafka:kafka-clients:2.5.0")
+
+    //kostya
+    //compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    api("org.apache.kafka:kafka-streams:2.6.0")
+    api("io.ktor:ktor-server-netty:$ktorVersion")
+    api("io.ktor:ktor-gson:$ktorVersion")
+    //end kostya
 }
