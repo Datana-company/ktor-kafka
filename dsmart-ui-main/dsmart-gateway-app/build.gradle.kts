@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val ktorVersion: String by project
 val kotlinVersion: String by project
 val logbackVersion: String by project
+val serializationVersion: String by project
 val frontConfig = "staticFront"
 val projectMaintainer: String by project
 
@@ -11,6 +12,7 @@ plugins {
     application
     kotlin("jvm")
     id("com.bmuschko.docker-java-application")
+    kotlin("plugin.serialization")
 }
 
 group = rootProject.group
@@ -54,7 +56,11 @@ repositories {
 
 dependencies {
 
-//    implementation(project(":dsmart-ui-main:dsmart-ui-main-front", configuration = frontConfig))
+    // TODO Временная зависимость. Должна уйти в dsmart-module-temperature
+    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ws-models"))
+    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-kf-models"))
+
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -62,12 +68,16 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-    implementation("io.ktor:ktor-client-websockets:$ktorVersion")
-    implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
+//    implementation("io.ktor:ktor-client-core:$ktorVersion")
+//    implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
+//    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+//    implementation("io.ktor:ktor-client-websockets:$ktorVersion")
+//    implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
+
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+
+    //Kafka
+    implementation("org.apache.kafka:kafka-clients:2.5.0")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")

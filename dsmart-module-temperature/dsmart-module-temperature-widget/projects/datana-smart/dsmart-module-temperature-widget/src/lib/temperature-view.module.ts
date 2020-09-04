@@ -1,10 +1,28 @@
-import { NgModule } from '@angular/core';
+import {ModuleWithProviders, NgModule} from '@angular/core';
 import { TemperatureViewComponent } from './temperature-view.component';
+import {WebSocketConfig, WebsocketModule, config} from './websocket';
+import {CommonModule} from '@angular/common';
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [TemperatureViewComponent],
-  imports: [
+    imports: [
+        WebsocketModule,
+        CommonModule,
+        RouterModule,
+    ],
+  providers: [
+    TemperatureViewModule,
   ],
-  exports: [TemperatureViewComponent]
+
+  exports: [TemperatureViewComponent],
 })
-export class TemperatureViewModule { }
+export class TemperatureViewModule {
+  public static config(wsConfig: WebSocketConfig): ModuleWithProviders<TemperatureViewModule> {
+    console.log('Setting up TemperatureViewModule', wsConfig);
+    return {
+      ngModule: TemperatureViewModule,
+      providers: [{ provide: config, useValue: wsConfig }]
+    };
+  }
+}
