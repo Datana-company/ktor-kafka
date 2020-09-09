@@ -11,6 +11,7 @@ import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -37,11 +38,13 @@ fun Application.module(testing: Boolean = false) {
 
     suspend fun sendToAll(data: WsDsmartResponseTemperature) {
         log.trace("sending temperature: $data")
-        wsSessions.forEach {
-            log.trace("sending to client ${it.hashCode()}")
+        wsSessions.forEach { session ->
+            log.trace("sending to client ${session.hashCode()}")
             val jsonString = Json.encodeToString(data)
             log.trace("Sending $jsonString")
-            it.send(jsonString)
+            session.apply {
+                if (isActive) send(jsonString)
+            }
         }
     }
 
