@@ -100,7 +100,7 @@ fun Application.module(testing: Boolean = false) {
     val consumer = buildConsumer(this@module.environment)
     launch {
 //        while (!closed.get()) {
-        while (false) {
+        while (true) {
             try {
                 val records = consumer.poll(Duration.of(1000, ChronoUnit.MILLIS))
 
