@@ -91,5 +91,5 @@ export DOCKER_REGISTRY_PASS=*****
 
 Из докера:
 ```bash
- docker run -p 8080:8080 
+ docker run -p 11000:11000 
 ```
