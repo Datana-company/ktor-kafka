@@ -38,12 +38,17 @@ fun Application.module(testing: Boolean = false) {
 
     suspend fun sendToAll(data: WsDsmartResponseTemperature) {
         log.trace("sending temperature: $data")
-        wsSessions.forEach { session ->
-            log.trace("sending to client ${session.hashCode()}")
-            val jsonString = Json.encodeToString(data)
-            log.trace("Sending $jsonString")
-            session.apply {
-                if (isActive) send(jsonString)
+        val wsSessionsIterator = wsSessions.iterator()
+        while(wsSessionsIterator.hasNext()) {
+            wsSessionsIterator.next().apply {
+                if (isActive) {
+                    val jsonString = Json.encodeToString(data)
+                    log.trace("Sending to client ${hashCode()}: $jsonString")
+                    send(jsonString)
+                } else {
+                    log.info("Session  ${hashCode()} is removed due to inactivity")
+                    wsSessionsIterator.remove()
+                }
             }
         }
     }
@@ -128,11 +133,10 @@ fun Application.module(testing: Boolean = false) {
                     }
                 }
                 log.debug("Finish consuming")
+            } catch (e: WakeupException) {
+                log.info("Consumer waked up")
             } catch (e: Throwable) {
-                when (e) {
-                    is WakeupException -> log.info("Consumer waked up")
-                    else -> log.error("Polling failed", e)
-                }
+                    log.error("Polling failed", e)
             }
         }
         log.info("Commit offset synchronously")
