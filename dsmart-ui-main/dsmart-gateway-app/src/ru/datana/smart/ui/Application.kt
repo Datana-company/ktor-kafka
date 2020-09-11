@@ -153,7 +153,7 @@ private fun Application.parseKafkaInput(value: String?): WsDsmartResponseTempera
         val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
         WsDsmartResponseTemperature(
             data = WsDsmartTemperatures(
-                temperature = obj.temperature?.let { it + 2 * 273.15 },
+                temperature = obj.temperature?.let { it + 273.15 },
                 timeMillis = obj.timeMillis,
                 durationMillis = obj.durationMillis,
                 deviationPositive = obj.deviationPositive,
