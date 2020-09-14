@@ -1,4 +1,3 @@
-
 export class TemperatureModel {
   constructor(
     public temperature: number,

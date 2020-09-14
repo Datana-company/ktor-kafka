@@ -11,6 +11,7 @@ import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -37,11 +38,18 @@ fun Application.module(testing: Boolean = false) {
 
     suspend fun sendToAll(data: WsDsmartResponseTemperature) {
         log.trace("sending temperature: $data")
-        wsSessions.forEach {
-            log.trace("sending to client ${it.hashCode()}")
-            val jsonString = Json.encodeToString(data)
-            log.trace("Sending $jsonString")
-            it.send(jsonString)
+        val wsSessionsIterator = wsSessions.iterator()
+        while(wsSessionsIterator.hasNext()) {
+            wsSessionsIterator.next().apply {
+                if (isActive) {
+                    val jsonString = Json.encodeToString(data)
+                    log.trace("Sending to client ${hashCode()}: $jsonString")
+                    send(jsonString)
+                } else {
+                    log.info("Session  ${hashCode()} is removed due to inactivity")
+                    wsSessionsIterator.remove()
+                }
+            }
         }
     }
 
@@ -96,11 +104,12 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-    val closed = AtomicBoolean(false)
+//    val closed = AtomicBoolean(false)
     val consumer = buildConsumer(this@module.environment)
     launch {
-        try {
-            while (!closed.get()) {
+//        while (!closed.get()) {
+        while (true) {
+            try {
                 val records = consumer.poll(Duration.of(1000, ChronoUnit.MILLIS))
 
                 records
@@ -123,23 +132,19 @@ fun Application.module(testing: Boolean = false) {
                         }
                     }
                 }
+                log.debug("Finish consuming")
+            } catch (e: WakeupException) {
+                log.info("Consumer waked up")
+            } catch (e: Throwable) {
+                    log.error("Polling failed", e)
             }
-            log.info("Finish consuming")
-        } catch (e: Throwable) {
-            when (e) {
-                is WakeupException -> log.info("Consumer waked up")
-                else -> log.error("Polling failed", e)
-            }
-        } finally {
-            log.info("Commit offset synchronously")
-            consumer.commitSync()
-            consumer.close()
-            log.info("Consumer successfully closed")
         }
+        log.info("Commit offset synchronously")
+        consumer.commitSync()
+        consumer.close()
+        log.info("Consumer successfully closed")
     }
-
 }
-
 
 private fun Application.parseKafkaInput(value: String?): WsDsmartResponseTemperature? {
     // {"info":{"id":"4a67082b-8bf4-48b7-88c0-0d542ffe2214","channelList":["clean"]},"content":[{"@class":"ru.datana.common.model.SingleSensorModel","request_id":"d076f100-3e96-4857-aba8-1c7f4c866dd5","request_datetime":1598962179670,"response_datetime":1598962179754,"sensor_id":"00000000-0000-4000-9000-000000000006","data":-247.14999999999998,"status":0,"errors":[]}]}
