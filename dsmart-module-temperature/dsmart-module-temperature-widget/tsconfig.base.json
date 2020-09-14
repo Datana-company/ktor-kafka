@@ -23,6 +23,10 @@
       "dsmart-module-temperature-boiling-widget": [
         "dist/dsmart-module-temperature-boiling-widget/dsmart-module-temperature-boiling-widget",
         "dist/dsmart-module-temperature-boiling-widget"
+      ],
+      "dsmart-module-teapot-status-wiget": [
+        "dist/dsmart-module-teapot-status-wiget/dsmart-module-teapot-status-wiget",
+        "dist/dsmart-module-teapot-status-wiget"
       ]
     }
   }
