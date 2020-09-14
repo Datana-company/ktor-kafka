@@ -27,7 +27,6 @@ import java.time.Duration
 import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicBoolean
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -41,12 +40,12 @@ fun Application.module(testing: Boolean = false) {
         val wsSessionsIterator = wsSessions.iterator()
         while(wsSessionsIterator.hasNext()) {
             wsSessionsIterator.next().apply {
-                if (isActive) {
+                try {
                     val jsonString = Json.encodeToString(data)
                     log.trace("Sending to client ${hashCode()}: $jsonString")
                     send(jsonString)
-                } else {
-                    log.info("Session  ${hashCode()} is removed due to inactivity")
+                } catch (e: Throwable) {
+                    log.info("Session ${hashCode()} is removed due to exception", e)
                     wsSessionsIterator.remove()
                 }
             }
@@ -105,7 +104,8 @@ fun Application.module(testing: Boolean = false) {
     }
 
 //    val closed = AtomicBoolean(false)
-    val consumer = buildConsumer(this@module.environment)
+//    val consumer = buildConsumer(this@module.environment)
+    val consumer by lazy { buildConsumer(this@module.environment) }
     launch {
 //        while (!closed.get()) {
         while (true) {

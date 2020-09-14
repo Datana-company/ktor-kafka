@@ -3,7 +3,10 @@
         {{tempModel.displayTemp(scale)}}°{{scale}}
     </div>
     <div>
-        Время: {{tempModel.displayTime()}}
+        Время: {{tempModel.timeStart | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
+    </div>
+    <div>
+        Время ISO: {{tempModel.timeStart.toISOString()}}
     </div>
     <ul>
         <li><a href="" (click)="setKelvin($event)">Кельвины</a></li>
