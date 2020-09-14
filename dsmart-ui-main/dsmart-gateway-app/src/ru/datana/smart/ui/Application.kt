@@ -27,7 +27,6 @@ import java.time.Duration
 import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicBoolean
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -105,7 +104,8 @@ fun Application.module(testing: Boolean = false) {
     }
 
 //    val closed = AtomicBoolean(false)
-    val consumer = buildConsumer(this@module.environment)
+//    val consumer = buildConsumer(this@module.environment)
+    val consumer by lazy { buildConsumer(this@module.environment) }
     launch {
 //        while (!closed.get()) {
         while (true) {
