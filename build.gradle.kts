@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "ru.datana.smart.ui"
-version = "0.0.7"
+version = "0.0.14"
 
 subprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
