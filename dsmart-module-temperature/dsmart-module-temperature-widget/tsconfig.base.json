@@ -27,6 +27,14 @@
       "dsmart-module-teapot-status-wiget": [
         "dist/dsmart-module-teapot-status-wiget/dsmart-module-teapot-status-wiget",
         "dist/dsmart-module-teapot-status-wiget"
+      ],
+      "dsmart-module-instruction-widget": [
+        "dist/dsmart-module-instruction-widget/dsmart-module-instruction-widget",
+        "dist/dsmart-module-instruction-widget"
+      ],
+      "dsmart-module-history-widget": [
+        "dist/dsmart-module-history-widget/dsmart-module-history-widget",
+        "dist/dsmart-module-history-widget"
       ]
     }
   }
