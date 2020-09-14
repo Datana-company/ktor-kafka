@@ -1,0 +1,16 @@
+.text {
+    font-size: 50px;
+    width: 500px;
+    text-align: center;
+    color: red;
+}
+
+.time {
+    font-size: 85px;
+    height: 250px;
+    width: 500px;
+    margin: 0;
+    display: table-cell;
+    vertical-align: middle;
+    border: solid red;
+}

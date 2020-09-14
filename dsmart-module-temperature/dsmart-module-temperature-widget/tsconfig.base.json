@@ -19,6 +19,10 @@
       "@datana-smart/dsmart-module-temperature-widget": [
         "dist/datana-smart/dsmart-module-temperature-widget/datana-smart-dsmart-module-temperature-widget",
         "dist/datana-smart/dsmart-module-temperature-widget"
+      ],
+      "dsmart-module-temperature-boiling-widget": [
+        "dist/dsmart-module-temperature-boiling-widget/dsmart-module-temperature-boiling-widget",
+        "dist/dsmart-module-temperature-boiling-widget"
       ]
     }
   }
