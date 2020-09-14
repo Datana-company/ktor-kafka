@@ -1,7 +1,16 @@
-image: adoptopenjdk/openjdk11:alpine-slim
+#image: adoptopenjdk/openjdk11:alpine-slim
+image: docker:git
+
+services:
+    - docker:dind
+
+variables:
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
 
 stages:
-#    - build
+    #    - build
     - test
     - deploy
 
@@ -23,13 +32,15 @@ cache:
 #        - master
 
 test:
-     stage: test
-     script:
-         - ./gradlew check
-     only:
-         - feature/*
+    image: adoptopenjdk/openjdk11:alpine-slim
+    stage: test
+    script:
+        - ./gradlew check
+    only:
+        - /^feature\/.*$/
 
 deploy:
+    image: adoptopenjdk/openjdk11:alpine-slim
     stage: deploy
     script:
         - ./gradlew deploy
