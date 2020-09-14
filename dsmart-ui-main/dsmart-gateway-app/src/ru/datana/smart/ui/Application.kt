@@ -41,12 +41,12 @@ fun Application.module(testing: Boolean = false) {
         val wsSessionsIterator = wsSessions.iterator()
         while(wsSessionsIterator.hasNext()) {
             wsSessionsIterator.next().apply {
-                if (isActive) {
+                try {
                     val jsonString = Json.encodeToString(data)
                     log.trace("Sending to client ${hashCode()}: $jsonString")
                     send(jsonString)
-                } else {
-                    log.info("Session  ${hashCode()} is removed due to inactivity")
+                } catch (e: Throwable) {
+                    log.info("Session ${hashCode()} is removed due to exception", e)
                     wsSessionsIterator.remove()
                 }
             }
@@ -153,7 +153,7 @@ private fun Application.parseKafkaInput(value: String?): WsDsmartResponseTempera
         val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
         WsDsmartResponseTemperature(
             data = WsDsmartTemperatures(
-                temperature = obj.temperature?.let { it + 2 * 273.15 },
+                temperature = obj.temperature?.let { it + 273.15 },
                 timeMillis = obj.timeMillis,
                 durationMillis = obj.durationMillis,
                 deviationPositive = obj.deviationPositive,
