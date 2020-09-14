@@ -19,7 +19,7 @@ import {WebsocketModule} from './websocket';
     TemperatureViewModule.config({
       url: environment.ws
     }),
-    // TemperatureViewModule,
+    // TemperatureBoilingViewModule,
     FormsModule
   ],
   providers: [],
