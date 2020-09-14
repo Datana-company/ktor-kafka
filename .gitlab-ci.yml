@@ -37,7 +37,7 @@ test:
     script:
         - ./gradlew check
     only:
-        - feature/*
+        - /^feature\/.*$/
 
 deploy:
     image: adoptopenjdk/openjdk11:alpine-slim
