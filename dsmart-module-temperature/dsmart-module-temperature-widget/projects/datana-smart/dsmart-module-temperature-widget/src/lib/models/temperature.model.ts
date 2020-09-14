@@ -1,12 +1,3 @@
-// import { createDateFormatter } from 'intl-dateformat';
-//
-// const formatDate = createDateFormatter({
-//   // numeric hour
-//   h: ({ hour }) => hour[0] === '0' ? hour[1] : hour,
-//   // milliseconds
-//   SSS: (parts, date) => String(date.getTime()).slice(-3)
-// });
-
 export class TemperatureModel {
   constructor(
     public temperature: number,
@@ -29,8 +20,4 @@ export class TemperatureModel {
     return tempScaled?.toFixed(1) || 'NaN';
   }
 
-  displayTime(): string {
-    // return formatDate(this.timeStart, 'DD.MM.YYYY HH:mm:ss.SSS МСК', { timezone: 'Europe/Moscow' });
-    return this.timeStart.toTimeString();
-  }
 }
