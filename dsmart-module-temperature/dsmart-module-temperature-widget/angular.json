@@ -82,6 +82,46 @@
           }
         }
       }
+    },
+    "dsmart-module-teapot-status-widget": {
+      "projectType": "library",
+      "root": "projects/dsmart-module-teapot-status-widget",
+      "sourceRoot": "projects/dsmart-module-teapot-status-wiget/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/dsmart-module-teapot-status-wiget/tsconfig.lib.json",
+            "project": "projects/dsmart-module-teapot-status-wiget/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/dsmart-module-teapot-status-widget/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dsmart-module-teapot-status-widget/src/test.ts",
+            "tsConfig": "projects/dsmart-module-teapot-status-widget/tsconfig.spec.json",
+            "karmaConfig": "projects/dsmart-module-teapot-status-widget/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dsmart-module-teapot-status-widget/tsconfig.lib.json",
+              "projects/dsmart-module-teapot-status-widget/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "cli": {
     "analytics": "b5573ae3-cfdf-4be0-9174-14d4437a6ff1"

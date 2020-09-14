@@ -18,6 +18,12 @@
     },
     {
       "path": "./projects/dsmart-module-temperature-boiling-widget/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/dsmart-module-teapot-status-wiget/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/dsmart-module-teapot-status-wiget/tsconfig.spec.json"
     }
 ]
 }
