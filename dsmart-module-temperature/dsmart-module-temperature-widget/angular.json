@@ -43,38 +43,38 @@
         }
       }
     },
-    "dsmart-module-temperature-boiling-widget": {
+    "teapot-status-component": {
       "projectType": "library",
-      "root": "projects/dsmart-module-temperature-boiling-widget",
-      "sourceRoot": "projects/dsmart-module-temperature-boiling-widget/src",
-      "prefix": "datana",
+      "root": "projects/teapot-status-component",
+      "sourceRoot": "projects/teapot-status-component/src",
+      "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/dsmart-module-temperature-boiling-widget/tsconfig.lib.json",
-            "project": "projects/dsmart-module-temperature-boiling-widget/ng-package.json"
+            "tsConfig": "projects/teapot-status-component/tsconfig.lib.json",
+            "project": "projects/teapot-status-component/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/dsmart-module-temperature-boiling-widget/tsconfig.lib.prod.json"
+              "tsConfig": "projects/teapot-status-component/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/dsmart-module-temperature-boiling-widget/src/test.ts",
-            "tsConfig": "projects/dsmart-module-temperature-boiling-widget/tsconfig.spec.json",
-            "karmaConfig": "projects/dsmart-module-temperature-boiling-widget/karma.conf.js"
+            "main": "projects/teapot-status-component/src/test.ts",
+            "tsConfig": "projects/teapot-status-component/tsconfig.spec.json",
+            "karmaConfig": "projects/teapot-status-component/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/dsmart-module-temperature-boiling-widget/tsconfig.lib.json",
-              "projects/dsmart-module-temperature-boiling-widget/tsconfig.spec.json"
+              "projects/teapot-status-component/tsconfig.lib.json",
+              "projects/teapot-status-component/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -83,38 +83,38 @@
         }
       }
     },
-    "dsmart-module-teapot-status-widget": {
+    "teapot-boiling-component": {
       "projectType": "library",
-      "root": "projects/dsmart-module-teapot-status-widget",
-      "sourceRoot": "projects/dsmart-module-teapot-status-wiget/src",
+      "root": "projects/teapot-boiling-component",
+      "sourceRoot": "projects/teapot-boiling-component/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/dsmart-module-teapot-status-wiget/tsconfig.lib.json",
-            "project": "projects/dsmart-module-teapot-status-wiget/ng-package.json"
+            "tsConfig": "projects/teapot-boiling-component/tsconfig.lib.json",
+            "project": "projects/teapot-boiling-component/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/dsmart-module-teapot-status-widget/tsconfig.lib.prod.json"
+              "tsConfig": "projects/teapot-boiling-component/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/dsmart-module-teapot-status-widget/src/test.ts",
-            "tsConfig": "projects/dsmart-module-teapot-status-widget/tsconfig.spec.json",
-            "karmaConfig": "projects/dsmart-module-teapot-status-widget/karma.conf.js"
+            "main": "projects/teapot-boiling-component/src/test.ts",
+            "tsConfig": "projects/teapot-boiling-component/tsconfig.spec.json",
+            "karmaConfig": "projects/teapot-boiling-component/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/dsmart-module-teapot-status-widget/tsconfig.lib.json",
-              "projects/dsmart-module-teapot-status-widget/tsconfig.spec.json"
+              "projects/teapot-boiling-component/tsconfig.lib.json",
+              "projects/teapot-boiling-component/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -123,38 +123,38 @@
         }
       }
     },
-    "dsmart-module-instruction-widget": {
+    "recommendation-component": {
       "projectType": "library",
-      "root": "projects/dsmart-module-instruction-widget",
-      "sourceRoot": "projects/dsmart-module-instruction-widget/src",
+      "root": "projects/recommendation-component",
+      "sourceRoot": "projects/recommendation-component/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/dsmart-module-instruction-widget/tsconfig.lib.json",
-            "project": "projects/dsmart-module-instruction-widget/ng-package.json"
+            "tsConfig": "projects/recommendation-component/tsconfig.lib.json",
+            "project": "projects/recommendation-component/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/dsmart-module-instruction-widget/tsconfig.lib.prod.json"
+              "tsConfig": "projects/recommendation-component/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/dsmart-module-instruction-widget/src/test.ts",
-            "tsConfig": "projects/dsmart-module-instruction-widget/tsconfig.spec.json",
-            "karmaConfig": "projects/dsmart-module-instruction-widget/karma.conf.js"
+            "main": "projects/recommendation-component/src/test.ts",
+            "tsConfig": "projects/recommendation-component/tsconfig.spec.json",
+            "karmaConfig": "projects/recommendation-component/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/dsmart-module-instruction-widget/tsconfig.lib.json",
-              "projects/dsmart-module-instruction-widget/tsconfig.spec.json"
+              "projects/recommendation-component/tsconfig.lib.json",
+              "projects/recommendation-component/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -163,38 +163,38 @@
         }
       }
     },
-    "dsmart-module-history-widget": {
+    "history-component": {
       "projectType": "library",
-      "root": "projects/dsmart-module-history-widget",
-      "sourceRoot": "projects/dsmart-module-history-widget/src",
+      "root": "projects/history-component",
+      "sourceRoot": "projects/history-component/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/dsmart-module-history-widget/tsconfig.lib.json",
-            "project": "projects/dsmart-module-history-widget/ng-package.json"
+            "tsConfig": "projects/history-component/tsconfig.lib.json",
+            "project": "projects/history-component/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/dsmart-module-history-widget/tsconfig.lib.prod.json"
+              "tsConfig": "projects/history-component/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/dsmart-module-history-widget/src/test.ts",
-            "tsConfig": "projects/dsmart-module-history-widget/tsconfig.spec.json",
-            "karmaConfig": "projects/dsmart-module-history-widget/karma.conf.js"
+            "main": "projects/history-component/src/test.ts",
+            "tsConfig": "projects/history-component/tsconfig.spec.json",
+            "karmaConfig": "projects/history-component/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/dsmart-module-history-widget/tsconfig.lib.json",
-              "projects/dsmart-module-history-widget/tsconfig.spec.json"
+              "projects/history-component/tsconfig.lib.json",
+              "projects/history-component/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"

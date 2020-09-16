@@ -36,6 +36,30 @@
     },
     {
       "path": "./projects/dsmart-module-history-widget/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/teapot-status-component/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/teapot-status-component/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/teapot-boiling-component/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/teapot-boiling-component/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/recommendation-component/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/recommendation-component/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/history-component/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/history-component/tsconfig.spec.json"
     }
 ]
 }

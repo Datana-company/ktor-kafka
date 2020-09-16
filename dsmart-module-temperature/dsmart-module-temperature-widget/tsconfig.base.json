@@ -35,6 +35,22 @@
       "dsmart-module-history-widget": [
         "dist/dsmart-module-history-widget/dsmart-module-history-widget",
         "dist/dsmart-module-history-widget"
+      ],
+      "teapot-status-component": [
+        "dist/teapot-status-component/teapot-status-component",
+        "dist/teapot-status-component"
+      ],
+      "teapot-boiling-component": [
+        "dist/teapot-boiling-component/teapot-boiling-component",
+        "dist/teapot-boiling-component"
+      ],
+      "recommendation-component": [
+        "dist/recommendation-component/recommendation-component",
+        "dist/recommendation-component"
+      ],
+      "history-component": [
+        "dist/history-component/history-component",
+        "dist/history-component"
       ]
     }
   }
