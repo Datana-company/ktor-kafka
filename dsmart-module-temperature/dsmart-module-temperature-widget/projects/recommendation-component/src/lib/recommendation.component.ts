@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'instruction-component',
+  selector: 'recommendation-component',
   templateUrl: './recommendation.component.html',
   styleUrls: ['./recommendation.component.css']
 })

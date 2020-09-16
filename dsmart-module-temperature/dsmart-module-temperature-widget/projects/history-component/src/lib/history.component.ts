@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'history-component',
@@ -6,6 +6,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./history.component.css']
 })
 export class HistoryComponent implements OnInit {
+
+  @Input() history: Array<object> = [
+    {
+      time: '12:44:30',
+      text: 'Кто-то включил чайник'
+    },
+    {
+      time: '10:53:45',
+      text: 'Кто-то включил чайник'
+    }
+  ];
 
   constructor() { }
 
