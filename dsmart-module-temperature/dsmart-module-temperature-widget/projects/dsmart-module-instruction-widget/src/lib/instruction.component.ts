@@ -1,16 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'lib-dsmart-module-instruction-widget',
-  template: `
-    <p>
-      dsmart-module-instruction-widget works!
-    </p>
-  `,
-  styles: [
-  ]
+  selector: 'instruction',
+  templateUrl: './instruction.component.html',
+  styleUrls: ['./instruction.component.css']
 })
 export class InstructionComponent implements OnInit {
+
+  @Input() time: string = '12:45:30'
+
+  @Input() timeout: string = '2'
 
   constructor() { }
 
