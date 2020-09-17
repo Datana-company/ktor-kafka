@@ -19,7 +19,7 @@ stages:
 
 before_script:
     - echo `pwd` # debug
-    - docker info
+    # - docker info
     - echo "$CI_BUILD_NAME, $CI_BUILD_REF_NAME $CI_BUILD_STAGE" # debug
     - export GRADLE_USER_HOME=`pwd`/.gradle
 
@@ -45,11 +45,14 @@ test:
 
 deploy:
     stage: deploy
+    image: adoptopenjdk/openjdk11:alpine-slim
     script:
-        - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-        - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock $JAVA_IMAGE ./gradlew deploy
+        # - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+        # - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock $JAVA_IMAGE ./gradlew deploy
+        - ./gradlew deploy
     only:
         - dev
 
 after_script:
+    - docker logout $CI_REGISTRY
     - echo "End CI"
