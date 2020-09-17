@@ -1,5 +1,6 @@
 #image: adoptopenjdk/openjdk11:alpine-slim
 image: docker:git
+#image: registry.datana.ru/alpine-java-docker
 
 services:
     - docker:dind
@@ -8,6 +9,7 @@ variables:
     DOCKER_TLS_CERTDIR: ""
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
+    JAVA_IMAGE: adoptopenjdk/openjdk11:alpine-slim
 
 stages:
     #    - build
@@ -40,13 +42,12 @@ test:
         - /^feature\/.*$/
 
 deploy:
-    image: adoptopenjdk/openjdk11:alpine-slim
     stage: deploy
     script:
-        - ./gradlew deploy
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock $JAVA_IMAGE ./gradlew deploy
     only:
         - dev
-        - master
 
 after_script:
     - echo "End CI"
