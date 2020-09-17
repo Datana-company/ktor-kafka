@@ -8,7 +8,7 @@ services:
 variables:
     DOCKER_TLS_CERTDIR: ""
     DOCKER_DRIVER: overlay2
-    DOCKER_HOST: tcp://docker:2375
+    # DOCKER_HOST: tcp://docker:2375
     JAVA_IMAGE: adoptopenjdk/openjdk11:alpine-slim
 
 stages:
