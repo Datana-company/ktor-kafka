@@ -3,38 +3,38 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "@datana-smart/dsmart-module-temperature-widget": {
+    "@datana-smart/temperature-widget": {
       "projectType": "library",
-      "root": "projects/datana-smart/dsmart-module-temperature-widget",
-      "sourceRoot": "projects/datana-smart/dsmart-module-temperature-widget/src",
+      "root": "projects/datana-smart/temperature-widget",
+      "sourceRoot": "projects/datana-smart/temperature-widget/src",
       "prefix": "datana",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/datana-smart/dsmart-module-temperature-widget/tsconfig.lib.json",
-            "project": "projects/datana-smart/dsmart-module-temperature-widget/ng-package.json"
+            "tsConfig": "projects/datana-smart/temperature-widget/tsconfig.lib.json",
+            "project": "projects/datana-smart/temperature-widget/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/datana-smart/dsmart-module-temperature-widget/tsconfig.lib.prod.json"
+              "tsConfig": "projects/datana-smart/temperature-widget/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/datana-smart/dsmart-module-temperature-widget/src/test.ts",
-            "tsConfig": "projects/datana-smart/dsmart-module-temperature-widget/tsconfig.spec.json",
-            "karmaConfig": "projects/datana-smart/dsmart-module-temperature-widget/karma.conf.js"
+            "main": "projects/datana-smart/temperature-widget/src/test.ts",
+            "tsConfig": "projects/datana-smart/temperature-widget/tsconfig.spec.json",
+            "karmaConfig": "projects/datana-smart/temperature-widget/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/datana-smart/dsmart-module-temperature-widget/tsconfig.lib.json",
-              "projects/datana-smart/dsmart-module-temperature-widget/tsconfig.spec.json"
+              "projects/datana-smart/temperature-widget/tsconfig.lib.json",
+              "projects/datana-smart/temperature-widget/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -43,38 +43,38 @@
         }
       }
     },
-    "teapot-status-component": {
+    "@datana-smart/teapot-status-component": {
       "projectType": "library",
-      "root": "projects/teapot-status-component",
-      "sourceRoot": "projects/teapot-status-component/src",
+      "root": "projects/datana-smart/teapot-status-component",
+      "sourceRoot": "projects/datana-smart/teapot-status-component/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/teapot-status-component/tsconfig.lib.json",
-            "project": "projects/teapot-status-component/ng-package.json"
+            "tsConfig": "projects/datana-smart/teapot-status-component/tsconfig.lib.json",
+            "project": "projects/datana-smart/teapot-status-component/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/teapot-status-component/tsconfig.lib.prod.json"
+              "tsConfig": "projects/datana-smart/teapot-status-component/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/teapot-status-component/src/test.ts",
-            "tsConfig": "projects/teapot-status-component/tsconfig.spec.json",
-            "karmaConfig": "projects/teapot-status-component/karma.conf.js"
+            "main": "projects/datana-smart/teapot-status-component/src/test.ts",
+            "tsConfig": "projects/datana-smart/teapot-status-component/tsconfig.spec.json",
+            "karmaConfig": "projects/datana-smart/teapot-status-component/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/teapot-status-component/tsconfig.lib.json",
-              "projects/teapot-status-component/tsconfig.spec.json"
+              "projects/datana-smart/teapot-status-component/tsconfig.lib.json",
+              "projects/datana-smart/teapot-status-component/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -83,38 +83,38 @@
         }
       }
     },
-    "teapot-boiling-component": {
+    "@datana-smart/teapot-boiling-component": {
       "projectType": "library",
-      "root": "projects/teapot-boiling-component",
-      "sourceRoot": "projects/teapot-boiling-component/src",
+      "root": "projects/datana-smart/teapot-boiling-component",
+      "sourceRoot": "projects/datana-smart/teapot-boiling-component/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/teapot-boiling-component/tsconfig.lib.json",
-            "project": "projects/teapot-boiling-component/ng-package.json"
+            "tsConfig": "projects/datana-smart/teapot-boiling-component/tsconfig.lib.json",
+            "project": "projects/datana-smart/teapot-boiling-component/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/teapot-boiling-component/tsconfig.lib.prod.json"
+              "tsConfig": "projects/datana-smart/teapot-boiling-component/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/teapot-boiling-component/src/test.ts",
-            "tsConfig": "projects/teapot-boiling-component/tsconfig.spec.json",
-            "karmaConfig": "projects/teapot-boiling-component/karma.conf.js"
+            "main": "projects/datana-smart/teapot-boiling-component/src/test.ts",
+            "tsConfig": "projects/datana-smart/teapot-boiling-component/tsconfig.spec.json",
+            "karmaConfig": "projects/datana-smart/teapot-boiling-component/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/teapot-boiling-component/tsconfig.lib.json",
-              "projects/teapot-boiling-component/tsconfig.spec.json"
+              "projects/datana-smart/teapot-boiling-component/tsconfig.lib.json",
+              "projects/datana-smart/teapot-boiling-component/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -123,38 +123,38 @@
         }
       }
     },
-    "recommendation-component": {
+    "@datana-smart/recommendation-component": {
       "projectType": "library",
-      "root": "projects/recommendation-component",
-      "sourceRoot": "projects/recommendation-component/src",
+      "root": "projects/datana-smart/recommendation-component",
+      "sourceRoot": "projects/datana-smart/recommendation-component/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/recommendation-component/tsconfig.lib.json",
-            "project": "projects/recommendation-component/ng-package.json"
+            "tsConfig": "projects/datana-smart/recommendation-component/tsconfig.lib.json",
+            "project": "projects/datana-smart/recommendation-component/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/recommendation-component/tsconfig.lib.prod.json"
+              "tsConfig": "projects/datana-smart/recommendation-component/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/recommendation-component/src/test.ts",
-            "tsConfig": "projects/recommendation-component/tsconfig.spec.json",
-            "karmaConfig": "projects/recommendation-component/karma.conf.js"
+            "main": "projects/datana-smart/recommendation-component/src/test.ts",
+            "tsConfig": "projects/datana-smart/recommendation-component/tsconfig.spec.json",
+            "karmaConfig": "projects/datana-smart/recommendation-component/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/recommendation-component/tsconfig.lib.json",
-              "projects/recommendation-component/tsconfig.spec.json"
+              "projects/datana-smart/recommendation-component/tsconfig.lib.json",
+              "projects/datana-smart/recommendation-component/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -163,38 +163,38 @@
         }
       }
     },
-    "history-component": {
+    "@datana-smart/history-component": {
       "projectType": "library",
-      "root": "projects/history-component",
-      "sourceRoot": "projects/history-component/src",
+      "root": "projects/datana-smart/history-component",
+      "sourceRoot": "projects/datana-smart/history-component/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/history-component/tsconfig.lib.json",
-            "project": "projects/history-component/ng-package.json"
+            "tsConfig": "projects/datana-smart/history-component/tsconfig.lib.json",
+            "project": "projects/datana-smart/history-component/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/history-component/tsconfig.lib.prod.json"
+              "tsConfig": "projects/datana-smart/history-component/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/history-component/src/test.ts",
-            "tsConfig": "projects/history-component/tsconfig.spec.json",
-            "karmaConfig": "projects/history-component/karma.conf.js"
+            "main": "projects/datana-smart/history-component/src/test.ts",
+            "tsConfig": "projects/datana-smart/history-component/tsconfig.spec.json",
+            "karmaConfig": "projects/datana-smart/history-component/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/history-component/tsconfig.lib.json",
-              "projects/history-component/tsconfig.spec.json"
+              "projects/datana-smart/history-component/tsconfig.lib.json",
+              "projects/datana-smart/history-component/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -206,5 +206,5 @@
   "cli": {
     "analytics": "b5573ae3-cfdf-4be0-9174-14d4437a6ff1"
   },
-  "defaultProject": "@datana-smart/dsmart-module-temperature-widget"
+  "defaultProject": "@datana-smart/temperature-widget"
 }

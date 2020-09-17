@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
-import {TemperatureViewModule} from '@datana-smart/dsmart-module-temperature-widget';
+import {TemperatureViewModule} from '@datana-smart/temperature-widget';
 import {FormsModule} from '@angular/forms';
 import {WebsocketModule} from './websocket';
 
