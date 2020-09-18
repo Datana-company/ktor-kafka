@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'history-component',
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.css']
