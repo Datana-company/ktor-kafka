@@ -20,37 +20,37 @@
         "dist/datana-smart/dsmart-module-temperature-widget/datana-smart-dsmart-module-temperature-widget",
         "dist/datana-smart/dsmart-module-temperature-widget"
       ],
-      "dsmart-module-temperature-boiling-widget": [
-        "dist/dsmart-module-temperature-boiling-widget/dsmart-module-temperature-boiling-widget",
-        "dist/dsmart-module-temperature-boiling-widget"
+      "@datana-smart/dsmart-module-temperature-boiling-widget": [
+        "dist/datana-smart/dsmart-module-temperature-boiling-widget/dsmart-module-temperature-boiling-widget",
+        "dist/datana-smart/dsmart-module-temperature-boiling-widget"
       ],
-      "dsmart-module-teapot-status-wiget": [
-        "dist/dsmart-module-teapot-status-wiget/dsmart-module-teapot-status-wiget",
-        "dist/dsmart-module-teapot-status-wiget"
+      "@datana-smart/dsmart-module-teapot-status-wiget": [
+        "dist/datana-smart/dsmart-module-teapot-status-wiget/dsmart-module-teapot-status-wiget",
+        "dist/datana-smart/dsmart-module-teapot-status-wiget"
       ],
-      "dsmart-module-instruction-widget": [
-        "dist/dsmart-module-instruction-widget/dsmart-module-instruction-widget",
-        "dist/dsmart-module-instruction-widget"
+      "@datana-smart/dsmart-module-instruction-widget": [
+        "dist/datana-smart/dsmart-module-instruction-widget/dsmart-module-instruction-widget",
+        "dist/datana-smart/dsmart-module-instruction-widget"
       ],
-      "dsmart-module-history-widget": [
-        "dist/dsmart-module-history-widget/dsmart-module-history-widget",
-        "dist/dsmart-module-history-widget"
+      "@datana-smart/dsmart-module-history-widget": [
+        "dist/datana-smart/dsmart-module-history-widget/dsmart-module-history-widget",
+        "dist/datana-smart/dsmart-module-history-widget"
       ],
-      "teapot-status-component": [
-        "dist/teapot-status-component/teapot-status-component",
-        "dist/teapot-status-component"
+      "@datana-smart/teapot-status-component": [
+        "dist/datana-smart/teapot-status-component/teapot-status-component",
+        "dist/datana-smart/teapot-status-component"
       ],
-      "teapot-boiling-component": [
-        "dist/teapot-boiling-component/teapot-boiling-component",
-        "dist/teapot-boiling-component"
+      "@datana-smart/teapot-boiling-component": [
+        "dist/datana-smart/teapot-boiling-component/teapot-boiling-component",
+        "dist/datana-smart/teapot-boiling-component"
       ],
-      "recommendation-component": [
-        "dist/recommendation-component/recommendation-component",
-        "dist/recommendation-component"
+      "@datana-smart/recommendation-component": [
+        "dist/datana-smart/recommendation-component/recommendation-component",
+        "dist/datana-smart/recommendation-component"
       ],
-      "history-component": [
-        "dist/history-component/history-component",
-        "dist/history-component"
+      "@datana-smart/history-component": [
+        "dist/datana-smart/history-component/history-component",
+        "dist/datana-smart/history-component"
       ]
     }
   }
