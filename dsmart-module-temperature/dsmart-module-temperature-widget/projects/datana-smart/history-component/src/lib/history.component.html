@@ -1,7 +1,5 @@
 <div>
     <div *ngFor="let obj of history">
-<!--        <div>{{obj.time}}</div>-->
-<!--        <div>{{obj.text}}</div>-->
-        <recommendation-component [time]="obj.time" [recommendation]="obj.text"></recommendation-component>
+        <recommendation-component [recommendation]="obj"></recommendation-component>
     </div>
 </div>

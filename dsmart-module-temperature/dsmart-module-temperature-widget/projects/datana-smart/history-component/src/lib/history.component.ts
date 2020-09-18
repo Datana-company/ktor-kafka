@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {RecommendationModel} from "@datana-smart/recommendation-component";
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -8,15 +9,15 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class HistoryComponent implements OnInit {
 
-  @Input() history: Array<object> = [
-    {
-      time: '12:44:30',
-      text: 'Кто-то включил чайник'
-    },
-    {
-      time: '10:53:45',
-      text: 'Кто-то включил чайник'
-    }
+  @Input() history: Array<RecommendationModel> = [
+    new RecommendationModel(
+      new Date('12:44:30'),
+      'Кто-то включил чайник'
+    ),
+    new RecommendationModel(
+      new Date('10:53:45'),
+      'Кто-то включил чайник'
+    ),
   ];
 
   constructor() { }

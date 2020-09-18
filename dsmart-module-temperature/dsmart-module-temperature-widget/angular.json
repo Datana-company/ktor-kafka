@@ -202,6 +202,127 @@
           }
         }
       }
+    },
+    "@datana-smart/temperature-app": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "sass"
+        }
+      },
+      "root": "projects/datana-smart/temperature-app",
+      "sourceRoot": "projects/datana-smart/temperature-app/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/datana-smart/temperature-app",
+            "index": "projects/datana-smart/temperature-app/src/index.html",
+            "main": "projects/datana-smart/temperature-app/src/main.ts",
+            "polyfills": "projects/datana-smart/temperature-app/src/polyfills.ts",
+            "tsConfig": "projects/datana-smart/temperature-app/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/datana-smart/temperature-app/src/favicon.ico",
+              "projects/datana-smart/temperature-app/src/assets"
+            ],
+            "styles": [
+              "projects/datana-smart/temperature-app/src/styles.sass"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/datana-smart/temperature-app/src/environments/environment.ts",
+                  "with": "projects/datana-smart/temperature-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "@datana-smart/temperature-app:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "@datana-smart/temperature-app:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "@datana-smart/temperature-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/datana-smart/temperature-app/src/test.ts",
+            "polyfills": "projects/datana-smart/temperature-app/src/polyfills.ts",
+            "tsConfig": "projects/datana-smart/temperature-app/tsconfig.spec.json",
+            "karmaConfig": "projects/datana-smart/temperature-app/karma.conf.js",
+            "assets": [
+              "projects/datana-smart/temperature-app/src/favicon.ico",
+              "projects/datana-smart/temperature-app/src/assets"
+            ],
+            "styles": [
+              "projects/datana-smart/temperature-app/src/styles.sass"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/datana-smart/temperature-app/tsconfig.app.json",
+              "projects/datana-smart/temperature-app/tsconfig.spec.json",
+              "projects/datana-smart/temperature-app/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/datana-smart/temperature-app/e2e/protractor.conf.js",
+            "devServerTarget": "@datana-smart/temperature-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "@datana-smart/temperature-app:serve:production"
+            }
+          }
+        }
+      }
     }},
   "cli": {
     "analytics": "b5573ae3-cfdf-4be0-9174-14d4437a6ff1"

@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {RecommendationModel} from "./recommendation-model";
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -8,9 +9,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class RecommendationComponent implements OnInit {
 
-  @Input() time: string = '12:45:30'
-
-  @Input() recommendation: string = ' Чайник закипит через 2 минуты. Приготовьтесь наливать чай.'
+  @Input() recommendation: RecommendationModel;
 
   constructor() { }
 

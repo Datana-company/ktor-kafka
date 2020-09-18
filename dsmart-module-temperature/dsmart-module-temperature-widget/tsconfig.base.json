@@ -16,25 +16,8 @@
       "dom"
     ],
     "paths": {
-      "@datana-smart/temperature-widget": [
-        "build/dist/datana-smart/temperature-widget/temperature-widget",
-        "build/dist/datana-smart/temperature-widget"
-      ],
-      "@datana-smart/teapot-status-component": [
-        "build/dist/datana-smart/teapot-status-component/teapot-status-component",
-        "build/dist/datana-smart/teapot-status-component"
-      ],
-      "@datana-smart/teapot-boiling-component": [
-        "build/dist/datana-smart/teapot-boiling-component/teapot-boiling-component",
-        "build/dist/datana-smart/teapot-boiling-component"
-      ],
-      "@datana-smart/recommendation-component": [
-        "build/dist/datana-smart/recommendation-component/recommendation-component",
-        "build/dist/datana-smart/recommendation-component"
-      ],
-      "@datana-smart/history-component": [
-        "build/dist/datana-smart/history-component/history-component",
-        "build/dist/datana-smart/history-component"
+      "@datana-smart/*": [
+        "build/dist/datana-smart/*"
       ]
     }
   }

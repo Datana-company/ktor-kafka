@@ -36,6 +36,12 @@
     },
     {
       "path": "./projects/datana-smart/history-component/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/datana-smart/temperature-app/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/datana-smart/temperature-app/tsconfig.spec.json"
     }
 ]
 }
