@@ -8,58 +8,34 @@
   "files": [],
   "references": [
     {
-      "path": "./projects/datana-smart/dsmart-module-temperature-widget/tsconfig.lib.json"
+      "path": "./projects/datana-smart/temperature-widget/tsconfig.lib.json"
     },
     {
-      "path": "./projects/datana-smart/dsmart-module-temperature-widget/tsconfig.spec.json"
+      "path": "./projects/datana-smart/temperature-widget/tsconfig.spec.json"
     },
     {
-      "path": "./projects/dsmart-module-temperature-boiling-widget/tsconfig.lib.json"
+      "path": "./projects/datana-smart/teapot-status-component/tsconfig.lib.json"
     },
     {
-      "path": "./projects/dsmart-module-temperature-boiling-widget/tsconfig.spec.json"
+      "path": "./projects/datana-smart/teapot-status-component/tsconfig.spec.json"
     },
     {
-      "path": "./projects/dsmart-module-teapot-status-wiget/tsconfig.lib.json"
+      "path": "./projects/datana-smart/teapot-boiling-component/tsconfig.lib.json"
     },
     {
-      "path": "./projects/dsmart-module-teapot-status-wiget/tsconfig.spec.json"
+      "path": "./projects/datana-smart/teapot-boiling-component/tsconfig.spec.json"
     },
     {
-      "path": "./projects/dsmart-module-instruction-widget/tsconfig.lib.json"
+      "path": "./projects/datana-smart/recommendation-component/tsconfig.lib.json"
     },
     {
-      "path": "./projects/dsmart-module-instruction-widget/tsconfig.spec.json"
+      "path": "./projects/datana-smart/recommendation-component/tsconfig.spec.json"
     },
     {
-      "path": "./projects/dsmart-module-history-widget/tsconfig.lib.json"
+      "path": "./projects/datana-smart/history-component/tsconfig.lib.json"
     },
     {
-      "path": "./projects/dsmart-module-history-widget/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/teapot-status-component/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/teapot-status-component/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/teapot-boiling-component/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/teapot-boiling-component/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/recommendation-component/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/recommendation-component/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/history-component/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/history-component/tsconfig.spec.json"
+      "path": "./projects/datana-smart/history-component/tsconfig.spec.json"
     }
 ]
 }

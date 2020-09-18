@@ -1,16 +1,18 @@
 import {ModuleWithProviders, NgModule} from '@angular/core';
-import { TemperatureViewComponent } from './temperature-view.component';
+import {TemperatureViewComponent} from './temperature-view.component';
 import {WebSocketConfig, WebsocketModule, config} from './websocket';
 import {CommonModule} from '@angular/common';
-import {RouterModule} from "@angular/router";
+import {RouterModule} from '@angular/router';
+import {TeapotStatusModule} from '@datana-smart/teapot-status-component';
 
 @NgModule({
   declarations: [TemperatureViewComponent],
-    imports: [
-        WebsocketModule,
-        CommonModule,
-        RouterModule,
-    ],
+  imports: [
+    WebsocketModule,
+    CommonModule,
+    RouterModule,
+    TeapotStatusModule
+  ],
   providers: [
     TemperatureViewModule,
   ],
@@ -22,7 +24,7 @@ export class TemperatureViewModule {
     console.log('Setting up TemperatureViewModule', wsConfig);
     return {
       ngModule: TemperatureViewModule,
-      providers: [{ provide: config, useValue: wsConfig }]
+      providers: [{provide: config, useValue: wsConfig}]
     };
   }
 }

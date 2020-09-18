@@ -16,41 +16,25 @@
       "dom"
     ],
     "paths": {
-      "@datana-smart/dsmart-module-temperature-widget": [
-        "dist/datana-smart/dsmart-module-temperature-widget/datana-smart-dsmart-module-temperature-widget",
-        "dist/datana-smart/dsmart-module-temperature-widget"
-      ],
-      "@datana-smart/dsmart-module-temperature-boiling-widget": [
-        "dist/datana-smart/dsmart-module-temperature-boiling-widget/dsmart-module-temperature-boiling-widget",
-        "dist/datana-smart/dsmart-module-temperature-boiling-widget"
-      ],
-      "@datana-smart/dsmart-module-teapot-status-wiget": [
-        "dist/datana-smart/dsmart-module-teapot-status-wiget/dsmart-module-teapot-status-wiget",
-        "dist/datana-smart/dsmart-module-teapot-status-wiget"
-      ],
-      "@datana-smart/dsmart-module-instruction-widget": [
-        "dist/datana-smart/dsmart-module-instruction-widget/dsmart-module-instruction-widget",
-        "dist/datana-smart/dsmart-module-instruction-widget"
-      ],
-      "@datana-smart/dsmart-module-history-widget": [
-        "dist/datana-smart/dsmart-module-history-widget/dsmart-module-history-widget",
-        "dist/datana-smart/dsmart-module-history-widget"
+      "@datana-smart/temperature-widget": [
+        "build/dist/datana-smart/temperature-widget/temperature-widget",
+        "build/dist/datana-smart/temperature-widget"
       ],
       "@datana-smart/teapot-status-component": [
-        "dist/datana-smart/teapot-status-component/teapot-status-component",
-        "dist/datana-smart/teapot-status-component"
+        "build/dist/datana-smart/teapot-status-component/teapot-status-component",
+        "build/dist/datana-smart/teapot-status-component"
       ],
       "@datana-smart/teapot-boiling-component": [
-        "dist/datana-smart/teapot-boiling-component/teapot-boiling-component",
-        "dist/datana-smart/teapot-boiling-component"
+        "build/dist/datana-smart/teapot-boiling-component/teapot-boiling-component",
+        "build/dist/datana-smart/teapot-boiling-component"
       ],
       "@datana-smart/recommendation-component": [
-        "dist/datana-smart/recommendation-component/recommendation-component",
-        "dist/datana-smart/recommendation-component"
+        "build/dist/datana-smart/recommendation-component/recommendation-component",
+        "build/dist/datana-smart/recommendation-component"
       ],
       "@datana-smart/history-component": [
-        "dist/datana-smart/history-component/history-component",
-        "dist/datana-smart/history-component"
+        "build/dist/datana-smart/history-component/history-component",
+        "build/dist/datana-smart/history-component"
       ]
     }
   }

@@ -5,7 +5,8 @@ import {map} from 'rxjs/operators';
 import {TemperatureModel} from './models/temperature.model';
 
 @Component({
-  selector: 'lib-datana-temperature-view',
+  // tslint:disable-next-line:component-selector
+  selector: 'datana-temperature-view',
   templateUrl: './temperature-view.component.html',
   styleUrls: ['./temperature-view.component.css']
 })

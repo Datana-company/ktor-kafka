@@ -1,5 +1,5 @@
 {
-  "name": "@datana-smart/dsmart-module-temperature-widget",
+  "name": "@datana-smart/temperature-widget",
   "version": "0.0.3",
   "peerDependencies": {
     "@angular/common": "^10.0.11",

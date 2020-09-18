@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { HistoryComponent } from './history.component';
-import {RecommendationModule} from "../../../recommendation-component/src/lib/recommendation.module";
-
+import {RecommendationModule} from "@datana-smart/recommendation-component";
 
 
 @NgModule({

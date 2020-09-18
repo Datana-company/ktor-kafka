@@ -1,6 +1,6 @@
 {
-  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/teapot-status-component",
+  "$schema": "../../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../../build/dist/datana-smart/teapot-status-component",
   "lib": {
     "entryFile": "src/public-api.ts"
   }
