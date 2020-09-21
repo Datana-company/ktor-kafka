@@ -1,16 +1,12 @@
+import com.moowork.gradle.node.npm.NpxTask
+
 plugins {
     id("com.crowdproj.plugins.jar2npm")
-//    id("com.bmuschko.docker-remote-api")
 }
 
 group = rootProject.group
 version = rootProject.version
 
-//val DOCKER_GROUP = "docker"
-//val dockerPort = System.getenv("DOCKER_REGISTRY_PORT")?.let { ":$it" } ?: ""
-//val dockerHost = System.getenv("DOCKER_REGISTRY_HOST")?.plus("$dockerPort/") ?: ""
-//val dockerUser = System.getenv("DOCKER_REGISTRY_USER") as String?
-//val dockerPass = System.getenv("DOCKER_REGISTRY_PASS") as String?
 val distDir = "$buildDir/dist"
 val distConfig = "staticFront"
 
@@ -32,40 +28,59 @@ dependencies {
 }
 
 tasks {
-    val ngBuild by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
-        dependsOn(jar2npm)
-        command = "ng"
+    val ngBuildRecommendations by ngLibBuild("recommendation-component")
+    val ngBuildHistory by ngLibBuild("history-component") {
+        dependsOn(ngBuildRecommendations)
+    }
+    val ngBuildStatus by ngLibBuild("teapot-status-component")
+    val ngBuildTemperature by ngLibBuild("teapot-boiling-component")
+    val ngBuildWidget by ngLibBuild("temperature-widget") {
+        dependsOn(ngBuildHistory)
+        dependsOn(ngBuildStatus)
+        dependsOn(ngBuildTemperature)
+    }
+//    val ngBuildApp by ngLibBuild("temperature-app")
+
+    val ngStart by ngLibBuild("temperature-app") {
         setArgs(
             listOf(
-                "build"
+                "serve",
+                "@datana-smart/temperature-app"
             )
         )
-        outputs.dir(distDir)
     }
 
-//    val npmPublish by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
-//        dependsOn(ngBuild)
-//        command = "npm"
-//        setArgs(
-//            listOf(
-//                "publish"
-////                "--registry"
-////                "http://nexus.datana.ru:8081/repository/npm-private/"
-//            )
-//        )
-//    }
-
     val createArtifact by creating {
-        dependsOn(ngBuild)
-        artifacts{
+        dependsOn(ngBuildWidget)
+        artifacts {
             add(ngLibs.name, fileTree(distDir).dir)
         }
     }
-//    build.get().dependsOn(createArtifact)
+    build.get().dependsOn(createArtifact)
+}
 
-//    create("publish") {
-//        group = "build"
-//        dependsOn(npmPublish)
-//    }
-
+fun TaskContainerScope.ngLibBuild(
+    libName: String,
+    scope: String = "datana-smart",
+    conf: NpxTask.() -> Unit = {}
+): PolymorphicDomainObjectContainerCreatingDelegateProvider<Task, NpxTask> = PolymorphicDomainObjectContainerCreatingDelegateProvider.of(this, NpxTask::class.java) {
+    dependsOn(jar2npm)
+    command = "ng"
+    setArgs(
+        listOf(
+            "build",
+            "@$scope/$libName"
+        )
+    )
+    inputs.files(
+        file("angular.json"),
+        file("tsconfig.base.json"),
+        file("package.json"),
+        file("tsconfig.json"),
+        file("tslint.json"),
+        file("yarn.lock")
+    )
+    inputs.dir("projects/$scope/$libName")
+    outputs.dir("$distDir/$scope/$libName")
+    conf()
 }
