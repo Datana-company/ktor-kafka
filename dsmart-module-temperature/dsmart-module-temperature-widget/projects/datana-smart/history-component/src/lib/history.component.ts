@@ -11,11 +11,11 @@ export class HistoryComponent implements OnInit {
 
   @Input() history: Array<RecommendationModel> = [
     new RecommendationModel(
-      new Date('12:44:30'),
+      new Date('2020-09-21T12:45:30'),
       'Кто-то включил чайник'
     ),
     new RecommendationModel(
-      new Date('10:53:45'),
+      new Date('2020-09-21T12:45:30'),
       'Кто-то включил чайник'
     ),
   ];
