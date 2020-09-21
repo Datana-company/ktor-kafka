@@ -9,7 +9,10 @@ import {RecommendationModel} from "./recommendation-model";
 })
 export class RecommendationComponent implements OnInit {
 
-  @Input() recommendation: RecommendationModel;
+  @Input() recommendation: RecommendationModel = new RecommendationModel(
+    new Date('2020-09-21T12:45:30'),
+    'Внимание чайник закипит через 2 минут. Готовьтесь заваривать чай!'
+  );
 
   constructor() { }
 
