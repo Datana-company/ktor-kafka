@@ -9,16 +9,7 @@ import {RecommendationModel} from '@datana-smart/recommendation-component';
 })
 export class HistoryComponent implements OnInit {
 
-  @Input() history: Array<RecommendationModel> = [
-    new RecommendationModel(
-      new Date('2020-09-21T12:45:30'),
-      'Чайник вот вот взорвётся, выключите его!'
-    ),
-    new RecommendationModel(
-      new Date('2020-09-21T12:45:30'),
-      'Кто-то включил чайник'
-    ),
-  ];
+  @Input() history: Array<RecommendationModel>;
 
   constructor() { }
 

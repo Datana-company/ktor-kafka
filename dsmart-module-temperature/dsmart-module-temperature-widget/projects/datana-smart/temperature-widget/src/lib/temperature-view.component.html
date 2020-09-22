@@ -1,29 +1,28 @@
-<div *ngIf="dataStream$ | async as tempModel; else noData">
-    <div class="temperature">
-        {{tempModel.displayTemp(scale)}}°{{scale}}
-    </div>
-    <div>
-        Время: {{tempModel.timeStart | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
-    </div>
-    <div>
-        Время ISO: {{tempModel.timeStart.toISOString()}}
-    </div>
-    <ul>
-        <li><a href="" (click)="setKelvin($event)">Кельвины</a></li>
-        <li><a href="" (click)="setCelsius($event)">Цельсий</a></li>
-        <li><a href="" (click)="setFarenheit($event)">Фаренгейт</a></li>
-    </ul>
-</div>
+<!--<div *ngIf="dataStream$ | async as tempModel; else noData">-->
+<!--    <div class="temperature">-->
+<!--        {{tempModel.displayTemp(scale)}}°{{scale}}-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        Время: {{tempModel.timeStart | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        Время ISO: {{tempModel.timeStart.toISOString()}}-->
+<!--    </div>-->
+<!--    <ul>-->
+<!--        <li><a href="" (click)="setKelvin($event)">Кельвины</a></li>-->
+<!--        <li><a href="" (click)="setCelsius($event)">Цельсий</a></li>-->
+<!--        <li><a href="" (click)="setFarenheit($event)">Фаренгейт</a></li>-->
+<!--    </ul>-->
+<!--</div>-->
 
-<ng-template #noData>
-    <div class="temperature">
-        No Data
-    </div>
-</ng-template>
+<!--<ng-template #noData>-->
+<!--    <div class="temperature">-->
+<!--        No Data-->
+<!--    </div>-->
+<!--</ng-template>-->
 
-<teapot-status-component></teapot-status-component>
-<temperature-boiling-component></temperature-boiling-component>
-<teapot-status-component></teapot-status-component>
+<teapot-status-component [status]="status"></teapot-status-component>
+<temperature-boiling-component [time]="time"></temperature-boiling-component>
 <temperature-component></temperature-component>
-<history-component></history-component>
-<recommendation-component></recommendation-component>
+<history-component [history]="history"></history-component>
+<recommendation-component [recommendation]="recommendation"></recommendation-component>

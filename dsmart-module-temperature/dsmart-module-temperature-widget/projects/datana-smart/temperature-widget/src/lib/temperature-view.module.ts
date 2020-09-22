@@ -7,6 +7,7 @@ import {TeapotStatusModule} from '@datana-smart/teapot-status-component';
 import {HistoryModule} from "@datana-smart/history-component";
 import {TemperatureBoilingModule} from "@datana-smart/teapot-boiling-component";
 import {TemperatureModule} from "@datana-smart/temperature-component";
+import {RecommendationModule} from "@datana-smart/recommendation-component";
 
 @NgModule({
   declarations: [TemperatureViewComponent],
@@ -15,12 +16,10 @@ import {TemperatureModule} from "@datana-smart/temperature-component";
     CommonModule,
     RouterModule,
     TeapotStatusModule,
+    RecommendationModule,
     HistoryModule,
     TemperatureBoilingModule,
-    TeapotStatusModule,
     TemperatureModule,
-    TemperatureBoilingModule,
-    TeapotStatusModule
   ],
   providers: [
     TemperatureViewModule,

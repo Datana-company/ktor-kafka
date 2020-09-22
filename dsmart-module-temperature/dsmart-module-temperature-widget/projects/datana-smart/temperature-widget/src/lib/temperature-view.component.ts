@@ -3,6 +3,7 @@ import {configProvide, IWebsocketService} from './websocket';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TemperatureModel} from './models/temperature.model';
+import {RecommendationModel} from "@datana-smart/recommendation-component";
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -14,6 +15,24 @@ export class TemperatureViewComponent implements OnInit {
 
   dataStream$: Observable<TemperatureModel>;
   scale = 'C';
+
+  status: boolean = false;
+  time: string = '2:54';
+  history: Array<RecommendationModel> = [
+    new RecommendationModel(
+      new Date('2020-09-21T12:45:30'),
+      'Чайник вот вот взорвётся, выключите его!'
+    ),
+    new RecommendationModel(
+      new Date('2020-09-21T12:45:30'),
+      'Кто-то включил чайник'
+    ),
+  ];
+
+  recommendation: RecommendationModel = new RecommendationModel(
+    new Date('2020-09-21T12:45:30'),
+    'Чайник вот вот взорвётся, выключите его!'
+  )
 
   constructor(
     // @Inject(configProvide) private wsService: IWebsocketService

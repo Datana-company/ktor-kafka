@@ -8,7 +8,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class TeapotStatusComponent implements OnInit {
 
-  @Input() status: boolean = false
+  @Input() status: boolean;
 
   constructor() { }
 

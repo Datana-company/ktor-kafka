@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {HistoryModule} from "@datana-smart/history-component";
+import {TemperatureViewModule} from "@datana-smart/temperature-widget";
 
 @NgModule({
   declarations: [
@@ -12,7 +12,7 @@ import {HistoryModule} from "@datana-smart/history-component";
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HistoryModule
+    TemperatureViewModule
   ],
   providers: [],
   bootstrap: [AppComponent]
