@@ -116,6 +116,7 @@ fun Application.module(testing: Boolean = false) {
                     .firstOrNull()
                     ?.let { record ->
                         log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
+                        record.topic()
                         parseKafkaInput(record.value())
                     }
                     ?.takeIf {
