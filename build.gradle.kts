@@ -5,6 +5,7 @@ plugins {
     kotlin("plugin.serialization") apply false
     id("com.bmuschko.docker-remote-api") apply false
     id("com.bmuschko.docker-java-application") apply false
+    id("org.openapi.generator") apply false
 }
 
 group = "ru.datana.smart.ui"

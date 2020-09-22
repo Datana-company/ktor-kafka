@@ -5,6 +5,7 @@ pluginManagement {
     val jar2npmVersion: String by settings
     val dockerPluginVersion: String by settings
     val serializationPluginVersion: String by settings
+    val openApiVersion: String by settings
 
     plugins {
 
@@ -17,6 +18,7 @@ pluginManagement {
         id("com.bmuschko.docker-remote-api") version dockerPluginVersion apply false
         id("com.bmuschko.docker-java-application") version dockerPluginVersion apply false
 
+        id("org.openapi.generator") version openApiVersion apply false
     }
 }
 
@@ -36,3 +38,4 @@ include(":dsmart-module-temperature:dsmart-module-temperature-ws-models")
 include(":dsmart-module-temperature:dsmart-module-temperature-kf-models")
 include(":dsmart-module-temperature:dsmart-module-temperature-widget")
 include(":dsmart-module-temperature:dsmart-module-temperature-app")
+include(":dsmart-module-temperature:dsmart-module-temperature-ml-models")
