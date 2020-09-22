@@ -21,8 +21,16 @@
 <!--    </div>-->
 <!--</ng-template>-->
 
-<teapot-status-component [status]="status"></teapot-status-component>
-<temperature-boiling-component [time]="time"></temperature-boiling-component>
-<temperature-component [temperature]="temperature"></temperature-component>
-<history-component [history]="history"></history-component>
-<recommendation-component [recommendation]="recommendation"></recommendation-component>
+<div class="widget-container-main widget-container">
+    <div class="widget-col widget-info">
+        <teapot-status-component [status]="status"></teapot-status-component>
+        <div class="widget-container">
+            <temperature-boiling-component class="widget-col" [time]="time"></temperature-boiling-component>
+            <temperature-component class="widget-col" [temperature]="temperature"></temperature-component>
+        </div>
+    </div>
+    <div class="widget-col widget-recommendations">
+        <history-component [history]="history"></history-component>
+        <recommendation-component [recommendation]="recommendation"></recommendation-component>
+    </div>
+</div>

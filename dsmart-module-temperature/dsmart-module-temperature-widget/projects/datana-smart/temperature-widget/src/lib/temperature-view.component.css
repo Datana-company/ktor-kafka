@@ -1,0 +1,14 @@
+.widget-container-main {
+    min-width: 800px;
+}
+
+.widget-container {
+    display: flex;
+    width: 100%;
+}
+
+.widget-col {
+    width: 48%;
+    margin: 1%;
+}
+
