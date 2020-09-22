@@ -18,6 +18,7 @@ export class TemperatureViewComponent implements OnInit {
 
   status: boolean = false;
   time: string = '2:54';
+  temperature: number = 68.1;
   history: Array<RecommendationModel> = [
     new RecommendationModel(
       new Date('2020-09-21T12:45:30'),
@@ -32,7 +33,7 @@ export class TemperatureViewComponent implements OnInit {
   recommendation: RecommendationModel = new RecommendationModel(
     new Date('2020-09-21T12:45:30'),
     'Чайник вот вот взорвётся, выключите его!'
-  )
+  );
 
   constructor(
     // @Inject(configProvide) private wsService: IWebsocketService
