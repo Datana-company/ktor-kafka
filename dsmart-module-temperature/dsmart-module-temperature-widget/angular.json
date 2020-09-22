@@ -323,6 +323,46 @@
           }
         }
       }
+    },
+    "@datana-smart/temperature-component": {
+      "projectType": "library",
+      "root": "projects/datana-smart/temperature-component",
+      "sourceRoot": "projects/datana-smart/temperature-component/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/datana-smart/temperature-component/tsconfig.lib.json",
+            "project": "projects/datana-smart/temperature-component/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/datana-smart/temperature-component/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/datana-smart/temperature-component/src/test.ts",
+            "tsConfig": "projects/datana-smart/temperature-component/tsconfig.spec.json",
+            "karmaConfig": "projects/datana-smart/temperature-component/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/datana-smart/temperature-component/tsconfig.lib.json",
+              "projects/datana-smart/temperature-component/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "cli": {
     "analytics": "b5573ae3-cfdf-4be0-9174-14d4437a6ff1"

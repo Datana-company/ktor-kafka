@@ -16,22 +16,22 @@ export class TemperatureViewComponent implements OnInit {
   scale = 'C';
 
   constructor(
-    @Inject(configProvide) private wsService: IWebsocketService
+    // @Inject(configProvide) private wsService: IWebsocketService
   ) { }
 
   ngOnInit(): void {
-    this.dataStream$ = this.wsService.on('temperature-update').pipe(
-      map((data: any) => {
-        console.log('DATA', data);
-        return new TemperatureModel(
-          data?.temperature as number,
-          new Date(data?.timeMillis as number),
-          data?.durationMillis as number,
-          data?.deviationPositive as number,
-          data?.deviationNegative as number,
-        );
-      })
-    );
+    // this.dataStream$ = this.wsService.on('temperature-update').pipe(
+    //   map((data: any) => {
+    //     console.log('DATA', data);
+    //     return new TemperatureModel(
+    //       data?.temperature as number,
+    //       new Date(data?.timeMillis as number),
+    //       data?.durationMillis as number,
+    //       data?.deviationPositive as number,
+    //       data?.deviationNegative as number,
+    //     );
+    //   })
+    // );
   }
 
   setKelvin(event: Event): void {
