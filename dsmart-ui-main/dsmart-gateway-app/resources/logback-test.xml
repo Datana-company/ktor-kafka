@@ -5,7 +5,12 @@
         </encoder>
     </appender>
 
-    <root level="info">
+    <logger name="ru.datana" level="info" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="error">
         <appender-ref ref="STDOUT"/>
     </root>
+
 </configuration>

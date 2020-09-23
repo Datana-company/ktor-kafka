@@ -98,14 +98,7 @@ fun Application.module(testing: Boolean = false) {
             println("onConnect")
             wsSessions += this
             try {
-//                incoming.consume { }
-                for (frame in incoming) {
-//                    if (frame is Frame.Text) {
-//                        val message = frame.readText()
-//                        log.info("A message is received: $message")
-//                        send(Frame.Text("{\"event\": \"update-texts\", \"data\": \"Server received a message\"}"))
-//                    }
-                }
+                for (frame in incoming) { }
             } catch (e: ClosedReceiveChannelException) {
                 println("onClose ${closeReason.await()}")
             } catch (e: Throwable) {
@@ -133,7 +126,10 @@ fun Application.module(testing: Boolean = false) {
             try {
                 val records = consumer.poll(Duration.of(1000, ChronoUnit.MILLIS))
 
-                records
+                val recs = records.toList()
+                log.trace("Got from Kafka ${recs.size} messages from topic ${recs.firstOrNull()?.topic()} of $topicRaw")
+
+                recs
                     .firstOrNull { it.topic() == topicRaw }
                     ?.let { record ->
                         log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
@@ -144,16 +140,16 @@ fun Application.module(testing: Boolean = false) {
                     }
                     ?.also { temp -> sendToAll(temp) }
 
-                records
-                    .firstOrNull { it.topic() == topicAnalysis }
-                    ?.let { record ->
-                        log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
-                        parseKafkaInputAnalysis(record.value())
-                    }
-                    ?.takeIf {
-                        it.data?.boilTime != null
-                    }
-                    ?.also { temp -> sendToAll(temp) }
+//                records
+//                    .firstOrNull { it.topic() == topicAnalysis }
+//                    ?.let { record ->
+//                        log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
+//                        parseKafkaInputAnalysis(record.value())
+//                    }
+//                    ?.takeIf {
+//                        it.data?.boilTime != null
+//                    }
+//                    ?.also { temp -> sendToAll(temp) }
 
                 if (!records.isEmpty) {
                     consumer.commitAsync { offsets, exception ->
@@ -242,7 +238,8 @@ fun buildConsumer(environment: ApplicationEnvironment): KafkaConsumer<String, St
         put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.property("bootstrap.servers").getList())
         put(ConsumerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString())
 
-        put(ConsumerConfig.GROUP_ID_CONFIG, consumerConfig.property("group.id").getString())
+        put(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString())
+//        put(ConsumerConfig.GROUP_ID_CONFIG, consumerConfig.property("group.id").getString())
 //        this[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("key.deserializer").getString()
 //        this[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("value.deserializer").getString()
         put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)

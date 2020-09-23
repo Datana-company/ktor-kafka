@@ -21,16 +21,30 @@
 <!--    </div>-->
 <!--</ng-template>-->
 
-<div class="widget-container-main widget-container">
-    <div class="widget-col widget-info">
-        <teapot-status-component [status]="status"></teapot-status-component>
-        <div class="widget-container">
-            <temperature-boiling-component class="widget-col" [time]="time"></temperature-boiling-component>
-            <temperature-component class="widget-col" [temperature]="temperature"></temperature-component>
+<div *ngIf="dataStream$ | async as tempModel; else noData">
+    <div class="widget-container-main widget-container">
+        <div class="widget-col widget-info">
+            <teapot-status-component [status]="status"></teapot-status-component>
+            <div class="widget-container">
+                <temperature-boiling-component class="widget-col" [time]="time"></temperature-boiling-component>
+                <temperature-component class="widget-col" [temperature]="tempModel.temperature"></temperature-component>
+            </div>
+        </div>
+        <div class="widget-col widget-recommendations">
+            <history-component [history]="history"></history-component>
+            <recommendation-component [recommendation]="recommendation"></recommendation-component>
         </div>
     </div>
-    <div class="widget-col widget-recommendations">
-        <history-component [history]="history"></history-component>
-        <recommendation-component [recommendation]="recommendation"></recommendation-component>
+    <div>
+        Время: {{tempModel.timeStart | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
+    </div>
+    <div>
+        Время ISO: {{tempModel.timeStart.toISOString()}}
     </div>
 </div>
+
+<ng-template #noData>
+    <div class="temperature">
+        No Data
+    </div>
+</ng-template>

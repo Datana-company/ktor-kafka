@@ -44,7 +44,7 @@
                     <pattern>
                         <pattern>
                             {
-                            "component": "${DATANA_APP_NAME}",
+                            "component": "${SERVICE_NAME}",
                             "container-id": "${HOSTNAME}"
                             }
                         </pattern>
