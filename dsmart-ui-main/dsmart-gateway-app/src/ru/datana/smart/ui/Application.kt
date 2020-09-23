@@ -16,6 +16,7 @@ import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.errors.WakeupException
@@ -39,6 +40,9 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module(testing: Boolean = false) {
     val wsSessions = ConcurrentHashMap.newKeySet<DefaultWebSocketSession>()
     val log = datanaLog()
+    val json = Json {
+        encodeDefaults = true
+    }
 
     suspend fun sendToAll(data: IWsDsmartResponse<*>) {
         log.trace("sending to client: $data")
@@ -46,11 +50,15 @@ fun Application.module(testing: Boolean = false) {
         while (wsSessionsIterator.hasNext()) {
             wsSessionsIterator.next().apply {
                 try {
-                    val jsonString = Json.encodeToString(data)
+                    val jsonString = when(data) {
+                        is WsDsmartResponseTemperature -> json.encodeToString(WsDsmartResponseTemperature.serializer(), data)
+                        is WsDsmartResponseAnalysis -> json.encodeToString(WsDsmartResponseAnalysis.serializer(), data)
+                        else -> throw RuntimeException("Unknown type of data")
+                    }
                     log.trace("Sending to client ${hashCode()}: $jsonString")
                     send(jsonString)
                 } catch (e: Throwable) {
-                    log.info("Session ${hashCode()} is removed due to exception", e)
+                    log.error("Session ${hashCode()} is removed due to exception {}", e)
                     wsSessionsIterator.remove()
                 }
             }

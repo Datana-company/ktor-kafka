@@ -6,6 +6,7 @@ import ru.datana.smart.common.transport.models.ws.IWsDsmartResponseError
 import ru.datana.smart.ui.temperature.common.Config
 
 @Serializable
+@SerialName("temperature-update")
 data class WsDsmartResponseTemperature(
     override val data: WsDsmartTemperatures? = null,
     override val errors: List<IWsDsmartResponseError>? = null,

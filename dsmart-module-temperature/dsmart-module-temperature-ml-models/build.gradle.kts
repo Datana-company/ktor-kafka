@@ -14,6 +14,9 @@ dependencies {
     val jacksonVersion: String by project
     implementation(kotlin("stdlib"))
     api("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+
+    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit"))
 }
 
 val generatedSourcesDir = "$buildDir/generated"
