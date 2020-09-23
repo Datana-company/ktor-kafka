@@ -363,6 +363,46 @@
           }
         }
       }
+    },
+    "@datana-smart/websocket": {
+      "projectType": "library",
+      "root": "projects/datana-smart/websocket",
+      "sourceRoot": "projects/datana-smart/websocket/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/datana-smart/websocket/tsconfig.lib.json",
+            "project": "projects/datana-smart/websocket/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/datana-smart/websocket/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/datana-smart/websocket/src/test.ts",
+            "tsConfig": "projects/datana-smart/websocket/tsconfig.spec.json",
+            "karmaConfig": "projects/datana-smart/websocket/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/datana-smart/websocket/tsconfig.lib.json",
+              "projects/datana-smart/websocket/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "cli": {
     "analytics": "b5573ae3-cfdf-4be0-9174-14d4437a6ff1"

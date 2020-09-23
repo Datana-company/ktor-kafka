@@ -1,6 +1,6 @@
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {TemperatureViewComponent} from './temperature-view.component';
-import {WebSocketConfig, WebsocketModule, config} from './websocket';
+import {WebSocketConfig, config} from '@datana-smart/websocket';
 import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
 import {TeapotStatusModule} from '@datana-smart/teapot-status-component';
@@ -12,7 +12,6 @@ import {RecommendationModule} from "@datana-smart/recommendation-component";
 @NgModule({
   declarations: [TemperatureViewComponent],
   imports: [
-    WebsocketModule,
     CommonModule,
     RouterModule,
     TeapotStatusModule,

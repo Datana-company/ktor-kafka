@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {configProvide, IWebsocketService} from './websocket';
+import {configProvide, IWebsocketService} from '@datana-smart/websocket';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TemperatureModel} from './models/temperature.model';
