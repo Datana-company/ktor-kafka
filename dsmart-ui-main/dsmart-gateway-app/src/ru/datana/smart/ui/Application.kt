@@ -140,16 +140,16 @@ fun Application.module(testing: Boolean = false) {
                     }
                     ?.also { temp -> sendToAll(temp) }
 
-//                records
-//                    .firstOrNull { it.topic() == topicAnalysis }
-//                    ?.let { record ->
-//                        log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
-//                        parseKafkaInputAnalysis(record.value())
-//                    }
-//                    ?.takeIf {
-//                        it.data?.boilTime != null
-//                    }
-//                    ?.also { temp -> sendToAll(temp) }
+                records
+                    .firstOrNull { it.topic() == topicAnalysis }
+                    ?.let { record ->
+                        log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
+                        parseKafkaInputAnalysis(record.value())
+                    }
+                    ?.takeIf {
+                        it.data?.boilTime != null
+                    }
+                    ?.also { temp -> sendToAll(temp) }
 
                 if (!records.isEmpty) {
                     consumer.commitAsync { offsets, exception ->
