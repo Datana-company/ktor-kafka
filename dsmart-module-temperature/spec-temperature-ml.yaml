@@ -1,0 +1,82 @@
+openapi: 3.0.3
+info:
+    title: Транспортные модели для Чайника
+    description: 'Транспортные модели для связи различных компонентов IoT-прототипа Чайника'
+    contact:
+        email: okatov@datana.ru
+    license:
+        name: Proprietar
+    version: 0.0.1
+#externalDocs:
+#  description: Find out more about Swagger
+#  url: http://swagger.io
+#servers:
+#- url: http://localhost
+# tags:
+#     - name: processing-interpretation
+#       description: Коммуникация между процессингом данных и ML-интерпретатором
+#     - name: interpretation-ui
+#       description: Коммуникация между ML-интерпретатором данных и интерфейсом пользователя
+#     - name: processing-ui
+#       description: Коммуникация между процессингом и интерфейсом пользователя
+
+paths:
+    /tmp:
+        get:
+            responses:
+                200:
+                    description: tmp
+                    content: {}
+
+components:
+
+    schemas:
+
+        TemperatureML:
+            type: object
+            properties:
+                periodAveraging:
+                    description: Длительность времени в миллисекундах за котороу усредняется температура
+                    type: integer
+                    format: int64
+                data:
+                    description: Массив данных по температуре
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TemperatureMLItem'
+
+        TemperatureMLItem:
+            type: object
+            properties:
+                time:
+                    description: Время начала периода усреднения температуры в миллисекундах от начала Unix-эпохи в UTC
+                    type: string
+                    format: date-time
+                temperature:
+                    description: Температура в цельсиях, усредненная по периоду усреднения
+                    type: number
+
+        TemperatureUI:
+            description: Структура, которая отправляется из ML-модуля в интерфейс пользователя с результатами анализа
+            type: object
+            properties:
+                version:
+                    type: string
+                    description: Версия протокола
+                boilTime:
+                    type: string
+                    format: date-time
+                    description: Время, в которое должен закипеть чайник
+                deviceState:
+                    type: string
+                    enum:
+                        - unknown
+                        - switchedOn
+                        - switchedOff
+            #       events:
+            #         type: array
+            #         items:
+            #           $ref: '#/components/schemas/TemperatureUIEvent'
+
+            # TemperatureUIEvent:
+            #   description: Событие, которое генерируется

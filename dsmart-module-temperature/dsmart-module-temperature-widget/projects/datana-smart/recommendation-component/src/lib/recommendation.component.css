@@ -1,0 +1,19 @@
+.instruction-text {
+    font-size: 18px;
+    text-align: center;
+    color: red;
+    display: table-cell;
+    vertical-align: middle;
+    border: solid red;
+    padding: 5px;
+}
+
+.attention {
+    font-size: 24px;
+    border: solid orange;
+    padding: 5px;
+}
+
+.time {
+    font-size: 24px;
+}

@@ -4,11 +4,11 @@
   "compilerOptions": {
     "outDir": "./out-tsc/app",
     "types": [],
-      "paths": {
-          "@datana-smart/dsmart-module-temperature-widget": ["build/ng-libs/datana-smart/dsmart-module-temperature-widget"],
-          "@datana-smart/dsmart-module-temperature-widget/*": ["build/ng-libs/datana-smart/dsmart-module-temperature-widget/*"]
-      }
-
+    "paths": {
+      "@datana-smart/*": [
+        "build/ng-libs/datana-smart/*"
+      ]
+    }
   },
   "files": [
     "src/main.ts",

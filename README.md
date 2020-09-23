@@ -9,7 +9,7 @@
 
 actor User
 (browser) as browser
-(Websocket) as ws
+(WebsocketInterfaces) as ws
 (MQ) <<Kafka>> as mq
 
 package "Frontend" as front {
