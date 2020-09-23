@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TemperatureModel} from './models/temperature.model';
 import {RecommendationModel} from "@datana-smart/recommendation-component";
+import {AnalysisModel, AnalysisStateModel} from "./models/analysis.model";
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,7 +14,8 @@ import {RecommendationModel} from "@datana-smart/recommendation-component";
 })
 export class TemperatureViewComponent implements OnInit {
 
-  dataStream$: Observable<TemperatureModel>;
+  temperatureStream$: Observable<TemperatureModel>;
+  analysisStream$: Observable<AnalysisModel>;
   scale = 'C';
 
   status = false;
@@ -40,15 +42,28 @@ export class TemperatureViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataStream$ = this.wsService.on('temperature-update').pipe(
+    this.temperatureStream$ = this.wsService.on('temperature-update').pipe(
       map((data: any) => {
-        console.log('DATA', data);
+        console.log('DATA-temperature', data);
         return new TemperatureModel(
           data?.temperature as number,
           new Date(data?.timeMillis as number),
           data?.durationMillis as number,
           data?.deviationPositive as number,
           data?.deviationNegative as number,
+        );
+      })
+    );
+    this.analysisStream$ = this.wsService.on('temperature-analysis').pipe(
+      map((data: any) => {
+        console.log('DATA-analysis', data);
+        return new AnalysisModel(
+          new Date(data?.boilTime as number),
+          new AnalysisStateModel(
+            data?.state?.id,
+            data?.state?.name,
+            data?.state?.message
+          )
         );
       })
     );
