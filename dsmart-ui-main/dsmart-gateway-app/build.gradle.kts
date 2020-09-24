@@ -28,6 +28,7 @@ application {
 
 docker {
 //  url = 'https://192.168.59.103:2376'
+url.set("tcp://docker:2375")
 //  certPath = new File(System.properties['user.home'], '.boot2docker/certs/boot2docker-vm')
 
     registryCredentials {
