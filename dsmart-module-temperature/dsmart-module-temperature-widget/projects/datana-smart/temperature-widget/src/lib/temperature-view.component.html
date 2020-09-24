@@ -21,13 +21,13 @@
 <!--    </div>-->
 <!--</ng-template>-->
 
-<div *ngIf="dataStream$ | async as tempModel; else noData">
+<div *ngIf="{ temperature: temperatureStream$ | async, analysis: analysisStream$ | async } as dat; else noData">
     <div class="widget-container-main widget-container">
         <div class="widget-col widget-info">
-            <teapot-status-component [status]="status"></teapot-status-component>
+            <teapot-status-component [status]="dat.analysis?.state?.id == 'switchedOn'"></teapot-status-component>
             <div class="widget-container">
-                <temperature-boiling-component class="widget-col" [time]="time"></temperature-boiling-component>
-                <temperature-component class="widget-col" [temperature]="tempModel.temperature"></temperature-component>
+                <temperature-boiling-component class="widget-col" [time]="dat.analysis?.boilTime.toTimeString()"></temperature-boiling-component>
+                <temperature-component class="widget-col" [temperature]="dat.temperature?.temperature"></temperature-component>
             </div>
         </div>
         <div class="widget-col widget-recommendations">
@@ -36,10 +36,10 @@
         </div>
     </div>
     <div>
-        Время: {{tempModel.timeStart | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
+        Время: {{dat.temperature?.timeStart | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
     </div>
     <div>
-        Время ISO: {{tempModel.timeStart.toISOString()}}
+        Время ISO: {{dat.temperature?.timeStart.toISOString()}}
     </div>
 </div>
 

@@ -54,5 +54,5 @@ deploy:
         - dev
 
 after_script:
-    - docker logout $CI_REGISTRY
+#    - docker logout $CI_REGISTRY
     - echo "End CI"
