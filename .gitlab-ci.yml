@@ -50,6 +50,7 @@ deploy:
     script:
         # - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
         # - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock $JAVA_IMAGE ./gradlew deploy
+        - docker info
         - ./gradlew deploy
     only:
         - dev
