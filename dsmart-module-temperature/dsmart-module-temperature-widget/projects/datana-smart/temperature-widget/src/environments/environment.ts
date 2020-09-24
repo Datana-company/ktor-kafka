@@ -3,8 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  ws: 'http://0.0.0.0:8080/ws'
+    production: false,
+    ws: `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.hostname}:${location.port}/${location.pathname}/ws`
+    // ws: 'http://0.0.0.0:8080/ws'
 };
 
 /*

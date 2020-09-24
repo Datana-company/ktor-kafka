@@ -1,11 +1,8 @@
-<div>
-    <div class="time">
-        {{recommendation.time | date:'hh:mm:ss'}}
+<div class="widget-recommendation-item">
+    <div class="widget-recommendation-item-warning">
+        {{recommendation.time | date:'hh:mm:ss'}} Внимание!
     </div>
-    <div class="attention">
-        Внимание!
-        <div class="instruction-text">
-           {{recommendation.text}}
-        </div>
+    <div class="widget-recommendation-item-instruction">
+        {{recommendation.text}}
     </div>
 </div>

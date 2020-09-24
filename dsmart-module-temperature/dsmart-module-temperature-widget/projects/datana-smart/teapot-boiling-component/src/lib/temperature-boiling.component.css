@@ -1,20 +1,32 @@
+.widget-boiling {
+    height: 100%;
+}
+
 .widget-boiling-label {
-    font-size: 50px;
-    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    color: red;
-    border: 3px solid red;
-    margin-bottom: 1%;
+    width: calc(100% - 2rem);
+    height: 4rem;
+    padding: 1rem;
+    border: 2px solid DimGray;
+    border-radius: 4px 4px 0 0;
+    background-color: DimGray;
+    font-size: 2rem;
+    font-weight: 500;
+    color: white;
 }
 
 .widget-boiling-time {
     display: flex;
-    font-size: 85px;
-    height: 20rem;
-    width: 100%;
+    height: calc(100% - 6rem - 8px);
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: red;
-    border: 3px solid red;
+    width: 100%;
+    border: 2px solid DimGray;
+    border-radius: 0 0 4px 4px;
+    font-size: 3rem;
+    font-weight: 500;
 }

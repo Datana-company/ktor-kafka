@@ -25,9 +25,25 @@ export class TemperatureViewComponent implements OnInit {
       'Чайник вот вот взорвётся, выключите его!'
     ),
     new RecommendationModel(
-      new Date('2020-09-21T12:45:30'),
+      new Date('2020-09-21T11:25:13'),
       'Кто-то включил чайник'
     ),
+    new RecommendationModel(
+      new Date('2020-09-21T11:05:10'),
+      'Чайник вот вот взорвётся, выключите его!'
+    ),
+    new RecommendationModel(
+      new Date('2020-09-16T05:55:31'),
+      'Кто-то включил чайник'
+    ),
+    new RecommendationModel(
+      new Date('2020-09-21T05:51:53'),
+      'Чайник вот вот взорвётся, выключите его!'
+    ),
+    new RecommendationModel(
+      new Date('2020-09-21T04:02:05'),
+      'Кто-то включил чайник'
+    )
   ];
 
   recommendation: RecommendationModel = new RecommendationModel(
