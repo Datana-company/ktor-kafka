@@ -49,9 +49,9 @@ deploy:
     stage: deploy
     #image: adoptopenjdk/openjdk11:alpine-slim
     script:
-        # - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-        # - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock $JAVA_IMAGE ./gradlew deploy
+        - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
         - docker info
+        #- docker run --rm -v /var/run/docker.sock:/var/run/docker.sock $JAVA_IMAGE ./gradlew deploy
         - ./gradlew deploy
     only:
         - dev
