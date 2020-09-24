@@ -11,7 +11,8 @@ variables:
     DOCKER_HOST: tcp://localhost:2375
     #DOCKER_TLS_CERTDIR: "/certs"
     # DOCKER_TLS_CERTDIR: ""
-    JAVA_IMAGE: adoptopenjdk/openjdk11:alpine-slim
+    №JAVA_IMAGE: adoptopenjdk/openjdk11:alpine-slim
+    JAVA_IMAGE: registry.datana.ru/alpine-java-docker
 
 stages:
     #    - build
