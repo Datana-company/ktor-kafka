@@ -6,9 +6,9 @@ services:
     - docker:dind
 
 variables:
-    DOCKER_DRIVER: overlay2
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: "/certs"
+    #DOCKER_DRIVER: overlay2
+    #DOCKER_HOST: tcp://docker:2375
+    #DOCKER_TLS_CERTDIR: "/certs"
     # DOCKER_TLS_CERTDIR: ""
     JAVA_IMAGE: adoptopenjdk/openjdk11:alpine-slim
 
