@@ -26,7 +26,6 @@ import {RecommendationModule} from "@datana-smart/recommendation-component";
   providers: [
     TemperatureViewModule,
   ],
-
   exports: [TemperatureViewComponent],
 })
 export class TemperatureViewModule {

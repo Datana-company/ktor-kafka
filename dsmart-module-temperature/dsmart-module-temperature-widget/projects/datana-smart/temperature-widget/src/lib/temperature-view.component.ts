@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TemperatureModel} from './models/temperature.model';
 import {RecommendationModel} from "@datana-smart/recommendation-component";
@@ -15,7 +15,6 @@ export class TemperatureViewComponent implements OnInit {
 
   dataStream$: Observable<TemperatureModel>;
   scale = 'C';
-
   status = false;
   time = '2:54';
   temperature = 68.1;
@@ -46,14 +45,10 @@ export class TemperatureViewComponent implements OnInit {
     )
   ];
 
-  recommendation: RecommendationModel = new RecommendationModel(
-    new Date('2020-09-21T12:45:30'),
-    'Чайник вот вот взорвётся, выключите его!'
-  );
-
   constructor(
     @Inject(configProvide) private wsService: IWebsocketService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.dataStream$ = this.wsService.on('temperature-update').pipe(
@@ -74,10 +69,12 @@ export class TemperatureViewComponent implements OnInit {
     event.preventDefault();
     this.scale = 'K';
   }
+
   setCelsius(event: Event): void {
     event.preventDefault();
     this.scale = 'C';
   }
+
   setFarenheit(event: Event): void {
     event.preventDefault();
     this.scale = 'F';
