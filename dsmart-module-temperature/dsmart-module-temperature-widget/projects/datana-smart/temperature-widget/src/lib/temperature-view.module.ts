@@ -12,9 +12,7 @@ import {RecommendationModule} from "@datana-smart/recommendation-component";
 @NgModule({
   declarations: [TemperatureViewComponent],
   imports: [
-    WebsocketModule.config({
-      url: 'localhost:8080'
-    }),
+    WebsocketModule,
     CommonModule,
     RouterModule,
     TeapotStatusModule,
