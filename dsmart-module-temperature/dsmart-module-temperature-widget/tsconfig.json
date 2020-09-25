@@ -48,6 +48,12 @@
     },
     {
       "path": "./projects/datana-smart/temperature-component/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/datana-smart/websocket/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/datana-smart/websocket/tsconfig.spec.json"
     }
 ]
 }

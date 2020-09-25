@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {configProvide, IWebsocketService} from './websocket';
-import {Observable} from 'rxjs';
+import {configProvide, IWebsocketService} from '@datana-smart/websocket';
+import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TemperatureModel} from './models/temperature.model';
 import {RecommendationModel} from "@datana-smart/recommendation-component";
@@ -17,7 +17,6 @@ export class TemperatureViewComponent implements OnInit {
   temperatureStream$: Observable<TemperatureModel>;
   analysisStream$: Observable<AnalysisModel>;
   scale = 'C';
-
   status = false;
   time = '2:54';
   temperature = 68.1;
@@ -27,19 +26,31 @@ export class TemperatureViewComponent implements OnInit {
       'Чайник вот вот взорвётся, выключите его!'
     ),
     new RecommendationModel(
-      new Date('2020-09-21T12:45:30'),
+      new Date('2020-09-21T11:25:13'),
       'Кто-то включил чайник'
     ),
+    new RecommendationModel(
+      new Date('2020-09-21T11:05:10'),
+      'Чайник вот вот взорвётся, выключите его!'
+    ),
+    new RecommendationModel(
+      new Date('2020-09-16T05:55:31'),
+      'Кто-то включил чайник'
+    ),
+    new RecommendationModel(
+      new Date('2020-09-21T05:51:53'),
+      'Чайник вот вот взорвётся, выключите его!'
+    ),
+    new RecommendationModel(
+      new Date('2020-09-21T04:02:05'),
+      'Кто-то включил чайник'
+    )
   ];
-
-  recommendation: RecommendationModel = new RecommendationModel(
-    new Date('2020-09-21T12:45:30'),
-    'Чайник вот вот взорвётся, выключите его!'
-  );
 
   constructor(
     @Inject(configProvide) private wsService: IWebsocketService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.temperatureStream$ = this.wsService.on('temperature-update').pipe(
@@ -73,10 +84,12 @@ export class TemperatureViewComponent implements OnInit {
     event.preventDefault();
     this.scale = 'K';
   }
+
   setCelsius(event: Event): void {
     event.preventDefault();
     this.scale = 'C';
   }
+
   setFarenheit(event: Event): void {
     event.preventDefault();
     this.scale = 'F';

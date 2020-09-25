@@ -214,17 +214,17 @@ private fun Application.parseKafkaInputAnalysis(value: String?): WsDsmartRespons
 
 private fun TemperatureUI.DeviceState.toWs() = when(this) {
     TemperatureUI.DeviceState.SWITCHED_ON -> TeapotState(
-        id = "switedOn",
+        id = "switchedOn",
         name = "Включен",
         message = "Чайник включен"
     )
     TemperatureUI.DeviceState.SWITCHED_OFF -> TeapotState(
-        id = "switedOff",
+        id = "switchedOff",
         name = "Выключен",
         message = "Чайник выключен"
     )
     else -> TeapotState(
-        id = "unkown",
+        id = "unknown",
         name = "Неизвестно",
         message = "Состояние чайника неизвестно"
     )
