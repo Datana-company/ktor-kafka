@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
-import {Observable, of} from 'rxjs';
+import {merge, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TemperatureModel} from './models/temperature.model';
 import {RecommendationModel} from "@datana-smart/recommendation-component";
@@ -16,6 +16,7 @@ export class TemperatureViewComponent implements OnInit {
 
   temperatureStream$: Observable<TemperatureModel>;
   analysisStream$: Observable<AnalysisModel>;
+  currentTimeStream$: Observable<Date>;
   scale = 'C';
   status = false;
   time = '2:54';
@@ -58,7 +59,8 @@ export class TemperatureViewComponent implements OnInit {
         console.log('DATA-temperature', data);
         return new TemperatureModel(
           data?.temperature as number,
-          new Date(data?.timeMillis as number),
+          new Date(data?.timeBackend as number),
+          new Date(data?.timeStart as number),
           data?.durationMillis as number,
           data?.deviationPositive as number,
           data?.deviationNegative as number,
@@ -69,7 +71,11 @@ export class TemperatureViewComponent implements OnInit {
       map((data: any) => {
         console.log('DATA-analysis', data);
         return new AnalysisModel(
-          new Date(data?.boilTime as number),
+          new Date(data?.timeBackend as number),
+          new Date(data?.timeActual as number),
+          data?.durationToBoil as number,
+          data?.sensorId as string,
+          data?.temperatureLast as number,
           new AnalysisStateModel(
             data?.state?.id,
             data?.state?.name,
@@ -77,6 +83,10 @@ export class TemperatureViewComponent implements OnInit {
           )
         );
       })
+    );
+    this.currentTimeStream$ = merge(
+      this.temperatureStream$.pipe(map((obj) => obj.timeBackend)),
+      this.analysisStream$.pipe(map((obj) => obj.backendTime)),
     );
   }
 

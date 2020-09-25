@@ -14,9 +14,7 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.errors.WakeupException
@@ -147,7 +145,7 @@ fun Application.module(testing: Boolean = false) {
                         parseKafkaInputAnalysis(record.value())
                     }
                     ?.takeIf {
-                        it.data?.boilTime != null
+                        it.data?.timeActual != null
                     }
                     ?.also { temp -> sendToAll(temp) }
 
@@ -184,7 +182,8 @@ private fun Application.parseKafkaInputTemperature(value: String?): WsDsmartResp
         WsDsmartResponseTemperature(
             data = WsDsmartTemperatures(
                 temperature = obj.temperature?.let { it + 273.15 },
-                timeMillis = obj.timeMillis,
+                timeBackend = Instant.now().toEpochMilli(),
+                timeStart = obj.timeMillis,
                 durationMillis = obj.durationMillis,
                 deviationPositive = obj.deviationPositive,
                 deviationNegative = obj.deviationNegative
@@ -200,10 +199,18 @@ private val jacksonMapper = ObjectMapper()
 private fun Application.parseKafkaInputAnalysis(value: String?): WsDsmartResponseAnalysis? = value?.let { json ->
     try {
         val obj = jacksonMapper.readValue(json, TemperatureUI::class.java)!!
+        if (obj.version != "0.2") {
+            log.error("Wrong TemperatureUI (input ML-data) version ")
+            return null
+        }
         WsDsmartResponseAnalysis(
             data = WsDsmartAnalysis(
-                boilTime = obj.boilTime?.let { Instant.parse(it)?.toEpochMilli() },
-                state = obj.deviceState?.toWs()
+                timeBackend = Instant.now().toEpochMilli(),
+                timeActual = obj.timeActual,
+                durationToBoil = obj.durationToBoil,
+                sensorId = obj.sensorId,
+                temperatureLast = obj.temperatureLast,
+                state = obj.state?.toWs()
             )
         )
     } catch (e: Throwable) {
@@ -212,13 +219,13 @@ private fun Application.parseKafkaInputAnalysis(value: String?): WsDsmartRespons
     }
 }
 
-private fun TemperatureUI.DeviceState.toWs() = when(this) {
-    TemperatureUI.DeviceState.SWITCHED_ON -> TeapotState(
+private fun TemperatureUI.State.toWs() = when(this) {
+    TemperatureUI.State.SWITCHED_ON -> TeapotState(
         id = "switchedOn",
         name = "Включен",
         message = "Чайник включен"
     )
-    TemperatureUI.DeviceState.SWITCHED_OFF -> TeapotState(
+    TemperatureUI.State.SWITCHED_OFF -> TeapotState(
         id = "switchedOff",
         name = "Выключен",
         message = "Чайник выключен"
