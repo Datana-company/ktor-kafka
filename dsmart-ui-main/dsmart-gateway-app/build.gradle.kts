@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.Coroutines
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 val ktorVersion: String by project
 val kotlinVersion: String by project
 val logbackVersion: String by project
@@ -60,7 +57,7 @@ dependencies {
 
     // TODO Временная зависимость. Должна уйти в dsmart-module-temperature
     implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ws-models"))
-    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-kf-models"))
+//    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-kf-models"))
     implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ml-models"))
 
     api("ru.datana.smart:datana-smart-logging-core:0.0.5")
@@ -106,5 +103,11 @@ tasks {
     create("deploy") {
         group = "build"
         dependsOn(dockerPushImage)
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            targetCompatibility = "11"
+        }
     }
 }

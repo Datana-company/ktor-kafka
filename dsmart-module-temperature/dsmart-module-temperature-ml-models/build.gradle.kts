@@ -24,7 +24,7 @@ kotlin.sourceSets["main"].kotlin.srcDirs("$generatedSourcesDir/src")
 
 openApiGenerate {
     generatorName.set("kotlin")
-    inputSpec.set("${project(":dsmart-module-temperature").projectDir}/spec-temperature-ml.yaml")
+    inputSpec.set("${project(":dsmart-module-temperature").projectDir}/spec-temperature.yaml")
     outputDir.set(generatedSourcesDir)
     val basePackage = "${project.group}.ml"
     apiPackage.set("$basePackage.api")

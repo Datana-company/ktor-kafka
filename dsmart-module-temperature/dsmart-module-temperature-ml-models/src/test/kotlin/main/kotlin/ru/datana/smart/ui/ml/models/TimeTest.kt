@@ -1,8 +1,8 @@
 package main.kotlin.ru.datana.smart.ui.ml.models
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import ru.datana.smart.ui.ml.models.TemperatureMlUiDto
 import kotlin.test.Test
-import ru.datana.smart.ui.ml.models.TemperatureUI
 import java.time.Instant
 import kotlin.test.Ignore
 import kotlin.test.assertEquals
@@ -17,7 +17,7 @@ class TimeTest {
         """.trimIndent()
 
         val objectMapper = ObjectMapper()
-        val obj = objectMapper.readValue(json, TemperatureUI::class.java)
+        val obj = objectMapper.readValue(json, TemperatureMlUiDto::class.java)
 
         assertEquals("0.1", obj.version)
 //        assertEquals(Instant.parse("2020-09-22T18:26:17.246Z"), Instant.parse(obj.boilTime))
@@ -31,11 +31,11 @@ class TimeTest {
         """.trimIndent()
 
         val objectMapper = ObjectMapper()
-        val obj = objectMapper.readValue(json, TemperatureUI::class.java)
+        val obj = objectMapper.readValue(json, TemperatureMlUiDto::class.java)
 
         assertEquals("0.2", obj.version)
         assertEquals(Instant.ofEpochMilli(1601047090000L), obj.timeActual?.let {Instant.ofEpochMilli(it)})
-        assertEquals(TemperatureUI.State.SWITCHED_OFF, obj.state)
+        assertEquals(TemperatureMlUiDto.State.SWITCHED_OFF, obj.state)
         assertEquals("8e630dd0-5796-45e0-8d85-8a14c5d872dd", obj.sensorId)
         assertEquals(124261, obj.durationToBoil)
         assertEquals(24.41999969482422, obj.temperatureLast)
