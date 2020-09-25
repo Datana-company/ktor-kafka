@@ -2,9 +2,8 @@
     <div class="widget-status-label">
         Чайник
     </div>
-    <div class="widget-status-indicator {{status === undefined || status === null ? 'status-indicator-unknown'
-                                            : status ? 'status-indicator-on' : 'status-indicator-off'}}">
-        {{status === undefined || status === null ? '?' : status ? 'ВКЛ' : 'ВЫКЛ'}}
+    <div class="widget-status-indicator {{statusStyle}}">
+        {{statusName}}
     </div>
 </div>
 
