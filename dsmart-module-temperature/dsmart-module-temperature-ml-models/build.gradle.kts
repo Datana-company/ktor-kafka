@@ -45,5 +45,10 @@ openApiGenerate {
 }
 
 tasks {
-
+    compileKotlin {
+        dependsOn(openApiGenerate)
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
 }

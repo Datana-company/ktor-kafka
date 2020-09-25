@@ -21,28 +21,27 @@
 <!--    </div>-->
 <!--</ng-template>-->
 
-
-<div *ngIf="dataStream$ | async as tempModel; else noData">
-<div class="widget-header">
-    <teapot-status-component class="widget-header-status" [status]="status"></teapot-status-component>
-    <div>
-        Время: {{tempModel.timeStart | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
-    </div>
-    <div>
-        Время ISO: {{tempModel.timeStart.toISOString()}}
-    </div>
-</div>
-<div class="widget-container-main widget-container">
-    <div class="widget-info widget-col">
-        <div class="widget-info-container widget-container">
-            <temperature-boiling-component class="widget-col widget-info-boiling" [time]="time"></temperature-boiling-component>
-            <temperature-component class="widget-col widget-info-temperature" [temperature]="tempModel.temperature"></temperature-component>
+<div *ngIf="{ temperature: temperatureStream$ | async, analysis: analysisStream$ | async } as dat; else noData">
+    <div class="widget-header">
+        <teapot-status-component class="widget-header-status" [status]="dat.analysis?.state?.id == 'switchedOn'"></teapot-status-component>
+        <div>
+            Время: {{dat.temperature?.timeStart | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
+        </div>
+        <div>
+            Время ISO: {{dat.temperature?.timeStart.toISOString()}}
         </div>
     </div>
-    <div class="widget-recommendations widget-col">
-        <history-component [history]="history"></history-component>
+    <div class="widget-container-main widget-container">
+        <div class="widget-info widget-col">
+            <div class="widget-info-container widget-container">
+                <temperature-boiling-component class="widget-col" [time]="dat.analysis?.boilTime.toTimeString()"></temperature-boiling-component>
+                <temperature-component class="widget-col" [temperature]="dat.temperature?.temperature"></temperature-component>
+            </div>
+        </div>
+        <div class="widget-recommendations widget-col">
+            <history-component [history]="history"></history-component>
+        </div>
     </div>
-</div>
 </div>
 
 <ng-template #noData>
