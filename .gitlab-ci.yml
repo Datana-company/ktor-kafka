@@ -47,17 +47,10 @@ test:
 
 deploy:
     stage: deploy
-    #image: adoptopenjdk/openjdk11:alpine-slim
     script:
-        - echo "RG registry $DOCKER_REGISTRY_HOST user $DOCKER_REGISTRY_USER"
-        - echo "CI registry $CI_REGISTRY user $CI_REGISTRY_USER"
-        - echo "$DOCKER_REGISTRY_PASS" | docker login -u $DOCKER_REGISTRY_USER --password-stdin $DOCKER_REGISTRY_HOST
-        - docker pull registry.datana.ru/alpine-java-docker
-        #- docker run --rm -v /var/run/docker.sock:/var/run/docker.sock $JAVA_IMAGE ./gradlew deploy
         - ./gradlew deploy
     only:
         - dev
 
 after_script:
-#    - docker logout $CI_REGISTRY
     - echo "End CI"
