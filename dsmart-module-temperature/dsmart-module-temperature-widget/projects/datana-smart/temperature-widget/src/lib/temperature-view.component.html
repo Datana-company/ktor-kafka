@@ -34,8 +34,8 @@
     <div class="widget-container-main widget-container">
         <div class="widget-info widget-col">
             <div class="widget-info-container widget-container">
-                <temperature-boiling-component class="widget-col" [time]="dat.analysis?.boilTime.toTimeString()"></temperature-boiling-component>
-                <temperature-component class="widget-col" [temperature]="dat.temperature?.temperature"></temperature-component>
+                <temperature-boiling-component class="widget-info-boiling widget-col" [time]="dat.analysis?.boilTime.toTimeString()"></temperature-boiling-component>
+                <temperature-component class="widget-info-temperature widget-col" [temperature]="dat.temperature?.temperature"></temperature-component>
             </div>
         </div>
         <div class="widget-recommendations widget-col">
