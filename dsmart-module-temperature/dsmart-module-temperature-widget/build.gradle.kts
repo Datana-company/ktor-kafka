@@ -35,11 +35,13 @@ tasks {
     val ngBuildStatus by ngLibBuild("teapot-status-component")
     val ngBuildBoiling by ngLibBuild("teapot-boiling-component")
     val ngBuildTemperature by ngLibBuild("temperature-component")
+    val ngBuildWebsocket by ngLibBuild("websocket")
     val ngBuildWidget by ngLibBuild("temperature-widget") {
         dependsOn(ngBuildHistory)
         dependsOn(ngBuildStatus)
         dependsOn(ngBuildBoiling)
         dependsOn(ngBuildTemperature)
+        dependsOn(ngBuildWebsocket)
     }
 //    val ngBuildApp by ngLibBuild("temperature-app")
 
