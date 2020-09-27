@@ -63,11 +63,26 @@ components:
                 version:
                     type: string
                     description: Версия протокола
-                boilTime:
+                timeActual:
+                    description: Текущее время по версии ML-модуля
+                    type: integer
+                    format: int64
+                durationToBoil:
+                    description: Длительность ожидания до закипания чайника
+                    type: integer
+                    format: int64
+                sensorId:
+                    description: Идентификатор сенсора, для которого выполнена аналитика
                     type: string
-                    format: date-time
-                    description: Время, в которое должен закипеть чайник
-                deviceState:
+                temperatureLast:
+                    description: Последняя актуальная температура по версии модуля ML
+                    type: number
+                    format: double
+#                boilTime:
+#                    type: string
+#                    format: date-time
+#                    description: Время, в которое должен закипеть чайник
+                state:
                     type: string
                     enum:
                         - unknown

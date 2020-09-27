@@ -9,9 +9,9 @@ import kotlin.test.assertEquals
 
 class TimeTest {
 
-//    @Ignore
+    @Ignore
     @Test
-    fun timeTest() {
+    fun inputV01Test() {
         val json = """
             {"version": "0.1", "boilTime": "2020-09-22T18:26:17.246000Z", "deviceState": "switchedOff"}
         """.trimIndent()
@@ -20,7 +20,24 @@ class TimeTest {
         val obj = objectMapper.readValue(json, TemperatureUI::class.java)
 
         assertEquals("0.1", obj.version)
-        assertEquals(Instant.parse("2020-09-22T18:26:17.246Z"), Instant.parse(obj.boilTime))
-        assertEquals(TemperatureUI.DeviceState.SWITCHED_OFF, obj.deviceState)
+//        assertEquals(Instant.parse("2020-09-22T18:26:17.246Z"), Instant.parse(obj.boilTime))
+//        assertEquals(TemperatureUI.DeviceState.SWITCHED_OFF, obj.deviceState)
+    }
+
+    @Test
+    fun inputV02Test() {
+        val json = """
+            {"version": "0.2", "timeActual": 1601047090000, "durationToBoil": 124261, "sensorId": "8e630dd0-5796-45e0-8d85-8a14c5d872dd", "temperatureLast": "24.41999969482422", "state": "switchedOff"}
+        """.trimIndent()
+
+        val objectMapper = ObjectMapper()
+        val obj = objectMapper.readValue(json, TemperatureUI::class.java)
+
+        assertEquals("0.2", obj.version)
+        assertEquals(Instant.ofEpochMilli(1601047090000L), obj.timeActual?.let {Instant.ofEpochMilli(it)})
+        assertEquals(TemperatureUI.State.SWITCHED_OFF, obj.state)
+        assertEquals("8e630dd0-5796-45e0-8d85-8a14c5d872dd", obj.sensorId)
+        assertEquals(124261, obj.durationToBoil)
+        assertEquals(24.41999969482422, obj.temperatureLast)
     }
 }

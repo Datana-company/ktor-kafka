@@ -21,24 +21,28 @@
 <!--    </div>-->
 <!--</ng-template>-->
 
-<div *ngIf="{ temperature: temperatureStream$ | async, analysis: analysisStream$ | async } as dat; else noData">
+<div *ngIf="{ time: currentTimeStream$ | async, temperature: temperatureStream$ | async, analysis: analysisStream$ | async } as dat; else noData">
     <div class="widget-header">
         <teapot-status-component class="widget-header-status"
                                  [status]="dat.analysis?.state?.id == 'switchedOn'"
                                  [statusName]="dat.analysis?.state?.name">
         </teapot-status-component>
         <div>
-            Время: {{dat.temperature?.timeStart | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
+            <!-- бэкенд -->
+            Время текущее: {{dat.time | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
         </div>
         <div>
-            Время ISO: {{dat.temperature?.timeStart.toISOString()}}
+            Время процессора: {{dat.temperature?.timeStart | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
+        </div>
+        <div>
+            Время анализатора: {{dat.analysis?.actualTime | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
         </div>
     </div>
     <div class="widget-container-main widget-container">
         <div class="widget-info widget-col">
             <div class="widget-info-container widget-container">
                 <temperature-boiling-component class="widget-info-boiling widget-col"
-                                               [time]="dat.analysis?.boilTime.toTimeString()"></temperature-boiling-component>
+                                               [time]="dat.analysis?.durationToBoilStr"></temperature-boiling-component>
                 <temperature-component class="widget-info-temperature widget-col"
                                        [temperature]="dat.temperature?.temperature"></temperature-component>
             </div>
