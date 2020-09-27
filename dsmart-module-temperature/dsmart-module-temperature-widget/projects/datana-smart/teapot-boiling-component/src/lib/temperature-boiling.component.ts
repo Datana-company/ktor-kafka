@@ -10,9 +10,17 @@ export class TemperatureBoilingComponent implements OnInit {
 
   @Input() time: string;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor() {
   }
 
+  ngOnInit(): void {
+    this.collapsibleInit();
+  }
+
+  collapsibleInit = () => {
+    const button = document.querySelector('.widget-collapsible-button');
+    button.addEventListener('click', () => {
+      button.previousElementSibling.classList.toggle('content-active');
+    });
+  }
 }
