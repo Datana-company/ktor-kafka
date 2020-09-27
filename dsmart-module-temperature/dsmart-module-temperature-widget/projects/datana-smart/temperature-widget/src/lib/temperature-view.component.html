@@ -24,7 +24,7 @@
 <div *ngIf="{ time: currentTimeStream$ | async, temperature: temperatureStream$ | async, analysis: analysisStream$ | async } as dat; else noData">
     <div class="widget-header">
         <teapot-status-component class="widget-header-status"
-                                 [status]="dat.analysis?.state?.id == 'switchedOn'"
+                                 [status]="dat.analysis?.state?.id === 'switchedOn'"
                                  [statusName]="dat.analysis?.state?.name">
         </teapot-status-component>
         <div>
