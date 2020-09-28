@@ -14,14 +14,41 @@ import {AnalysisModel, AnalysisStateModel} from "./models/analysis.model";
 })
 export class TemperatureViewComponent implements OnInit {
 
-  temperatureStream$: Observable<TemperatureModel>;
+  private temperatureStream$: Observable<TemperatureModel>;
+  private analysisStream$: Observable<AnalysisModel>;
+  /**
+   * Текущая температура от процессинга
+   */
   temperatureCurrentStream$: Observable<number>;
-  analysisStream$: Observable<AnalysisModel>;
+
+  /**
+   * Длительность времени до закипания
+   */
   durationToBoil$: Observable<string>;
+
+  /**
+   * Состояние чайника: идентификатор
+   */
   stateIdStream$: Observable<string>;
+
+  /**
+   * Состояние чайника: Название
+   */
   stateNameStream$: Observable<string>;
+
+  /**
+   * Текущее время по версии Бэкенда UI
+   */
   timeBackStream$: Observable<Date>;
+
+  /**
+   * Время пакета данных по версии процессинга
+   */
   timeProcStream$: Observable<Date>;
+
+  /**
+   * Время пакета данных по версии ML
+   */
   timeMlStream$: Observable<Date>;
 
   scale = 'C';
