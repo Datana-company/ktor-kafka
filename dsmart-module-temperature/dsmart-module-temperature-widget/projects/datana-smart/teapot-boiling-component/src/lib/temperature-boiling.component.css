@@ -33,7 +33,7 @@
 }
 
 .widget-boiling-time-value {
-    height: calc(100% - 12rem - 3rem - 4px);
+    height: calc(100% - 16rem - 4px);
     width: 100%;
     display: flex;
     align-items: center;
@@ -55,7 +55,7 @@
     border: 2px solid SandyBrown;
     border-radius: 4px 4px 0 0;
     font-weight: 500;
-    font-size: 1.2rem;
+    font-size: 0.75rem;
     height: 0;
     visibility: hidden;
     transition-property: height, visibility;
@@ -78,9 +78,18 @@
     border-bottom: 1px dotted DimGray;
 }
 
+.collapsible-content-raw:last-child {
+     border-bottom: none;
+ }
+
 .collapsible-content-cell {
-    width: 50%;
-    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: calc(50% - 0.5rem);
+    height: calc(100% - 0.5rem);
+    padding: 0.25rem;
 }
 
 .collapsible-content-cell:first-child {

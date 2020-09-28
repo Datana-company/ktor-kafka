@@ -20,6 +20,7 @@ import {RecommendationModule} from "@datana-smart/recommendation-component";
     HistoryModule,
     TemperatureBoilingModule,
     TemperatureModule,
+    TemperatureBoilingModule,
   ],
   providers: [
     TemperatureViewModule,
