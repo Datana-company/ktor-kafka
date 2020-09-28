@@ -138,10 +138,10 @@ fun Application.module(testing: Boolean = false) {
                     }
                     ?.also { temp -> sendToAll(temp) }
 
-                records
+                recs
                     .firstOrNull { it.topic() == topicAnalysis }
                     ?.let { record ->
-                        log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
+                        log.info("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
                         parseKafkaInputAnalysis(record.value())
                     }
                     ?.takeIf {
@@ -194,7 +194,7 @@ private fun Application.parseKafkaInputTemperature(jsonString: String?): WsDsmar
             )
         )
     } catch (e: Throwable) {
-        log.error("Error parsing data for", jsonString)
+        log.error("Error parsing data for [Proc]: {}", jsonString)
         null
     }
 }
@@ -217,7 +217,7 @@ private fun Application.parseKafkaInputAnalysis(value: String?): WsDsmartRespons
             )
         )
     } catch (e: Throwable) {
-        log.error("Error parsing data for", value)
+        log.error("Error parsing data for [ML]: {}", value)
         null
     }
 }
