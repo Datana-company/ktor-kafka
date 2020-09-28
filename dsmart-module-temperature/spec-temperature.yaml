@@ -69,10 +69,10 @@ components:
                 time:
                     description: Время конца периода усреднения температуры в миллисекундах от начала Unix-эпохи в UTC
                     type: string
-                    format: date-time
                 temperature:
                     description: Температура в цельсиях, усредненная по периоду усреднения
                     type: number
+                    format: double
 
         TemperatureMlUiDto:
             description: Структура, которая отправляется из ML-модуля в интерфейс пользователя с результатами анализа
