@@ -403,6 +403,46 @@
           }
         }
       }
+    },
+    "@datana-smart/collapsible-table-component": {
+      "projectType": "library",
+      "root": "projects/datana-smart/collapsible-table-component",
+      "sourceRoot": "projects/datana-smart/collapsible-table-component/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/datana-smart/collapsible-table-component/tsconfig.lib.json",
+            "project": "projects/datana-smart/collapsible-table-component/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/datana-smart/collapsible-table-component/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/datana-smart/collapsible-table-component/src/test.ts",
+            "tsConfig": "projects/datana-smart/collapsible-table-component/tsconfig.spec.json",
+            "karmaConfig": "projects/datana-smart/collapsible-table-component/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/datana-smart/collapsible-table-component/tsconfig.lib.json",
+              "projects/datana-smart/collapsible-table-component/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "cli": {
     "analytics": "b5573ae3-cfdf-4be0-9174-14d4437a6ff1"

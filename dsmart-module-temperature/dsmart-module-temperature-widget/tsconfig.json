@@ -54,6 +54,12 @@
     },
     {
       "path": "./projects/datana-smart/websocket/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/datana-smart/collapsible-table-component/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/datana-smart/collapsible-table-component/tsconfig.spec.json"
     }
 ]
 }

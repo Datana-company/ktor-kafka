@@ -33,7 +33,10 @@ tasks {
         dependsOn(ngBuildRecommendations)
     }
     val ngBuildStatus by ngLibBuild("teapot-status-component")
-    val ngBuildBoiling by ngLibBuild("teapot-boiling-component")
+    val ngBuildCollapsible by ngLibBuild("collapsible-table-component")
+    val ngBuildBoiling by ngLibBuild("teapot-boiling-component") {
+        dependsOn(ngBuildCollapsible)
+    }
     val ngBuildTemperature by ngLibBuild("temperature-component")
     val ngBuildWebsocket by ngLibBuild("websocket")
     val ngBuildWidget by ngLibBuild("temperature-widget") {

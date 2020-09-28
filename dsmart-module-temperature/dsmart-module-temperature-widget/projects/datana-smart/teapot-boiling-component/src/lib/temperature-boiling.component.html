@@ -4,34 +4,10 @@
     </div>
     <div class="widget-boiling-time">
         <div class="widget-boiling-time-value">{{ durationToBoil }}</div>
-        <div class="widget-collapsible-wrap">
-            <div class="widget-collapsible-content">
-                <div class="collapsible-content-raw">
-                    <div class="collapsible-content-cell">
-                        Время текущее: {{ timeCurrent | date : 'dd.MM.yyyy HH:mm:ss OOOO'}}
-                    </div>
-                    <div class="collapsible-content-cell">
-                        Относительно текущего: 0m 0s
-                    </div>
-                </div>
-                <div class="collapsible-content-raw">
-                    <div class="collapsible-content-cell">
-                        Время процессора: {{ timeBackend | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
-                    </div>
-                    <div class="collapsible-content-cell">
-                        Относительно текущего: {{ backendTimeDelta }}
-                    </div>
-                </div>
-                <div class="collapsible-content-raw">
-                    <div class="collapsible-content-cell">
-                        Время анализатора: {{ timeActual | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
-                    </div>
-                    <div class="collapsible-content-cell">
-                        Относительно текущего: {{ actualTimeDelta }}
-                    </div>
-                </div>
-            </div>
-            <div class="widget-collapsible-button">Раскрыть подробности</div>
-        </div>
+        <collapsible-table class="widget-collapsible-wrap"
+                           [timeBack]="timeBack"
+                           [timeProc]="timeProc"
+                           [timeMl]="timeMl"
+        ></collapsible-table>
     </div>
 </div>

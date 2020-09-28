@@ -28,23 +28,16 @@
             [status]="(stateIdStream$ | async) === 'switchedOn'"
             [statusName]="stateNameStream$ | async">
         </teapot-status-component>
-<!--        <div>-->
-<!--            &lt;!&ndash; бэкенд &ndash;&gt;-->
-<!--            Время текущее: {{timeBackStream$ | async | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}-->
-<!--        </div>-->
-<!--        <div>-->
-<!--            Время процессора: {{timeProcStream$ | async | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}-->
-<!--        </div>-->
-<!--        <div>-->
-<!--            Время анализатора: {{timeMlStream$ | async | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}-->
-<!--        </div>-->
     </div>
     <div class="widget-container-main widget-container">
         <div class="widget-info widget-col">
             <div class="widget-info-container widget-container">
                 <temperature-boiling-component
                     class="widget-info-boiling widget-col"
-                    [time]="durationToBoil$ | async"
+                    [durationToBoil]="durationToBoil$ | async"
+                    [timeBack]="timeBackStream$ | async"
+                    [timeProc]="timeProcStream$ | async"
+                    [timeMl]="timeMlStream$ | async"
                 ></temperature-boiling-component>
                 <temperature-component
                     class="widget-info-temperature widget-col"
