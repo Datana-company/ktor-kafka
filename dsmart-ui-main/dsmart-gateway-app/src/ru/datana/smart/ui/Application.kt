@@ -22,8 +22,8 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.event.Level
 import ru.datana.smart.common.transport.models.ws.IWsDsmartResponse
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.ml.models.TemperatureUI
-import ru.datana.smart.ui.temperature.kf.models.KfDsmartTemperatureData
+import ru.datana.smart.ui.ml.models.TemperatureMlUiDto
+import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
 import ru.datana.smart.ui.temperature.ws.models.*
 import java.time.Duration
 import java.time.Instant
@@ -134,7 +134,7 @@ fun Application.module(testing: Boolean = false) {
                         parseKafkaInputTemperature(record.value())
                     }
                     ?.takeIf {
-                        it.data?.temperature?.isFinite() ?: false
+                        it.data?.temperatureAverage?.isFinite() ?: false
                     }
                     ?.also { temp -> sendToAll(temp) }
 
@@ -173,32 +173,35 @@ fun Application.module(testing: Boolean = false) {
 }
 
 private fun Application.datanaLog() = datanaLogger(this.log as Logger)
+private val jacksonMapper = ObjectMapper()
 
-private fun Application.parseKafkaInputTemperature(value: String?): WsDsmartResponseTemperature? {
+private fun Application.parseKafkaInputTemperature(jsonString: String?): WsDsmartResponseTemperature? {
     // {"info":{"id":"4a67082b-8bf4-48b7-88c0-0d542ffe2214","channelList":["clean"]},"content":[{"@class":"ru.datana.common.model.SingleSensorModel","request_id":"d076f100-3e96-4857-aba8-1c7f4c866dd5","request_datetime":1598962179670,"response_datetime":1598962179754,"sensor_id":"00000000-0000-4000-9000-000000000006","data":-247.14999999999998,"status":0,"errors":[]}]}
-    if (value == null) return null
+    if (jsonString == null) return null
     return try {
-        val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
+//        val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
+        val obj = jacksonMapper.readValue(jsonString, TemperatureProcUiDto::class.java)!!
         WsDsmartResponseTemperature(
             data = WsDsmartTemperatures(
-                temperature = obj.temperature?.let { it + 273.15 },
+//                temperature = obj.temperature?.let { it + 273.15 },
                 timeBackend = Instant.now().toEpochMilli(),
-                timeStart = obj.timeMillis,
-                durationMillis = obj.durationMillis,
-                deviationPositive = obj.deviationPositive,
-                deviationNegative = obj.deviationNegative
+                timeLatest = obj.timeIntervalLatest,
+                timeEarliest = obj.timeIntervalEarliest,
+                temperatureScale = obj.temperatureScale?.value,
+                temperatureAverage = obj.temperatureAverage,
+                tempertureMax = obj.temperatureMax,
+                tempertureMin = obj.temperatureMin
             )
         )
     } catch (e: Throwable) {
-        log.error("Error parsing data for", value)
+        log.error("Error parsing data for", jsonString)
         null
     }
 }
 
-private val jacksonMapper = ObjectMapper()
 private fun Application.parseKafkaInputAnalysis(value: String?): WsDsmartResponseAnalysis? = value?.let { json ->
     try {
-        val obj = jacksonMapper.readValue(json, TemperatureUI::class.java)!!
+        val obj = jacksonMapper.readValue(json, TemperatureMlUiDto::class.java)!!
         if (obj.version != "0.2") {
             log.error("Wrong TemperatureUI (input ML-data) version ")
             return null
@@ -219,13 +222,13 @@ private fun Application.parseKafkaInputAnalysis(value: String?): WsDsmartRespons
     }
 }
 
-private fun TemperatureUI.State.toWs() = when(this) {
-    TemperatureUI.State.SWITCHED_ON -> TeapotState(
+private fun TemperatureMlUiDto.State.toWs() = when(this) {
+    TemperatureMlUiDto.State.SWITCHED_ON -> TeapotState(
         id = "switchedOn",
         name = "Включен",
         message = "Чайник включен"
     )
-    TemperatureUI.State.SWITCHED_OFF -> TeapotState(
+    TemperatureMlUiDto.State.SWITCHED_OFF -> TeapotState(
         id = "switchedOff",
         name = "Выключен",
         message = "Чайник выключен"
