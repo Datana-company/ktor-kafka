@@ -8,9 +8,23 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class CollapsibleTableComponent implements OnInit {
 
+  private tp;
+
   @Input() timeBack: Date;
+
   @Input() timeProc: Date;
+
   @Input() timeMl: Date;
+
+  constructor() {
+  }
+
+  isValidDate = dateObject => new Date(dateObject)
+    .toString() !== 'Invalid Date'
+
+  // isDateValid(d: Date): boolean {
+  //   return d instanceof Date && !isNaN(d);
+  // }
 
   get timeProcDelta(): string {
     return this.calculateTimeDelta(this.timeProc);
@@ -18,9 +32,6 @@ export class CollapsibleTableComponent implements OnInit {
 
   get timeMlDelta(): string {
     return this.calculateTimeDelta(this.timeMl);
-  }
-
-  constructor() {
   }
 
   ngOnInit(): void {

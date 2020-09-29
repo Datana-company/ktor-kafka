@@ -87,11 +87,12 @@ export class TemperatureViewComponent implements OnInit {
   ngOnInit(): void {
     this.temperatureStream$ = this.wsService.on('temperature-update').pipe(
       map((data: any) => {
-        console.log('DATA-temperature', data);
+        // console.log('DATA-temperature', data);
         return new TemperatureModel(
-          data?.temperature as number,
+          data?.temperatureAverage as number,
           new Date(data?.timeBackend as number),
-          new Date(data?.timeStart as number),
+          new Date(data?.timeLatest as number),
+          new Date(data?.timeEarliest as number),
           data?.durationMillis as number,
           data?.deviationPositive as number,
           data?.deviationNegative as number,
@@ -100,7 +101,7 @@ export class TemperatureViewComponent implements OnInit {
     );
     this.analysisStream$ = this.wsService.on('temperature-analysis').pipe(
       map((data: any) => {
-        console.log('DATA-analysis', data);
+        // console.log('DATA-analysis', data);
         return new AnalysisModel(
           new Date(data?.timeBackend as number),
           new Date(data?.timeActual as number),
@@ -137,7 +138,10 @@ export class TemperatureViewComponent implements OnInit {
       map(({actualTime}) => actualTime)
     );
     this.timeProcStream$ = this.temperatureStream$.pipe(
-      map(({timeStart}) => timeStart)
+      map(({timeLatest}) => {
+        console.log("setting timeStart", timeLatest);
+        return timeLatest;
+      })
     );
     this.temperatureCurrentStream$ = this.temperatureStream$.pipe(
       map(({temperature}) => temperature)
