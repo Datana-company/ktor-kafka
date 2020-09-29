@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
-import {merge, Observable, of} from 'rxjs';
+import {merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TemperatureModel} from './models/temperature.model';
 import {RecommendationModel} from "@datana-smart/recommendation-component";
@@ -14,13 +14,44 @@ import {AnalysisModel, AnalysisStateModel} from "./models/analysis.model";
 })
 export class TemperatureViewComponent implements OnInit {
 
-  temperatureStream$: Observable<TemperatureModel>;
-  analysisStream$: Observable<AnalysisModel>;
-  currentTimeStream$: Observable<Date>;
+  private temperatureStream$: Observable<TemperatureModel>;
+  private analysisStream$: Observable<AnalysisModel>;
+  /**
+   * Текущая температура от процессинга
+   */
+  temperatureCurrentStream$: Observable<number>;
+
+  /**
+   * Длительность времени до закипания
+   */
+  durationToBoil$: Observable<string>;
+
+  /**
+   * Состояние чайника: идентификатор
+   */
+  stateIdStream$: Observable<string>;
+
+  /**
+   * Состояние чайника: Название
+   */
+  stateNameStream$: Observable<string>;
+
+  /**
+   * Текущее время по версии Бэкенда UI
+   */
+  timeBackStream$: Observable<Date>;
+
+  /**
+   * Время пакета данных по версии процессинга
+   */
+  timeProcStream$: Observable<Date>;
+
+  /**
+   * Время пакета данных по версии ML
+   */
+  timeMlStream$: Observable<Date>;
+
   scale = 'C';
-  status = false;
-  time = '2:54';
-  temperature = 68.1;
   history: Array<RecommendationModel> = [
     new RecommendationModel(
       new Date('2020-09-21T12:45:30'),
@@ -84,9 +115,38 @@ export class TemperatureViewComponent implements OnInit {
         );
       })
     );
-    this.currentTimeStream$ = merge(
+    this.timeBackStream$ = merge(
       this.temperatureStream$.pipe(map((obj) => obj.timeBackend)),
       this.analysisStream$.pipe(map((obj) => obj.backendTime)),
+    );
+    this.durationToBoil$ = this.analysisStream$.pipe(
+      map(({actualTime, backendTime, durationToBoil, state}: AnalysisModel) => {
+        return state.id === 'switchedOn'
+          ? actualTime.getMilliseconds() + durationToBoil - backendTime.getMilliseconds()
+          : null;
+      }),
+      map(duration => {
+        if (duration == null) { return null; }
+        const durationSecs = duration / 1000;
+        const mins = durationSecs / 60;
+        const secs = durationSecs % 60;
+        return `${mins}m ${secs}s`;
+      })
+    );
+    this.timeMlStream$ = this.analysisStream$.pipe(
+      map(({actualTime}) => actualTime)
+    );
+    this.timeProcStream$ = this.temperatureStream$.pipe(
+      map(({timeStart}) => timeStart)
+    );
+    this.temperatureCurrentStream$ = this.temperatureStream$.pipe(
+      map(({temperature}) => temperature)
+    );
+    this.stateIdStream$ = this.analysisStream$.pipe(
+      map(({state}) => state.id)
+    );
+    this.stateNameStream$ = this.analysisStream$.pipe(
+      map(({state}) => state.name)
     );
   }
 

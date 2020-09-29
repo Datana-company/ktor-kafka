@@ -21,30 +21,29 @@
 <!--    </div>-->
 <!--</ng-template>-->
 
-<div *ngIf="{ time: currentTimeStream$ | async, temperature: temperatureStream$ | async, analysis: analysisStream$ | async } as dat; else noData">
+<div>
     <div class="widget-header">
-        <teapot-status-component class="widget-header-status"
-                                 [status]="dat.analysis?.state?.id == 'switchedOn'"
-                                 [statusName]="dat.analysis?.state?.name">
+        <teapot-status-component
+            class="widget-header-status"
+            [status]="(stateIdStream$ | async) === 'switchedOn'"
+            [statusName]="stateNameStream$ | async">
         </teapot-status-component>
-        <div>
-            <!-- бэкенд -->
-            Время текущее: {{dat.time | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
-        </div>
-        <div>
-            Время процессора: {{dat.temperature?.timeStart | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
-        </div>
-        <div>
-            Время анализатора: {{dat.analysis?.actualTime | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
-        </div>
     </div>
     <div class="widget-container-main widget-container">
         <div class="widget-info widget-col">
             <div class="widget-info-container widget-container">
-                <temperature-boiling-component class="widget-info-boiling widget-col"
-                                               [time]="dat.analysis?.durationToBoilStr"></temperature-boiling-component>
-                <temperature-component class="widget-info-temperature widget-col"
-                                       [temperature]="dat.temperature?.temperature"></temperature-component>
+                <temperature-boiling-component
+                    class="widget-info-boiling widget-col"
+                    [durationToBoil]="durationToBoil$ | async"
+                    [timeBack]="timeBackStream$ | async"
+                    [timeProc]="timeProcStream$ | async"
+                    [timeMl]="timeMlStream$ | async"
+                ></temperature-boiling-component>
+                <temperature-component
+                    class="widget-info-temperature widget-col"
+                    [temperature]="temperatureCurrentStream$ | async"
+                    [scale]="scale"
+                ></temperature-component>
             </div>
         </div>
         <div class="widget-recommendations widget-col">

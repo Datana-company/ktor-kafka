@@ -20,7 +20,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    width: 4rem;
+    width: 8rem;
     height: 2rem;
     border-radius: 1rem;
     font-size: 1rem;
@@ -29,8 +29,8 @@
 }
 
 .status-indicator-on {
-    border: 1px solid green;
-    background-color: green;
+    border: 1px solid lawngreen;
+    background-color: lawngreen;
 }
 
 .status-indicator-off {

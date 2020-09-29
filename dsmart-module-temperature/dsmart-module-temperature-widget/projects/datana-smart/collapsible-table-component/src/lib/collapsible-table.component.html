@@ -1,0 +1,28 @@
+<div class="widget-collapsible-content">
+    <div class="collapsible-content-raw">
+        <div class="collapsible-content-cell">
+            Время текущее: {{ timeBack | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
+        </div>
+        <div class="collapsible-content-cell">
+            Относительно текущего: 0m 0s
+        </div>
+    </div>
+    <div class="collapsible-content-raw">
+        <div class="collapsible-content-cell">
+            Время процессора: {{ timeProc | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
+        </div>
+        <div class="collapsible-content-cell">
+            Относительно текущего: {{ timeProcDelta }}
+        </div>
+    </div>
+    <div class="collapsible-content-raw">
+        <div class="collapsible-content-cell">
+            Время анализатора: {{ timeMl | date : 'dd.MM.yyyy HH:mm:ss OOOO' }}
+        </div>
+        <div class="collapsible-content-cell">
+            Относительно текущего: {{ timeMlDelta }}
+        </div>
+    </div>
+</div>
+<div class="widget-collapsible-button">Раскрыть подробности</div>
+

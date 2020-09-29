@@ -7,7 +7,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    width: calc(100% - 2rem);
+    width: calc(100% - 2rem - 4px);
     height: 4rem;
     padding: 1rem;
     border: 2px solid DimGray;
@@ -20,13 +20,30 @@
 
 .widget-boiling-time {
     display: flex;
+    flex-direction: column;
     height: calc(100% - 6rem - 8px);
     align-items: center;
     justify-content: center;
     text-align: center;
-    width: 100%;
+    width: calc(100% - 4px);
     border: 2px solid DimGray;
     border-radius: 0 0 4px 4px;
     font-size: 3rem;
     font-weight: 500;
+}
+
+.widget-boiling-time-value {
+    height: calc(100% - 16rem - 4px);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.widget-collapsible-wrap {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: auto;
 }

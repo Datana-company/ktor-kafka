@@ -8,9 +8,13 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class TemperatureBoilingComponent implements OnInit {
 
-  @Input() time: string;
+  @Input() durationToBoil: string;
+  @Input() timeBack: Date;
+  @Input() timeProc: Date;
+  @Input() timeMl: Date;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
