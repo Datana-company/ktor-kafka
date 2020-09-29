@@ -84,12 +84,6 @@ export DOCKER_REGISTRY_HOST=registry.datana.ru
 export DOCKER_REGISTRY_HOST=registry.datana.ru
 export DOCKER_REGISTRY_USER=admin
 export DOCKER_REGISTRY_PASS=*****
-export KAFKA_BOOTSTRAP_SERVER=kafka-server1:9092
-export KAFKA_BOOTSTRAP_SERVER_1=kafka-server1:9092
-export KAFKA_BOOTSTRAP_SERVER_2=kafka-server1:9092
-#export KAFKA_CLIENT_ID
-export KAFKA_TOPIC_RAW=ui-temperature
-export KAFKA_TOPIC_ANALYSIS=temperature-ui-ml
 ./gradlew deploy
 ```
 
@@ -97,5 +91,19 @@ export KAFKA_TOPIC_ANALYSIS=temperature-ui-ml
 
 Из докера:
 ```bash
- docker run -p 8080:8080 
+ docker run -p 8080:8080
 ```
+
+## Переменные окружения
+
+```bash
+export KAFKA_BOOTSTRAP_SERVER=kafka-server1:9092
+export KAFKA_BOOTSTRAP_SERVER_1=kafka-server1:9092
+export KAFKA_BOOTSTRAP_SERVER_2=kafka-server1:9092
+#export KAFKA_CLIENT_ID
+export KAFKA_TOPIC_RAW=ui-temperature
+export KAFKA_TOPIC_ANALYSIS=temperature-ui-ml
+export SENSOR_ID=8e630dd0-5796-45e0-8d85-8a14c5d872dd
+```
+Дополнительные переменные см. в [datana-smart-logger](https://gitlab.dds.lanit.ru/datana_smart/datana-smart-common/datana-smart-logging#%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BE%D0%BA%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F-%D1%84%D0%B0%D0%B9%D0%BB%D0%B0-logbackxml)
+
