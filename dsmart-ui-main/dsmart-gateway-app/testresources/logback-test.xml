@@ -5,7 +5,7 @@
         </encoder>
     </appender>
 
-    <logger name="ru.datana" level="info" additivity="false">
+    <logger name="ru.datana" level="trace" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
 
