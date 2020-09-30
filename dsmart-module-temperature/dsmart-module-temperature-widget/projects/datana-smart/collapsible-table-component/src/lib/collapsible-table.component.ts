@@ -26,11 +26,11 @@ export class CollapsibleTableComponent implements OnInit {
   //   return d instanceof Date && !isNaN(d);
   // }
 
-  get timeProcDelta(): string {
+  get timeProcDelta(): number {
     return this.calculateTimeDelta(this.timeProc);
   }
 
-  get timeMlDelta(): string {
+  get timeMlDelta(): number {
     return this.calculateTimeDelta(this.timeMl);
   }
 
@@ -47,20 +47,8 @@ export class CollapsibleTableComponent implements OnInit {
 
   calculateTimeDelta = (time: Date) => {
     if (this.timeBack && time) {
-      const deltaInMilliseconds = Math.floor(time.getTime() - this.timeBack.getTime());
-      const secs = Math.floor(deltaInMilliseconds / 1000);
-      const millisecs = deltaInMilliseconds - secs * 1000;
-      const millisecsFormatted = this.formatNumberToFixedNumberOfDigits(millisecs, 3);
-      return `${secs}.${millisecsFormatted}`;
+      return (time.getTime() - this.timeBack.getTime()) / 1000;
     }
-    return '';
-  }
-
-  formatNumberToFixedNumberOfDigits = (num, length) => {
-    let result = '' + num;
-    while (result.length < length) {
-      result = '0' + result;
-    }
-    return result;
+    return null;
   }
 }
