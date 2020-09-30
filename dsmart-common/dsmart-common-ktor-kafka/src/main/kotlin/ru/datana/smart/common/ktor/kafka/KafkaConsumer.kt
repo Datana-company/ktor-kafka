@@ -31,7 +31,7 @@ import kotlin.coroutines.CoroutineContext
  * @param maxFrameSize maximum frame that could be received or sent
  * @param masking whether masking need to be enabled (useful for security)
  */
-class DatanaKafkaConsumer(
+class KafkaConsumer(
     val paramKafkaConsumer: KafkaConsumer<String, String>
 ) : CoroutineScope {
     private val parent: CompletableJob = Job()
@@ -56,10 +56,10 @@ class DatanaKafkaConsumer(
     /**
      * Feature installation object
      */
-    companion object Feature : ApplicationFeature<Application, KafkaOptions, DatanaKafkaConsumer> {
-        override val key = AttributeKey<DatanaKafkaConsumer>("Kafka")
+    companion object Feature : ApplicationFeature<Application, KafkaOptions, KafkaConsumer> {
+        override val key = AttributeKey<KafkaConsumer>("Kafka")
 
-        override fun install(pipeline: Application, configure: KafkaOptions.() -> Unit): DatanaKafkaConsumer {
+        override fun install(pipeline: Application, configure: KafkaOptions.() -> Unit): KafkaConsumer {
             val config = KafkaOptions().also(configure)
             with(config) {
                 val kafkaConsumer = createConsumer(kafkaBrokersAsString, kafkaGroupId, kafkaClientId)
@@ -70,7 +70,7 @@ class DatanaKafkaConsumer(
                 pipeline.environment.monitor.subscribe(ApplicationStopPreparing) {
                     kafkaConsumer.close()
                 }
-                return DatanaKafkaConsumer(kafkaConsumer)
+                return KafkaConsumer(kafkaConsumer)
 
             }
 

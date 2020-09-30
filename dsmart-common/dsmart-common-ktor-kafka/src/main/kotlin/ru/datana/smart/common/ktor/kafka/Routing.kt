@@ -9,9 +9,9 @@ import java.time.Duration
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
-fun Route.kafka(protocol: String? = null, handler: suspend () -> Unit) {
+fun Route.kafka(topics: Collection<String>, handler: suspend KafkaConsumerContex.() -> Unit) {
     val kafka = application.feature(DatanaKafkaConsumer) // early require
-
+    val kafkaConsumerContex = KafkaConsumerContex()
     val closed = AtomicBoolean(false)
     val consumer = buildConsumer(this@module.environment)
     launch {

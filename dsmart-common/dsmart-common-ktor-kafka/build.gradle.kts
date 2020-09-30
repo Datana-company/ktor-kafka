@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
 }
 
-group = rootProject
+group = rootProject.group
 version = rootProject.version
 
 repositories {
