@@ -47,11 +47,20 @@ export class CollapsibleTableComponent implements OnInit {
 
   calculateTimeDelta = (time: Date) => {
     if (this.timeBack && time) {
-      const mins = Math.floor((this.timeBack.getTime() - time.getTime()) / 60000.0);
-      const secs = Math.floor((this.timeBack.getTime() - time.getTime()) / 1000.0) - mins * 60;
-      return `${mins}m ${secs}s`;
+      const deltaInMilliseconds = Math.floor(time.getTime() - this.timeBack.getTime());
+      const secs = Math.floor(deltaInMilliseconds / 1000);
+      const millisecs = deltaInMilliseconds - secs * 1000;
+      const millisecsFormatted = this.formatNumberToFixedNumberOfDigits(millisecs, 3);
+      return `${secs}.${millisecsFormatted}`;
     }
     return '';
   }
 
+  formatNumberToFixedNumberOfDigits = (num, length) => {
+    let result = '' + num;
+    while (result.length < length) {
+      result = '0' + result;
+    }
+    return result;
+  }
 }

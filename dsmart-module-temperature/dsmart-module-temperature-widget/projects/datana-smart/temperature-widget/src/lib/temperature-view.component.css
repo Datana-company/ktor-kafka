@@ -22,7 +22,7 @@
 .widget-container-main {
     height: calc(0.5rem + 6 * (6.5rem + 8px));
     margin-top: 1%;
-    min-width: 800px;
+    min-width: 1360px;
 }
 
 .widget-container {
