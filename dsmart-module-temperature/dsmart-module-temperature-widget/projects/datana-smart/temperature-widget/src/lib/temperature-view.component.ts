@@ -123,14 +123,14 @@ export class TemperatureViewComponent implements OnInit {
     this.durationToBoil$ = this.analysisStream$.pipe(
       map(({actualTime, backendTime, durationToBoil, state}: AnalysisModel) => {
         return state.id === 'switchedOn'
-          ? actualTime.getMilliseconds() + durationToBoil - backendTime.getMilliseconds()
+          ? actualTime.getTime() + durationToBoil - backendTime.getTime()
           : null;
       }),
       map(duration => {
         if (duration == null) { return null; }
         const durationSecs = duration / 1000;
-        const mins = durationSecs / 60;
-        const secs = durationSecs % 60;
+        const mins = Math.round(durationSecs / 60);
+        const secs = Math.round(durationSecs % 60);
         return `${mins}m ${secs}s`;
       })
     );
