@@ -1,11 +1,7 @@
 package ru.datana.smart.common.ktor.kafka
 
-
-import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlin.test.Test
-import kotlin.test.assertEquals
-
 
 internal class KafkaTest {
 

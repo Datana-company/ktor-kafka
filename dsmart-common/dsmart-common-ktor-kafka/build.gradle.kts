@@ -15,6 +15,7 @@ dependencies {
     implementation(kotlin("stdlib"))
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
+
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
 
     implementation("ch.qos.logback:logback-classic:1.2.3")
@@ -25,6 +26,7 @@ dependencies {
     //kostya
     api("io.ktor:ktor-gson:$ktorVersion")
 
+    testImplementation("io.ktor:ktor-server-netty:$ktorVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
     //end kostya
 }
