@@ -3,18 +3,18 @@ package ru.datana.smart.common.ktor.kafka
 import io.ktor.application.feature
 import io.ktor.routing.Route
 import io.ktor.routing.application
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.util.concurrent.atomic.AtomicBoolean
 
-fun Route.kafka(topics: Collection<String>, handle: suspend CustomKafkaConsumerContext.() -> Unit) {
+fun Route.kafka(topics: Collection<String>, handle: suspend KtorKafkaConsumerContext.() -> Unit) {
 
-    val consumer = application.feature(CustomKafkaConsumer).kafkaConsumer
-    val kafkaConsumerContext = CustomKafkaConsumerContext(topics)
+    val feature = application.feature(KtorKafkaConsumer)
+    val consumer = feature.kafkaConsumer
+    val kafkaConsumerContext = KtorKafkaConsumerContext(topics)
     val closed = AtomicBoolean(false)
 
-    GlobalScope.launch {
+    feature.launch {
         try {
             while (!closed.get()) {
                 consumer.subscribe(topics)

@@ -10,11 +10,10 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
 
-    install(CustomKafkaConsumer) {
+    install(KtorKafkaConsumer) {
         kafkaBrokersAsString = "172.29.40.58:9092"
         kafkaClientId = "ui-client-kafka"
         kafkaGroupId = "ui-app-kafka"
-//        kafkaTopicForListener = listOf("ui-temperature")
     }
 
     routing {

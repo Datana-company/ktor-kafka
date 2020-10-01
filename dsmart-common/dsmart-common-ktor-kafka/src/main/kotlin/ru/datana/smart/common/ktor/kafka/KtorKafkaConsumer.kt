@@ -1,21 +1,27 @@
 package ru.datana.smart.common.ktor.kafka
 
-
 import io.ktor.application.Application
 import io.ktor.application.ApplicationFeature
 import io.ktor.application.ApplicationStopPreparing
 import io.ktor.util.AttributeKey
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.StringDeserializer
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
-class CustomKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) {
+class KtorKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) : CoroutineScope {
 
-//    : CoroutineScope {
-//    private val parent: CompletableJob = Job()
-//
-//    override val coroutineContext: CoroutineContext
-//        get() = parent
+    private val parent: CompletableJob = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = parent
+
+    private fun shutdown() {
+        parent.complete()
+    }
 
     /**
      * Kafka configuration options
@@ -24,16 +30,15 @@ class CustomKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) {
         var kafkaBrokersAsString: String = "localhost:9092"
         var kafkaClientId: String = "ui-client-kafka"
         var kafkaGroupId: String = "ui-app-kafka"
-//        var kafkaTopicForListener: Collection<String> = listOf("ui-temperature")
     }
 
     /**
      * Feature installation object
      */
-    companion object Feature : ApplicationFeature<Application, KafkaOptions, CustomKafkaConsumer> {
-        override val key = AttributeKey<CustomKafkaConsumer>("Kafka")
+    companion object Feature : ApplicationFeature<Application, KafkaOptions, KtorKafkaConsumer> {
+        override val key = AttributeKey<KtorKafkaConsumer>("Kafka")
 
-        override fun install(pipeline: Application, configure: KafkaOptions.() -> Unit): CustomKafkaConsumer {
+        override fun install(pipeline: Application, configure: KafkaOptions.() -> Unit): KtorKafkaConsumer {
             val config = KafkaOptions().apply { configure() }
             val kafkaConsumer = config.run {
                 createConsumer(
@@ -41,12 +46,14 @@ class CustomKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) {
                     kafkaGroupId,
                     kafkaClientId
                 )
-//                    .apply { subscribe(kafkaTopicForListener) }
             }
+            val ktorKafkaConsumer = KtorKafkaConsumer(kafkaConsumer)
+
             pipeline.environment.monitor.subscribe(ApplicationStopPreparing) {
-                kafkaConsumer.close()
+//                kafkaConsumer.close()
+                ktorKafkaConsumer.shutdown()
             }
-            return CustomKafkaConsumer(kafkaConsumer)
+            return ktorKafkaConsumer
         }
     }
 }
