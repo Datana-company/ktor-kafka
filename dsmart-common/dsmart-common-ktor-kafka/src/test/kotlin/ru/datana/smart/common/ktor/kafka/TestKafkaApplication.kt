@@ -18,9 +18,7 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
         kafkaListen(listOf("ui-temperature")) {
-            records?.iterator()?.forEach {
-                println(it)
-            }
+            records?.iterator()?.forEach { println(it) }
         }
     }
 }
