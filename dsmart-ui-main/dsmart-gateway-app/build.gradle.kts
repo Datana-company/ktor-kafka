@@ -37,7 +37,7 @@ docker {
     javaApplication {
         baseImage.set("adoptopenjdk/openjdk11:alpine-jre")
         maintainer.set(projectMaintainer)
-        ports.set(listOf(11000))
+        ports.set(listOf(8080))
         images.set(listOf(
             "${dockerParams.imageName}:${project.version}",
             "${dockerParams.imageName}:latest"

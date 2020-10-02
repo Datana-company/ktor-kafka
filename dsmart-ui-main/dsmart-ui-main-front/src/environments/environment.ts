@@ -5,7 +5,7 @@
 export const environment = {
     production: false,
     ws: `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.hostname}:${location.port}/${location.pathname}/ws`
-    // ws: 'http://0.0.0.0:11000/ws'
+    // ws: 'http://0.0.0.0:8080/ws'
 };
 
 /*

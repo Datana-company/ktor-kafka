@@ -24,7 +24,7 @@
 //    fun main(args: Array<String>) {
 //        runBlocking {
 //            val client = HttpClient(CIO).config { install(WebSockets) }
-//            client.ws(method = HttpMethod.Get, host = "127.0.0.1", port = 11000, path = "/myws/echo") {
+//            client.ws(method = HttpMethod.Get, host = "127.0.0.1", port = 8080, path = "/myws/echo") {
 //                send(Frame.Text("Hello World"))
 //                for (message in incoming.map { it as? Frame.Text }.filterNotNull()) {
 //                    println("Server said: " + message.readText())
