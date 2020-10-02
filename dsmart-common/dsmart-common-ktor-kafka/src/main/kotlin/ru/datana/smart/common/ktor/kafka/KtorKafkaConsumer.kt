@@ -28,8 +28,8 @@ class KtorKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) : Coro
      */
     class KafkaOptions {
         var kafkaBrokersAsString: String = "localhost:9092"
-        var kafkaClientId: String = "ui-client-kafka"
-        var kafkaGroupId: String = "ui-app-kafka"
+        var kafkaClientId: String = "kafkaClientId"
+        var kafkaGroupId: String = "kafkaGroupId"
     }
 
     /**
@@ -50,7 +50,7 @@ class KtorKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) : Coro
             val ktorKafkaConsumer = KtorKafkaConsumer(kafkaConsumer)
 
             pipeline.environment.monitor.subscribe(ApplicationStopPreparing) {
-//                kafkaConsumer.close()
+                kafkaConsumer.close()
                 ktorKafkaConsumer.shutdown()
             }
             return ktorKafkaConsumer
