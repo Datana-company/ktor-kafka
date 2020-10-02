@@ -236,23 +236,5 @@ private fun TemperatureMlUiDto.State.toWs() = when(this) {
     )
 }
 
-@OptIn(KtorExperimentalAPI::class)
-fun buildConsumer(environment: ApplicationEnvironment): KafkaConsumer<String, String> {
-    val consumerConfig = environment.config.config("ktor.kafka.consumer")
-    val kafkaConfig = environment.config.config("ktor.kafka")
-    val consumerProps = Properties().apply {
-        put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.property("bootstrap.servers").getList())
-        put(ConsumerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString())
-
-        put(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString())
-//        put(ConsumerConfig.GROUP_ID_CONFIG, consumerConfig.property("group.id").getString())
-//        this[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("key.deserializer").getString()
-//        this[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("value.deserializer").getString()
-        put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
-        put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
-    }
-    return KafkaConsumer<String, String>(consumerProps)
-}
-
 private val lastTimeProc = AtomicLong(0)
 private val lastTimeMl = AtomicLong(0)
