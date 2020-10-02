@@ -11,13 +11,13 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module(testing: Boolean = false) {
 
     install(KtorKafkaConsumer) {
-        kafkaBrokersAsString = "172.29.40.58:9092"
+        kafkaBrokers = listOf("172.29.40.58:9092")
         kafkaClientId = "ui-client-kafka"
         kafkaGroupId = "ui-app-kafka"
     }
 
     routing {
-        kafkaListen(listOf("ui-temperature")) {
+        kafka(listOf("ui-temperature")) {
             records?.iterator()?.forEach { println(it) }
         }
     }

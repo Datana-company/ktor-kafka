@@ -1,9 +1,14 @@
 package ru.datana.smart.common.ktor.kafka
 
+import com.typesafe.config.ConfigFactory
 import io.ktor.application.Application
 import io.ktor.application.ApplicationFeature
 import io.ktor.application.ApplicationStopPreparing
+import io.ktor.config.HoconApplicationConfig
+import io.ktor.config.MapApplicationConfig
+import io.ktor.server.engine.applicationEngineEnvironment
 import io.ktor.util.AttributeKey
+import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -27,24 +32,29 @@ class KtorKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) : Coro
      * Kafka configuration options
      */
     class KafkaOptions {
-        var kafkaBrokersAsString: String = "localhost:9092"
-        var kafkaClientId: String = "kafkaClientId"
-        var kafkaGroupId: String = "kafkaGroupId"
+        var kafkaBrokers: Collection<String>? = null
+        var kafkaClientId: String? = null
+        var kafkaGroupId: String? = null
+        var kafkaKeyDeserializer: Class<Any>? = null
+        var kafkaValueDeserializer: Class<Any>? = null
     }
 
     /**
      * Feature installation object
      */
     companion object Feature : ApplicationFeature<Application, KafkaOptions, KtorKafkaConsumer> {
-        override val key = AttributeKey<KtorKafkaConsumer>("Kafka")
+        override val key = AttributeKey<KtorKafkaConsumer>("KafkaConsumer")
 
+        @KtorExperimentalAPI
         override fun install(pipeline: Application, configure: KafkaOptions.() -> Unit): KtorKafkaConsumer {
-            val config = KafkaOptions().apply { configure() }
-            val kafkaConsumer = config.run {
+            val kafkaOptions = KafkaOptions().apply(configure)
+            val kafkaConsumer = kafkaOptions.run {
                 createConsumer(
-                    kafkaBrokersAsString,
+                    kafkaBrokers,
                     kafkaGroupId,
-                    kafkaClientId
+                    kafkaClientId,
+                    kafkaKeyDeserializer,
+                    kafkaValueDeserializer
                 )
             }
             val ktorKafkaConsumer = KtorKafkaConsumer(kafkaConsumer)
@@ -58,17 +68,21 @@ class KtorKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) : Coro
     }
 }
 
-fun createConsumer(
-    brokers: String,
-    kafkaGroupId: String,
-    kafkaClientId: String
+@KtorExperimentalAPI
+private fun createConsumer(
+    kafkaBrokers: Collection<String>?,
+    kafkaGroupId: String?,
+    kafkaClientId: String?,
+    kafkaKeyDeserializer: Class<Any>?,
+    kafkaValueDeserializer: Class<Any>?
 ): KafkaConsumer<String, String> {
+    val appConfig = HoconApplicationConfig(ConfigFactory.load())
     val props = Properties()
-    props["bootstrap.servers"] = brokers
-    props["group.id"] = kafkaGroupId
-    props["client.id"] = kafkaClientId
-    props["key.deserializer"] = StringDeserializer::class.java
-    props["value.deserializer"] = StringDeserializer::class.java
+    props["bootstrap.servers"] = kafkaBrokers ?: appConfig.property("ktor.kafka.bootstrap.servers").getList()
+    props["group.id"] = kafkaGroupId ?: appConfig.property("ktor.kafka.consumer.group.id").getString()
+    props["client.id"] = kafkaClientId ?: appConfig.property("ktor.kafka.consumer.client.id").getString()
+    props["key.deserializer"] = kafkaKeyDeserializer ?: StringDeserializer::class.java
+    props["value.deserializer"] = kafkaValueDeserializer ?: StringDeserializer::class.java
     return KafkaConsumer(props)
 }
 
