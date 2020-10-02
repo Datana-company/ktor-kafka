@@ -33,7 +33,7 @@ fun Route.kafka(topics: Collection<String>, handle: suspend KtorKafkaConsumerCon
             log.debug("Caught exception: {}", e.stackTrace)
             when (e) {
                 is WakeupException -> log.debug("Consumer waked up")
-                else -> log.debug("Polling failed, caught exception: {}", e)
+                else -> log.debug("Polling failed, caught exception: {}", e.stackTrace)
             }
         } finally {
             log.debug("Commit offset synchronously")
