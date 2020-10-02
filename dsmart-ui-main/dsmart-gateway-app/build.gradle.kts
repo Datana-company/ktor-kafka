@@ -69,10 +69,9 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
+    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
-
-    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
