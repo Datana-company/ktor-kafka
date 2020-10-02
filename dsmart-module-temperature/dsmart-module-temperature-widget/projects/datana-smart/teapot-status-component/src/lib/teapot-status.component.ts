@@ -15,8 +15,8 @@ export class TeapotStatusComponent implements OnInit {
   _statusStyle: string;
   get statusStyle(): string {
     // return new Date().getSeconds() % 2 === 0 ? 'status-indicator-on' : 'status-indicator-off';
-    return status === undefined || status === null ? 'status-indicator-unknown'
-      : status ? 'status-indicator-on' : 'status-indicator-off';
+    return this.status === undefined || this.status === null ? 'status-indicator-unknown'
+      : this.status ? 'status-indicator-on' : 'status-indicator-off';
   }
 
   constructor() {
