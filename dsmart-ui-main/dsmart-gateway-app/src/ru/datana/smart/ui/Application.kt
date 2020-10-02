@@ -92,9 +92,9 @@ fun Application.module(testing: Boolean = false) {
 
     install(KtorKafkaConsumer)
 
-    val topicRaw: String by lazy { environment.config.property("ktor.kafka.consumer.topic.raw").getString()?.trim() }
-    val topicAnalysis: String by lazy { environment.config.property("ktor.kafka.consumer.topic.analysis").getString()?.trim() }
-    val sensorId: String by lazy { environment.config.property("ktor.datana.sensor.id").getString()?.trim() }
+    val topicRaw by lazy { environment.config.property("ktor.kafka.consumer.topic.raw").getString()?.trim() }
+    val topicAnalysis by lazy { environment.config.property("ktor.kafka.consumer.topic.analysis").getString()?.trim() }
+    val sensorId by lazy { environment.config.property("ktor.datana.sensor.id").getString()?.trim() }
 
     routing {
         static("/") {
