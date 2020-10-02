@@ -24,7 +24,10 @@ fun Route.kafka(topics: Collection<String>, handle: suspend KtorKafkaConsumerCon
                 val records = consumer.poll(Duration.ofSeconds(1))
                 if (!records.isEmpty) {
                     log.debug("Pulled records: {}", records.count())
-                    KtorKafkaConsumerContext(records).handle()
+                    KtorKafkaConsumerContext(records).apply {
+                        handle()
+                        commitAsync(consumer, log)
+                    }
                 } else {
                     log.debug("No records pulled")
                 }

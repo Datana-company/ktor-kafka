@@ -25,6 +25,8 @@ import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.ml.models.TemperatureMlUiDto
 import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
 import ru.datana.smart.ui.temperature.ws.models.*
+import ru.datana.smart.common.ktor.kafka.kafka
+import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -81,12 +83,18 @@ fun Application.module(testing: Boolean = false) {
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
 
-    install(io.ktor.websocket.WebSockets) {
+    install(WebSockets) {
         pingPeriod = Duration.ofSeconds(15)
         timeout = Duration.ofSeconds(15)
         maxFrameSize = Long.MAX_VALUE
         masking = false
     }
+
+    install(KtorKafkaConsumer)
+
+    val topicRaw by lazy { environment.config.property("ktor.kafka.consumer.topic.raw").getString()?.trim() }
+    val topicAnalysis by lazy { environment.config.property("ktor.kafka.consumer.topic.analysis").getString()?.trim() }
+    val sensorId: String by lazy { environment.config.property("ktor.datana.sensor.id").getString()?.trim() }
 
     routing {
         static("/") {
@@ -107,71 +115,30 @@ fun Application.module(testing: Boolean = false) {
                 wsSessions -= this
             }
         }
-    }
 
-    val topicRaw by lazy { environment.config.property("ktor.kafka.consumer.topic.raw").getString()?.trim() }
-    val topicAnalysis by lazy { environment.config.property("ktor.kafka.consumer.topic.analysis").getString()?.trim() }
-    val sensorId: String by lazy { environment.config.property("ktor.datana.sensor.id").getString()?.trim() }
-    val consumer by lazy {
-        buildConsumer(this@module.environment).apply {
-            subscribe(listOf(
-                topicRaw,
-                topicAnalysis
-            ))
-        }
-    }
-
-    launch {
-//        while (!closed.get()) {
-        while (true) {
-            try {
-                val records = consumer.poll(Duration.of(1000, ChronoUnit.MILLIS))
-
-                val recs = records.toList()
-                log.trace("Got from Kafka ${recs.size} messages from topic ${recs.firstOrNull()?.topic()} of $topicRaw")
-
-                recs
-                    .firstOrNull { it.topic() == topicRaw }
-                    ?.let { record ->
-                        log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
-                        parseKafkaInputTemperature(record.value(), sensorId)
-                    }
-                    ?.takeIf {
-                        it.data?.temperatureAverage?.isFinite() ?: false
-                    }
-                    ?.also { temp -> sendToAll(temp) }
-
-                recs
-                    .firstOrNull { it.topic() == topicAnalysis }
-                    ?.let { record ->
-                        log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
-                        parseKafkaInputAnalysis(record.value(), sensorId)
-                    }
-                    ?.takeIf {
-                        it.data?.timeActual != null
-                    }
-                    ?.also { temp -> sendToAll(temp) }
-
-                if (!records.isEmpty) {
-                    consumer.commitAsync { offsets, exception ->
-                        if (exception != null) {
-                            log.error("Commit failed for offsets $offsets", exception)
-                        } else {
-                            log.trace("Offset committed  $offsets")
-                        }
-                    }
+        kafka(listOf(topicRaw, topicAnalysis)) {
+            records
+                .firstOrNull { it.topic() == topicRaw }
+                ?.let { record ->
+                    log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
+                    parseKafkaInputTemperature(record.value(), sensorId)
                 }
-                log.debug("Finish consuming")
-            } catch (e: WakeupException) {
-                log.info("Consumer waked up")
-            } catch (e: Throwable) {
-                log.error("Polling failed", e)
-            }
+                ?.takeIf {
+                    it.data?.temperatureAverage?.isFinite() ?: false
+                }
+                ?.also { temp -> sendToAll(temp) }
+
+            records
+                .firstOrNull { it.topic() == topicAnalysis }
+                ?.let { record ->
+                    log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
+                    parseKafkaInputAnalysis(record.value(), sensorId)
+                }
+                ?.takeIf {
+                    it.data?.timeActual != null
+                }
+                ?.also { temp -> sendToAll(temp) }
         }
-        log.info("Commit offset synchronously")
-        consumer.commitSync()
-        consumer.close()
-        log.info("Consumer successfully closed")
     }
 }
 

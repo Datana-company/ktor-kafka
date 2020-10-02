@@ -59,6 +59,7 @@ dependencies {
     implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ws-models"))
 //    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-kf-models"))
     implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ml-models"))
+    implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
     api("ru.datana.smart:datana-smart-logging-core:0.0.5")
 
@@ -71,7 +72,6 @@ dependencies {
 
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 
-    //Kafka
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 }
 
