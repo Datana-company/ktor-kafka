@@ -1,0 +1,13 @@
+<div class="widget-boiling">
+    <div class="widget-boiling-label">
+        Чайник закипит через
+    </div>
+    <div class="widget-boiling-time">
+        <div class="widget-boiling-time-value">{{ durationToBoil }}</div>
+        <collapsible-table class="widget-collapsible-wrap"
+                           [timeBack]="timeBack"
+                           [timeProc]="timeProc"
+                           [timeMl]="timeMl"
+        ></collapsible-table>
+    </div>
+</div>

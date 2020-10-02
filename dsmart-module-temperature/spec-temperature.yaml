@@ -1,0 +1,146 @@
+openapi: 3.0.3
+info:
+    title: Транспортные модели для Чайника
+    description: 'Транспортные модели для связи различных компонентов IoT-прототипа Чайника'
+    contact:
+        email: okatov@datana.ru
+    license:
+        name: Proprietar
+    version: 0.0.1
+#externalDocs:
+#  description: Find out more about Swagger
+#  url: http://swagger.io
+#servers:
+#- url: http://localhost
+# tags:
+#     - name: processing-interpretation
+#       description: Коммуникация между процессингом данных и ML-интерпретатором
+#     - name: interpretation-ui
+#       description: Коммуникация между ML-интерпретатором данных и интерфейсом пользователя
+#     - name: processing-ui
+#       description: Коммуникация между процессингом и интерфейсом пользователя
+
+paths:
+    /tmp:
+        get:
+            responses:
+                200:
+                    description: tmp
+                    content: {}
+
+components:
+
+    schemas:
+
+        TemperatureProcMlDto:
+            description: Структура данных, которая отдается flink-процессингом модулю анализа (ML)
+            type: object
+            properties:
+                version:
+                    description: Версия формата данных
+                    type: string
+                periodAveraging:
+                    description: Длительность времени в миллисекундах за которое усредняется температура
+                    type: integer
+                    format: int64
+                sensorId:
+                    description: Идентификатор сенсора, для которого подготовлена агрегация
+                    type: string
+                temperatureScale:
+                    $ref: '#/components/schemas/TemperatureScale'
+                timeIntervalLatest:
+                    description: Самая поздняя точка временного интервала, для которого производится агрегация
+                    type: integer
+                    format: int64
+                timeIntervalEarliest:
+                    description: Самая ранняя точка временного интервала, для которого производится агрегация
+                    type: integer
+                    format: int64
+                data:
+                    description: Массив данных по температуре
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TemperatureProcMlItemDto'
+
+        TemperatureProcMlItemDto:
+            description: Элемент массива, который отдается в [[TemperatureML]]
+            type: object
+            properties:
+                time:
+                    description: Время конца периода усреднения температуры в миллисекундах от начала Unix-эпохи в UTC
+                    type: string
+                temperature:
+                    description: Температура в цельсиях, усредненная по периоду усреднения
+                    type: number
+                    format: double
+
+        TemperatureMlUiDto:
+            description: Структура, которая отправляется из ML-модуля в интерфейс пользователя с результатами анализа
+            type: object
+            properties:
+                version:
+                    type: string
+                    description: Версия протокола
+                timeActual:
+                    description: Текущее время по версии ML-модуля
+                    type: integer
+                    format: int64
+                durationToBoil:
+                    description: Длительность ожидания до закипания чайника
+                    type: integer
+                    format: int64
+                sensorId:
+                    description: Идентификатор сенсора, для которого выполнена аналитика
+                    type: string
+                temperatureScale:
+                    $ref: '#/components/schemas/TemperatureScale'
+                temperatureLast:
+                    description: Последняя актуальная температура по версии модуля ML
+                    type: number
+                    format: double
+                state:
+                    type: string
+                    enum:
+                        - unknown
+                        - switchedOn
+                        - switchedOff
+
+        TemperatureProcUiDto:
+            description: Структура данных, которая отдается из flink-процессинга на UI
+            type: object
+            properties:
+                version:
+                    type: string
+                sensorId:
+                    description: Идентификатор сенсора, для которого подготовлена агрегация
+                    type: string
+                timeIntervalLatest:
+                    description: Самая поздняя точка временного интервала, для которого производится агрегация
+                    type: integer
+                    format: int64
+                timeIntervalEarliest:
+                    description: Самая ранняя точка временного интервала, для которого производится агрегация
+                    type: integer
+                    format: int64
+                temperatureScale:
+                    $ref: '#/components/schemas/TemperatureScale'
+                temperatureAverage:
+                    description: Средняя температура за период между [[timeIntervalEarliest]] и [[timeIntervalLatest]]
+                    type: number
+                    format: double
+                temperatureMin:
+                    description: Минимальная температура за период между [[timeIntervalEarliest]] и [[timeIntervalLatest]]
+                    type: number
+                    format: double
+                temperatureMax:
+                    description: Максимальная температура за период между [[timeIntervalEarliest]] и [[timeIntervalLatest]]
+                    type: number
+                    format: double
+
+        TemperatureScale:
+            description: "Шкала температуры: C - Цельсия, K - Кельвина, F - Фаренгейта"
+            type: string
+            enum:
+                - c
+                - k
+                - f

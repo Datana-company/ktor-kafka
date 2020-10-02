@@ -1,28 +1,28 @@
 import org.gradle.api.Project
 
 class DockerParams(
-    val dockerPort: String?,
-    val dockerHost: String?,
-    val dockerUser: String?,
-    val dockerPass: String?,
-    val projectName: String,
-    val projectVersion: String
+    dockerPort: String?,
+    dockerHost: String?,
+    dockerUser: String?,
+    dockerPass: String?,
+    projectName: String,
+    projectVersion: String
 ) {
 
-    val dockerFullPort
-        get() = dockerPort?.let { ":$it" } ?: ""
+    val dockerFullPort = dockerPort?.trim()?.let { ":$it" } ?: ""
 
-    val dockerFullHost
-        get() = dockerHost?.plus("$dockerFullPort/") ?: ""
+    val dockerFullHost = dockerHost?.trim()?.plus("$dockerFullPort/") ?: ""
 
     val dockerUrl
         get() = "https://$dockerFullHost/v1/"
 
-    val appName
-        get() = projectName
+    val appName = projectName.trim()
 
-    val imageName
-        get() = "$dockerFullHost$appName"
+    val imageName = "$dockerFullHost$appName"
+
+    val dockerUser = dockerUser?.trim()
+
+    val dockerPass = dockerPass?.trim()
 
 }
 

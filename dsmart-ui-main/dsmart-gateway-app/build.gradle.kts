@@ -1,10 +1,8 @@
-import org.jetbrains.kotlin.gradle.dsl.Coroutines
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 val ktorVersion: String by project
 val kotlinVersion: String by project
 val logbackVersion: String by project
 val serializationVersion: String by project
+val kafkaVersion: String by project
 val frontConfig = "staticFront"
 val projectMaintainer: String by project
 
@@ -52,15 +50,17 @@ repositories {
     mavenLocal()
     jcenter()
     maven { url = uri("https://kotlin.bintray.com/ktor") }
+    maven { url = uri("https://nexus.datana.ru/repository/datana-release/") }
 }
 
 dependencies {
 
     // TODO Временная зависимость. Должна уйти в dsmart-module-temperature
     implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ws-models"))
-    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-kf-models"))
+//    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-kf-models"))
+    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ml-models"))
 
-//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
+    api("ru.datana.smart:datana-smart-logging-core:0.0.5")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -68,16 +68,11 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
-//    implementation("io.ktor:ktor-client-core:$ktorVersion")
-//    implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
-//    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-//    implementation("io.ktor:ktor-client-websockets:$ktorVersion")
-//    implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
 
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 
     //Kafka
-    implementation("org.apache.kafka:kafka-clients:2.5.0")
+    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
@@ -108,5 +103,11 @@ tasks {
     create("deploy") {
         group = "build"
         dependsOn(dockerPushImage)
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            targetCompatibility = "11"
+        }
     }
 }

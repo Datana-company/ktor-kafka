@@ -1,5 +1,7 @@
 package ru.datana.smart.ui
 
+import ch.qos.logback.classic.Logger
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -12,21 +14,24 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.errors.WakeupException
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.event.Level
-import ru.datana.smart.ui.temperature.kf.models.KfDsmartTemperatureData
-import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseTemperature
-import ru.datana.smart.ui.temperature.ws.models.WsDsmartTemperatures
+import ru.datana.smart.common.transport.models.ws.IWsDsmartResponse
+import ru.datana.smart.logger.datanaLogger
+import ru.datana.smart.ui.ml.models.TemperatureMlUiDto
+import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
+import ru.datana.smart.ui.temperature.ws.models.*
 import java.time.Duration
+import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
+import kotlin.math.max
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -34,14 +39,29 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
     val wsSessions = ConcurrentHashMap.newKeySet<DefaultWebSocketSession>()
+    val log = datanaLog()
+    val json = Json {
+        encodeDefaults = true
+    }
 
-    suspend fun sendToAll(data: WsDsmartResponseTemperature) {
-        log.trace("sending temperature: $data")
-        wsSessions.forEach {
-            log.trace("sending to client ${it.hashCode()}")
-            val jsonString = Json.encodeToString(data)
-            log.trace("Sending $jsonString")
-            it.send(jsonString)
+    suspend fun sendToAll(data: IWsDsmartResponse<*>) {
+        log.trace("sending to client: $data")
+        val wsSessionsIterator = wsSessions.iterator()
+        while (wsSessionsIterator.hasNext()) {
+            wsSessionsIterator.next().apply {
+                try {
+                    val jsonString = when(data) {
+                        is WsDsmartResponseTemperature -> json.encodeToString(WsDsmartResponseTemperature.serializer(), data)
+                        is WsDsmartResponseAnalysis -> json.encodeToString(WsDsmartResponseAnalysis.serializer(), data)
+                        else -> throw RuntimeException("Unknown type of data")
+                    }
+                    log.trace("Sending to client ${hashCode()}: $jsonString")
+                    send(jsonString)
+                } catch (e: Throwable) {
+                    log.error("Session ${hashCode()} is removed due to exception {}", e)
+                    wsSessionsIterator.remove()
+                }
+            }
         }
     }
 
@@ -78,14 +98,7 @@ fun Application.module(testing: Boolean = false) {
             println("onConnect")
             wsSessions += this
             try {
-//                incoming.consume { }
-                for (frame in incoming) {
-//                    if (frame is Frame.Text) {
-//                        val message = frame.readText()
-//                        log.info("A message is received: $message")
-//                        send(Frame.Text("{\"event\": \"update-texts\", \"data\": \"Server received a message\"}"))
-//                    }
-                }
+                for (frame in incoming) { }
             } catch (e: ClosedReceiveChannelException) {
                 println("onClose ${closeReason.await()}")
             } catch (e: Throwable) {
@@ -96,21 +109,46 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-    val closed = AtomicBoolean(false)
-    val consumer = buildConsumer(this@module.environment)
+    val topicRaw by lazy { environment.config.property("ktor.kafka.consumer.topic.raw").getString()?.trim() }
+    val topicAnalysis by lazy { environment.config.property("ktor.kafka.consumer.topic.analysis").getString()?.trim() }
+    val sensorId: String by lazy { environment.config.property("ktor.datana.sensor.id").getString()?.trim() }
+    val consumer by lazy {
+        buildConsumer(this@module.environment).apply {
+            subscribe(listOf(
+                topicRaw,
+                topicAnalysis
+            ))
+        }
+    }
+
     launch {
-        try {
-            while (!closed.get()) {
+//        while (!closed.get()) {
+        while (true) {
+            try {
                 val records = consumer.poll(Duration.of(1000, ChronoUnit.MILLIS))
 
-                records
-                    .firstOrNull()
+                val recs = records.toList()
+                log.trace("Got from Kafka ${recs.size} messages from topic ${recs.firstOrNull()?.topic()} of $topicRaw")
+
+                recs
+                    .firstOrNull { it.topic() == topicRaw }
                     ?.let { record ->
                         log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
-                        parseKafkaInput(record.value())
+                        parseKafkaInputTemperature(record.value(), sensorId)
                     }
                     ?.takeIf {
-                        it.data?.temperature?.isFinite() ?: false
+                        it.data?.temperatureAverage?.isFinite() ?: false
+                    }
+                    ?.also { temp -> sendToAll(temp) }
+
+                recs
+                    .firstOrNull { it.topic() == topicAnalysis }
+                    ?.let { record ->
+                        log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
+                        parseKafkaInputAnalysis(record.value(), sensorId)
+                    }
+                    ?.takeIf {
+                        it.data?.timeActual != null
                     }
                     ?.also { temp -> sendToAll(temp) }
 
@@ -123,42 +161,112 @@ fun Application.module(testing: Boolean = false) {
                         }
                     }
                 }
+                log.debug("Finish consuming")
+            } catch (e: WakeupException) {
+                log.info("Consumer waked up")
+            } catch (e: Throwable) {
+                log.error("Polling failed", e)
             }
-            log.info("Finish consuming")
-        } catch (e: Throwable) {
-            when (e) {
-                is WakeupException -> log.info("Consumer waked up")
-                else -> log.error("Polling failed", e)
-            }
-        } finally {
-            log.info("Commit offset synchronously")
-            consumer.commitSync()
-            consumer.close()
-            log.info("Consumer successfully closed")
         }
+        log.info("Commit offset synchronously")
+        consumer.commitSync()
+        consumer.close()
+        log.info("Consumer successfully closed")
     }
-
 }
 
+private fun Application.datanaLog() = datanaLogger(this.log as Logger)
+private val jacksonMapper = ObjectMapper()
 
-private fun Application.parseKafkaInput(value: String?): WsDsmartResponseTemperature? {
+private fun Application.parseKafkaInputTemperature(jsonString: String?, sensorId: String): WsDsmartResponseTemperature? {
     // {"info":{"id":"4a67082b-8bf4-48b7-88c0-0d542ffe2214","channelList":["clean"]},"content":[{"@class":"ru.datana.common.model.SingleSensorModel","request_id":"d076f100-3e96-4857-aba8-1c7f4c866dd5","request_datetime":1598962179670,"response_datetime":1598962179754,"sensor_id":"00000000-0000-4000-9000-000000000006","data":-247.14999999999998,"status":0,"errors":[]}]}
-    if (value == null) return null
+    if (jsonString == null) return null
     return try {
-        val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
+//        val obj = Json.decodeFromString(KfDsmartTemperatureData.serializer(), value)
+        val obj = jacksonMapper.readValue(jsonString, TemperatureProcUiDto::class.java)!!
+        if (obj.sensorId != sensorId) return null
+
+        val objTime = obj.timeIntervalLatest ?: return null
+        val newTime = lastTimeProc.updateAndGet {
+            max(objTime, it)
+        }
+
+        // Пропускаем устаревшие данные
+        if (newTime != objTime) return null
+
         WsDsmartResponseTemperature(
             data = WsDsmartTemperatures(
-                temperature = obj.temperature?.let { it + 2 * 273.15 },
-                timeMillis = obj.timeMillis,
-                durationMillis = obj.durationMillis,
-                deviationPositive = obj.deviationPositive,
-                deviationNegative = obj.deviationNegative
+//                temperature = obj.temperature?.let { it + 273.15 },
+                timeBackend = Instant.now().toEpochMilli(),
+                timeLatest = obj.timeIntervalLatest,
+                timeEarliest = obj.timeIntervalEarliest,
+                temperatureScale = obj.temperatureScale?.value,
+                temperatureAverage = obj.temperatureAverage,
+                tempertureMax = obj.temperatureMax,
+                tempertureMin = obj.temperatureMin
             )
         )
     } catch (e: Throwable) {
-        log.error("Error parsing data for", value)
+        log.error("Error parsing data for [Proc]: {}", jsonString)
         null
     }
+}
+
+private fun Application.parseKafkaInputAnalysis(value: String?, sensorId: String): WsDsmartResponseAnalysis? = value?.let { json ->
+    val log = datanaLogger(this.log as Logger)
+    try {
+        val obj = jacksonMapper.readValue(json, TemperatureMlUiDto::class.java)!!
+        if (obj.version != "0.2") {
+            log.error("Wrong TemperatureUI (input ML-data) version ")
+            return null
+        }
+        if (obj.sensorId?.trim() != sensorId) {
+            log.trace("Sensor Id {} is not proper in respect to {}", objs = arrayOf(obj.sensorId, sensorId))
+            return null
+        }
+
+        log.trace("Checking time {}", obj.timeActual)
+        val objTime = obj.timeActual ?: return null
+        val newTime = lastTimeMl.updateAndGet {
+            max(objTime, it)
+        }
+
+        log.trace("Test for actuality: {} === {}", objs = arrayOf(objTime, newTime))
+        // Пропускаем устаревшие данные
+        if (newTime != objTime) return null
+
+        WsDsmartResponseAnalysis(
+            data = WsDsmartAnalysis(
+                timeBackend = Instant.now().toEpochMilli(),
+                timeActual = obj.timeActual,
+                durationToBoil = obj.durationToBoil,
+                sensorId = obj.sensorId,
+                temperatureLast = obj.temperatureLast,
+                state = obj.state?.toWs()
+            )
+        )
+    } catch (e: Throwable) {
+        log.error("Error parsing data for [ML]: {}", value)
+        null
+    }
+}
+
+private fun TemperatureMlUiDto.State.toWs() = when(this) {
+    TemperatureMlUiDto.State.SWITCHED_ON -> TeapotState(
+        id = "switchedOn",
+        name = "Включен",
+        message = "Чайник включен"
+    )
+    TemperatureMlUiDto.State.SWITCHED_OFF -> TeapotState(
+        id = "switchedOff",
+        name = "Выключен",
+        message = "Чайник выключен"
+    )
+    else -> TeapotState(
+        id = "unknown",
+        name = "Неизвестно",
+        message = "Состояние чайника неизвестно"
+    )
 }
 
 @OptIn(KtorExperimentalAPI::class)
@@ -169,14 +277,15 @@ fun buildConsumer(environment: ApplicationEnvironment): KafkaConsumer<String, St
         put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.property("bootstrap.servers").getList())
         put(ConsumerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString())
 
-        put(ConsumerConfig.GROUP_ID_CONFIG, consumerConfig.property("group.id").getString())
+        put(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString())
+//        put(ConsumerConfig.GROUP_ID_CONFIG, consumerConfig.property("group.id").getString())
 //        this[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("key.deserializer").getString()
 //        this[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("value.deserializer").getString()
         put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
         put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
     }
     return KafkaConsumer<String, String>(consumerProps)
-        .apply {
-            subscribe(listOf(consumerConfig.property("topic").getString()))
-        }
 }
+
+private val lastTimeProc = AtomicLong(0)
+private val lastTimeMl = AtomicLong(0)
