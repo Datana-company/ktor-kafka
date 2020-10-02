@@ -17,10 +17,10 @@ fun Route.kafkaListen(topics: Collection<String>, handle: suspend KtorKafkaConsu
 
     feature.launch {
         try {
-            while (!isClosed.get()) {
-                consumer.subscribe(topics)
-                val records = consumer.poll(Duration.ofSeconds(1))
+            consumer.subscribe(topics)
 
+            while (!isClosed.get()) {
+                val records = consumer.poll(Duration.ofSeconds(1))
                 if (!records.isEmpty) {
                     println("Pulled records: ${records.count()}")
                     ctx.records = records
@@ -43,3 +43,4 @@ fun Route.kafkaListen(topics: Collection<String>, handle: suspend KtorKafkaConsu
         }
     }
 }
+
