@@ -118,7 +118,7 @@ fun Application.module(testing: Boolean = false) {
 
         kafka(listOf(topicRaw, topicAnalysis)) {
             records
-                .firstOrNull { it.topic() == topicRaw }
+                ?.firstOrNull { it.topic() == topicRaw }
                 ?.let { record ->
                     log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
                     parseKafkaInputTemperature(record.value(), sensorId)
@@ -129,7 +129,7 @@ fun Application.module(testing: Boolean = false) {
                 ?.also { temp -> sendToAll(temp) }
 
             records
-                .firstOrNull { it.topic() == topicAnalysis }
+                ?.firstOrNull { it.topic() == topicAnalysis }
                 ?.let { record ->
                     log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
                     parseKafkaInputAnalysis(record.value(), sensorId)
