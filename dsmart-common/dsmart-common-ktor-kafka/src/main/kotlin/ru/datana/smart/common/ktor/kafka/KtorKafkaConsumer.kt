@@ -83,7 +83,7 @@ private fun createConsumer(
 //    props["key.deserializer"] = kafkaKeyDeserializer ?: StringDeserializer::class.java
 //    props["value.deserializer"] = kafkaValueDeserializer ?: StringDeserializer::class.java
 
-    props["bootstrap.servers"] = "kafka-server1:9092"
+    props["bootstrap.servers"] = "172.29.40.58:9092"
     props["client.id"] = "ui-client-kafka"
     props["group.id"] = "temperature-ui"
 //    props["key.deserializer"] = StringDeserializer::class.java
