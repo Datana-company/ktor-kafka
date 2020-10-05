@@ -44,6 +44,8 @@ test:
         - echo KAFKA_BOOTSTRAP_SERVER=$KAFKA_BOOTSTRAP_SERVER
         - echo KAFKA_BOOTSTRAP_SERVER_1=$KAFKA_BOOTSTRAP_SERVER_1
         - echo KAFKA_BOOTSTRAP_SERVER_2=$KAFKA_BOOTSTRAP_SERVER_2
+        - echo KAFKA_TOPIC_RAW=$KAFKA_TOPIC_RAW
+        - echo KAFKA_TOPIC_ANALYSIS=$KAFKA_TOPIC_ANALYSIS
         - ./gradlew check
     only:
         - /^feature\/.*$/
