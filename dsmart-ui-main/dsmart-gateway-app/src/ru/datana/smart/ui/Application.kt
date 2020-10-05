@@ -138,6 +138,8 @@ fun Application.module(testing: Boolean = false) {
                     it.data?.timeActual != null
                 }
                 ?.also { temp -> sendToAll(temp) }
+
+            commitAll()
         }
     }
 }
