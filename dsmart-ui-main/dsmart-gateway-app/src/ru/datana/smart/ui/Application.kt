@@ -90,7 +90,7 @@ fun Application.module(testing: Boolean = false) {
         masking = false
     }
 
-    install(KtorKafkaConsumer)
+    install(KtorKafkaConsumer) { kafkaBrokers = listOf("172.29.40.58:9092")}
 
     val topicRaw by lazy { environment.config.property("ktor.kafka.consumer.topic.raw").getString()?.trim() }
     val topicAnalysis by lazy { environment.config.property("ktor.kafka.consumer.topic.analysis").getString()?.trim() }
