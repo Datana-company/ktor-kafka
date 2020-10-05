@@ -86,10 +86,10 @@ private fun createConsumer(
     props["bootstrap.servers"] = "kafka-server1:9092"
     props["client.id"] = "ui-client-kafka"
     props["group.id"] = "temperature-ui"
-    props["key.deserializer"] = StringDeserializer::class.java
-    props["value.deserializer"] = StringDeserializer::class.java
+//    props["key.deserializer"] = StringDeserializer::class.java
+//    props["value.deserializer"] = StringDeserializer::class.java
 
-    return KafkaConsumer(props)
+    return KafkaConsumer(props, StringDeserializer(), StringDeserializer())
 }
 
 
