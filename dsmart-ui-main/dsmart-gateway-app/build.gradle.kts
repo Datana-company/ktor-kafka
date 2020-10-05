@@ -116,6 +116,7 @@ tasks {
         environmentVariable(
             mapOf(
                 "KAFKA_BOOTSTRAP_SERVERS" to "172.29.40.58:9092,172.29.40.58:9092,172.29.40.58:9092",
+                "KAFKA_BOOTSTRAP_SERVER" to "172.29.40.58:9092",
                 "KAFKA_TOPIC_RAW" to "ui-temperature",
                 "KAFKA_TOPIC_ANALYSIS" to "temperature-ui-ml",
                 "SENSOR_ID" to "8e630dd0-5796-45e0-8d85-8a14c5d872dd",
