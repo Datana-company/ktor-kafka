@@ -76,7 +76,8 @@ private fun createConsumer(
 ): KafkaConsumer<String, String> {
     val appConfig = HoconApplicationConfig(ConfigFactory.load())
     val props = Properties()
-    props["bootstrap.servers"] = (kafkaBrokers ?: appConfig.property("ktor.kafka.bootstrap.servers").getList()).joinToString(",")
+    props["bootstrap.servers"] = (kafkaBrokers ?: appConfig.property("ktor.kafka.bootstrap.servers").getList())
+        .joinToString(",")
     props["client.id"] = kafkaClientId ?: appConfig.property("ktor.kafka.client.id").getString()
     props["group.id"] = kafkaGroupId ?: appConfig.property("ktor.kafka.consumer.group.id").getString()
     props["key.deserializer"] = kafkaKeyDeserializer ?: StringDeserializer::class.java
