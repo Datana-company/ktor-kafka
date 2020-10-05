@@ -41,7 +41,6 @@ test:
     image: adoptopenjdk/openjdk11:alpine-slim
     stage: test
     script:
-        - echo KAFKA_BOOTSTRAP_SERVER=$KAFKA_BOOTSTRAP_SERVER
         - ./gradlew check
     only:
         - /^feature\/.*$/
