@@ -109,4 +109,8 @@ tasks {
             targetCompatibility = "11"
         }
     }
+
+    dockerCreateDockerfile {
+        environmentVariable(mapOf("KAFKA_BOOTSTRAP_SERVER" to "172.29.40.58:9092"))
+    }
 }

@@ -7,7 +7,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.handleRequest
-import io.ktor.server.testing.withTestApplication
 import io.ktor.util.KtorExperimentalAPI
 import org.junit.BeforeClass
 import org.junit.Test
@@ -29,9 +28,10 @@ internal class ApplicationKtTest {
 
         @KtorExperimentalAPI
         val engine = TestApplicationEngine(createTestEnvironment {
-            config = HoconApplicationConfig(ConfigFactory.load("application.conf"))
+            config = HoconApplicationConfig(ConfigFactory.load("application-test.conf"))
         })
 
+        @KtorExperimentalAPI
         @BeforeClass
         @JvmStatic fun setup(){
             engine.start(wait = false)
