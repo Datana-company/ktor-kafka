@@ -24,7 +24,7 @@ application {
 }
 
 docker {
-//  url = 'https://192.168.59.103:2376'
+    //  url = 'https://192.168.59.103:2376'
 //  certPath = new File(System.properties['user.home'], '.boot2docker/certs/boot2docker-vm')
 
     registryCredentials {
@@ -38,10 +38,12 @@ docker {
         baseImage.set("adoptopenjdk/openjdk11:alpine-jre")
         maintainer.set(projectMaintainer)
         ports.set(listOf(8080))
-        images.set(listOf(
-            "${dockerParams.imageName}:${project.version}",
-            "${dockerParams.imageName}:latest"
-        ))
+        images.set(
+            listOf(
+                "${dockerParams.imageName}:${project.version}",
+                "${dockerParams.imageName}:latest"
+            )
+        )
         jvmArgs.set(listOf("-Xms256m", "-Xmx512m"))
     }
 }
@@ -111,17 +113,19 @@ tasks {
     }
 
     dockerCreateDockerfile {
-        environmentVariable(mapOf(
-            "KAFKA_BOOTSTRAP_SERVER" to "kafka-server1:9092",
-            "KAFKA_BOOTSTRAP_SERVER_1" to "kafka-server1:9092",
-            "KAFKA_BOOTSTRAP_SERVER_2" to "kafka-server1:9092",
-            "KAFKA_TOPIC_RAW" to "ui-temperature",
-            "KAFKA_TOPIC_ANALYSIS" to "temperature-ui-ml",
-            "SENSOR_ID" to "8e630dd0-5796-45e0-8d85-8a14c5d872dd",
-            "LOGS_KAFKA_HOSTS" to "172.29.40.58:9092",
-            "LOGS_KAFKA_TOPIC" to "gitlab-ci-logs",
-            "LOGS_DIR" to "./logs",
-            "SERVICE_NAME" to "adapter-jms"
-            ))
+        environmentVariable(
+            mapOf(
+                "KAFKA_BOOTSTRAP_SERVER" to "kafka-server1:9092",
+                "KAFKA_BOOTSTRAP_SERVER_1" to "kafka-server1:9092",
+                "KAFKA_BOOTSTRAP_SERVER_2" to "kafka-server1:9092",
+                "KAFKA_TOPIC_RAW" to "ui-temperature",
+                "KAFKA_TOPIC_ANALYSIS" to "temperature-ui-ml",
+                "SENSOR_ID" to "8e630dd0-5796-45e0-8d85-8a14c5d872dd",
+                "LOGS_KAFKA_HOSTS" to "172.29.40.58:9092",
+                "LOGS_KAFKA_TOPIC" to "gitlab-ci-logs",
+                "LOGS_DIR" to "./logs",
+                "SERVICE_NAME" to "adapter-jms"
+            )
+        )
     }
 }
