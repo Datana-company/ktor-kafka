@@ -81,9 +81,6 @@ private fun createConsumer(
     props["group.id"] = kafkaGroupId ?: appConfig.property("ktor.kafka.consumer.group.id").getString()
     props["key.deserializer"] = kafkaKeyDeserializer ?: StringDeserializer::class.java
     props["value.deserializer"] = kafkaValueDeserializer ?: StringDeserializer::class.java
-
-    props.forEach { println("KEY=${it.key} VALUE=${it.value}") }
-
     return KafkaConsumer(props)
 }
 
