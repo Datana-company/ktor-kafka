@@ -123,7 +123,11 @@ tasks {
                 "LOGS_KAFKA_HOSTS" to "172.29.40.58:9092",
                 "LOGS_KAFKA_TOPIC" to "gitlab-ci-logs",
                 "LOGS_DIR" to "./logs",
-                "SERVICE_NAME" to "adapter-jms"
+                "LOG_MAX_HISTORY_DAYS" to "3",
+                "LOG_MAX_FILE_SIZE" to "10MB",
+                "LOG_TOTAL_SIZE_CAP" to "24MB",
+                "LOG_DATANA_LEVEL" to "debug",
+                "LOG_COMMON_LEVEL" to "info"
             )
         )
     }
