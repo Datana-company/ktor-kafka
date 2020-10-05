@@ -11,7 +11,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module(testing: Boolean = false) {
 
     install(KtorKafkaConsumer) {
-        kafkaBrokers = listOf("172.29.40.58:9092")
+        kafkaBrokers = "172.29.40.58:9092"
         kafkaClientId = "ui-client-kafka"
         kafkaGroupId = "ui-app-kafka"
     }
