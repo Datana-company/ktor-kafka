@@ -24,7 +24,7 @@ application {
 }
 
 docker {
-//  url = 'https://192.168.59.103:2376'
+    //  url = 'https://192.168.59.103:2376'
 //  certPath = new File(System.properties['user.home'], '.boot2docker/certs/boot2docker-vm')
 
     registryCredentials {
@@ -38,10 +38,12 @@ docker {
         baseImage.set("adoptopenjdk/openjdk11:alpine-jre")
         maintainer.set(projectMaintainer)
         ports.set(listOf(8080))
-        images.set(listOf(
-            "${dockerParams.imageName}:${project.version}",
-            "${dockerParams.imageName}:latest"
-        ))
+        images.set(
+            listOf(
+                "${dockerParams.imageName}:${project.version}",
+                "${dockerParams.imageName}:latest"
+            )
+        )
         jvmArgs.set(listOf("-Xms256m", "-Xmx512m"))
     }
 }
@@ -59,6 +61,7 @@ dependencies {
     implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ws-models"))
 //    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-kf-models"))
     implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ml-models"))
+    implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
     api("ru.datana.smart:datana-smart-logging-core:0.0.5")
 
@@ -68,11 +71,9 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
+    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
-
-    //Kafka
-    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
@@ -109,5 +110,28 @@ tasks {
         kotlinOptions {
             targetCompatibility = "11"
         }
+    }
+
+    dockerCreateDockerfile {
+        environmentVariable(
+            mapOf(
+                //example "KAFKA_BOOTSTRAP_SERVERS" to "172.29.40.58:9092,172.29.40.59:9092,172.29.40.60:9092",
+                "KAFKA_BOOTSTRAP_SERVERS" to "",
+                "KAFKA_TOPIC_RAW" to "",
+                "KAFKA_TOPIC_ANALYSIS" to "",
+                "KAFKA_CLIENT_ID" to "",
+                "KAFKA_GROUP_ID" to "",
+                "SENSOR_ID" to "",
+                "LOGS_KAFKA_HOSTS" to "",
+                "LOGS_KAFKA_TOPIC" to "",
+                "LOGS_DIR" to "",
+                "SERVICE_NAME" to "dsmart-gateway-app",
+                "LOG_MAX_HISTORY_DAYS" to "3",
+                "LOG_MAX_FILE_SIZE" to "10MB",
+                "LOG_TOTAL_SIZE_CAP" to "24MB",
+                "LOG_DATANA_LEVEL" to "info",
+                "LOG_COMMON_LEVEL" to "error"
+            )
+        )
     }
 }

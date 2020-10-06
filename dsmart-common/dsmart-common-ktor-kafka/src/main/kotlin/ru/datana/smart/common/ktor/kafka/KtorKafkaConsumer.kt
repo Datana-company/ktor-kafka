@@ -5,8 +5,6 @@ import io.ktor.application.Application
 import io.ktor.application.ApplicationFeature
 import io.ktor.application.ApplicationStopPreparing
 import io.ktor.config.HoconApplicationConfig
-import io.ktor.config.MapApplicationConfig
-import io.ktor.server.engine.applicationEngineEnvironment
 import io.ktor.util.AttributeKey
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.CompletableJob
@@ -32,7 +30,7 @@ class KtorKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) : Coro
      * Kafka configuration options
      */
     class KafkaOptions {
-        var kafkaBrokers: Collection<String>? = null
+        var kafkaBrokers: String? = null
         var kafkaClientId: String? = null
         var kafkaGroupId: String? = null
         var kafkaKeyDeserializer: Class<Any>? = null
@@ -51,8 +49,8 @@ class KtorKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) : Coro
             val kafkaConsumer = kafkaOptions.run {
                 createConsumer(
                     kafkaBrokers,
-                    kafkaGroupId,
                     kafkaClientId,
+                    kafkaGroupId,
                     kafkaKeyDeserializer,
                     kafkaValueDeserializer
                 )
@@ -70,17 +68,17 @@ class KtorKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) : Coro
 
 @KtorExperimentalAPI
 private fun createConsumer(
-    kafkaBrokers: Collection<String>?,
-    kafkaGroupId: String?,
+    kafkaBrokers: String?,
     kafkaClientId: String?,
+    kafkaGroupId: String?,
     kafkaKeyDeserializer: Class<Any>?,
     kafkaValueDeserializer: Class<Any>?
 ): KafkaConsumer<String, String> {
     val appConfig = HoconApplicationConfig(ConfigFactory.load())
     val props = Properties()
-    props["bootstrap.servers"] = kafkaBrokers ?: appConfig.property("ktor.kafka.bootstrap.servers").getList()
+    props["bootstrap.servers"] = kafkaBrokers ?: appConfig.property("ktor.kafka.bootstrap.servers").getString()
+    props["client.id"] = kafkaClientId ?: appConfig.property("ktor.kafka.client.id").getString()
     props["group.id"] = kafkaGroupId ?: appConfig.property("ktor.kafka.consumer.group.id").getString()
-    props["client.id"] = kafkaClientId ?: appConfig.property("ktor.kafka.consumer.client.id").getString()
     props["key.deserializer"] = kafkaKeyDeserializer ?: StringDeserializer::class.java
     props["value.deserializer"] = kafkaValueDeserializer ?: StringDeserializer::class.java
     return KafkaConsumer(props)

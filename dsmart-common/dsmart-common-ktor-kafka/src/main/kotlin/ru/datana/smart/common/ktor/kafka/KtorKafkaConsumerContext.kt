@@ -1,9 +1,14 @@
 package ru.datana.smart.common.ktor.kafka
 
 import org.apache.kafka.clients.consumer.ConsumerRecords
+import org.apache.kafka.clients.consumer.KafkaConsumer
 
-data class KtorKafkaConsumerContext(
+class KtorKafkaConsumerContext(
+    val consumer: KafkaConsumer<String, String>,
+    val records: ConsumerRecords<String, String>
+) {
 
-    var records: ConsumerRecords<String, String>? = null
-
-)
+    fun commitAll() {
+        consumer.commitAsync()
+    }
+}
