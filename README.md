@@ -97,9 +97,8 @@ export DOCKER_REGISTRY_PASS=*****
 ## Переменные окружения
 
 ```bash
-export KAFKA_BOOTSTRAP_SERVER=kafka-server1:9092
-export KAFKA_BOOTSTRAP_SERVER_1=kafka-server1:9092
-export KAFKA_BOOTSTRAP_SERVER_2=kafka-server1:9092
+export KAFKA_BOOTSTRAP_SERVERS=kafka-server1:9092
+export KAFKA_GROUP_ID
 #export KAFKA_CLIENT_ID
 export KAFKA_TOPIC_RAW=ui-temperature
 export KAFKA_TOPIC_ANALYSIS=temperature-ui-ml
