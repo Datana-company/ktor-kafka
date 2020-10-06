@@ -116,18 +116,21 @@ tasks {
         environmentVariable(
             mapOf(
                 //example "KAFKA_BOOTSTRAP_SERVERS" to "172.29.40.58:9092,172.29.40.59:9092,172.29.40.60:9092",
-                "KAFKA_BOOTSTRAP_SERVERS" to "172.29.40.58:9092",
-                "KAFKA_TOPIC_RAW" to "ui-temperature",
-                "KAFKA_TOPIC_ANALYSIS" to "temperature-ui-ml",
-                "SENSOR_ID" to "8e630dd0-5796-45e0-8d85-8a14c5d872dd",
-                "LOGS_KAFKA_HOSTS" to "172.29.40.58:9092",
-                "LOGS_KAFKA_TOPIC" to "gitlab-ci-logs",
-                "LOGS_DIR" to "./logs",
+                "KAFKA_BOOTSTRAP_SERVERS" to "",
+                "KAFKA_TOPIC_RAW" to "",
+                "KAFKA_TOPIC_ANALYSIS" to "",
+                "KAFKA_CLIENT_ID" to "",
+                "KAFKA_GROUP_ID" to "",
+                "SENSOR_ID" to "",
+                "LOGS_KAFKA_HOSTS" to "",
+                "LOGS_KAFKA_TOPIC" to "",
+                "LOGS_DIR" to "",
+                "SERVICE_NAME" to "dsmart-gateway-app",
                 "LOG_MAX_HISTORY_DAYS" to "3",
                 "LOG_MAX_FILE_SIZE" to "10MB",
                 "LOG_TOTAL_SIZE_CAP" to "24MB",
-                "LOG_DATANA_LEVEL" to "debug",
-                "LOG_COMMON_LEVEL" to "info"
+                "LOG_DATANA_LEVEL" to "info",
+                "LOG_COMMON_LEVEL" to "error"
             )
         )
     }

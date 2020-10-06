@@ -18,15 +18,13 @@ fun Route.kafka(topics: Collection<String>, handle: suspend KtorKafkaConsumerCon
 
     feature.launch {
         try {
-            val ctx = KtorKafkaConsumerContext(consumer)
             consumer.subscribe(topics)
 
             while (!isClosed.get()) {
                 val records = consumer.poll(Duration.ofSeconds(1))
                 if (!records.isEmpty) {
                     log.debug("Pulled records: {}", records.count())
-                    ctx.records = records
-                    ctx.handle()
+                    KtorKafkaConsumerContext(consumer, records).apply { handle() }
                 } else {
                     log.debug("No records pulled")
                 }
