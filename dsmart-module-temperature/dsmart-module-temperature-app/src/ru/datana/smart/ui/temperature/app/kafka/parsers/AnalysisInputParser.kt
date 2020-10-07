@@ -7,16 +7,19 @@ import io.ktor.application.log
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.ml.models.TemperatureMlUiDto
 import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseAnalysis
+import ru.datana.smart.ui.temperature.ws.models.WsDsmartAnalysis
+import ru.datana.smart.ui.temperature.ws.models.TeapotState
 import java.util.concurrent.atomic.AtomicLong
+import java.time.Instant
 import kotlin.math.max
 
 private val jacksonMapper = ObjectMapper()
 private val lastTimeMl = AtomicLong(0)
 
 fun Application.parseKafkaInputAnalysis(value: String?, sensorId: String): WsDsmartResponseAnalysis? {
-    private val log = datanaLogger(this.log as Logger)
+    val log = datanaLogger(this.log as Logger)
 
-    value?.let { json ->
+    return value?.let { json ->
         try {
             val obj = jacksonMapper.readValue(json, TemperatureMlUiDto::class.java)!!
             if (obj.version != "0.2") {

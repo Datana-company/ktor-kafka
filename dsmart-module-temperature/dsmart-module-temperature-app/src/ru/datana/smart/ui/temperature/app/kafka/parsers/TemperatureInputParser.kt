@@ -16,7 +16,7 @@ private val jacksonMapper = ObjectMapper()
 private val lastTimeProc = AtomicLong(0)
 
 fun Application.parseKafkaInputTemperature(jsonString: String?, sensorId: String): WsDsmartResponseTemperature? {
-    private val log = datanaLogger(this.log as Logger)
+    val log = datanaLogger(this.log as Logger)
 
     if (jsonString == null) return null
     return try {
