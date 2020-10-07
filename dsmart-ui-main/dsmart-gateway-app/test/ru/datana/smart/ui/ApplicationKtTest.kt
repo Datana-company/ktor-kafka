@@ -28,7 +28,7 @@ internal class ApplicationKtTest {
 
         @KtorExperimentalAPI
         val engine = TestApplicationEngine(createTestEnvironment {
-            config = HoconApplicationConfig(ConfigFactory.load("application.conf"))
+            config = HoconApplicationConfig(ConfigFactory.load("application-test.conf"))
         })
 
         @KtorExperimentalAPI
