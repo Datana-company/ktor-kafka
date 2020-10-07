@@ -12,6 +12,12 @@
     },
     {
       "path": "./projects/datana-smart/converter-app/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/datana-smart/converter-widget/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/datana-smart/converter-widget/tsconfig.spec.json"
     }
   ]
 }

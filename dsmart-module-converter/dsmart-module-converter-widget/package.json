@@ -1,4 +1,5 @@
 {
+  "name": "@datana-smart/converter-widget",
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",

@@ -18,6 +18,10 @@
     "paths": {
       "@datana-smart/*": [
         "build/dist/datana-smart/*"
+      ],
+      "@datana-smart/converter-widget": [
+        "dist/datana-smart/converter-widget/datana-smart-converter-widget",
+        "dist/datana-smart/converter-widget"
       ]
     }
   }
