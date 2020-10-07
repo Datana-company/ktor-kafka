@@ -13,8 +13,6 @@ val dockerPort = System.getenv("DOCKER_REGISTRY_PORT")?.let { ":$it" } ?: ""
 val dockerHost = System.getenv("DOCKER_REGISTRY_HOST")?.plus("$dockerPort/") ?: ""
 val dockerUser = System.getenv("DOCKER_REGISTRY_USER") as String?
 val dockerPass = System.getenv("DOCKER_REGISTRY_PASS") as String?
-val distDir = "$buildDir/dist"
-val distConfig = "staticFront"
 
 repositories {
     mavenCentral()
@@ -28,35 +26,50 @@ node {
 
 val ngLibs: Configuration by configurations.creating
 
-val staticFront: Configuration by configurations.creating {
-//    isCanBeConsumed = true
-//    isCanBeResolved = false
-//    If you want this configuration to share the same dependencies, otherwise omit this line
-//    extendsFrom(configurations["implementation"], configurations["runtimeOnly"])
-}
+val staticFront: Configuration by configurations.creating
 
 docker {
-//  url = 'https://192.168.59.103:2376'
-//  certPath = new File(System.properties['user.home'], '.boot2docker/certs/boot2docker-vm')
-
     registryCredentials {
         url.set(dockerParams.dockerUrl)
         dockerParams.dockerUser?.also { username.set(it) }
         dockerParams.dockerPass?.also { password.set(it) }
-//    email = 'benjamin.muschko@gmail.com'
     }
 }
 
 dependencies {
     implementation(kotlin("stdlib-js"))
-//    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ws-models"))
 }
 
 tasks {
+    val cliInit by creating(NpxTask::class.java) {
+        dependsOn(jar2npm)
+        command = "npm"
+        setArgs(
+            listOf(
+                "install",
+                "@angular/cli"
+            )
+        )
+    }
+
+    val ngInit by creating(NpxTask::class.java) {
+        dependsOn(cliInit)
+        command = "ng"
+        setArgs(
+            listOf(
+                "new",
+                "dsmart-ui-main",
+                "--directory",
+                "./"
+            )
+        )
+    }
+
     val ngBuildRecommendations by ngLibBuild("recommendation-component")
     val ngBuildHistory by ngLibBuild("history-component") {
         dependsOn(ngBuildRecommendations)
     }
+
     val ngBuildStatus by ngLibBuild("teapot-status-component")
     val ngBuildCollapsible by ngLibBuild("collapsible-table-component")
     val ngBuildBoiling by ngLibBuild("teapot-boiling-component") {
@@ -71,7 +84,34 @@ tasks {
         dependsOn(ngBuildTemperature)
         dependsOn(ngBuildWebsocket)
     }
-//    val ngBuildApp by ngLibBuild("temperature-app")
+
+    val ngBuildApp by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
+        dependsOn(jar2npm)
+        dependsOn(ngBuildWidget)
+        command = "ng"
+        setArgs(
+            listOf(
+                "build",
+                "@datana-smart/temperature-app",
+                "--outputPath=$buildDir/static"
+            )
+        )
+    }
+    build.get().dependsOn(ngBuildApp)
+
+    val createArtifactLibs by creating {
+        dependsOn(ngBuildApp)
+        artifacts {
+            add("ngLibs", fileTree("$buildDir/dist").dir)
+        }
+    }
+
+    val createArtifactStatic by creating {
+        dependsOn(ngBuildApp)
+        artifacts {
+            add("staticFront", fileTree("$buildDir/static").dir)
+        }
+    }
 
     val ngStart by ngLibBuild("temperature-app") {
         setArgs(
@@ -81,78 +121,6 @@ tasks {
             )
         )
     }
-
-//    val ngStart by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
-//        dependsOn(jar2npm)
-//        dependsOn(extractNgLibs)
-//        command = "ng"
-//        setArgs(
-//            listOf(
-//                "serve"
-//            )
-//        )
-//    }
-
-    val createArtifact by creating {
-        dependsOn(ngBuildWidget)
-        artifacts {
-            add(ngLibs.name, fileTree(distDir).dir)
-        }
-    }
-    build.get().dependsOn(createArtifact)
-
-//    val createArtifact by creating {
-//        dependsOn(ngBuild)
-//        artifacts {
-//            add(distConfig, fileTree(distDir).dir)
-//        }
-//    }
-////    build.get().dependsOn(createArtifact)
-
-
-
-    val cliInit by creating(NpxTask::class.java) {
-        dependsOn(jar2npm)
-        command = "npm"
-        setArgs(
-            listOf(
-                "install",
-                "@angular/cli"
-            )
-        )
-    }
-
-//    val ngInit by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
-//        dependsOn(cliInit)
-//        command = "ng"
-//        setArgs(
-//            listOf(
-//                "new",
-//                "dsmart-ui-main",
-//                "--directory",
-//                "./"
-//            )
-//        )
-//    }
-
-
-    val extractNgLibs by creating(Copy::class.java) {
-        dependsOn(createArtifact)
-        from(ngLibs.artifacts.files)
-        into("$buildDir/ng-libs")
-    }
-
-    val ngBuild by creating(NpxTask::class.java) {
-        dependsOn(jar2npm)
-        dependsOn(extractNgLibs)
-        command = "ng"
-        setArgs(
-            listOf(
-                "build"
-            )
-        )
-    }
-    build.get().dependsOn(ngBuild)
 }
 
 fun TaskContainerScope.ngLibBuild(
@@ -178,6 +146,6 @@ fun TaskContainerScope.ngLibBuild(
             file("yarn.lock")
         )
         inputs.dir("projects/$scope/$libName")
-        outputs.dir("$distDir/$scope/$libName")
+        outputs.dir("$buildDir/dist/$scope/$libName")
         conf()
     }

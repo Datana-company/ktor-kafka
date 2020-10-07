@@ -1,25 +1,36 @@
 package ru.datana.smart.ui.temperature.app
 
 import ch.qos.logback.classic.Logger
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.application.*
-import io.ktor.response.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.http.cio.websocket.*
+import io.ktor.http.content.*
 import io.ktor.request.*
 import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.content.*
-import io.ktor.http.content.*
-import io.ktor.features.*
+import io.ktor.util.*
 import io.ktor.websocket.*
-import io.ktor.http.cio.websocket.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.common.errors.WakeupException
+import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.event.Level
 import ru.datana.smart.common.transport.models.ws.IWsDsmartResponse
-import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseAnalysis
-import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseTemperature
-import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
+import ru.datana.smart.logger.datanaLogger
+import ru.datana.smart.ui.ml.models.TemperatureMlUiDto
+import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
+import ru.datana.smart.ui.temperature.ws.models.*
 import ru.datana.smart.common.ktor.kafka.kafka
-import java.time.*
+import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
+import java.time.Duration
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.max
@@ -28,6 +39,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
+@KtorExperimentalAPI
 fun Application.module(testing: Boolean = false) {
 
     val wsSessions = ConcurrentHashMap.newKeySet<DefaultWebSocketSession>()

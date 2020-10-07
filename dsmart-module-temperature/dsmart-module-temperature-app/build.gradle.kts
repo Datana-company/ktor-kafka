@@ -19,7 +19,7 @@ version = rootProject.version
 val frontDist = "$buildDir/frontDist"
 
 application {
-    mainClassName = "ru.datana.smart.ui.temperature.ApplicationKt"
+    mainClassName = "ru.datana.smart.ui.temperature.app.ApplicationKt"
 }
 
 docker {
@@ -67,6 +67,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
+    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 
     api("ru.datana.smart:datana-smart-logging-core:0.0.5")
 
@@ -84,13 +85,16 @@ tasks {
     val copyFront by creating(Copy::class.java) {
         dependsOn(
             project(":dsmart-module-temperature:dsmart-module-temperature-widget")
-                .getTasksByName("createArtifact", false)
+                .getTasksByName("createArtifactStatic", false)
         )
         val frontFiles = project(":dsmart-module-temperature:dsmart-module-temperature-widget")
             .configurations
             .getByName(frontConfig)
             .artifacts
             .files
+
+        frontFiles.forEach {println(it)}
+
         from(frontFiles)
         into("$frontDist/static")
     }

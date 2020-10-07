@@ -80,7 +80,7 @@ tasks {
     val extractNgLibs by creating(Copy::class.java) {
         dependsOn(
             project(":dsmart-module-temperature:dsmart-module-temperature-widget")
-                .getTasksByName("createArtifact", false)
+                .getTasksByName("createArtifactLibs", false)
         )
         from(
             project(":dsmart-module-temperature:dsmart-module-temperature-widget")
