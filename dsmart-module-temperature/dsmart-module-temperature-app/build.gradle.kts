@@ -92,9 +92,6 @@ tasks {
             .getByName(frontConfig)
             .artifacts
             .files
-
-        frontFiles.forEach {println(it)}
-
         from(frontFiles)
         into("$frontDist/static")
     }
