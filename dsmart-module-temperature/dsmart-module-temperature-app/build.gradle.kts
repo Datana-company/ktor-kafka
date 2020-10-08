@@ -3,7 +3,6 @@ val kotlinVersion: String by project
 val logbackVersion: String by project
 val serializationVersion: String by project
 val kafkaVersion: String by project
-val frontConfig = "staticFront"
 val projectMaintainer: String by project
 
 plugins {
@@ -82,20 +81,35 @@ sourceSets["main"].resources.srcDirs("resources")
 sourceSets["test"].resources.srcDirs("testresources")
 
 tasks {
-    val copyFront by creating(Copy::class.java) {
+    val copyFrontApp by creating(Copy::class.java) {
         dependsOn(
             project(":dsmart-module-temperature:dsmart-module-temperature-widget")
                 .getTasksByName("createArtifactStatic", false)
         )
         val frontFiles = project(":dsmart-module-temperature:dsmart-module-temperature-widget")
             .configurations
-            .getByName(frontConfig)
+            .getByName("staticFront")
             .artifacts
             .files
         from(frontFiles)
         into("$frontDist/static")
     }
-    processResources.get().dependsOn(copyFront)
+    processResources.get().dependsOn(copyFrontApp)
+
+    val copyWidgetLib by creating(Copy::class.java) {
+        dependsOn(
+            project(":dsmart-module-temperature:dsmart-module-temperature-widget")
+                .getTasksByName("createArtifactWidget", false)
+        )
+        val widgetFiles = project(":dsmart-module-temperature:dsmart-module-temperature-widget")
+            .configurations
+            .getByName("widgetLib")
+            .artifacts
+            .files
+        from(widgetFiles)
+        into("$frontDist/static/widget")
+    }
+    processResources.get().dependsOn(copyWidgetLib)
 
     create("deploy") {
         group = "build"

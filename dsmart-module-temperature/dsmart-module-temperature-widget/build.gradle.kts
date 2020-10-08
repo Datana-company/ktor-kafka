@@ -13,6 +13,7 @@ val dockerPort = System.getenv("DOCKER_REGISTRY_PORT")?.let { ":$it" } ?: ""
 val dockerHost = System.getenv("DOCKER_REGISTRY_HOST")?.plus("$dockerPort/") ?: ""
 val dockerUser = System.getenv("DOCKER_REGISTRY_USER") as String?
 val dockerPass = System.getenv("DOCKER_REGISTRY_PASS") as String?
+val scopeName = "datana-smart"
 
 repositories {
     mavenCentral()
@@ -25,8 +26,8 @@ node {
 }
 
 val ngLibs: Configuration by configurations.creating
-
 val staticFront: Configuration by configurations.creating
+val widgetLib: Configuration by configurations.creating
 
 docker {
     registryCredentials {
@@ -103,6 +104,13 @@ tasks {
         dependsOn(ngBuildApp)
         artifacts {
             add("ngLibs", fileTree("$buildDir/dist").dir)
+        }
+    }
+
+    val createArtifactWidget by creating {
+        dependsOn(ngBuildApp)
+        artifacts {
+            add("widgetLib", fileTree("$buildDir/dist/$scopeName/temperature-widget").dir)
         }
     }
 
