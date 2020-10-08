@@ -4,6 +4,8 @@ val logbackVersion: String by project
 val serializationVersion: String by project
 val kafkaVersion: String by project
 val projectMaintainer: String by project
+val dockerBaseImage: String by project
+val dsmartLoggingVersion: String by project
 
 plugins {
     application
@@ -33,7 +35,7 @@ docker {
     }
 
     javaApplication {
-        baseImage.set("adoptopenjdk/openjdk11:alpine-jre")
+        baseImage.set(dockerBaseImage)
         maintainer.set(projectMaintainer)
         ports.set(listOf(8080))
         images.set(
@@ -67,8 +69,8 @@ dependencies {
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
+    implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
 
-    api("ru.datana.smart:datana-smart-logging-core:0.0.5")
 
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }

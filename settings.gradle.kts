@@ -6,6 +6,8 @@ pluginManagement {
     val dockerPluginVersion: String by settings
     val serializationPluginVersion: String by settings
     val openApiVersion: String by settings
+    val dockerBaseImage: String by settings
+    val dsmartLoggingVersion: String by settings
 
     plugins {
 
