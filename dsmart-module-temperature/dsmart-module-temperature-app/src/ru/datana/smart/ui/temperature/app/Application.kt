@@ -29,6 +29,7 @@ import ru.datana.smart.common.transport.models.ws.IWsDsmartResponse
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.temperature.app.kafka.parsers.parseKafkaInputAnalysis
 import ru.datana.smart.ui.temperature.app.kafka.parsers.parseKafkaInputTemperature
+import ru.datana.smart.ui.temperature.app.websocket.WsManager
 import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseAnalysis
 import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseTemperature
 import java.time.Duration
@@ -41,32 +42,6 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @KtorExperimentalAPI
 fun Application.module(testing: Boolean = false) {
     val log = datanaLogger(this.log as Logger)
-
-    val wsSessions = ConcurrentHashMap.newKeySet<DefaultWebSocketSession>()
-    val json = Json {
-        encodeDefaults = true
-    }
-
-    suspend fun sendToAll(data: IWsDsmartResponse<*>) {
-        log.trace("sending to client: $data")
-        val wsSessionsIterator = wsSessions.iterator()
-        while (wsSessionsIterator.hasNext()) {
-            wsSessionsIterator.next().apply {
-                try {
-                    val jsonString = when(data) {
-                        is WsDsmartResponseTemperature -> json.encodeToString(WsDsmartResponseTemperature.serializer(), data)
-                        is WsDsmartResponseAnalysis -> json.encodeToString(WsDsmartResponseAnalysis.serializer(), data)
-                        else -> throw RuntimeException("Unknown type of data")
-                    }
-                    log.trace("Sending to client ${hashCode()}: $jsonString")
-                    send(jsonString)
-                } catch (e: Throwable) {
-                    log.error("Session ${hashCode()} is removed due to exception {}", e)
-                    wsSessionsIterator.remove()
-                }
-            }
-        }
-    }
 
     install(CallLogging) {
         level = Level.INFO
@@ -93,6 +68,12 @@ fun Application.module(testing: Boolean = false) {
 
     install(KtorKafkaConsumer)
 
+    val wsManager = WsManager(
+        ConcurrentHashMap.newKeySet<DefaultWebSocketSession>(),
+        Json { encodeDefaults = true },
+        log
+    )
+
     val topicRaw by lazy { environment.config.property("ktor.kafka.consumer.topic.raw").getString().trim() }
     val topicAnalysis by lazy { environment.config.property("ktor.kafka.consumer.topic.analysis").getString().trim() }
     val sensorId by lazy { environment.config.property("ktor.datana.sensor.id").getString().trim() }
@@ -105,15 +86,16 @@ fun Application.module(testing: Boolean = false) {
 
         webSocket("/ws") {
             println("onConnect")
-            wsSessions += this
+            wsManager.wsSessions += this
             try {
-                for (frame in incoming) { }
+                for (frame in incoming) {
+                }
             } catch (e: ClosedReceiveChannelException) {
                 println("onClose ${closeReason.await()}")
             } catch (e: Throwable) {
                 log.error("Error within websocket block due to: ${closeReason.await()}", e)
             } finally {
-                wsSessions -= this
+                wsManager.wsSessions -= this
             }
         }
 
@@ -127,7 +109,7 @@ fun Application.module(testing: Boolean = false) {
                 ?.takeIf {
                     it.data?.temperatureAverage?.isFinite() ?: false
                 }
-                ?.also { temp -> sendToAll(temp) }
+                ?.also { temp -> wsManager.sendToAll(temp) }
 
             records
                 .firstOrNull { it.topic() == topicAnalysis }
@@ -138,7 +120,7 @@ fun Application.module(testing: Boolean = false) {
                 ?.takeIf {
                     it.data?.timeActual != null
                 }
-                ?.also { temp -> sendToAll(temp) }
+                ?.also { temp -> wsManager.sendToAll(temp) }
 
             commitAll()
         }
