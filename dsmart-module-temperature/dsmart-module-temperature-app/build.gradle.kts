@@ -121,7 +121,7 @@ tasks {
                 "LOGS_KAFKA_HOSTS" to "",
                 "LOGS_KAFKA_TOPIC" to "",
                 "LOGS_DIR" to "",
-                "SERVICE_NAME" to "dsmart-gateway-app",
+                "SERVICE_NAME" to "dsmart-module-temperature",
                 "LOG_MAX_HISTORY_DAYS" to "3",
                 "LOG_MAX_FILE_SIZE" to "10MB",
                 "LOG_TOTAL_SIZE_CAP" to "24MB",
