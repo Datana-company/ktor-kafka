@@ -4,6 +4,7 @@ import com.typesafe.config.ConfigFactory
 import io.ktor.application.Application
 import io.ktor.application.ApplicationFeature
 import io.ktor.application.ApplicationStopPreparing
+import io.ktor.config.ApplicationConfig
 import io.ktor.config.HoconApplicationConfig
 import io.ktor.util.AttributeKey
 import io.ktor.util.KtorExperimentalAPI
@@ -52,7 +53,8 @@ class KtorKafkaConsumer(val kafkaConsumer: KafkaConsumer<String, String>) : Coro
                     kafkaClientId,
                     kafkaGroupId,
                     kafkaKeyDeserializer,
-                    kafkaValueDeserializer
+                    kafkaValueDeserializer,
+                    pipeline.environment.config
                 )
             }
             val ktorKafkaConsumer = KtorKafkaConsumer(kafkaConsumer)
@@ -72,9 +74,9 @@ private fun createConsumer(
     kafkaClientId: String?,
     kafkaGroupId: String?,
     kafkaKeyDeserializer: Class<Any>?,
-    kafkaValueDeserializer: Class<Any>?
+    kafkaValueDeserializer: Class<Any>?,
+    appConfig: ApplicationConfig
 ): KafkaConsumer<String, String> {
-    val appConfig = HoconApplicationConfig(ConfigFactory.load())
     val props = Properties()
     props["bootstrap.servers"] = kafkaBrokers ?: appConfig.property("ktor.kafka.bootstrap.servers").getString()
     props["client.id"] = kafkaClientId ?: appConfig.property("ktor.kafka.client.id").getString()
