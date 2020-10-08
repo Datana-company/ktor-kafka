@@ -16,7 +16,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/datana-smart/converter-app",
+            "outputPath": "build/dist/datana-smart/converter-app",
             "index": "projects/datana-smart/converter-app/src/index.html",
             "main": "projects/datana-smart/converter-app/src/main.ts",
             "polyfills": "projects/datana-smart/converter-app/src/polyfills.ts",
@@ -155,6 +155,46 @@
             "tsConfig": [
               "projects/datana-smart/converter-widget/tsconfig.lib.json",
               "projects/datana-smart/converter-widget/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "@datana-smart/video-player-component": {
+      "projectType": "library",
+      "root": "projects/datana-smart/video-player-component",
+      "sourceRoot": "projects/datana-smart/video-player-component/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/datana-smart/video-player-component/tsconfig.lib.json",
+            "project": "projects/datana-smart/video-player-component/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/datana-smart/video-player-component/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/datana-smart/video-player-component/src/test.ts",
+            "tsConfig": "projects/datana-smart/video-player-component/tsconfig.spec.json",
+            "karmaConfig": "projects/datana-smart/video-player-component/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/datana-smart/video-player-component/tsconfig.lib.json",
+              "projects/datana-smart/video-player-component/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"

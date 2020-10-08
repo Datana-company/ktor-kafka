@@ -18,6 +18,12 @@
     },
     {
       "path": "./projects/datana-smart/converter-widget/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/datana-smart/video-player-component/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/datana-smart/video-player-component/tsconfig.spec.json"
     }
   ]
 }
