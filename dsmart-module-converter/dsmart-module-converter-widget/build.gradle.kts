@@ -20,9 +20,9 @@ node {
     version = nodeVersion
 }
 
-val ngLibsConv: Configuration by configurations.creating
-val staticFrontConv: Configuration by configurations.creating
-val widgetLibConv: Configuration by configurations.creating
+val ngLibs: Configuration by configurations.creating
+val staticFront: Configuration by configurations.creating
+val widgetLib: Configuration by configurations.creating
 
 dependencies {
     implementation(kotlin("stdlib-js"))
@@ -50,23 +50,23 @@ tasks {
     build.get().dependsOn(ngBuildApp)
 
     val createArtifactLibs by creating {
-        dependsOn(ngBuildApp)
+        dependsOn(ngBuildWidget)
         artifacts {
-            add("ngLibsConv", fileTree("$buildDir/dist").dir)
+            add("ngLibs", fileTree("$buildDir/dist").dir)
         }
     }
 
     val createArtifactWidget by creating {
         dependsOn(ngBuildApp)
         artifacts {
-            add("widgetLibConv", fileTree("$buildDir/dist/datana-smart/converter-widget").dir)
+            add("widgetLib", fileTree("$buildDir/dist/datana-smart/converter-widget").dir)
         }
     }
 
     val createArtifactStatic by creating {
         dependsOn(ngBuildApp)
         artifacts {
-            add("staticFrontConv", fileTree("$buildDir/static").dir)
+            add("staticFront", fileTree("$buildDir/static").dir)
         }
     }
 
