@@ -22,7 +22,6 @@ node {
 
 val ngLibs: Configuration by configurations.creating
 val staticFront: Configuration by configurations.creating
-val widgetLib: Configuration by configurations.creating
 
 dependencies {
     implementation(kotlin("stdlib-js"))
@@ -53,13 +52,6 @@ tasks {
         dependsOn(ngBuildWidget)
         artifacts {
             add("ngLibs", fileTree("$buildDir/dist").dir)
-        }
-    }
-
-    val createArtifactWidget by creating {
-        dependsOn(ngBuildApp)
-        artifacts {
-            add("widgetLib", fileTree("$buildDir/dist/datana-smart/converter-widget").dir)
         }
     }
 
