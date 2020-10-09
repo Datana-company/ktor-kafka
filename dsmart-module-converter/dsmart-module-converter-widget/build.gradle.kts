@@ -29,10 +29,8 @@ dependencies {
 }
 
 tasks {
-    val ngBuildVideoPlayer by ngLibBuild("video-player-component")
-    val ngBuildWidget by ngLibBuild("converter-widget") {
-        dependsOn(ngBuildVideoPlayer)
-    }
+    val ngBuildWidget by ngLibBuild("converter-widget")
+
     val ngBuildApp by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
         dependsOn(jar2npm)
         dependsOn(ngBuildWidget)

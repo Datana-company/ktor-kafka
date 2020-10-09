@@ -162,46 +162,6 @@
           }
         }
       }
-    },
-    "@datana-smart/video-player-component": {
-      "projectType": "library",
-      "root": "projects/datana-smart/video-player-component",
-      "sourceRoot": "projects/datana-smart/video-player-component/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "projects/datana-smart/video-player-component/tsconfig.lib.json",
-            "project": "projects/datana-smart/video-player-component/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/datana-smart/video-player-component/tsconfig.lib.prod.json"
-            }
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/datana-smart/video-player-component/src/test.ts",
-            "tsConfig": "projects/datana-smart/video-player-component/tsconfig.spec.json",
-            "karmaConfig": "projects/datana-smart/video-player-component/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/datana-smart/video-player-component/tsconfig.lib.json",
-              "projects/datana-smart/video-player-component/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
     }
   },
   "defaultProject": "@datana-smart/converter-widget"

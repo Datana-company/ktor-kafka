@@ -82,21 +82,21 @@ tasks {
             project(":dsmart-module-temperature:dsmart-module-temperature-widget")
                 .getTasksByName("createArtifact", false)
         )
-        dependsOn(
-            project(":dsmart-module-converter:dsmart-module-converter-widget")
-                .getTasksByName("createArtifactLibs", false)
-        )
+//        dependsOn(
+//            project(":dsmart-module-converter:dsmart-module-converter-widget")
+//                .getTasksByName("createArtifactLibs", false)
+//        )
         from(
             project(":dsmart-module-temperature:dsmart-module-temperature-widget")
                 .configurations
                 .getByName("ngLibs")
                 .artifacts
-                .files,
-            project(":dsmart-module-converter:dsmart-module-converter-widget")
-                .configurations
-                .getByName("ngLibs")
-                .artifacts
                 .files
+//            project(":dsmart-module-converter:dsmart-module-converter-widget")
+//                .configurations
+//                .getByName("ngLibs")
+//                .artifacts
+//                .files
         )
         into("$buildDir/ng-libs")
     }
