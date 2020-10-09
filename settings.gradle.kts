@@ -42,3 +42,5 @@ include(":dsmart-module-temperature:dsmart-module-temperature-ml-models")
 
 include(":dsmart-module-converter")
 include(":dsmart-module-converter:dsmart-module-converter-widget")
+include("dsmart-module-converter:dsmart-module-converter-app")
+findProject(":dsmart-module-converter:dsmart-module-converter-app")?.name = "dsmart-module-converter-app"

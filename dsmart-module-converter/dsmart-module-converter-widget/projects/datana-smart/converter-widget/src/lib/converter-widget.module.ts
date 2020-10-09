@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { ConverterWidgetComponent } from './converter-widget.component';
-import { VideoPlayerComponent } from '@datana-smart/video-player-component';
+import { VideoPlayerModule } from '@datana-smart/video-player-component';
 
 
 
 @NgModule({
   declarations: [ConverterWidgetComponent],
   imports: [
-    VideoPlayerComponent
+    VideoPlayerModule
   ],
   exports: [ConverterWidgetComponent]
 })
