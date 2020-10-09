@@ -52,7 +52,7 @@ repositories {
     mavenLocal()
     jcenter()
     maven { url = uri("https://kotlin.bintray.com/ktor") }
-    maven { url = uri("https://nexus.datana.ru/repository/datana-release/") }
+    maven { url = uri("https://nexus.datana.ru/repository/datana-release") }
 }
 
 dependencies {
@@ -70,7 +70,7 @@ dependencies {
     implementation("io.ktor:ktor-websockets:$ktorVersion")
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
-
+    implementation("codes.spectrum:konveyor:0.1.11")
 
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
@@ -101,11 +101,11 @@ tasks {
     val copyWidgetLib by creating(Copy::class.java) {
         dependsOn(
             project(":dsmart-module-temperature:dsmart-module-temperature-widget")
-                .getTasksByName("createArtifactWidget", false)
+                .getTasksByName("createArtifactLibs", false)
         )
         val widgetFiles = project(":dsmart-module-temperature:dsmart-module-temperature-widget")
             .configurations
-            .getByName("widgetLib")
+            .getByName("ngLibs")
             .artifacts
             .files
         from(widgetFiles)

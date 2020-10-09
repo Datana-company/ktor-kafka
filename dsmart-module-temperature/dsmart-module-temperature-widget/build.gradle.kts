@@ -101,16 +101,9 @@ tasks {
     build.get().dependsOn(ngBuildApp)
 
     val createArtifactLibs by creating {
-        dependsOn(ngBuildApp)
+        dependsOn(ngBuildWidget)
         artifacts {
             add("ngLibs", fileTree("$buildDir/dist").dir)
-        }
-    }
-
-    val createArtifactWidget by creating {
-        dependsOn(ngBuildApp)
-        artifacts {
-            add("widgetLib", fileTree("$buildDir/dist/$scopeName/temperature-widget").dir)
         }
     }
 

@@ -8,9 +8,7 @@ import io.ktor.features.CORS
 import io.ktor.features.CallLogging
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
-import io.ktor.http.cio.websocket.DefaultWebSocketSession
 import io.ktor.http.cio.websocket.pingPeriod
-import io.ktor.http.cio.websocket.send
 import io.ktor.http.cio.websocket.timeout
 import io.ktor.http.content.defaultResource
 import io.ktor.http.content.resources
@@ -25,15 +23,13 @@ import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
-import ru.datana.smart.common.transport.models.ws.IWsDsmartResponse
 import ru.datana.smart.logger.datanaLogger
+import ru.datana.smart.ui.temperature.app.cor.context.TemperatureBeContext
 import ru.datana.smart.ui.temperature.app.kafka.parsers.parseKafkaInputAnalysis
 import ru.datana.smart.ui.temperature.app.kafka.parsers.parseKafkaInputTemperature
 import ru.datana.smart.ui.temperature.app.websocket.WsManager
-import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseAnalysis
-import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseTemperature
+import ru.datana.smart.ui.temperature.app.mappings.toInnerModel
 import java.time.Duration
-import java.util.concurrent.ConcurrentHashMap
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -41,7 +37,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 @KtorExperimentalAPI
 fun Application.module(testing: Boolean = false) {
-    val log = datanaLogger(this.log as Logger)
+    val logger = datanaLogger(this.log as Logger)
 
     install(CallLogging) {
         level = Level.INFO
@@ -69,9 +65,8 @@ fun Application.module(testing: Boolean = false) {
     install(KtorKafkaConsumer)
 
     val wsManager = WsManager(
-        ConcurrentHashMap.newKeySet<DefaultWebSocketSession>(),
         Json { encodeDefaults = true },
-        log
+        logger
     )
 
     val topicRaw by lazy { environment.config.property("ktor.kafka.consumer.topic.raw").getString().trim() }
@@ -86,24 +81,35 @@ fun Application.module(testing: Boolean = false) {
 
         webSocket("/ws") {
             println("onConnect")
-            wsManager.wsSessions += this
+            wsManager.addSession(this)
             try {
                 for (frame in incoming) {
                 }
             } catch (e: ClosedReceiveChannelException) {
                 println("onClose ${closeReason.await()}")
             } catch (e: Throwable) {
-                log.error("Error within websocket block due to: ${closeReason.await()}", e)
+                logger.error("Error within websocket block due to: ${closeReason.await()}", e)
             } finally {
-                wsManager.wsSessions -= this
+                wsManager.delSession(this)
             }
         }
 
         kafka(listOf(topicRaw, topicAnalysis)) {
+            val context = TemperatureBeContext(
+                records = records.map { it.toInnerModel() },
+                logger = logger,
+                jacksonMapper = jacksonMapper,
+                kotlinxJson = Json { encodeDefaults = true }
+            )
+            mq2WsChain.exec(context)
+            context.forwardObjects.forEach {
+                wsManager.sendToAll(it.toWsModel())
+            }
+
             records
                 .firstOrNull { it.topic() == topicRaw }
                 ?.let { record ->
-                    log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
+                    logger.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
                     parseKafkaInputTemperature(record.value(), sensorId)
                 }
                 ?.takeIf {
@@ -114,7 +120,7 @@ fun Application.module(testing: Boolean = false) {
             records
                 .firstOrNull { it.topic() == topicAnalysis }
                 ?.let { record ->
-                    log.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
+                    logger.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
                     parseKafkaInputAnalysis(record.value(), sensorId)
                 }
                 ?.takeIf {

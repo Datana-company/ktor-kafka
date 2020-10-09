@@ -58,22 +58,6 @@ fun Application.parseKafkaInputAnalysis(value: String?, sensorId: String): WsDsm
     }
 }
 
-private fun TemperatureMlUiDto.State.toWs() = when (this) {
-    TemperatureMlUiDto.State.SWITCHED_ON -> TeapotState(
-        id = "switchedOn",
-        name = "Включен",
-        message = "Чайник включен"
-    )
-    TemperatureMlUiDto.State.SWITCHED_OFF -> TeapotState(
-        id = "switchedOff",
-        name = "Выключен",
-        message = "Чайник выключен"
-    )
-    else -> TeapotState(
-        id = "unknown",
-        name = "Неизвестно",
-        message = "Состояние чайника неизвестно"
-    )
-}
+
 
 
