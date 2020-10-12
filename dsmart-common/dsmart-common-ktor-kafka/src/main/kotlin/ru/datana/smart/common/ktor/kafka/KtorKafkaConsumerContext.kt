@@ -7,8 +7,5 @@ class KtorKafkaConsumerContext(
     val consumer: KafkaConsumer<String, String>,
     val records: ConsumerRecords<String, String>
 ) {
-
-    fun commitAll() {
-        consumer.commitAsync()
-    }
+    fun commitAll() = consumer.commitAsync()
 }

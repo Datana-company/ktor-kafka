@@ -79,7 +79,6 @@ dependencies {
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
 kotlin.sourceSets["test"].kotlin.srcDirs("test")
 
-//sourceSets["main"].resources.srcDirs("resources", frontDist)
 sourceSets["main"].resources.srcDirs("resources")
 sourceSets["main"].resources.srcDirs(frontDist)
 sourceSets["test"].resources.srcDirs("testresources")
@@ -98,7 +97,6 @@ tasks {
         from(frontFiles)
         into("$frontDist/static")
     }
-//    compileKotlin.get().dependsOn(copyFront)
     processResources.get().dependsOn(copyFront)
 
     create("deploy") {

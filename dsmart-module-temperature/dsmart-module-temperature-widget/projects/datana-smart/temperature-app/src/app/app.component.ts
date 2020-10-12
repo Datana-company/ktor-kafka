@@ -7,8 +7,4 @@ import {RecommendationModel} from "@datana-smart/recommendation-component";
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
-  title = 'temperature-app';
-  time = '12:34:56';
-  recommendation: "some recommendation";
-  x: RecommendationModel;
 }
