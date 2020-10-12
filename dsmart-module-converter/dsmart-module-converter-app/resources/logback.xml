@@ -1,12 +1,101 @@
 <configuration>
+
+    <!-- Для ELK-Stack: Хост кафки для логов -->
+    <property name="LOGS_KAFKA_HOSTS" value="${LOGS_KAFKA_HOSTS}"/>
+
+    <!-- Для ELK-Stack: Топик для отправки логов в кафку -->
+    <property name="LOGS_KAFKA_TOPIC" value="${LOGS_KAFKA_TOPIC}"/>
+
+    <!-- Для файлов с логами: Имя программы для логов -->
+    <property name="SERVICE_NAME" value="${SERVICE_NAME:-datana_smart}"/>
+
+    <!-- Для файлов с логами: Путь сохранение логов в виде файлов где исполняется программа (без ELK стека) -->
+    <property name="LOGS_DIR" value="${LOGS_DIR}"/>
+
+    <!--  Для файлов с логами: Количество суток, для сохранения логов (в днях), по умолчанию 7 дней -->
+    <property name="LOG_MAX_HISTORY_DAYS" value="${LOG_MAX_HISTORY_DAYS:-7}"/>
+
+    <!--  Для файлов с логами: Максимальный размер одного не сжатого лога (в мега-байтах), по умолчанию 10 Мбайт -->
+    <property name="LOG_MAX_FILE_SIZE" value="${LOG_MAX_FILE_SIZE:-10MB}"/>
+
+    <!--  Для файлов с логами: Общий максимальный размер логов (в мега-байтах), по умолчанию 64 Мбайт -->
+    <property name="LOG_TOTAL_SIZE_CAP" value="${LOG_TOTAL_SIZE_CAP:-64MB}"/>
+
+    <!-- Уровень логирования: для пакетов ru.datana -->
+    <property name="LOG_DATANA_LEVEL" value="${LOG_DATANA_LEVEL:-info}"/>
+
+    <!-- Уровень логирования: для пакетов, кроме ru.datana -->
+    <property name="LOG_COMMON_LEVEL" value="${LOG_COMMON_LEVEL:-error}"/>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level[%marker] %logger{36} - %msg%n%mdc%n</pattern>
         </encoder>
     </appender>
-    <root level="trace">
+
+    <appender name="asyncMyLogKafka"
+              class="net.logstash.logback.appender.LoggingEventAsyncDisruptorAppender">
+        <appender name="kafkaVerboseAppender"
+                  class="com.github.danielwegener.logback.kafka.KafkaAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <timestamp/>
+                    <version/>
+                    <pattern>
+                        <pattern>
+                            {
+                            "component": "${SERVICE_NAME}",
+                            "container-id": "${HOSTNAME}"
+                            }
+                        </pattern>
+                    </pattern>
+                    <message/>
+                    <loggerName/>
+                    <threadName/>
+                    <logLevel/>
+                    <logstashMarkers/>
+                    <callerData/>
+                    <stackTrace/>
+                    <context/>
+                    <mdc/>
+                    <logstashMarkers/>
+                    <arguments/>
+                    <tags/>
+                </providers>
+            </encoder>
+            <topic>${LOGS_KAFKA_TOPIC}</topic>
+            <deliveryStrategy
+                class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy"/>
+            <producerConfig>bootstrap.servers=${LOGS_KAFKA_HOSTS}</producerConfig>
+        </appender>
+    </appender>
+
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS_DIR}/${SERVICE_NAME}.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${LOGS_DIR}/${SERVICE_NAME}-%d{yyyy-MM-dd}.%i.log.gz
+            </fileNamePattern>
+            <maxFileSize>${LOG_MAX_FILE_SIZE}</maxFileSize>
+            <!-- keep 7 days' worth of history -->
+            <maxHistory>${LOG_MAX_HISTORY_DAYS}</maxHistory>
+            <totalSizeCap>${LOG_TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date %-5level[%marker] [%thread] - %mdc{loginName} - [%logger]- %msg%n%mdc%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="ru.datana" level="${LOG_DATANA_LEVEL}" additivity="false">
+        <appender-ref ref="asyncMyLogKafka"/>
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="RollingFile"/>
+    </logger>
+
+    <root level="${LOG_COMMON_LEVEL}">
+        <appender-ref ref="asyncMyLogKafka"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="RollingFile"/>
     </root>
-    <logger name="org.eclipse.jetty" level="INFO"/>
-    <logger name="io.netty" level="INFO"/>
 </configuration>
