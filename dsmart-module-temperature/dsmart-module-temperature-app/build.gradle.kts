@@ -6,6 +6,7 @@ val kafkaVersion: String by project
 val projectMaintainer: String by project
 val dockerBaseImage: String by project
 val dsmartLoggingVersion: String by project
+val konveyorVersion: String by project
 
 plugins {
     application
@@ -70,7 +71,7 @@ dependencies {
     implementation("io.ktor:ktor-websockets:$ktorVersion")
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
-    implementation("codes.spectrum:konveyor:0.1.11")
+    implementation("codes.spectrum:konveyor:$konveyorVersion")
 
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }

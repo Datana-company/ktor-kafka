@@ -1,6 +1,7 @@
 package ru.datana.smart.ui.temperature.app
 
 import ch.qos.logback.classic.Logger
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.application.log
@@ -25,11 +26,12 @@ import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.temperature.app.cor.context.TemperatureBeContext
-import ru.datana.smart.ui.temperature.app.kafka.parsers.parseKafkaInputAnalysis
-import ru.datana.smart.ui.temperature.app.kafka.parsers.parseKafkaInputTemperature
 import ru.datana.smart.ui.temperature.app.websocket.WsManager
 import ru.datana.smart.ui.temperature.app.mappings.toInnerModel
 import java.time.Duration
+import codes.spectrum.konveyor.konveyor
+import ru.datana.smart.ui.temperature.app.cor.handlers.AnalysisTopicHandler
+import ru.datana.smart.ui.temperature.app.cor.handlers.RawTopicHandler
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -97,37 +99,24 @@ fun Application.module(testing: Boolean = false) {
         kafka(listOf(topicRaw, topicAnalysis)) {
             val context = TemperatureBeContext(
                 records = records.map { it.toInnerModel() },
+                topicRaw = topicRaw,
+                topicAnalysis = topicAnalysis,
+                sensorId = sensorId,
                 logger = logger,
-                jacksonMapper = jacksonMapper,
-                kotlinxJson = Json { encodeDefaults = true }
+                jacksonMapper = ObjectMapper(),
+                json = Json { encodeDefaults = true }
             )
+            val mq2WsChain = konveyor<TemperatureBeContext<String, String>> {
+
+                timeout { 1000 }
+
+                + RawTopicHandler
+                + AnalysisTopicHandler
+            }
             mq2WsChain.exec(context)
             context.forwardObjects.forEach {
-                wsManager.sendToAll(it.toWsModel())
+                wsManager.sendToAll(it)
             }
-
-            records
-                .firstOrNull { it.topic() == topicRaw }
-                ?.let { record ->
-                    logger.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
-                    parseKafkaInputTemperature(record.value(), sensorId)
-                }
-                ?.takeIf {
-                    it.data?.temperatureAverage?.isFinite() ?: false
-                }
-                ?.also { temp -> wsManager.sendToAll(temp) }
-
-            records
-                .firstOrNull { it.topic() == topicAnalysis }
-                ?.let { record ->
-                    logger.trace("topic = ${record.topic()}, partition = ${record.partition()}, offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}")
-                    parseKafkaInputAnalysis(record.value(), sensorId)
-                }
-                ?.takeIf {
-                    it.data?.timeActual != null
-                }
-                ?.also { temp -> wsManager.sendToAll(temp) }
-
             commitAll()
         }
     }
