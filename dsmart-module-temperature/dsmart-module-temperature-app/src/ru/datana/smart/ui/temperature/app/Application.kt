@@ -65,11 +65,7 @@ fun Application.module(testing: Boolean = false) {
 
     install(KtorKafkaConsumer)
 
-    val wsManager = WsManager(
-        Json { encodeDefaults = true },
-        logger
-    )
-
+    val wsManager = WsManager()
     val topicRaw by lazy { environment.config.property("ktor.kafka.consumer.topic.raw").getString().trim() }
     val topicAnalysis by lazy { environment.config.property("ktor.kafka.consumer.topic.analysis").getString().trim() }
     val sensorId by lazy { environment.config.property("ktor.datana.sensor.id").getString().trim() }
@@ -103,14 +99,12 @@ fun Application.module(testing: Boolean = false) {
                 logger = logger,
                 jacksonSerializer = ObjectMapper(),
                 kotlinxSerializer = Json { encodeDefaults = true },
+                wsManager = wsManager,
                 topicRaw = topicRaw,
                 topicAnalysis = topicAnalysis,
                 sensorId = sensorId
             ).exec(context)
 
-            context.forwardObjects.forEach {
-                wsManager.sendToAll(it)
-            }
             commitAll()
         }
     }

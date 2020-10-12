@@ -8,12 +8,16 @@ import kotlinx.serialization.json.Json
 import ru.datana.smart.logger.DatanaLogContext
 import ru.datana.smart.ui.temperature.app.cor.context.TemperatureBeContext
 import ru.datana.smart.ui.temperature.app.cor.handlers.AnalysisTopicHandler
+import ru.datana.smart.ui.temperature.app.cor.handlers.JsonSerializerHandler
 import ru.datana.smart.ui.temperature.app.cor.handlers.RawTopicHandler
+import ru.datana.smart.ui.temperature.app.cor.handlers.WsSendHandler
+import ru.datana.smart.ui.temperature.app.websocket.WsManager
 
 class ForwardServiceKafkaUi(
     var logger: DatanaLogContext,
     var jacksonSerializer: ObjectMapper,
     var kotlinxSerializer: Json,
+    var wsManager: WsManager,
     var topicRaw: String,
     var topicAnalysis: String,
     var sensorId: String,
@@ -29,6 +33,7 @@ class ForwardServiceKafkaUi(
                 it.logger = logger
                 it.jacksonSerializer = jacksonSerializer
                 it.kotlinxSerializer = kotlinxSerializer
+                it.wsManager = wsManager
                 it.topicRaw = topicRaw
                 it.topicAnalysis = topicAnalysis
                 it.sensorId = sensorId
@@ -44,6 +49,8 @@ class ForwardServiceKafkaUi(
 
             +RawTopicHandler
             +AnalysisTopicHandler
+            +JsonSerializerHandler
+            +WsSendHandler
         }
     }
 }
