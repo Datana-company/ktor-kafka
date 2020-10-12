@@ -1,6 +1,7 @@
 package ru.datana.smart.ui.temperature.app
 
 import ch.qos.logback.classic.Logger
+import codes.spectrum.konveyor.DefaultKonveyorEnvironment
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.application.Application
 import io.ktor.application.install
@@ -32,6 +33,7 @@ import java.time.Duration
 import codes.spectrum.konveyor.konveyor
 import ru.datana.smart.ui.temperature.app.cor.handlers.AnalysisTopicHandler
 import ru.datana.smart.ui.temperature.app.cor.handlers.RawTopicHandler
+import ru.datana.smart.ui.temperature.app.cor.services.ForwardServiceKafkaUi
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -99,21 +101,16 @@ fun Application.module(testing: Boolean = false) {
         kafka(listOf(topicRaw, topicAnalysis)) {
             val context = TemperatureBeContext(
                 records = records.map { it.toInnerModel() },
-                topicRaw = topicRaw,
-                topicAnalysis = topicAnalysis,
-                sensorId = sensorId,
                 logger = logger,
                 jacksonMapper = ObjectMapper(),
                 json = Json { encodeDefaults = true }
             )
-            val mq2WsChain = konveyor<TemperatureBeContext<String, String>> {
-
-                timeout { 1000 }
-
-                + RawTopicHandler
-                + AnalysisTopicHandler
+            val env = DefaultKonveyorEnvironment.also {
+                it["topicRaw"] = topicRaw
+                it["topicAnalysis"] = topicAnalysis
+                it["sensorId"] = sensorId
             }
-            mq2WsChain.exec(context)
+            ForwardServiceKafkaUi().exec(context, env)
             context.forwardObjects.forEach {
                 wsManager.sendToAll(it)
             }

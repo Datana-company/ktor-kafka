@@ -13,13 +13,15 @@ import kotlin.math.max
 object RawTopicHandler : IKonveyorHandler<TemperatureBeContext<String, String>> {
 
     override suspend fun exec(context: TemperatureBeContext<String, String>, env: IKonveyorEnvironment) {
-        val record = context.records.firstOrNull { it.topic == context.topicRaw } ?: return
+        val topicRaw = env.get<String>("topicRaw", String::class)
+        val sensorId = env.get<String>("sensorId", String::class)
+        val record = context.records.firstOrNull { it.topic == topicRaw } ?: return
 
         context.logger.trace("topic = ${record.topic}, partition = ${record.partition}, offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
 
         try {
             val obj = context.jacksonMapper.readValue(record.value, TemperatureProcUiDto::class.java)!!
-            if (obj.sensorId != context.sensorId) return
+            if (obj.sensorId != sensorId) return
 
             val objTime = obj.timeIntervalLatest ?: return
             val newTime = context.lastTimeProc.updateAndGet {
@@ -32,7 +34,7 @@ object RawTopicHandler : IKonveyorHandler<TemperatureBeContext<String, String>> 
             val response = WsDsmartResponseTemperature(
                 data = toWsTemperatureModel(obj)
             )
-            response.data?.temperatureAverage?.isFinite()?.apply { context.forwardObjects += response }
+            response.data?.temperatureAverage?.isFinite()?.apply { context.forwardObjects.add(response) }
 
         } catch (e: Throwable) {
             context.logger.error("Error parsing data for [Proc]: {}", record.value)

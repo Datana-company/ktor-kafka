@@ -2,7 +2,6 @@ package ru.datana.smart.ui.temperature.app.cor.handlers
 
 import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
-import io.ktor.application.log
 import ru.datana.smart.ui.ml.models.TemperatureMlUiDto
 import ru.datana.smart.ui.temperature.app.cor.context.CorStatus
 import ru.datana.smart.ui.temperature.app.cor.context.TemperatureBeContext
@@ -13,7 +12,9 @@ import kotlin.math.max
 object AnalysisTopicHandler : IKonveyorHandler<TemperatureBeContext<String, String>> {
 
     override suspend fun exec(context: TemperatureBeContext<String, String>, env: IKonveyorEnvironment) {
-        val record = context.records.firstOrNull { it.topic == context.topicAnalysis } ?: return
+        val topicAnalysis = env.get<String>("topicAnalysis", String::class)
+        val sensorId = env.get<String>("sensorId", String::class)
+        val record = context.records.firstOrNull { it.topic == topicAnalysis } ?: return
 
         context.logger.trace("topic = ${record.topic}, partition = ${record.partition}, offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
 
@@ -24,8 +25,8 @@ object AnalysisTopicHandler : IKonveyorHandler<TemperatureBeContext<String, Stri
                     context.logger.error("Wrong TemperatureUI (input ML-data) version ")
                     return
                 }
-                if (obj.sensorId?.trim() != context.sensorId) {
-                    context.logger.trace("Sensor Id {} is not proper in respect to {}", objs = *arrayOf(obj.sensorId, context.sensorId))
+                if (obj.sensorId?.trim() != sensorId) {
+                    context.logger.trace("Sensor Id {} is not proper in respect to {}", objs = *arrayOf(obj.sensorId, sensorId))
                     return
                 }
 
@@ -42,11 +43,10 @@ object AnalysisTopicHandler : IKonveyorHandler<TemperatureBeContext<String, Stri
                 val response = WsDsmartResponseAnalysis(
                     data = toWsAnalysisModel(obj)
                 )
-                response.data?.timeActual?.apply { context.forwardObjects += response }
+                response.data?.timeActual?.apply { context.forwardObjects.add(response) }
 
             } catch (e: Throwable) {
                 context.logger.error("Error parsing data for [ML]: {}", record.value)
-                null
             }
         }
     }
