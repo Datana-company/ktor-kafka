@@ -8,13 +8,6 @@ plugins {
 group = rootProject.group
 version = rootProject.version
 
-val DOCKER_GROUP = "docker"
-val dockerPort = System.getenv("DOCKER_REGISTRY_PORT")?.let { ":$it" } ?: ""
-val dockerHost = System.getenv("DOCKER_REGISTRY_HOST")?.plus("$dockerPort/") ?: ""
-val dockerUser = System.getenv("DOCKER_REGISTRY_USER") as String?
-val dockerPass = System.getenv("DOCKER_REGISTRY_PASS") as String?
-val scopeName = "datana-smart"
-
 repositories {
     mavenCentral()
 }
@@ -42,30 +35,6 @@ dependencies {
 }
 
 tasks {
-    val cliInit by creating(NpxTask::class.java) {
-        dependsOn(jar2npm)
-        command = "npm"
-        setArgs(
-            listOf(
-                "install",
-                "@angular/cli"
-            )
-        )
-    }
-
-    val ngInit by creating(NpxTask::class.java) {
-        dependsOn(cliInit)
-        command = "ng"
-        setArgs(
-            listOf(
-                "new",
-                "dsmart-ui-main",
-                "--directory",
-                "./"
-            )
-        )
-    }
-
     val ngBuildRecommendations by ngLibBuild("recommendation-component")
     val ngBuildHistory by ngLibBuild("history-component") {
         dependsOn(ngBuildRecommendations)

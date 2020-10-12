@@ -12,21 +12,19 @@ import kotlin.math.max
 object AnalysisTopicHandler : IKonveyorHandler<TemperatureBeContext<String, String>> {
 
     override suspend fun exec(context: TemperatureBeContext<String, String>, env: IKonveyorEnvironment) {
-        val topicAnalysis = env.get<String>("topicAnalysis", String::class)
-        val sensorId = env.get<String>("sensorId", String::class)
-        val record = context.records.firstOrNull { it.topic == topicAnalysis } ?: return
+        val record = context.records.firstOrNull { it.topic == context.topicAnalysis } ?: return
 
         context.logger.trace("topic = ${record.topic}, partition = ${record.partition}, offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
 
         record.value.let { json ->
             try {
-                val obj = context.jacksonMapper.readValue(json, TemperatureMlUiDto::class.java)!!
+                val obj = context.jacksonSerializer.readValue(json, TemperatureMlUiDto::class.java)!!
                 if (obj.version != "0.2") {
                     context.logger.error("Wrong TemperatureUI (input ML-data) version ")
                     return
                 }
-                if (obj.sensorId?.trim() != sensorId) {
-                    context.logger.trace("Sensor Id {} is not proper in respect to {}", objs = *arrayOf(obj.sensorId, sensorId))
+                if (obj.sensorId?.trim() != context.sensorId) {
+                    context.logger.trace("Sensor Id {} is not proper in respect to {}", objs = arrayOf(obj.sensorId, context.sensorId))
                     return
                 }
 

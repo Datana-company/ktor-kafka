@@ -13,12 +13,17 @@ class TemperatureBeContext<K, V> (
     var lastTimeMl: AtomicLong = AtomicLong(0),
     var lastTimeProc: AtomicLong = AtomicLong(0),
     var forwardObjects: MutableCollection<IWsDsmartResponse<*>> = mutableListOf(),
-    var logger: DatanaLogContext,
-    var jacksonMapper: ObjectMapper,
-    var json: Json,
     var status: CorStatus = CorStatus.STARTED,
     var errors: MutableList<CorError> = mutableListOf(),
     var timeStart: Instant = Instant.now(),
     var timeStop: Instant = Instant.now()
-)
+) {
+
+    lateinit var logger: DatanaLogContext
+    lateinit var jacksonSerializer: ObjectMapper
+    lateinit var kotlinxSerializer: Json
+    lateinit var topicRaw: String
+    lateinit var topicAnalysis: String
+    lateinit var sensorId: String
+}
 
