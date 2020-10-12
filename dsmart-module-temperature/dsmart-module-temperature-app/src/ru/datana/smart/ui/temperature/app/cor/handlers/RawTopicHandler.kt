@@ -41,7 +41,11 @@ object RawTopicHandler : IKonveyorHandler<TemperatureBeContext<String, String>> 
             response.data?.temperatureAverage?.isFinite()?.apply { context.forwardObjects.add(response) }
 
         } catch (e: Throwable) {
-            context.logger.error("Error parsing data for [Proc]: {}", record.value)
+            val msg = "Error parsing data for [Proc]: ${record.value}"
+            context.logger.error()
+            context.logger.error()
+            context.errors.add(CorError(msg))
+            context.status = CorStatus.FAILING
         }
     }
 
