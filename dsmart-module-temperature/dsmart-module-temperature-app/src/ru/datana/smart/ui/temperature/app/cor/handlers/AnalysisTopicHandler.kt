@@ -21,8 +21,9 @@ object AnalysisTopicHandler : IKonveyorHandler<TemperatureBeContext<String, Stri
             try {
                 val obj = context.jacksonSerializer.readValue(json, TemperatureMlUiDto::class.java)!!
                 if (obj.version != "0.2") {
-                    context.logger.error("Wrong TemperatureUI (input ML-data) version")
-                    context.errors.add(CorError("Wrong TemperatureUI (input ML-data) version"))
+                    val msg = "Wrong TemperatureUI (input ML-data) version"
+                    context.logger.error(msg)
+                    context.errors.add(CorError(msg))
                     context.status = CorStatus.FAILING
                     return
                 }
@@ -50,7 +51,10 @@ object AnalysisTopicHandler : IKonveyorHandler<TemperatureBeContext<String, Stri
                 response.data?.timeActual?.apply { context.forwardObjects.add(response) }
 
             } catch (e: Throwable) {
-                context.logger.error("Error parsing data for [ML]: {}", record.value)
+                val msg = "Error parsing data for [ML]: ${record.value}"
+                context.logger.error(msg)
+                context.errors.add(CorError(msg))
+                context.status = CorStatus.FAILING
             }
         }
     }

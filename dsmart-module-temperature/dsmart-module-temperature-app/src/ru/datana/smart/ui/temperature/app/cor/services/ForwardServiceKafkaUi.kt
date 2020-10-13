@@ -7,10 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.serialization.json.Json
 import ru.datana.smart.logger.DatanaLogContext
 import ru.datana.smart.ui.temperature.app.cor.context.TemperatureBeContext
-import ru.datana.smart.ui.temperature.app.cor.handlers.AnalysisTopicHandler
-import ru.datana.smart.ui.temperature.app.cor.handlers.JsonSerializerHandler
-import ru.datana.smart.ui.temperature.app.cor.handlers.RawTopicHandler
-import ru.datana.smart.ui.temperature.app.cor.handlers.WsSendHandler
+import ru.datana.smart.ui.temperature.app.cor.handlers.*
 import ru.datana.smart.ui.temperature.app.websocket.WsManager
 
 class ForwardServiceKafkaUi(
@@ -24,7 +21,7 @@ class ForwardServiceKafkaUi(
 ) {
 
     suspend fun exec(context: TemperatureBeContext<String, String>) {
-        konveyor.exec(context, DefaultKonveyorEnvironment)
+        exec(context, DefaultKonveyorEnvironment)
     }
 
     suspend fun exec(context: TemperatureBeContext<String, String>, env: IKonveyorEnvironment) {
@@ -51,6 +48,7 @@ class ForwardServiceKafkaUi(
             +AnalysisTopicHandler
             +JsonSerializerHandler
             +WsSendHandler
+            +FinishHandler
         }
     }
 }

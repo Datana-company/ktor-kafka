@@ -2,14 +2,11 @@ package ru.datana.smart.ui.temperature.app.cor.handlers
 
 import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
-import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
 import ru.datana.smart.ui.temperature.app.cor.context.CorError
 import ru.datana.smart.ui.temperature.app.cor.context.CorStatus
 import ru.datana.smart.ui.temperature.app.cor.context.TemperatureBeContext
 import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseTemperature
-import ru.datana.smart.ui.temperature.app.mappings.toWsTemperatureModel
 import ru.datana.smart.ui.temperature.ws.models.WsDsmartResponseAnalysis
-import kotlin.math.max
 
 object JsonSerializerHandler : IKonveyorHandler<TemperatureBeContext<String, String>> {
 
