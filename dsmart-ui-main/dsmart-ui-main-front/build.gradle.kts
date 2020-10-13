@@ -1,3 +1,4 @@
+
 plugins {
     id("com.crowdproj.plugins.jar2npm")
     id("com.bmuschko.docker-remote-api")
@@ -29,7 +30,7 @@ val ngLibs: Configuration by configurations.creating
 val staticFront: Configuration by configurations.creating {
 //    isCanBeConsumed = true
 //    isCanBeResolved = false
-    // If you want this configuration to share the same dependencies, otherwise omit this line
+//    If you want this configuration to share the same dependencies, otherwise omit this line
 //    extendsFrom(configurations["implementation"], configurations["runtimeOnly"])
 }
 
@@ -80,7 +81,7 @@ tasks {
     val extractNgLibs by creating(Copy::class.java) {
         dependsOn(
             project(":dsmart-module-temperature:dsmart-module-temperature-widget")
-                .getTasksByName("createArtifact", false)
+                .getTasksByName("createArtifactLibs", false)
         )
 //        dependsOn(
 //            project(":dsmart-module-converter:dsmart-module-converter-widget")

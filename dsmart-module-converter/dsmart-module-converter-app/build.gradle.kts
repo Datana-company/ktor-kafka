@@ -102,4 +102,9 @@ tasks {
         into("$frontDist/static/widget")
     }
     processResources.get().dependsOn(copyArtifactLibs)
+
+    create("deploy") {
+        group = "build"
+        dependsOn(dockerPushImage)
+    }
 }
