@@ -12,7 +12,9 @@ object FinishHandler : IKonveyorHandler<TemperatureBeContext<String, String>> {
         if (context.errors.isEmpty()) {
             context.status = CorStatus.SUCCESS
         }
-        else context.status = CorStatus.ERROR
+        else {
+            context.status = CorStatus.ERROR
+        }
         context.timeStop = Instant.now()
     }
 

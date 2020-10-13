@@ -42,8 +42,7 @@ object RawTopicHandler : IKonveyorHandler<TemperatureBeContext<String, String>> 
 
         } catch (e: Throwable) {
             val msg = "Error parsing data for [Proc]: ${record.value}"
-            context.logger.error()
-            context.logger.error()
+            context.logger.error(msg)
             context.errors.add(CorError(msg))
             context.status = CorStatus.FAILING
         }
