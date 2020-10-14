@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
-import { ConverterWidgetModule } from '@datana-smart/converter-widget';
+import { AppRoutingModule } from "./app-routing.module";
 
 @NgModule({
   declarations: [
@@ -13,7 +13,7 @@ import { ConverterWidgetModule } from '@datana-smart/converter-widget';
   imports: [
     BrowserModule,
     FormsModule,
-    ConverterWidgetModule
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

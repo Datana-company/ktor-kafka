@@ -7,6 +7,7 @@ import {TeapotStatusModule} from '@datana-smart/teapot-status-component';
 import {HistoryModule} from "@datana-smart/history-component";
 import {TemperatureBoilingModule} from "@datana-smart/teapot-boiling-component";
 import {TemperatureModule} from "@datana-smart/temperature-component";
+import {TemperatureViewRoutingModule} from "./temperature-view-routing.module";
 
 @NgModule({
   declarations: [TemperatureViewComponent],
@@ -18,18 +19,11 @@ import {TemperatureModule} from "@datana-smart/temperature-component";
     HistoryModule,
     TemperatureBoilingModule,
     TemperatureModule,
+    TemperatureViewRoutingModule
   ],
   providers: [
     TemperatureViewModule,
   ],
   exports: [TemperatureViewComponent],
 })
-export class TemperatureViewModule {
-  public static config(wsConfig: WebSocketConfig): ModuleWithProviders<TemperatureViewModule> {
-    console.log('Setting up TemperatureViewModule', wsConfig);
-    return {
-      ngModule: TemperatureViewModule,
-      providers: [{provide: config, useValue: wsConfig}]
-    };
-  }
-}
+export class TemperatureViewModule { }
