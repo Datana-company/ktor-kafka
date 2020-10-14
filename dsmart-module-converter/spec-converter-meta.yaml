@@ -25,7 +25,7 @@ components:
 
   schemas:
 
-    MeltInfo:
+    ConverterMeltInfo:
       description: Мета-информация о плавке
       type: object
       properties:
