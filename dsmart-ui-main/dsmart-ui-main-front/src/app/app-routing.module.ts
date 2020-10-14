@@ -12,10 +12,10 @@ const routes: Routes = [
     loadChildren: () => import('@datana-smart/converter-widget').then(m => m.ConverterWidgetModule),
   },
   {
-    path: '',
+    path: '**',
     redirectTo: 'temperature',
     pathMatch: 'full'
-  }
+  },
 ];
 
 @NgModule({

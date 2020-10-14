@@ -4,14 +4,14 @@ import {WebSocketConfig, config} from '@datana-smart/websocket';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'temperature',
     loadChildren: () => import('@datana-smart/temperature-widget').then(m => m.TemperatureViewModule)
   },
   {
-    path: '',
-    redirectTo: '',
+    path: '**',
+    redirectTo: 'temperature',
     pathMatch: 'full'
-  }
+  },
 ];
 
 @NgModule({

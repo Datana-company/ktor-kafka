@@ -3,12 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'converter',
     loadChildren: () => import('@datana-smart/converter-widget').then(m => m.ConverterWidgetModule)
   },
   {
-    path: '',
-    redirectTo: '',
+    path: '**',
+    redirectTo: 'converter',
     pathMatch: 'full'
   }
 ];
