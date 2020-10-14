@@ -1,0 +1,98 @@
+openapi: 3.0.3
+info:
+  title: Форматы моделей для кислородного конвертера
+  description: 'Транспортные модели для связи различных компонентов кислородного конвертера'
+  contact:
+    email: okatov@datana.ru
+  license:
+    name: Proprietar
+  version: 0.0.1
+externalDocs:
+  description: Дополнительная информация
+  url: https://conf.dds.lanit.ru/pages/viewpage.action?pageId=48956438
+#servers:
+#- url: http://localhost
+
+paths:
+  /tmp:
+    get:
+      responses:
+        200:
+          description: tmp
+          content: {}
+
+components:
+
+  schemas:
+
+    MeltInfo:
+      description: Мета-информация о плавке
+      type: object
+      properties:
+        id:
+          title: Идентификатор
+          description: Уникальный идентификатор плавки. Строится из даты и номера плавки
+          type: string
+        timeStart:
+          title: Время начала
+          description: Время начала плавки в миллисекундах от Unix-эпохи в GMT
+          type: integer
+          format: int64
+        meltNumber:
+          title: № плавки
+          type: string
+          description: Номер плавки. Не уникален
+        steelGrade:
+          title: марка стали
+          description: Марка выплавляемой стали
+          type: string
+        crewNumber:
+          title: № бригады
+          type: string
+          description: Номер бригады, выполяющей плавку
+        shiftNumber:
+          title: № смены
+          type: string
+          description: Номер смены, в которую выполняется плавка
+        mode:
+          title: Режим прогона
+          type: string
+          description: "Режим, в котором прогоняется текущая плавка: боевая, эмуляция, тестовая"
+          enum:
+            - prod
+            - emulation
+            - test
+        devices:
+          title: Оборудование
+          description: Данные об оборудовании, с которым необходимо взаимодействовать при обработке плавки
+          type: object
+          properties:
+            irCamera:
+              $ref: '#/components/schemas/ConverterDevicesIrCamerta'
+
+    ConverterDevicesIrCamerta:
+      title: ИК-камера
+      description: Инфракрасная камера, встроенная в корпус конвертера, для отслеживания слива металла
+      type: object
+      properties:
+        id:
+          title: Идентификатор камеры
+          description: Уникальный идентификатор или серийный номер камеры, с которой производится съемка видео
+          type: string
+        name:
+          title: Название
+          description: Название камеры
+          example: "Камера на Конвертере-2"
+          type: string
+        uri:
+          title: Адрес устройства
+          description: Адрес файла или устройства, с которого снимать изображение
+          type: string
+          example: "file:///catalog/case1/video.ravi"
+        type:
+          title: Тип устройства
+          description: "Тип устройства: настоящая камера (устройство) или файл"
+          type: string
+          enum:
+            - device
+            - file
