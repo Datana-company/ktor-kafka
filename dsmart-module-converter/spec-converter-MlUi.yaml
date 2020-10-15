@@ -28,7 +28,7 @@ components:
     ConverterTransportMlUi:
       description: Транспортная модель для передачи данных от матмодели до UI кислородного конвертера
       allOf:
-        - $ref: './spec-converter-meta.yaml#/components/schemas/ConverterMetaInfo'
+        - $ref: './spec-converter-ViMl.yaml#/components/schemas/ConverterTransportViMl'
         - type: object
           properties:
             angle:
@@ -46,5 +46,3 @@ components:
               description: Доля шлака (от единицы) на поверхности при сливе плавки из конвертера
               type: number
               format: double
-            meltInfo:
-              $ref: './spec-converter-meta.yaml#/components/schemas/ConverterTransportViMl'

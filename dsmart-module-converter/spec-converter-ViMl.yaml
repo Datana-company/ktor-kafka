@@ -43,4 +43,4 @@ components:
           description: Путь на файловой системе CEPH, по которому доступен файл видео-кадра в формате PNG
           type: string
         meltInfo:
-          $ref: './spec-converter-meta.yaml#/components/schemas/ConverterMetaInfo'
+          $ref: './spec-converter-meta.yaml#/components/schemas/ConverterMeltInfo'
