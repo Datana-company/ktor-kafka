@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../../../dsmart-module-temperature/dsmart-module-temperature-widget/node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../../build/dist/datana-smart/websocket",
+  "lib": {
+    "entryFile": "src/public-api.ts"
+  }
+}

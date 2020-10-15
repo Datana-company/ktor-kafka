@@ -35,6 +35,21 @@ dependencies {
 }
 
 tasks {
+    val copyCommonLibs by creating(Copy::class.java) {
+        dependsOn(
+            project(":dsmart-common:dsmart-common-frontend")
+                .getTasksByName("createArtifactLibs", false)
+        )
+        val frontFiles = project(":dsmart-common:dsmart-common-frontend")
+            .configurations
+            .getByName("ngLibs")
+            .artifacts
+            .files
+        from(frontFiles)
+        into("$buildDir/dist")
+    }
+    processResources.get().dependsOn(copyCommonLibs)
+
     val ngBuildRecommendations by ngLibBuild("recommendation-component")
     val ngBuildHistory by ngLibBuild("history-component") {
         dependsOn(ngBuildRecommendations)
@@ -46,13 +61,12 @@ tasks {
         dependsOn(ngBuildCollapsible)
     }
     val ngBuildTemperature by ngLibBuild("temperature-component")
-    val ngBuildWebsocket by ngLibBuild("websocket")
     val ngBuildWidget by ngLibBuild("temperature-widget") {
         dependsOn(ngBuildHistory)
         dependsOn(ngBuildStatus)
         dependsOn(ngBuildBoiling)
         dependsOn(ngBuildTemperature)
-        dependsOn(ngBuildWebsocket)
+        dependsOn(copyCommonLibs)
     }
 
     val ngBuildApp by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {

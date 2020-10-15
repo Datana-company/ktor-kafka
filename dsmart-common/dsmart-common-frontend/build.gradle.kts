@@ -8,7 +8,6 @@ group = rootProject.group
 version = rootProject.version
 
 val distDir = "$buildDir/dist"
-val distConfig = "staticFront"
 
 repositories {
     mavenCentral()
@@ -21,67 +20,44 @@ node {
 }
 
 val ngLibs: Configuration by configurations.creating
-val staticFront: Configuration by configurations.creating
 
 dependencies {
     implementation(kotlin("stdlib-js"))
-//    implementation(project(":dsmart-module-converter:dsmart-module-converter-ws-models"))
 }
 
 tasks {
-    val copyCommonLibs by creating(Copy::class.java) {
-        dependsOn(
-            project(":dsmart-common:dsmart-common-frontend")
-                .getTasksByName("createArtifactLibs", false)
-        )
-        val frontFiles = project(":dsmart-common:dsmart-common-frontend")
-            .configurations
-            .getByName("ngLibs")
-            .artifacts
-            .files
-        from(frontFiles)
-        into("$buildDir/dist")
-    }
-    processResources.get().dependsOn(copyCommonLibs)
+    val ngBuildWebsocket by ngLibBuild("websocket")
 
-    val ngBuildWidget by ngLibBuild("converter-widget") {
-        dependsOn(copyCommonLibs)
+    val ngBuildLibs by creating {
+        dependsOn(ngBuildWebsocket)
     }
 
     val ngBuildApp by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
         dependsOn(jar2npm)
-        dependsOn(ngBuildWidget)
+        dependsOn(ngBuildLibs)
         command = "ng"
         setArgs(
             listOf(
                 "build",
-                "@datana-smart/converter-app",
+                "@datana-smart/frontend-app",
                 "--outputPath=$buildDir/static"
             )
         )
     }
-
     build.get().dependsOn(ngBuildApp)
 
     val createArtifactLibs by creating {
-        dependsOn(ngBuildWidget)
+        dependsOn(ngBuildWebsocket)
         artifacts {
             add("ngLibs", fileTree("$buildDir/dist").dir)
         }
     }
 
-    val createArtifactStatic by creating {
-        dependsOn(ngBuildApp)
-        artifacts {
-            add("staticFront", fileTree("$buildDir/static").dir)
-        }
-    }
-
-    val ngStart by ngLibBuild("converter-app") {
+    val ngStart by ngLibBuild("frontend-app") {
         setArgs(
             listOf(
                 "serve",
-                "@datana-smart/converter-app"
+                "@datana-smart/frontend-app"
             )
         )
     }
@@ -112,3 +88,4 @@ fun TaskContainerScope.ngLibBuild(
     outputs.dir("$distDir/$scope/$libName")
     conf()
 }
+

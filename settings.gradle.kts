@@ -28,7 +28,7 @@ pluginManagement {
 include(":dsmart-common")
 include(":dsmart-common:dsmart-common-common")
 include(":dsmart-common:dsmart-common-transport-ws")
-include(":dsmart-common:dsmart-common-fm-websocket")
+include(":dsmart-common:dsmart-common-frontend")
 include(":dsmart-common:dsmart-common-ktor-kafka")
 
 include(":dsmart-ui-main")

@@ -1,5 +1,6 @@
-import { NgModule } from '@angular/core';
+import {ModuleWithProviders, NgModule} from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import {WebSocketConfig, config} from '@datana-smart/websocket';
 
 const routes: Routes = [
   {
@@ -17,4 +18,12 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+  public static config(wsConfig: WebSocketConfig): ModuleWithProviders<AppRoutingModule> {
+    console.log('Setting up AppRoutingModule', wsConfig);
+    return {
+      ngModule: AppRoutingModule,
+      providers: [{provide: config, useValue: wsConfig}]
+    };
+  }
+}
