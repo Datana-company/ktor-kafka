@@ -49,7 +49,7 @@ components:
         crewNumber:
           title: № бригады
           type: string
-          description: Номер бригады, выполяющей плавку
+          description: Номер бригады, выполняющей плавку
         shiftNumber:
           title: № смены
           type: string
@@ -63,12 +63,15 @@ components:
             - emulation
             - test
         devices:
-          title: Оборудование
-          description: Данные об оборудовании, которое используется для мониторинга на данном агрегате
-          type: object
-          properties:
-            irCamera:
-              $ref: '#/components/schemas/ConverterDevicesIrCamerta'
+          $ref: '#/components/schemas/ConverterMeltDevices'
+
+    ConverterMeltDevices:
+      title: Оборудование
+      description: Данные об оборудовании, которое используется для мониторинга на данном агрегате
+      type: object
+      properties:
+        irCamera:
+          $ref: '#/components/schemas/ConverterDevicesIrCamerta'
 
     ConverterDevicesIrCamerta:
       title: ИК-камера
