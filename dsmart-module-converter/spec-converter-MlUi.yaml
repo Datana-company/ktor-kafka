@@ -33,17 +33,17 @@ components:
           properties:
             angle:
               title: Угол конвертера
-              description: Угол в градусах, на который наклонен конвертер, определенный средствами ML из кадра
+              description: Угол в градусах, на который наклонен конвертер, определенный средствами матмодели из кадра
               type: number
               format: double
-            metalRate:
-              title: Содержание металла
-              description: Доля металла (от единицы) на поверхности при сливе плавки из конвертера
+            steelRate:
+              title: Содержание стали
+              description: Доля стали (от единицы) на поверхности при сливе плавки из конвертера
               type: number
               format: double
-            meltTemperature:
-              title: Температура плавки
-              description: Средняя температура металла в Цельсиях на поверхности плавки при сливе из конвертера
+            slagRate:
+              title: Содержание шлака
+              description: Доля шлака (от единицы) на поверхности при сливе плавки из конвертера
               type: number
               format: double
             meltInfo:

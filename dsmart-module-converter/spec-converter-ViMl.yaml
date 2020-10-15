@@ -26,7 +26,7 @@ components:
   schemas:
 
     ConverterTransportViMl:
-      description: Транспортная модель для передачи данных от видео-адаптера до матмодели кислородного конвертера
+      description: Транспортная модель для передачи данных от видео-адаптера к матмодели для кислородного конвертера
       type: object
       properties:
         frameId:
