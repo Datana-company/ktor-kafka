@@ -6,8 +6,8 @@ import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
 import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
 import ru.datana.smart.ui.converter.app.cor.context.CorError
 import ru.datana.smart.ui.converter.app.cor.context.CorStatus
-import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverter
-import ru.datana.smart.ui.converter.app.mappings.toWsConverterModel
+import ru.datana.smart.ui.converter.app.mappings.toWsTemperatureModel
+import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseTemperature
 import kotlin.math.max
 
 object RawTopicHandler : IKonveyorHandler<ConverterBeContext<String, String>> {
@@ -35,10 +35,10 @@ object RawTopicHandler : IKonveyorHandler<ConverterBeContext<String, String>> {
             // Пропускаем устаревшие данные
             if (newTime != objTime) return
 
-            val response = WsDsmartResponseConverter(
-                data = toWsConverterModel(obj)
+            val response = WsDsmartResponseTemperature(
+                data = toWsTemperatureModel(obj)
             )
-            response.data?.tiltAngle?.isFinite()?.apply { context.forwardObjects.add(response) }
+            response.data?.temperatureAverage?.isFinite()?.apply { context.forwardObjects.add(response) }
 
         } catch (e: Throwable) {
             val msg = "Error parsing data for [Proc]: ${record.value}"

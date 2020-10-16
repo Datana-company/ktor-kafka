@@ -6,6 +6,8 @@ import ru.datana.smart.ui.converter.app.cor.context.CorError
 import ru.datana.smart.ui.converter.app.cor.context.CorStatus
 import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
 import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverter
+import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseRecommendation
+import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseTemperature
 
 object JsonSerializerHandler : IKonveyorHandler<ConverterBeContext<String, String>> {
 
@@ -13,6 +15,8 @@ object JsonSerializerHandler : IKonveyorHandler<ConverterBeContext<String, Strin
         context.forwardJsonObjects = context.forwardObjects.map {
             when(it) {
                 is WsDsmartResponseConverter -> context.kotlinxSerializer.encodeToString(WsDsmartResponseConverter.serializer(), it)
+                is WsDsmartResponseTemperature -> context.kotlinxSerializer.encodeToString(WsDsmartResponseTemperature.serializer(), it)
+                is WsDsmartResponseRecommendation -> context.kotlinxSerializer.encodeToString(WsDsmartResponseRecommendation.serializer(), it)
                 else -> {
                     val msg = "Unknown type of data"
                     context.logger.trace(msg)

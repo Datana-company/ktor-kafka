@@ -43,6 +43,8 @@ class ForwardServiceKafkaUi(
             timeout { 1000 }
 
             +RawTopicHandler
+            +ConverterUiHandler
+            +RecommendationHandler
             +JsonSerializerHandler
             +WsSendHandler
             +FinishHandler
