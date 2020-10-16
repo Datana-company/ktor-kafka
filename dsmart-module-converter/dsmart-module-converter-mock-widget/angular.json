@@ -2,7 +2,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "@datana-smart/converter-mock-app": {
+      "@datana-smart/converter-mock-app": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -123,46 +123,126 @@
         }
       }
     },
-    "@datana-smart/converter-mock-widget": {
-      "projectType": "library",
-      "root": "projects/datana-smart/converter-mock-widget",
-      "sourceRoot": "projects/datana-smart/converter-mock-widget/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "projects/datana-smart/converter-mock-widget/tsconfig.lib.json",
-            "project": "projects/datana-smart/converter-mock-widget/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/datana-smart/converter-mock-widget/tsconfig.lib.prod.json"
-            }
+      "@datana-smart/converter-mock-widget": {
+          "projectType": "library",
+          "root": "projects/datana-smart/converter-mock-widget",
+          "sourceRoot": "projects/datana-smart/converter-mock-widget/src",
+          "prefix": "lib",
+          "architect": {
+              "build": {
+                  "builder": "@angular-devkit/build-ng-packagr:build",
+                  "options": {
+                      "tsConfig": "projects/datana-smart/converter-mock-widget/tsconfig.lib.json",
+                      "project": "projects/datana-smart/converter-mock-widget/ng-package.json"
+                  },
+                  "configurations": {
+                      "production": {
+                          "tsConfig": "projects/datana-smart/converter-mock-widget/tsconfig.lib.prod.json"
+                      }
+                  }
+              },
+              "test": {
+                  "builder": "@angular-devkit/build-angular:karma",
+                  "options": {
+                      "main": "projects/datana-smart/converter-mock-widget/src/test.ts",
+                      "tsConfig": "projects/datana-smart/converter-mock-widget/tsconfig.spec.json",
+                      "karmaConfig": "projects/datana-smart/converter-mock-widget/karma.conf.js"
+                  }
+              },
+              "lint": {
+                  "builder": "@angular-devkit/build-angular:tslint",
+                  "options": {
+                      "tsConfig": [
+                          "projects/datana-smart/converter-mock-widget/tsconfig.lib.json",
+                          "projects/datana-smart/converter-mock-widget/tsconfig.spec.json"
+                      ],
+                      "exclude": [
+                          "**/node_modules/**"
+                      ]
+                  }
+              }
           }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/datana-smart/converter-mock-widget/src/test.ts",
-            "tsConfig": "projects/datana-smart/converter-mock-widget/tsconfig.spec.json",
-            "karmaConfig": "projects/datana-smart/converter-mock-widget/karma.conf.js"
+      },
+      "@datana-smart/converter-mock-list-component": {
+          "projectType": "library",
+          "root": "projects/datana-smart/converter-mock-list-component",
+          "sourceRoot": "projects/datana-smart/converter-mock-list-component/src",
+          "prefix": "lib",
+          "architect": {
+              "build": {
+                  "builder": "@angular-devkit/build-ng-packagr:build",
+                  "options": {
+                      "tsConfig": "projects/datana-smart/converter-mock-list-component/tsconfig.lib.json",
+                      "project": "projects/datana-smart/converter-mock-list-component/ng-package.json"
+                  },
+                  "configurations": {
+                      "production": {
+                          "tsConfig": "projects/datana-smart/converter-mock-list-component/tsconfig.lib.prod.json"
+                      }
+                  }
+              },
+              "test": {
+                  "builder": "@angular-devkit/build-angular:karma",
+                  "options": {
+                      "main": "projects/datana-smart/converter-mock-list-component/src/test.ts",
+                      "tsConfig": "projects/datana-smart/converter-mock-list-component/tsconfig.spec.json",
+                      "karmaConfig": "projects/datana-smart/converter-mock-list-component/karma.conf.js"
+                  }
+              },
+              "lint": {
+                  "builder": "@angular-devkit/build-angular:tslint",
+                  "options": {
+                      "tsConfig": [
+                          "projects/datana-smart/converter-mock-list-component/tsconfig.lib.json",
+                          "projects/datana-smart/converter-mock-list-component/tsconfig.spec.json"
+                      ],
+                      "exclude": [
+                          "**/node_modules/**"
+                      ]
+                  }
+              }
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/datana-smart/converter-mock-widget/tsconfig.lib.json",
-              "projects/datana-smart/converter-mock-widget/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+      },
+      "@datana-smart/converter-mock-list-item-component": {
+          "projectType": "library",
+          "root": "projects/datana-smart/converter-mock-list-item-component",
+          "sourceRoot": "projects/datana-smart/converter-mock-list-item-component/src",
+          "prefix": "lib",
+          "architect": {
+              "build": {
+                  "builder": "@angular-devkit/build-ng-packagr:build",
+                  "options": {
+                      "tsConfig": "projects/datana-smart/converter-mock-list-item-component/tsconfig.lib.json",
+                      "project": "projects/datana-smart/converter-mock-list-item-component/ng-package.json"
+                  },
+                  "configurations": {
+                      "production": {
+                          "tsConfig": "projects/datana-smart/converter-mock-list-item-component/tsconfig.lib.prod.json"
+                      }
+                  }
+              },
+              "test": {
+                  "builder": "@angular-devkit/build-angular:karma",
+                  "options": {
+                      "main": "projects/datana-smart/converter-mock-list-item-component/src/test.ts",
+                      "tsConfig": "projects/datana-smart/converter-mock-list-item-component/tsconfig.spec.json",
+                      "karmaConfig": "projects/datana-smart/converter-mock-list-item-component/karma.conf.js"
+                  }
+              },
+              "lint": {
+                  "builder": "@angular-devkit/build-angular:tslint",
+                  "options": {
+                      "tsConfig": [
+                          "projects/datana-smart/converter-mock-list-item-component/tsconfig.lib.json",
+                          "projects/datana-smart/converter-mock-list-item-component/tsconfig.spec.json"
+                      ],
+                      "exclude": [
+                          "**/node_modules/**"
+                      ]
+                  }
+              }
           }
-        }
       }
-    }
   },
   "defaultProject": "@datana-smart/converter-mock-widget"
 }
