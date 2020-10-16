@@ -1,0 +1,10 @@
+/.dockerignore
+/.gitignore
+/.travis.yml
+/Dockerfile
+/git_push.sh
+/README.md
+/tox.ini
+/test
+/openapi
+/controllers

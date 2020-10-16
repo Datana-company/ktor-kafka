@@ -19,7 +19,10 @@ paths:
       responses:
         200:
           description: tmp
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConverterMeltInfo'
 
 components:
 
