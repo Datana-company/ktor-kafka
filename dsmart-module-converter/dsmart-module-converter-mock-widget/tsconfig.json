@@ -7,17 +7,29 @@
 {
   "files": [],
   "references": [
-    {
-      "path": "./projects/datana-smart/converter-mock-app/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/datana-smart/converter-mock-app/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/datana-smart/converter-mock-widget/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/datana-smart/converter-mock-widget/tsconfig.spec.json"
-    }
+        {
+            "path": "./projects/datana-smart/converter-mock-app/tsconfig.app.json"
+        },
+        {
+            "path": "./projects/datana-smart/converter-mock-app/tsconfig.spec.json"
+        },
+        {
+            "path": "./projects/datana-smart/converter-mock-widget/tsconfig.lib.json"
+        },
+        {
+            "path": "./projects/datana-smart/converter-mock-widget/tsconfig.spec.json"
+        },
+        {
+            "path": "./projects/datana-smart/converter-mock-list-item-component/tsconfig.lib.json"
+        },
+        {
+            "path": "./projects/datana-smart/converter-mock-list-item-component/tsconfig.spec.json"
+        },
+        {
+            "path": "./projects/datana-smart/converter-mock-list-component/tsconfig.lib.json"
+        },
+        {
+            "path": "./projects/datana-smart/converter-mock-list-component/tsconfig.spec.json"
+        }
   ]
 }
