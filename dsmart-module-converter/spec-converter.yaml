@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+    title: Транспортные модели для Конвертера
+    description: 'Транспортные модели для связи различных компонентов IoT-прототипа конвертера'
+    contact:
+        email: okatov@datana.ru
+    license:
+        name: Proprietar
+    version: 0.0.1
+#externalDocs:
+#  description: Find out more about Swagger
+#  url: http://swagger.io
+#servers:
+#- url: http://localhost
+# tags:
+#     - name: processing-interpretation
+#       description: Коммуникация между процессингом данных и ML-интерпретатором
+#     - name: interpretation-ui
+#       description: Коммуникация между ML-интерпретатором данных и интерфейсом пользователя
+#     - name: processing-ui
+#       description: Коммуникация между процессингом и интерфейсом пользователя
+
+paths:
+    /tmp:
+        get:
+            responses:
+                200:
+                    description: tmp
+                    content: {}
+
+components:
+
+    schemas:
+        TemperatureProcUiDto:
+            description: Структура данных, которая отдается из flink-процессинга на UI
+            type: object
+            properties:
+                version:
+                    type: string
+                sensorId:
+                    description: Идентификатор сенсора, для которого подготовлена агрегация
+                    type: string
+                timeIntervalLatest:
+                    description: Самая поздняя точка временного интервала, для которого производится агрегация
+                    type: integer
+                    format: int64
+                timeIntervalEarliest:
+                    description: Самая ранняя точка временного интервала, для которого производится агрегация
+                    type: integer
+                    format: int64
+                temperatureScale:
+                    $ref: '#/components/schemas/TemperatureScale'
+                temperatureAverage:
+                    description: Средняя температура за период между [[timeIntervalEarliest]] и [[timeIntervalLatest]]
+                    type: number
+                    format: double
+                temperatureMin:
+                    description: Минимальная температура за период между [[timeIntervalEarliest]] и [[timeIntervalLatest]]
+                    type: number
+                    format: double
+                temperatureMax:
+                    description: Максимальная температура за период между [[timeIntervalEarliest]] и [[timeIntervalLatest]]
+                    type: number
+                    format: double
+
+        TemperatureScale:
+            description: "Шкала температуры: C - Цельсия, K - Кельвина, F - Фаренгейта"
+            type: string
+            enum:
+                - c
+                - k
+                - f
+
+

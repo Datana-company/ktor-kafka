@@ -1,15 +1,16 @@
-import org.jetbrains.kotlin.gradle.dsl.Coroutines
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 val ktorVersion: String by project
 val kotlinVersion: String by project
 val logbackVersion: String by project
 val projectMaintainer: String by project
+val kafkaVersion: String by project
+val dsmartLoggingVersion: String by project
+val konveyorVersion: String by project
 
 plugins {
     application
     kotlin("jvm")
     id("com.bmuschko.docker-java-application")
+    kotlin("plugin.serialization")
 }
 
 group = rootProject.group
@@ -48,12 +49,17 @@ repositories {
     mavenLocal()
     jcenter()
     maven { url = uri("https://kotlin.bintray.com/ktor") }
+    maven { url = uri("https://nexus.datana.ru/repository/datana-release") }
 }
 
 dependencies {
 
-    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-common"))
-    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ws-models"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-common"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-ws-models"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-ml-models"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-mlui"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
+    implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -61,6 +67,10 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
+    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
+    implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
+    implementation("codes.spectrum:konveyor:$konveyorVersion")
+
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 

@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "es2020",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "paths": {
+      "@datana-smart/*": [
+        "build/dist/datana-smart/*"
+      ],
+      "@datana-smart/websocket": [
+        "dist/datana-smart/websocket/datana-smart-websocket",
+        "dist/datana-smart/websocket"
+      ]
+    }
+  }
+}
