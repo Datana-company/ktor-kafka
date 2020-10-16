@@ -1,8 +1,13 @@
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {WebSocketConfig, config} from '@datana-smart/websocket';
+import {NavigatePanelComponent} from "./navigate-panel/navigate-panel.component";
 
 const routes: Routes = [
+  {
+    path: '',
+    component: NavigatePanelComponent
+  },
   {
     path: 'temperature',
     loadChildren: () => import('@datana-smart/temperature-widget').then(m => m.TemperatureViewModule)
@@ -13,13 +18,13 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'temperature',
+    redirectTo: '',
     pathMatch: 'full'
   },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {
