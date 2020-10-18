@@ -38,7 +38,7 @@ openApiGenerate {
     apiPackage.set("api")
     invokerPackage.set("invoker")
     modelPackage.set("models")
-    ignoreFileOverride.set("$projectDir/.")
+    ignoreFileOverride.set("$projectDir/.openapi-generator-ignore")
     systemProperties.apply {
 //        put("models", "")
 //        put("modelDocs", "false")
