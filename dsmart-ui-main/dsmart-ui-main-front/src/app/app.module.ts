@@ -3,20 +3,22 @@ import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
-import {TemperatureViewModule} from '@datana-smart/temperature-widget';
 import {FormsModule} from '@angular/forms';
 import {WebsocketModule} from './websocket';
+import {AppRoutingModule} from "./app-routing.module";
+import {NavigatePanelComponent} from "./navigate-panel/navigate-panel.component";
 
 @NgModule({
   declarations: [
     AppComponent,
+    NavigatePanelComponent
   ],
   imports: [
     BrowserModule,
-    WebsocketModule.config({
+    AppRoutingModule.config({
       url: environment.ws
     }),
-    TemperatureViewModule.config({
+    WebsocketModule.config({
       url: environment.ws
     }),
     FormsModule

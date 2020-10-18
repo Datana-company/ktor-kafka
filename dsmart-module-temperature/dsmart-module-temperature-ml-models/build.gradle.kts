@@ -20,7 +20,7 @@ dependencies {
 }
 
 val generatedSourcesDir = "$buildDir/generated"
-kotlin.sourceSets["main"].kotlin.srcDirs("$generatedSourcesDir/src")
+kotlin.sourceSets["main"].kotlin.srcDirs("$generatedSourcesDir/src/main/kotlin")
 
 openApiGenerate {
     generatorName.set("kotlin")
