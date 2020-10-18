@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {MockListItemModel} from "@datana-smart/converter-mock-list-item-component";
+import {MockListItemModel} from "./mock-list-item-component/mock-list-item-model";
 
 @Component({
   selector: 'datana-converter-mock-widget',
