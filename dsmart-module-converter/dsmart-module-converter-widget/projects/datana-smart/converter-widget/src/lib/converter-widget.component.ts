@@ -9,8 +9,7 @@ import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
 @Component({
   selector: 'datana-converter-widget',
   templateUrl: './converter-widget.component.html',
-  styles: [
-  ]
+  styleUrls: ['./converter-widget.component.css']
 })
 export class ConverterWidgetComponent implements OnInit {
 
