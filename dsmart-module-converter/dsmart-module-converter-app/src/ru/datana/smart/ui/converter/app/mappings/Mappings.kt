@@ -4,7 +4,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 import ru.datana.smart.ui.converter.app.cor.context.InnerRecord
 import ru.datana.smart.ui.converter.ws.models.*
 import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
+import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
+import ru.datana.smart.ui.viml.models.ConverterTransportViMl
 
 fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     topic = topic(),
@@ -14,8 +16,8 @@ fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     value = value()
 )
 
-fun toWsConverterModel(converterTransportMlUi: ConverterTransportMlUi) =
-    WsDsmartConverter(
+fun toWsConverterUiModel(converterTransportMlUi: ConverterTransportMlUi) =
+    WsDsmartConverterUi(
         frameId = converterTransportMlUi.frameId,
         frameTime = converterTransportMlUi.frameTime,
         framePath = converterTransportMlUi.framePath,
@@ -39,6 +41,49 @@ fun toWsConverterModel(converterTransportMlUi: ConverterTransportMlUi) =
         angle  = converterTransportMlUi.angle,
         steelRate = converterTransportMlUi.steelRate,
         slagRate = converterTransportMlUi.slagRate
+    )
+
+fun toWsConverterViModel(converterTransportMlVi: ConverterTransportViMl) =
+    WsDsmartConverterVi(
+        frameId = converterTransportMlVi.frameId,
+        frameTime = converterTransportMlVi.frameTime,
+        framePath = converterTransportMlVi.framePath,
+        meltInfo = WsDsmartConverterMeltInfo(
+            id = converterTransportMlVi.meltInfo?.id,
+            timeStart = converterTransportMlVi.meltInfo?.timeStart,
+            meltNumber = converterTransportMlVi.meltInfo?.meltNumber,
+            steelGrade = converterTransportMlVi.meltInfo?.steelGrade,
+            crewNumber = converterTransportMlVi.meltInfo?.crewNumber,
+            shiftNumber = converterTransportMlVi.meltInfo?.shiftNumber,
+            mode = WsDsmartConverterMeltInfo.Mode.valueOf(converterTransportMlVi.meltInfo?.mode.toString()),
+            devices = WsDsmartConverterMeltDevices(
+                irCamera = WsDsmartConverterDevicesIrCamerta(
+                    id = converterTransportMlVi.meltInfo?.devices?.irCamera?.id,
+                    name = converterTransportMlVi.meltInfo?.devices?.irCamera?.name,
+                    uri = converterTransportMlVi.meltInfo?.devices?.irCamera?.uri,
+                    type = WsDsmartConverterDevicesIrCamerta.Type.valueOf(converterTransportMlVi.meltInfo?.devices?.irCamera?.type.toString())
+                )
+            ),
+        )
+    )
+
+fun toWsConverterMetaModel(converterMeltInfo: ConverterMeltInfo) =
+    WsDsmartConverterMeltInfo(
+        id = converterMeltInfo.id,
+        timeStart = converterMeltInfo.timeStart,
+        meltNumber = converterMeltInfo.meltNumber,
+        steelGrade = converterMeltInfo.steelGrade,
+        crewNumber = converterMeltInfo.crewNumber,
+        shiftNumber = converterMeltInfo.shiftNumber,
+        mode = WsDsmartConverterMeltInfo.Mode.valueOf(converterMeltInfo.mode.toString()),
+        devices = WsDsmartConverterMeltDevices(
+            irCamera = WsDsmartConverterDevicesIrCamerta(
+                id = converterMeltInfo.devices?.irCamera?.id,
+                name = converterMeltInfo.devices?.irCamera?.name,
+                uri = converterMeltInfo.devices?.irCamera?.uri,
+                type = WsDsmartConverterDevicesIrCamerta.Type.valueOf(converterMeltInfo.devices?.irCamera?.type.toString())
+            )
+        ),
     )
 
 fun toWsTemperatureModel(temperatureProcUiDto: TemperatureProcUiDto) =

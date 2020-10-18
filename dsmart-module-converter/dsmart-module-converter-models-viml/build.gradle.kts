@@ -26,7 +26,7 @@ openApiGenerate {
     generatorName.set("kotlin")
     inputSpec.set("${project(":dsmart-module-converter").projectDir}/spec-converter-ViMl.yaml")
     outputDir.set(generatedSourcesDir)
-    val basePackage = "${project.group}.mlui"
+    val basePackage = "${project.group}.viml"
     apiPackage.set("$basePackage.api")
     invokerPackage.set("$basePackage.invoker")
     modelPackage.set("$basePackage.models")
