@@ -4,7 +4,10 @@ import {map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
 import {RecommendationModel} from "./models/recommendation.model";
 import {ConverterModel} from "./models/converter.model";
+import {ConverterVideoModel} from "./models/converter-video.model";
 import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
+import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
+import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
 
 @Component({
   selector: 'datana-converter-widget',
@@ -17,6 +20,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   _unsubscribe = new Subject<void>();
 
   public converterData: ConverterModel;
+  public converterVideoData: ConverterVideoModel;
+  public converterMetaData: ConverterMeltInfoModel;
   public recommendations: Array<RecommendationModel> = new Array<RecommendationModel>();
 
   playlist: string;
@@ -43,6 +48,38 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       })
     ).subscribe(data => {
       this.converterData = data;
+    });
+
+    this.wsService.on('converter-video-update').pipe(
+      takeUntil(this._unsubscribe),
+      map((data: any) => {
+        return new ConverterVideoModel(
+          data?.frameId as string,
+          data?.frameTime as number,
+          data?.framePath as string,
+          data?.meltInfo as ConverterMeltInfoModel
+        );
+      })
+    ).subscribe(data => {
+      this.converterVideoData = data;
+    });
+
+    this.wsService.on('converter-meta-update').pipe(
+      takeUntil(this._unsubscribe),
+      map((data: any) => {
+        return new ConverterMeltInfoModel(
+          data?.id as string,
+          data?.timeStart as number,
+          data?.meltNumber as string,
+          data?.steelGrade as string,
+          data?.crewNumber as string,
+          data?.shiftNumber as string,
+          data?.mode as ConverterMeltModeModel,
+          data?.devices as ConverterMeltDevicesModel
+        );
+      })
+    ).subscribe(data => {
+      this.converterMetaData = data;
     });
 
     this.wsService.on('recommendation-update').pipe(

@@ -1,9 +1,9 @@
 <video-player-component [playlist]="playlist"></video-player-component>
-<h1>Номер плавки: {{converterData?.meltInfo?.meltNumber}}</h1>
-<h1>Марка стали: {{converterData?.meltInfo?.steelGrade}}</h1>
-<h1>Номер бригады: {{converterData?.meltInfo?.crewNumber}}</h1>
-<h1>Номер смены: {{converterData?.meltInfo?.shiftNumber}}</h1>
-<h1>Название девайса: {{converterData?.meltInfo?.devices?.irCamera?.name}}</h1>
+<h1>Номер плавки: {{converterMetaData?.meltNumber}}</h1>
+<h1>Марка стали: {{converterMetaData?.steelGrade}}</h1>
+<h1>Номер бригады: {{converterMetaData?.crewNumber}}</h1>
+<h1>Номер смены: {{converterMetaData?.shiftNumber}}</h1>
+<h1>Название девайса: {{converterVideoData?.meltInfo?.devices?.irCamera?.name}}</h1>
 <h1>Угол наклона конвертера: {{ converterData?.angle }}°</h1>
 <h1>Рекомендации:</h1>
 <div *ngFor="let recommendation of recommendations">

@@ -5,8 +5,8 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.cor.context.CorError
 import ru.datana.smart.ui.converter.app.cor.context.CorStatus
-import ru.datana.smart.ui.converter.app.mappings.toWsConverterModel
-import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverter
+import ru.datana.smart.ui.converter.app.mappings.toWsConverterUiModel
+import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverterUi
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 
 object ConverterUiHandler : IKonveyorHandler<ConverterBeContext<String, String>> {
@@ -20,8 +20,8 @@ object ConverterUiHandler : IKonveyorHandler<ConverterBeContext<String, String>>
         try {
             val obj = context.jacksonSerializer.readValue(record, ConverterTransportMlUi::class.java)!!
 
-            val response = WsDsmartResponseConverter(
-                data = toWsConverterModel(obj)
+            val response = WsDsmartResponseConverterUi(
+                data = toWsConverterUiModel(obj)
             )
             response.data?.angle?.isFinite()?.apply { context.forwardObjects.add(response) }
 
