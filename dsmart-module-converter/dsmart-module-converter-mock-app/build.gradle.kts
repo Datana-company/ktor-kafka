@@ -100,6 +100,25 @@ tasks {
     }
     processResources.get().dependsOn(copyArtifactLibs)
 
+    dockerCreateDockerfile {
+        environmentVariable(
+            mapOf(
+                //example "KAFKA_BOOTSTRAP_SERVERS" to "172.29.40.58:9092,172.29.40.59:9092,172.29.40.60:9092",
+                "KAFKA_BOOTSTRAP_SERVERS" to "",
+                "KAFKA_TOPIC_META" to "",
+                "LOGS_KAFKA_HOSTS" to "",
+                "LOGS_KAFKA_TOPIC" to "",
+                "LOGS_DIR" to "",
+                "SERVICE_NAME" to project.name,
+                "LOG_MAX_HISTORY_DAYS" to "3",
+                "LOG_MAX_FILE_SIZE" to "10MB",
+                "LOG_TOTAL_SIZE_CAP" to "24MB",
+                "LOG_DATANA_LEVEL" to "info",
+                "LOG_COMMON_LEVEL" to "error"
+            )
+        )
+    }
+
     create("deploy") {
         group = "build"
         dependsOn(dockerPushImage)
