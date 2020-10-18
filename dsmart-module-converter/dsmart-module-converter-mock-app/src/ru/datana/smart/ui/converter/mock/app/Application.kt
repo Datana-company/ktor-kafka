@@ -15,4 +15,25 @@ fun Application.module(testing: Boolean = false) {
             resources("static")
         }
     }
+    get("/list") {
+        call.responseText("""
+        {
+          "cases": [
+            {"name": "Case1", "dir": "Case1"}
+          ]
+        }
+        """.trimIndent())
+    }
+    get("/send") {
+        val case = call.parameter["case"] ?: throw BadQueryException("No case is specified")
+        val meltInfo = objectMapper.readValue(File("$pathToCatalog/$case/meta.json"), ConverterMeltInfo::class.java)
+        val timeStart = Instant.now()
+        val meltId = "${meltInfo.meltNumber}-${timeStart.toEpochMilli()}"
+        val meltInfoInit = meltInfo.copy(
+            id = meltId,
+            timeStart = timeStart
+        )
+        kafkaProducer.send(meltId, objectMapper.writeValueAsString(meltInfoInit))
+        call.responseOk()
+    }
 }
