@@ -28,14 +28,7 @@ dependencies {
 }
 
 tasks {
-    val ngBuildMockListItem by ngLibBuild("converter-mock-list-item-component")
-    val ngBuildMockList by ngLibBuild("converter-mock-list-component") {
-        dependsOn(ngBuildMockListItem)
-    }
-
-  val ngBuildWidget by ngLibBuild("converter-mock-widget") {
-    dependsOn(ngBuildMockList)
-}
+  val ngBuildWidget by ngLibBuild("converter-mock-widget")
 
   val ngBuildApp by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
     dependsOn(jar2npm)
