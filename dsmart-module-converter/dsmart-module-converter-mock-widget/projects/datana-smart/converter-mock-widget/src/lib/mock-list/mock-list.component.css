@@ -1,0 +1,12 @@
+.widget-mock-list-container {
+    width: 100%;
+    height: calc(100% - 4px);
+    overflow-y: scroll;
+    border: 2px solid DimGray;
+    border-radius: 4px;
+    background-color: DimGray;
+}
+
+.widget-mock-list-container > div {
+    margin: 0.5rem;
+}
