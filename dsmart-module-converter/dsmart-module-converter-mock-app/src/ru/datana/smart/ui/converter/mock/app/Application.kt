@@ -69,9 +69,12 @@ fun Application.module(testing: Boolean = false) {
             call.respondText(
                 """
                 {
-                  "cases": [
-                    {"name": "Case1", "dir": "Case1"}
-                  ]
+                    "cases": [
+                        {"name": "Case1", "dir": "Case1"},
+                        {"name": "Case2", "dir": "Case2"},
+                        {"name": "Case3", "dir": "Case3"},
+                        {"name": "Case4", "dir": "Case4"}
+                    ]
                 }
                 """.trimIndent()
             )

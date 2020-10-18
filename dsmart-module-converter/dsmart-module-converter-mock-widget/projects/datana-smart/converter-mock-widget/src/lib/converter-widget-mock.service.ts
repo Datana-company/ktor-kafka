@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable, throwError} from 'rxjs';
-import {catchError, retry} from 'rxjs/operators';
-import {MockListItemModel} from "./models/mock-list-item-model";
+import {Observable} from 'rxjs';
+import {MockCasesModel} from "./models/mock-cases-model";
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +11,13 @@ export class ConverterWidgetMockService {
   constructor(private http: HttpClient) {
   }
 
-  async getList() {
-    this.http.get<MockListItemModel>("/list")
+  getList(): Observable<MockCasesModel> {
+    return this.http.get<MockCasesModel>("http://localhost:8080/list")
   }
 
-  startCase(dir: string) {
-    this.http.get(`/send`, {
+  startCase(dir: string): Observable<any> {
+    console.log(`send dir = ${dir}`)
+    return this.http.get<any>("http://localhost:8080/send", {
       params: {
         case: dir
       }
