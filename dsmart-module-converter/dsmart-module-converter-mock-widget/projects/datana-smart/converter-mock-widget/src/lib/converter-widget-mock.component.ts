@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {MockListItemModel} from "./mock-list-item-component/mock-list-item-model";
+import {MockListItemModel} from "./models/mock-list-item-model";
 
 @Component({
   selector: 'datana-converter-mock-widget',
@@ -8,7 +8,7 @@ import {MockListItemModel} from "./mock-list-item-component/mock-list-item-model
 })
 export class ConverterWidgetMockComponent implements OnInit {
 
-    mockList: Array<MockListItemModel> = [
+    public mockList: Array<MockListItemModel> = [
         new MockListItemModel(
             new Date('2020-09-21T12:45:30'),
             'Каталог №1'

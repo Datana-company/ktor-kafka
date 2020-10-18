@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MockListItemModel} from "../mock-list-item-component/mock-list-item-model";
+import {MockListItemModel} from "../models/mock-list-item-model";
 
 @Component({
   // tslint:disable-next-line:component-selector
