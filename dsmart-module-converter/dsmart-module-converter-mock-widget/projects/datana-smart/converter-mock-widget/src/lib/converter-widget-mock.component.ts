@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MockListItemModel} from "./models/mock-list-item-model";
 
 @Component({
-  selector: 'datana-converter-mock-widget',
+    selector: 'datana-converter-mock-widget',
     templateUrl: './converter-mock-widget.component.html',
     styleUrls: ['./converter-mock-widget.component.css']
 })
@@ -10,50 +10,51 @@ export class ConverterWidgetMockComponent implements OnInit {
 
     public mockList: Array<MockListItemModel> = [
         new MockListItemModel(
-            new Date('2020-09-21T12:45:30'),
-            'Каталог №1'
+            'Каталог №1',
+            'case1'
         ),
         new MockListItemModel(
-            new Date('2020-09-21T11:25:13'),
-            'Каталог №2'
+            'Каталог №2',
+            'case1'
         ),
         new MockListItemModel(
-            new Date('2020-09-21T11:05:10'),
-            'Каталог №3'
+            'Каталог №3',
+            'case1'
         ),
         new MockListItemModel(
-            new Date('2020-09-16T05:55:31'),
-            'Каталог №4'
+            'Каталог №4',
+            'case1'
         ),
         new MockListItemModel(
-            new Date('2020-09-21T05:51:53'),
-            'Каталог №5'
+            'Каталог №5',
+            'case1'
         ),
         new MockListItemModel(
-            new Date('2020-09-21T04:02:05'),
-            'Каталог №123456789'
+            'Каталог №123456789',
+            'case1'
         ),
         new MockListItemModel(
-            new Date('2020-09-21T05:51:53'),
-            'Оооооооооочень_длиииииииииинноооооое_имяяяяяяя_каталооооога'
+            'Оооооооооочень_длиииииииииинноооооое_имяяяяяяя_каталооооога',
+            'case1'
         ),
         new MockListItemModel(
-            new Date('2020-09-21T04:02:05'),
-            'Проект (last version) +++ final - v.3 - для печати'
+            'Проект (last version) +++ final - v.3 - для печати',
+            'case1'
         ),
         new MockListItemModel(
-            new Date('2020-09-21T05:51:53'),
-            'Новая папка'
+            'Новая папка',
+            'case1'
         ),
         new MockListItemModel(
-            new Date('2020-09-21T04:02:05'),
-            'New folder'
+            'New folder',
+            'case1'
         )
     ];
 
-  constructor() { }
+    constructor() {
+    }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+    }
 
 }
