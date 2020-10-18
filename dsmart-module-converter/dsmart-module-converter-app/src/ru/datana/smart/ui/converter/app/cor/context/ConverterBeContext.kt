@@ -25,6 +25,6 @@ class ConverterBeContext<K, V> (
     lateinit var kotlinxSerializer: Json
     lateinit var wsManager: WsManager
     lateinit var topicRaw: String
-    lateinit var topicAnalysis: String
+    lateinit var topicConverter: String
     lateinit var sensorId: String
 }

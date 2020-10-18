@@ -1,8 +1,12 @@
-<h1>Угол наклона в градусах: {{ angleConverterStream$ | async }}</h1>
-<p>
-<h1>Время начала плавки: {{timeStartMeltStream$ | async }}</h1>
-<p>
-<h2>Время: {{ dateRecommendationStream$ | async | date : 'dd.MM.yyyy HH:mm:ss OOOO' }} Название: {{titleRecommendationStream$ | async}}</h2>
-<p>
-<h2>Сообщение: {{textMessageRecommendationStream$ | async}}</h2><p>
 <video-player-component [playlist]="playlist"></video-player-component>
+<h1>Номер плавки: {{converterData?.meltInfo?.meltNumber}}</h1>
+<h1>Марка стали: {{converterData?.meltInfo?.steelGrade}}</h1>
+<h1>Номер бригады: {{converterData?.meltInfo?.crewNumber}}</h1>
+<h1>Номер смены: {{converterData?.meltInfo?.shiftNumber}}</h1>
+<h1>Название девайса: {{converterData?.meltInfo?.devices?.irCamera?.name}}</h1>
+<h1>Угол наклона конвертера: {{ converterData?.angle }}°</h1>
+<h1>Рекомендации:</h1>
+<div *ngFor="let recommendation of recommendations">
+    <h2>Время: {{ recommendation.date | date : 'dd.MM.yyyy HH:mm:ss' }} Название: {{ recommendation.title }}</h2>
+    <h2>Сообщение: {{ recommendation.textMessage }}</h2>
+</div>

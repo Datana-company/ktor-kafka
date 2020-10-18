@@ -16,6 +16,7 @@ class ForwardServiceKafkaUi(
     var kotlinxSerializer: Json,
     var wsManager: WsManager,
     var topicRaw: String,
+    var topicConverter: String,
     var sensorId: String,
 ) {
 
@@ -31,6 +32,7 @@ class ForwardServiceKafkaUi(
                 it.kotlinxSerializer = kotlinxSerializer
                 it.wsManager = wsManager
                 it.topicRaw = topicRaw
+                it.topicConverter = topicConverter
                 it.sensorId = sensorId
             },
             env

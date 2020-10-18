@@ -66,6 +66,7 @@ fun Application.module(testing: Boolean = false) {
 
     val wsManager = WsManager()
     val topicRaw by lazy { environment.config.property("ktor.kafka.consumer.topic.raw").getString().trim() }
+    val topicConverter by lazy { environment.config.property("ktor.kafka.consumer.topic.converter").getString().trim() }
     val sensorId by lazy { environment.config.property("ktor.datana.sensor.id").getString().trim() }
 
     routing {
@@ -89,7 +90,7 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        kafka(listOf(topicRaw)) {
+        kafka(listOf(topicRaw, topicConverter)) {
             val context = ConverterBeContext(
                 records = records.map { it.toInnerModel() }
             )
@@ -99,6 +100,7 @@ fun Application.module(testing: Boolean = false) {
                 kotlinxSerializer = Json { encodeDefaults = true },
                 wsManager = wsManager,
                 topicRaw = topicRaw,
+                topicConverter = topicConverter,
                 sensorId = sensorId
             ).exec(context)
 

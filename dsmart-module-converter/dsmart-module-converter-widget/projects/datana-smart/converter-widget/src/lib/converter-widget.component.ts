@@ -1,6 +1,6 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {Observable} from "rxjs";
-import {map} from 'rxjs/operators';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Subject} from "rxjs";
+import {map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
 import {RecommendationModel} from "./models/recommendation.model";
 import {ConverterModel} from "./models/converter.model";
@@ -12,26 +12,12 @@ import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
   styles: [
   ]
 })
-export class ConverterWidgetComponent implements OnInit {
+export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
-  private converterStream$: Observable<ConverterModel>;
-  private recommendationStream$: Observable<RecommendationModel>;
+  _unsubscribe = new Subject<void>();
 
-  /**
-   * Текущий угол наклона конвертера
-   */
-  angleConverterStream$: Observable<number>;
-
-  /**
-  * Время начала плавки
-  */
-  timeStartMeltStream$: Observable<number>;
-
-  dateRecommendationStream$: Observable<Date>;
-
-  titleRecommendationStream$: Observable<string>;
-
-  textMessageRecommendationStream$: Observable<string>;
+  public converterData: ConverterModel;
+  public recommendations: Array<RecommendationModel> = new Array<RecommendationModel>();
 
   playlist: string;
 
@@ -42,7 +28,8 @@ export class ConverterWidgetComponent implements OnInit {
   ngOnInit(): void {
     this.playlist = "http://camera.d.datana.ru/playlist.m3u8"
 
-    this.converterStream$ = this.wsService.on('converter-update').pipe(
+    this.wsService.on('converter-update').pipe(
+      takeUntil(this._unsubscribe),
       map((data: any) => {
         return new ConverterModel(
           data?.frameId as string,
@@ -54,9 +41,12 @@ export class ConverterWidgetComponent implements OnInit {
           data?.slagRate as number
         );
       })
-    );
+    ).subscribe(data => {
+      this.converterData = data;
+    });
 
-    this.recommendationStream$ = this.wsService.on('recommendation-update').pipe(
+    this.wsService.on('recommendation-update').pipe(
+      takeUntil(this._unsubscribe),
       map((data: any) => {
         return new RecommendationModel(
           new Date(data?.time as number),
@@ -64,27 +54,15 @@ export class ConverterWidgetComponent implements OnInit {
           data?.textMessage as string
         );
       })
-    );
+    ).subscribe(data => {
+      this.recommendations.push(data);
+    });
 
-    this.angleConverterStream$ = this.converterStream$.pipe(
-      map(({angle}) => angle)
-    );
+  }
 
-    this.timeStartMeltStream$ = this.converterStream$.pipe(
-      map(({meltInfo}) => meltInfo?.timeStart as number)
-    );
-
-    this.dateRecommendationStream$ = this.recommendationStream$.pipe(
-      map(({date}) => date)
-    );
-
-    this.titleRecommendationStream$ = this.recommendationStream$.pipe(
-      map(({title}) => title)
-    );
-
-    this.textMessageRecommendationStream$ = this.recommendationStream$.pipe(
-      map(({textMessage}) => textMessage)
-    );
+  ngOnDestroy(): void {
+    this._unsubscribe.next();
+    this._unsubscribe.complete();
   }
 
 }
