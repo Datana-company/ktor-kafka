@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { ConverterWidgetMockComponent } from './converter-widget-mock.component';
 import {MockListComponent} from "./mock-list/mock-list.component";
 import {MockListItemComponent} from "./mock-list-item/mock-list-item.component";
+import {CommonModule} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -10,6 +11,7 @@ import {MockListItemComponent} from "./mock-list-item/mock-list-item.component";
       ConverterWidgetMockComponent
   ],
   imports: [
+      CommonModule
   ],
   exports: [ConverterWidgetMockComponent]
 })
