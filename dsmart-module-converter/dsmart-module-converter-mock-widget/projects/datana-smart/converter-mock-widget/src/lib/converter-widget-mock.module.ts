@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ConverterWidgetMockComponent } from './converter-widget-mock.component';
-import {MockListComponent} from "./mock-list-component/mock-list.component";
-import {MockListItemComponent} from "./mock-list-item-component/mock-list-item.component";
+import {MockListComponent} from "./mock-list/mock-list.component";
+import {MockListItemComponent} from "./mock-list-item/mock-list-item.component";
 
 @NgModule({
   declarations: [
