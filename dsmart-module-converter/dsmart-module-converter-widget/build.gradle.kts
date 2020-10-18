@@ -29,7 +29,24 @@ dependencies {
 }
 
 tasks {
-    val ngBuildWidget by ngLibBuild("converter-widget")
+    val copyCommonLibs by creating(Copy::class.java) {
+        dependsOn(
+            project(":dsmart-common:dsmart-common-frontend")
+                .getTasksByName("createArtifactLibs", false)
+        )
+        val frontFiles = project(":dsmart-common:dsmart-common-frontend")
+            .configurations
+            .getByName("ngLibs")
+            .artifacts
+            .files
+        from(frontFiles)
+        into("$buildDir/dist")
+    }
+    processResources.get().dependsOn(copyCommonLibs)
+
+    val ngBuildWidget by ngLibBuild("converter-widget") {
+        dependsOn(copyCommonLibs)
+    }
 
     val ngBuildApp by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
         dependsOn(jar2npm)

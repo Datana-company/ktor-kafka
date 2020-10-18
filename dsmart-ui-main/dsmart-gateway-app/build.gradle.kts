@@ -5,6 +5,7 @@ val serializationVersion: String by project
 val kafkaVersion: String by project
 val frontConfig = "staticFront"
 val projectMaintainer: String by project
+val dsmartLoggingVersion: String by project
 
 plugins {
     application
@@ -63,7 +64,7 @@ dependencies {
     implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ml-models"))
     implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
-    api("ru.datana.smart:datana-smart-logging-core:0.0.5")
+    api("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
