@@ -3,6 +3,7 @@ package ru.datana.smart.ui.converter.app
 import io.ktor.application.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
+import java.time.Instant
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -15,4 +16,5 @@ fun Application.module(testing: Boolean = false) {
             resources("static")
         }
     }
+    Instant.now().toEpochMilli()
 }

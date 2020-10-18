@@ -1,6 +1,5 @@
 plugins {
     id("ru.vyarus.use-python") version "2.2.0"
-//    id("com.jetbrains.python.envs") version "0.0.30"
     id("org.openapi.generator")
 }
 
@@ -32,9 +31,9 @@ val generatedSourcesDir = "$buildDir/generated"
 
 openApiGenerate {
     generatorName.set("python-flask")
-    inputSpec.set("${project(":dsmart-module-converter").projectDir}/spec-converter-meta.yaml")
+    inputSpec.set("${project(":dsmart-module-converter").projectDir}/spec-converter-ViMl.yaml")
     outputDir.set(generatedSourcesDir)
-    val basePackage = "${project.group.toString().replace(".", "_")}_meta"
+    val basePackage = "${project.group.toString().replace(".", "_")}_viml"
     packageName.set(basePackage)
     apiPackage.set("api")
     invokerPackage.set("invoker")
