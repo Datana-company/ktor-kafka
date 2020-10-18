@@ -9,16 +9,16 @@ import {Router} from "@angular/router";
 })
 export class ConverterWidgetMockService {
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient) {
   }
 
   getList(): Observable<MockCasesModel> {
-    return this.http.get<MockCasesModel>(`${this.router.url}/list`)
+    return this.http.get<MockCasesModel>('/list')
   }
 
   startCase(dir: string): Observable<any> {
     console.log(`send dir = ${dir}`)
-    return this.http.get<any>(`${this.router.url}/send`, {
+    return this.http.get<any>('/send', {
       params: {
         case: dir
       }

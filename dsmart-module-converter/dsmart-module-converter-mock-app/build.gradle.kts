@@ -22,7 +22,7 @@ version = rootProject.version
 val frontDist = "$buildDir/frontDist"
 
 application {
-    mainClassName = "ru.datana.smart.ui.converter.mock.app.Application"
+    mainClassName = "ru.datana.smart.ui.converter.mock.app.ApplicationKt"
 }
 
 docker {
