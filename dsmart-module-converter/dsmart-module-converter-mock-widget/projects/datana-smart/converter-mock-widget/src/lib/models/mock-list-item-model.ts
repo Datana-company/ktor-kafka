@@ -1,6 +1,6 @@
 export class MockListItemModel {
-  constructor(public time: Date, public text: string) {
-    this.time = time;
-    this.text = text;
+  constructor(public name: string, public dir: string) {
+    this.name = name;
+    this.dir = dir;
   }
 }
