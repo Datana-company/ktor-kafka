@@ -13,6 +13,8 @@ import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG
 import org.apache.kafka.clients.producer.ProducerRecord
 import ru.datana.smart.logger.datanaLogger
+import ru.datana.smart.ui.meta.models.ConverterDevicesIrCamerta
+import ru.datana.smart.ui.meta.models.ConverterMeltDevices
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import java.io.File
 import java.time.Instant
@@ -82,8 +84,26 @@ fun Application.module(testing: Boolean = false) {
 
         get("/send") {
             val case = call.parameters["case"] ?: throw BadRequestException("No case is specified")
-            val metaText = File("$pathToCatalog/$case/meta.json").readText()
-            val meltInfo = objectMapper.readValue<ConverterMeltInfo>(metaText)
+            val meltInfo = try {
+                val metaText = File("$pathToCatalog/$case/meta.json").readText()
+                objectMapper.readValue<ConverterMeltInfo>(metaText)
+            } catch (e: Throwable) {
+                ConverterMeltInfo(
+                    meltNumber = "unknown",
+                    steelGrade = "unknown",
+                    crewNumber = "0",
+                    shiftNumber = "-1",
+                    mode = ConverterMeltInfo.Mode.EMULATION,
+                    devices = ConverterMeltDevices(
+                        irCamera = ConverterDevicesIrCamerta(
+                            id = "unknown-camera",
+                            name = "Неизвестная камера",
+                            type = ConverterDevicesIrCamerta.Type.FILE,
+                            uri = "file:///some/where/in/ceph/file.ravi"
+                        )
+                    )
+                )
+            }
             val timeStart = Instant.now().toEpochMilli()
             val meltId = "${meltInfo.meltNumber}-$timeStart"
             val meltInfoInit = meltInfo.copy(
@@ -93,6 +113,7 @@ fun Application.module(testing: Boolean = false) {
             val readyJsonString = objectMapper.writeValueAsString(meltInfoInit)
             kafkaProducer.send(ProducerRecord(meltId, readyJsonString))
             call.respond(HttpStatusCode.OK)
+
         }
     }
 
