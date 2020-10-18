@@ -58,6 +58,7 @@ dependencies {
     implementation(project(":dsmart-module-converter:dsmart-module-converter-ws-models"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-ml-models"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-mlui"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-viml"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
     implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 

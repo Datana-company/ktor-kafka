@@ -65,7 +65,10 @@ fun Application.module(testing: Boolean = false) {
     install(KtorKafkaConsumer)
 
     val wsManager = WsManager()
-    val topicRaw by lazy { environment.config.property("ktor.kafka.consumer.topic.raw").getString().trim() }
+    val topicTemperature by lazy { environment.config.property("ktor.kafka.consumer.topic.temperature").getString().trim() }
+    val topicConverter by lazy { environment.config.property("ktor.kafka.consumer.topic.converter").getString().trim() }
+    val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
+    val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
     val sensorId by lazy { environment.config.property("ktor.datana.sensor.id").getString().trim() }
 
     routing {
@@ -89,7 +92,7 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        kafka(listOf(topicRaw)) {
+        kafka(listOf(topicTemperature, topicConverter, topicVideo, topicMeta)) {
             val context = ConverterBeContext(
                 records = records.map { it.toInnerModel() }
             )
@@ -98,7 +101,10 @@ fun Application.module(testing: Boolean = false) {
                 jacksonSerializer = ObjectMapper(),
                 kotlinxSerializer = Json { encodeDefaults = true },
                 wsManager = wsManager,
-                topicRaw = topicRaw,
+                topicTemperature = topicTemperature,
+                topicConverter = topicConverter,
+                topicVideo = topicVideo,
+                topicMeta = topicMeta,
                 sensorId = sensorId
             ).exec(context)
 

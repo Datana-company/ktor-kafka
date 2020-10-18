@@ -10,10 +10,10 @@ import ru.datana.smart.ui.converter.app.mappings.toWsTemperatureModel
 import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseTemperature
 import kotlin.math.max
 
-object RawTopicHandler : IKonveyorHandler<ConverterBeContext<String, String>> {
+object TemperatureTopicHandler : IKonveyorHandler<ConverterBeContext<String, String>> {
 
     override suspend fun exec(context: ConverterBeContext<String, String>, env: IKonveyorEnvironment) {
-        val record = context.records.firstOrNull { it.topic == context.topicRaw } ?: return
+        val record = context.records.firstOrNull { it.topic == context.topicTemperature } ?: return
 
         context.logger.trace("topic = ${record.topic}, partition = ${record.partition}, offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
 
