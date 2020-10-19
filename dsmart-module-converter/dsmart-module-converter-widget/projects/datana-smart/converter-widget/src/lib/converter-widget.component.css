@@ -1,0 +1,186 @@
+.topLinePath77
+{
+    position: absolute;
+    width: 1980px;
+    height: 8px;
+    left: 0px;
+    top: 0px;
+
+    background: linear-gradient(90deg, #CCDBEB 16.55%, #22588F 82.04%);
+}
+.rectangleTop
+{
+    /*position: absolute;*/
+    width: 1980px;
+    height: 54px;
+    left: 0px;
+    top: 0px;
+    background: #22588F;
+}
+.title{
+    position: absolute;
+    width: 751px;
+    height: 25px;
+    left: 335px;
+    top: 20px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 25px;
+    /* identical to box height */
+
+    text-align: center;
+
+    color: #FFFFFF;
+}
+.logo {
+    position: absolute;
+    width: 295px;
+    height: 30px;
+    left: 60px;
+    top: 17px;
+    /*background: url(Vector Smart Object.png);*/
+}
+.widget-header {
+    display: flex;
+    width: 100%;
+    height: 4rem;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: #22588F;
+    color: white;
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+
+.widget-header > div {
+    margin-right: 2rem;
+}
+
+.widget-header-status {
+    padding-left: 2rem;
+    margin-right: auto;
+}
+
+.widget-container-main {
+    height: calc(0.5rem + 6 * (6.5rem + 8px));
+    /*margin-top: 1%;*/
+    min-width: 1360px;
+}
+
+.widget-container {
+    display: flex;
+    width: 100%;
+    background: #EAEEF0;
+}
+
+.widget-col {
+    width: 35%;
+}
+.widget-col-65{
+    width: 60%;
+}
+
+.widget-info {
+    height: 100%;
+}
+
+.widget-info-container {
+    height: 100%;
+}
+
+.widget-recommendations {
+    margin-left: 1%;
+    height: 100%;
+}
+
+.widget-info-temperature {
+    margin-left: 2%;
+}
+.widget-recommendation-item {
+    width: calc(100% - 0.5rem);
+    height: calc(6rem + 8px);
+}
+
+.widget-recommendation-item-warning {
+    width: fit-content;
+    padding: 0.25rem;
+    height: 1.5rem;
+    background-color: #C23557;
+    border: 2px solid #C23557;
+    border-radius: 4px 4px 0 0;
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: white;
+}
+
+.widget-recommendation-item-instruction {
+    height: 5.5rem;
+    padding: 0.25rem;
+    border: 2px solid #C23557;
+    border-radius: 0 4px 4px 4px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    background-color: white;
+}
+.widget-boiling {
+    /*height: 100%;*/
+}
+
+.widget-boiling-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: calc(100% - 2rem - 4px); /*- 2rem - 4px*/
+    height: 4rem;
+    padding: 1rem;
+    /*border: 2px solid #22588F;*/
+    border-radius: 4px 4px 0 0;
+    background-color: white;
+    color: black;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 20px;
+    /* or 111% */
+
+    text-align: center;
+}
+
+.widget-boiling-time {
+    display: flex;
+    flex-direction: column;
+    height: calc(60% - 6rem - 8px);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: calc(100% - 4px);
+    /*border: 2px solid #22588F;*/
+    border-radius: 0 0 4px 4px;
+    font-size: 3rem;
+    font-weight: 500;
+    background: #CCDBEB;
+}
+
+.widget-boiling-time-value {
+    height: calc(30% - 16rem - 4px);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.widget-collapsible-wrap {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: auto;
+}
+
+
+

@@ -119,6 +119,14 @@ fun Application.module(testing: Boolean = false) {
         get("/send") {
             println(" +++ GET /send")
             println("parameters count: " + call.parameters.names().size)
+            val timeStart = Instant.now().toEpochMilli()
+            logger.info(
+                msg = "Send event is caught by converter-mock backend",
+                data = object {
+                    val id = "datana-smart-converter-mock-send-caught"
+                    val timeStart = timeStart
+                }
+            )
             val case = call.parameters["case"] ?: throw BadRequestException("No case is specified")
             println("case: " + case)
             println("kafkaServers: " + kafkaServers + " --- kafkaTopic: " + kafkaTopic + " --- pathToCatalog: " + pathToCatalog)
@@ -143,15 +151,27 @@ fun Application.module(testing: Boolean = false) {
                     )
                 )
             }
-            val timeStart = Instant.now().toEpochMilli()
             val meltId = "${meltInfo.meltNumber}-$timeStart"
             val meltInfoInit = meltInfo.copy(
                 id = meltId,
                 timeStart = timeStart
             )
             val readyJsonString = objectMapper.writeValueAsString(meltInfoInit)
-            kafkaProducer.send(ProducerRecord(kafkaTopic, UUID.randomUUID().toString(), readyJsonString))
-            call.respond(HttpStatusCode.OK)
+            try {
+                kafkaProducer.send(ProducerRecord(kafkaTopic, meltId, readyJsonString))
+                logger.biz(
+                    msg = "Send event is caught by converter-mock backend and successfully handled",
+                    data = object {
+                        val id = "datana-smart-converter-mock-send-done"
+                        val meltInfo = meltInfoInit
+                    }
+                )
+                call.respond(HttpStatusCode.OK)
+            } catch (e: Throwable) {
+                logger.error("Send event failed due to kafka producer {}", objs = arrayOf(e))
+                call.respond(HttpStatusCode.InternalServerError)
+            }
+
         }
     }
 }

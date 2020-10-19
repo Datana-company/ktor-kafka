@@ -1,7 +1,7 @@
 import com.moowork.gradle.node.npm.NpxTask
 
 plugins {
-    id("com.crowdproj.plugins.jar2npm")
+    id("com.github.node-gradle.node")
 }
 
 group = rootProject.group
@@ -21,10 +21,6 @@ node {
 
 val ngLibs: Configuration by configurations.creating
 
-dependencies {
-    implementation(kotlin("stdlib-js"))
-}
-
 tasks {
     val ngBuildWebsocket by ngLibBuild("websocket")
 
@@ -33,7 +29,7 @@ tasks {
     }
 
     val ngBuildApp by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
-        dependsOn(jar2npm)
+        dependsOn(npmInstall)
         dependsOn(ngBuildLibs)
         command = "ng"
         setArgs(
@@ -44,7 +40,11 @@ tasks {
             )
         )
     }
-    build.get().dependsOn(ngBuildApp)
+//    build.get().dependsOn(ngBuildApp)
+    val build by creating {
+        group = "build"
+        dependsOn(ngBuildApp)
+    }
 
     val createArtifactLibs by creating {
         dependsOn(ngBuildWebsocket)
@@ -68,7 +68,7 @@ fun TaskContainerScope.ngLibBuild(
     scope: String = "datana-smart",
     conf: NpxTask.() -> Unit = {}
 ): PolymorphicDomainObjectContainerCreatingDelegateProvider<Task, NpxTask> = PolymorphicDomainObjectContainerCreatingDelegateProvider.of(this, NpxTask::class.java) {
-    dependsOn(jar2npm)
+    dependsOn(npmInstall)
     command = "ng"
     setArgs(
         listOf(
@@ -82,7 +82,8 @@ fun TaskContainerScope.ngLibBuild(
         file("package.json"),
         file("tsconfig.json"),
         file("tslint.json"),
-        file("yarn.lock")
+        file("yarn.lock"),
+        file("package-lock.json")
     )
     inputs.dir("projects/$scope/$libName")
     outputs.dir("$distDir/$scope/$libName")

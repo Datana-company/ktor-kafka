@@ -1,7 +1,6 @@
 
 plugins {
-    id("com.crowdproj.plugins.jar2npm")
-    id("com.bmuschko.docker-remote-api")
+    id("com.github.node-gradle.node")
 }
 
 group = rootProject.group
@@ -34,28 +33,11 @@ val staticFront: Configuration by configurations.creating {
 //    extendsFrom(configurations["implementation"], configurations["runtimeOnly"])
 }
 
-docker {
-//  url = 'https://192.168.59.103:2376'
-//  certPath = new File(System.properties['user.home'], '.boot2docker/certs/boot2docker-vm')
-
-    registryCredentials {
-        url.set(dockerParams.dockerUrl)
-        dockerParams.dockerUser?.also { username.set(it) }
-        dockerParams.dockerPass?.also { password.set(it) }
-//    email = 'benjamin.muschko@gmail.com'
-    }
-}
-
-dependencies {
-    implementation(kotlin("stdlib-js"))
-//    ngLibs(project(":dsmart-module-temperature:dsmart-module-temperature-widget"))
-}
-
 //sourceSets["main"].resources.srcDirs("resources", distDir)
 
 tasks {
     val cliInit by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
-        dependsOn(jar2npm)
+        dependsOn()
         command = "npm"
         setArgs(
             listOf(
@@ -102,8 +84,8 @@ tasks {
         into("$buildDir/ng-libs")
     }
 
-    val ngBuild by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
-        dependsOn(jar2npm)
+    val ngBuildApp by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
+        dependsOn(npmInstall)
         dependsOn(extractNgLibs)
         command = "ng"
         setArgs(
@@ -112,18 +94,22 @@ tasks {
             )
         )
     }
-    build.get().dependsOn(ngBuild)
-
+//    yarnSetup.get().dependsOn(ngyarnSetup)
     val createArtifact by creating {
-        dependsOn(ngBuild)
+        dependsOn(ngBuildApp)
         artifacts {
             add(distConfig, fileTree(distDir).dir)
         }
     }
-//    build.get().dependsOn(createArtifact)
+//    yarnSetup.get().dependsOn(createArtifact)
+    val build by creating {
+        group = "build"
+        dependsOn(createArtifact)
+    }
+
 
     val ngStart by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
-        dependsOn(jar2npm)
+        dependsOn(npmInstall)
         dependsOn(extractNgLibs)
         command = "ng"
         setArgs(
@@ -133,22 +119,22 @@ tasks {
         )
     }
 
-//    val buildDockerDir by creating(Copy::class.java) {
-//        dependsOn(ngBuild)
+//    val yarnSetupDockerDir by creating(Copy::class.java) {
+//        dependsOn(ngyarnSetup)
 //        group = DOCKER_GROUP
 //        from(distDir)
-//        into("$buildDir/docker/dist")
+//        into("$yarnSetupDir/docker/dist")
 //    }
 //
 //    val createDockerFile by creating(com.bmuschko.gradle.docker.tasks.image.Dockerfile::class.java) {
-//        dependsOn(buildDockerDir)
+//        dependsOn(yarnSetupDockerDir)
 //        group = DOCKER_GROUP
 //        from("nginx")
 //        addFile("dist/", "/usr/share/nginx/html/")
 //        exposePort(80)
 //    }
 //
-//    val ngImage by creating(com.bmuschko.gradle.docker.tasks.image.DockerBuildImage::class.java) {
+//    val ngImage by creating(com.bmuschko.gradle.docker.tasks.image.DockeryarnSetupImage::class.java) {
 //        dependsOn(createDockerFile)
 //        group = DOCKER_GROUP
 ////    inputDir.set(File(distDir))
@@ -168,6 +154,6 @@ tasks {
 
 //    val deploy by creating {
 //        dependsOn(ngDeploy)
-//        group = "build"
+//        group = "yarnSetup"
 //    }
 }
