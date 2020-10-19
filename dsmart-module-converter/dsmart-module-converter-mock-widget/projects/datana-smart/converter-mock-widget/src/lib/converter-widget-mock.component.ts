@@ -13,6 +13,8 @@ export class ConverterWidgetMockComponent implements OnInit, OnDestroy {
 
   _unsubscribe = new Subject<void>();
 
+  selectedCase: String
+
   mockList: Array<MockListItemModel> = new Array<MockListItemModel>();
   // public mockList: Array<MockListItemModel> = [
   //       new MockListItemModel(
@@ -32,7 +34,7 @@ export class ConverterWidgetMockComponent implements OnInit, OnDestroy {
   //           'case1'
   //       ),
   //       new MockListItemModel(
-  //           'Каталог №5',
+  //           '777',
   //           'case1'
   //       ),
   //       new MockListItemModel(
@@ -57,8 +59,8 @@ export class ConverterWidgetMockComponent implements OnInit, OnDestroy {
   //       )
   //   ];
 
-    constructor(private service: ConverterWidgetMockService) {
-    }
+  constructor(private service: ConverterWidgetMockService) {
+  }
 
     ngOnInit(): void {
       this.service.getList().pipe(
