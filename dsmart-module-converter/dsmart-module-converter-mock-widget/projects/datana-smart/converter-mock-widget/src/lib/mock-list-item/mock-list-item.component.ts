@@ -1,6 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {MockListItemModel} from "../models/mock-list-item-model";
 import {ConverterWidgetMockService} from "../converter-widget-mock.service";
+import {ConverterWidgetMockComponent} from "../converter-widget-mock.component";
 import {Observable, Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 
@@ -16,15 +17,18 @@ export class MockListItemComponent implements OnInit, OnDestroy {
 
   @Input() mockListItem: MockListItemModel;
 
-  constructor(private service: ConverterWidgetMockService) { }
+  constructor(private service: ConverterWidgetMockService, private converterWidgetMockComponent: ConverterWidgetMockComponent) { }
 
   ngOnInit(): void {
   }
 
   startCase() {
-      this.service.startCase(this.mockListItem.dir).pipe(
+      this.service.startCase(this.mockListItem.name).pipe(
         takeUntil(this._unsubscribe)
-      ).subscribe(data => console.log(data));
+      ).subscribe(data => {
+        console.log(data);
+        this.converterWidgetMockComponent.selectedCase = this.mockListItem.name;
+      });
   }
 
   ngOnDestroy(): void {
