@@ -24,7 +24,9 @@ class ConverterBeContext<K, V> (
     lateinit var jacksonSerializer: ObjectMapper
     lateinit var kotlinxSerializer: Json
     lateinit var wsManager: WsManager
-    lateinit var topicRaw: String
-    lateinit var topicAnalysis: String
+    lateinit var topicTemperature: String
+    lateinit var topicConverter: String
+    lateinit var topicVideo: String
+    lateinit var topicMeta: String
     lateinit var sensorId: String
 }

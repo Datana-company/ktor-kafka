@@ -15,7 +15,10 @@ class ForwardServiceKafkaUi(
     var jacksonSerializer: ObjectMapper,
     var kotlinxSerializer: Json,
     var wsManager: WsManager,
-    var topicRaw: String,
+    var topicTemperature: String,
+    var topicConverter: String,
+    var topicVideo: String,
+    var topicMeta: String,
     var sensorId: String,
 ) {
 
@@ -30,7 +33,10 @@ class ForwardServiceKafkaUi(
                 it.jacksonSerializer = jacksonSerializer
                 it.kotlinxSerializer = kotlinxSerializer
                 it.wsManager = wsManager
-                it.topicRaw = topicRaw
+                it.topicTemperature = topicTemperature
+                it.topicConverter = topicConverter
+                it.topicVideo = topicVideo
+                it.topicMeta = topicMeta
                 it.sensorId = sensorId
             },
             env
@@ -42,8 +48,10 @@ class ForwardServiceKafkaUi(
 
             timeout { 1000 }
 
-            +RawTopicHandler
+            +TemperatureTopicHandler
             +ConverterUiHandler
+            +ConverterViHandler
+            +ConverterMetaHandler
             +RecommendationHandler
             +JsonSerializerHandler
             +WsSendHandler

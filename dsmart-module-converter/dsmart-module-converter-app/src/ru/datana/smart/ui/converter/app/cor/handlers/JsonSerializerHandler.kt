@@ -5,16 +5,16 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.app.cor.context.CorError
 import ru.datana.smart.ui.converter.app.cor.context.CorStatus
 import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
-import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverter
-import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseRecommendation
-import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseTemperature
+import ru.datana.smart.ui.converter.ws.models.*
 
 object JsonSerializerHandler : IKonveyorHandler<ConverterBeContext<String, String>> {
 
     override suspend fun exec(context: ConverterBeContext<String, String>, env: IKonveyorEnvironment) {
         context.forwardJsonObjects = context.forwardObjects.map {
             when(it) {
-                is WsDsmartResponseConverter -> context.kotlinxSerializer.encodeToString(WsDsmartResponseConverter.serializer(), it)
+                is WsDsmartResponseConverterUi -> context.kotlinxSerializer.encodeToString(WsDsmartResponseConverterUi.serializer(), it)
+                is WsDsmartResponseConverterVi -> context.kotlinxSerializer.encodeToString(WsDsmartResponseConverterVi.serializer(), it)
+                is WsDsmartResponseConverterMeta -> context.kotlinxSerializer.encodeToString(WsDsmartResponseConverterMeta.serializer(), it)
                 is WsDsmartResponseTemperature -> context.kotlinxSerializer.encodeToString(WsDsmartResponseTemperature.serializer(), it)
                 is WsDsmartResponseRecommendation -> context.kotlinxSerializer.encodeToString(WsDsmartResponseRecommendation.serializer(), it)
                 else -> {
