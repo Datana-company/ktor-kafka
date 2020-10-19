@@ -137,10 +137,10 @@
     width: calc(100% - 2rem - 4px); /*- 2rem - 4px*/
     height: 4rem;
     padding: 1rem;
-    border: 2px solid #22588F;
+    /*border: 2px solid #22588F;*/
     border-radius: 4px 4px 0 0;
-    background-color: #22588F;
-    color: white;
+    background-color: white;
+    color: black;
     font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
@@ -159,7 +159,7 @@
     justify-content: center;
     text-align: center;
     width: calc(100% - 4px);
-    border: 2px solid #22588F;
+    /*border: 2px solid #22588F;*/
     border-radius: 0 0 4px 4px;
     font-size: 3rem;
     font-weight: 500;

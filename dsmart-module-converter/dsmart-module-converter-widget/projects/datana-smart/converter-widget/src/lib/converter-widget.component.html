@@ -1,53 +1,54 @@
 <div>
-    <div class="widget-header">
-        <div class="topLinePath77"></div>
-        <div class="rectangleTop">
-            <div class="logo">
-                <img src="/assets/image/VectorSmartObject1.png">
-            </div>
-            <div class="title">
-                Мониторинг и контроль скачивания шлака
-            </div>
-        </div>
+  <div class="widget-header">
+    <div class="topLinePath77"></div>
+    <div class="rectangleTop">
+      <div class="logo">
+        <img src="/assets/image/VectorSmartObject1.png">
+      </div>
+      <div class="title">
+        Мониторинг и контроль скачивания шлака
+      </div>
     </div>
-    <div class="widget-container-main widget-container">
-        <div class="widget-info widget-col-65">
-            <div class="widget-info-container widget-container">
-                <video-player-component class="widget-col-65 widget-info-boiling" [playlist]="playlist">
-                    <!--                <video-player-component [playlist]="playlist">-->
-                </video-player-component>
-                <!--                <div class="widget-boiling widget-info-boiling widget-col">-->
-                <div class="widget-boiling widget-info-boiling widget-col">
-                    <!--                        <div class="widget-boiling-label">-->
-                    <div class="widget-boiling-label">
-                        Угол наклона в градусах
-                    </div>
-                    <div class="widget-boiling-time">
-                        <div class="widget-boiling-time-value"><!-- {{ durationToBoil }}-->
-                            Угол наклона в градусах:{{ angleConverterStream$ | async }}
-                        </div>
-                    </div>
-                </div>
+  </div>
+  <div>Плавка:{{converterMetaData?.meltNumber}} Марка: {{converterMetaData?.steelGrade}}
+    Бригада: {{converterMetaData?.crewNumber}}</div>
+  <div class="widget-container-main widget-container">
+    <div class="widget-info widget-col-65">
+      <div class="widget-info-container widget-container">
+        <video-player-component class="widget-col-65 widget-info-boiling" [playlist]="playlist">
+          <!--                <video-player-component [playlist]="playlist">-->
+        </video-player-component>
+        <!--                <div class="widget-boiling widget-info-boiling widget-col">-->
+        <div class="widget-boiling widget-info-boiling widget-col">
+          <!--                        <div class="widget-boiling-label">-->
+          <div class="widget-boiling-label">
+            Угол наклона в градусах
+          </div>
+          <div class="widget-boiling-time">
+            <div class="widget-boiling-time-value"><!-- {{ durationToBoil }}-->
+              {{ temperatureModel?.temperatureAverage}}
             </div>
+          </div>
         </div>
-        <div class="widget-recommendations widget-col">
-            <div class="widget-recommendation-item">
-                <div class="widget-recommendation-item-warning">
-                    Время рекомендации: {{ dateRecommendationStream$ | async }}
-                </div>
-                <div class="widget-recommendation-item-instruction">
-                    dateRecommendationStream:{{ dateRecommendationStream$ | async }}
-                    Время начала плавки:{{ timeStartMeltStream$ | async }}
-                    Время titleRecommendationStream:{{ titleRecommendationStream$ | async }}
-                    textMessageRecommendationStream:{{ textMessageRecommendationStream$ | async }}
-                </div>
-            </div>
-        </div>
-
+      </div>
     </div>
+    <!--      <div class="widget-recommendations widget-col" *ngFor="let recommendation of recommendations">-->
+    <div class="widget-recommendations widget-col" >
+      <div class="widget-recommendation-item" *ngFor="let recommendation of recommendations">
+        <div class="widget-recommendation-item-warning">
+          {{ recommendation?.date}}
+        </div>
+        <div class="widget-recommendation-item-instruction">
+          <!--                    Время начала плавки:{{ timeStartMeltStream$ | async }}-->
+          {{ recommendation?.title }}
+          {{ recommendation?.textMessage }}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <ng-template #noData>
-    <div class="temperature">
-        No Data
-    </div>
+  <div class="temperature">
+    No Data
+  </div>
 </ng-template>
