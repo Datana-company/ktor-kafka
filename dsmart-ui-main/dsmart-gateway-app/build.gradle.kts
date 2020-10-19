@@ -60,7 +60,6 @@ dependencies {
 
     // TODO Временная зависимость. Должна уйти в dsmart-module-temperature
     implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ws-models"))
-//    implementation(project(":dsmart-module-temperature:dsmart-module-temperature-kf-models"))
     implementation(project(":dsmart-module-temperature:dsmart-module-temperature-ml-models"))
     implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
@@ -73,6 +72,7 @@ dependencies {
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
 
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }

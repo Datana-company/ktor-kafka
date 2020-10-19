@@ -2,11 +2,10 @@ rootProject.name = "datana-smart-ui"
 pluginManagement {
 
     val kotlinVersion: String by settings
-    val jar2npmVersion: String by settings
+    val nodePluginVersion: String by settings
     val dockerPluginVersion: String by settings
     val serializationPluginVersion: String by settings
     val openApiVersion: String by settings
-    val dockerBaseImage: String by settings
     val dsmartLoggingVersion: String by settings
     val konveyorVersion: String by settings
 
@@ -17,7 +16,7 @@ pluginManagement {
         kotlin("multiplatform") version kotlinVersion apply false
         kotlin("plugin.serialization") version serializationPluginVersion
 
-        id("com.crowdproj.plugins.jar2npm") version jar2npmVersion apply false
+        id("com.github.node-gradle.node") version nodePluginVersion
         id("com.bmuschko.docker-remote-api") version dockerPluginVersion apply false
         id("com.bmuschko.docker-java-application") version dockerPluginVersion apply false
 
