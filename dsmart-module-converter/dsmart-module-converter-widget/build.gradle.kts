@@ -1,7 +1,7 @@
 import com.moowork.gradle.node.npm.NpxTask
 
 plugins {
-    id("com.crowdproj.plugins.jar2npm")
+    id("com.github.node-gradle.node")
 }
 
 group = rootProject.group
@@ -23,11 +23,6 @@ node {
 val ngLibs: Configuration by configurations.creating
 val staticFront: Configuration by configurations.creating
 
-dependencies {
-    implementation(kotlin("stdlib-js"))
-//    implementation(project(":dsmart-module-converter:dsmart-module-converter-ws-models"))
-}
-
 tasks {
     val copyCommonLibs by creating(Copy::class.java) {
         dependsOn(
@@ -42,14 +37,14 @@ tasks {
         from(frontFiles)
         into("$buildDir/dist")
     }
-    processResources.get().dependsOn(copyCommonLibs)
+//    processResources.get().dependsOn(copyCommonLibs)
 
     val ngBuildWidget by ngLibBuild("converter-widget") {
         dependsOn(copyCommonLibs)
     }
 
     val ngBuildApp by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
-        dependsOn(jar2npm)
+        dependsOn(npmInstall)
         dependsOn(ngBuildWidget)
         command = "ng"
         setArgs(
@@ -61,7 +56,11 @@ tasks {
         )
     }
 
-    build.get().dependsOn(ngBuildApp)
+    val build by creating {
+        group = "build"
+        dependsOn(ngBuildApp)
+    }
+//    build.get().dependsOn(ngBuildApp)
 
     val createArtifactLibs by creating {
         dependsOn(ngBuildWidget)
@@ -92,7 +91,7 @@ fun TaskContainerScope.ngLibBuild(
     scope: String = "datana-smart",
     conf: NpxTask.() -> Unit = {}
 ): PolymorphicDomainObjectContainerCreatingDelegateProvider<Task, NpxTask> = PolymorphicDomainObjectContainerCreatingDelegateProvider.of(this, NpxTask::class.java) {
-    dependsOn(jar2npm)
+    dependsOn(npmInstall)
     command = "ng"
     setArgs(
         listOf(
@@ -106,7 +105,8 @@ fun TaskContainerScope.ngLibBuild(
         file("package.json"),
         file("tsconfig.json"),
         file("tslint.json"),
-        file("yarn.lock")
+        file("yarn.lock"),
+        file("package-lock.json")
     )
     inputs.dir("projects/$scope/$libName")
     outputs.dir("$distDir/$scope/$libName")
