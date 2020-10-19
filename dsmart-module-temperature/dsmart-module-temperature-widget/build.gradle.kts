@@ -1,8 +1,7 @@
 import com.moowork.gradle.node.npm.NpxTask
 
 plugins {
-    id("com.crowdproj.plugins.jar2npm")
-    id("com.bmuschko.docker-remote-api")
+    id("com.github.node-gradle.node")
 }
 
 group = rootProject.group
@@ -22,18 +21,6 @@ val ngLibs: Configuration by configurations.creating
 val staticFront: Configuration by configurations.creating
 val widgetLib: Configuration by configurations.creating
 
-docker {
-    registryCredentials {
-        url.set(dockerParams.dockerUrl)
-        dockerParams.dockerUser?.also { username.set(it) }
-        dockerParams.dockerPass?.also { password.set(it) }
-    }
-}
-
-dependencies {
-    implementation(kotlin("stdlib-js"))
-}
-
 tasks {
     val copyCommonLibs by creating(Copy::class.java) {
         dependsOn(
@@ -48,7 +35,7 @@ tasks {
         from(frontFiles)
         into("$buildDir/dist")
     }
-    processResources.get().dependsOn(copyCommonLibs)
+//    processResources.get().dependsOn(copyCommonLibs)
 
     val ngBuildRecommendations by ngLibBuild("recommendation-component")
     val ngBuildHistory by ngLibBuild("history-component") {
@@ -70,7 +57,8 @@ tasks {
     }
 
     val ngBuildApp by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
-        dependsOn(jar2npm)
+
+        dependsOn(npmInstall)
         dependsOn(ngBuildWidget)
         command = "ng"
         setArgs(
@@ -81,7 +69,11 @@ tasks {
             )
         )
     }
-    build.get().dependsOn(ngBuildApp)
+
+    val build by creating {
+        group = "build"
+        dependsOn(ngBuildApp)
+    }
 
     val createArtifactLibs by creating {
         dependsOn(ngBuildWidget)
@@ -113,7 +105,7 @@ fun TaskContainerScope.ngLibBuild(
     conf: NpxTask.() -> Unit = {}
 ): PolymorphicDomainObjectContainerCreatingDelegateProvider<Task, NpxTask> =
     PolymorphicDomainObjectContainerCreatingDelegateProvider.of(this, NpxTask::class.java) {
-        dependsOn(jar2npm)
+        dependsOn(npmInstall)
         command = "ng"
         setArgs(
             listOf(
@@ -127,7 +119,8 @@ fun TaskContainerScope.ngLibBuild(
             file("package.json"),
             file("tsconfig.json"),
             file("tslint.json"),
-            file("yarn.lock")
+            file("yarn.lock"),
+            file("package-lock.json")
         )
         inputs.dir("projects/$scope/$libName")
         outputs.dir("$buildDir/dist/$scope/$libName")

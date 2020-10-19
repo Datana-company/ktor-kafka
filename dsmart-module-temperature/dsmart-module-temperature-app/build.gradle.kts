@@ -72,6 +72,7 @@ dependencies {
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
     implementation("codes.spectrum:konveyor:$konveyorVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
 
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
