@@ -96,7 +96,7 @@ fun Application.module(testing: Boolean = false) {
                         name = it.fileName.toString(),
                         dir = it.toString())
                 }
-                .collect(Collectors.toList<ConverterCaseModel>())
+                .toList()
             )
 //                .forEach { item -> run{
 //                    println("dir: $item --- name: ${item.fileName}")
