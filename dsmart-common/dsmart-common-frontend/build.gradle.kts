@@ -17,6 +17,7 @@ node {
     val nodeVersion: String by project
     download = true
     version = nodeVersion
+    workDir = file("${rootProject.projectDir}/.gradle/nodejs")
 }
 
 val ngLibs: Configuration by configurations.creating
@@ -60,6 +61,13 @@ tasks {
                 "@datana-smart/frontend-app"
             )
         )
+    }
+
+    create("clean", Delete::class.java) {
+        group = "build"
+        delete(buildDir)
+        delete("$projectDir/node_modules")
+        delete("$projectDir/package-lock.json")
     }
 }
 
