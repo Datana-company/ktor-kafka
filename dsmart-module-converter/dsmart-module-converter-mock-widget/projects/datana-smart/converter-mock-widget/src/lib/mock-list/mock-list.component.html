@@ -1,5 +1,8 @@
 <div class="widget-mock-list-container">
     <div *ngFor="let obj of mockList">
-        <mock-list-item-component [mockListItem]="obj"></mock-list-item-component>
+        <mock-list-item-component
+            [mockListItem] = "obj"
+            (selectedCase) = "transitionalSelectedCase.emit($event)">
+        </mock-list-item-component>
     </div>
 </div>
