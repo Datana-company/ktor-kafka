@@ -1,4 +1,4 @@
-# `dsmart-module-converter-models-metapy`
+# `dsmart-module-converter-models-vimlpy`
 
 Модуль для генерации транспортных моделей для передачи данных из Видеоадаптера в 
 матмодель. Генерация из [openapi спеки](../spec-converter-ViMl.yaml).
