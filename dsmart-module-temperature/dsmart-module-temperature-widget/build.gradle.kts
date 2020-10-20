@@ -15,6 +15,7 @@ node {
     val nodeVersion: String by project
     download = true
     version = nodeVersion
+    workDir = file("${rootProject.projectDir}/.gradle/nodejs")
 }
 
 val ngLibs: Configuration by configurations.creating
