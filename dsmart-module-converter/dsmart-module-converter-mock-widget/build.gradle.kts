@@ -67,6 +67,14 @@ tasks {
             )
         )
     }
+
+    create("clean", Delete::class.java) {
+        group = "build"
+        delete(buildDir)
+        delete("$projectDir/node_modules")
+        delete("$projectDir/package-lock.json")
+        delete("$projectDir/yarn.lock")
+    }
 }
 
 fun TaskContainerScope.ngLibBuild(
