@@ -1,0 +1,18 @@
+<table>
+    <tr>
+        <td>
+            <input type="file" (change)="upload($event.target.files)">
+        </td>
+        <td>
+            {{percentCompleted}}% Загружено
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <div *ngIf="isUploaded" class="success">
+                Файл успешно загружен. Доступен по Url:
+                <b>{{urlAfterUpload}}</b>
+            </div>
+        </td>
+    </tr>
+</table>
