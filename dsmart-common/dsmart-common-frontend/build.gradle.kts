@@ -68,6 +68,7 @@ tasks {
         delete(buildDir)
         delete("$projectDir/node_modules")
         delete("$projectDir/package-lock.json")
+        delete("$projectDir/yarn.lock")
     }
 }
 
