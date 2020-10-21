@@ -9,6 +9,7 @@ import io.ktor.http.content.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
+import io.ktor.locations.*
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -17,8 +18,15 @@ import ru.datana.smart.ui.meta.models.ConverterDevicesIrCamerta
 import ru.datana.smart.ui.meta.models.ConverterMeltDevices
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import java.io.File
+import java.io.IOException
 import java.time.Instant
 import java.util.*
+
+/**
+ * Location for uploading videos.
+ */
+@Location("/upload")
+class Upload()
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -36,6 +44,9 @@ fun Application.module(testing: Boolean = false) {
     val kafkaTopic: String by lazy {
         environment.config.property("ktor.kafka.producer.topic.meta").getString().trim()
     }
+    val pathToUpload: String by lazy {
+        environment.config.property("ktor.upload.path").getString().trim()
+    }
     val kafkaProducer: KafkaProducer<String, String> by lazy {
         val props = Properties().apply {
             put(BOOTSTRAP_SERVERS_CONFIG, kafkaServers)
@@ -50,6 +61,10 @@ fun Application.module(testing: Boolean = false) {
         KafkaProducer<String, String>(props)
     }
 
+    // Allows to use classes annotated with @Location to represent URLs.
+    // They are typed, can be constructed to generate URLs, and can be used to register routes.
+    install(Locations)
+
     install(CORS) {
         method(HttpMethod.Options)
         method(HttpMethod.Put)
@@ -59,6 +74,11 @@ fun Application.module(testing: Boolean = false) {
         header("MyCustomHeader")
         allowCredentials = true
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
+    }
+
+    val uploadDir = File(pathToUpload)//"F:\\_WORK\\_DATANA\\upload")
+    if (!uploadDir.mkdirs() && !uploadDir.exists()) {
+        throw IOException("Failed to create directory ${uploadDir.absolutePath}")
     }
 
     routing {
@@ -134,6 +154,7 @@ fun Application.module(testing: Boolean = false) {
             }
 
         }
-    }
 
+        upload(uploadDir)
+    }
 }
