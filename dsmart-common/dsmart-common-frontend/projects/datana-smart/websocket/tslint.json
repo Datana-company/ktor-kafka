@@ -1,5 +1,5 @@
 {
-  "extends": "../../../../../dsmart-module-temperature/dsmart-module-temperature-widget/tslint.json",
+  "extends": "../../../tslint.json",
   "rules": {
     "directive-selector": [
       true,
