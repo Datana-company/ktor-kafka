@@ -3,6 +3,7 @@ package ru.datana.smart.ui.converter.app
 import ch.qos.logback.classic.Logger
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.application.Application
+import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.application.log
 import io.ktor.features.CORS
@@ -15,6 +16,8 @@ import io.ktor.http.content.defaultResource
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.request.path
+import io.ktor.response.respondText
+import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.websocket.WebSockets
@@ -90,6 +93,19 @@ fun Application.module(testing: Boolean = false) {
             } finally {
                 wsManager.delSession(this)
             }
+        }
+        get("/front-config") {
+            call.respondText(
+                """
+                {
+                    "settings": [
+                        {"variable": "variable1"},
+                        {"variable": "variable2"},
+                        {"variable": "variable3"}
+                    ]
+                }
+                """.trimIndent()
+            )
         }
 
         kafka(listOf(topicTemperature, topicConverter, topicVideo, topicMeta)) {
