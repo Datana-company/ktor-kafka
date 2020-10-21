@@ -8,13 +8,12 @@ import {catchError} from 'rxjs/operators';
     providedIn: 'root'
 })
 export class FileUploadService {
-    url = "https://file.io";
 
     constructor(private http: HttpClient) {
     }
 
     uploadWithProgress(formData: FormData): Observable<any> {
-        return this.http.post(this.url, formData, {observe: 'events', reportProgress: true})
+        return this.http.post("/upload", formData, {observe: 'events', reportProgress: true})
             .pipe(
                 catchError(err => this.handleError(err))
             );

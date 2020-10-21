@@ -73,6 +73,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+    implementation( "io.ktor:ktor-locations:$ktorVersion")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")

@@ -10,18 +10,16 @@ import {FileUploadService} from "../case-editor/file-upload.service";
 export class FileUploadComponent implements OnInit {
 
     percentCompleted: number = 0;
-    urlAfterUpload = '';
     isUploaded = false;
 
     constructor(private fuService: FileUploadService) {
     }
 
     upload(files: File[]) {
-        console.log('---Uploading single file---');
+        console.log('+++ Uploading single file +++');
         const file = files[0];
-        console.log(file.name);
+        console.log('Filename: ' + file.name);
         this.isUploaded = false;
-        this.urlAfterUpload = '';
 
         const formData = new FormData();
         formData.append("file", file);
@@ -31,7 +29,6 @@ export class FileUploadComponent implements OnInit {
                     this.percentCompleted = Math.round(100 * event.loaded / event.total);
                 } else if (event instanceof HttpResponse) {
                     this.isUploaded = true;
-                    this.urlAfterUpload = event.body.link;
                 }
             });
     }
