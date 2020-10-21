@@ -1,7 +1,9 @@
+import {RecommendationCategoryModel} from "./recommendation-category.model";
+
 export class RecommendationModel {
   constructor(
     public date: Date,
-    public title: string,
+    public category: RecommendationCategoryModel,
     public textMessage: string
   ) {
   }

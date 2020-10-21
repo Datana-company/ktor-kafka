@@ -9,6 +9,7 @@ import {ConverterVideoModel} from "./models/converter-video.model";
 import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
 import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
 import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
+import {RecommendationCategoryModel} from "./models/recommendation-category.model";
 
 @Component({
   selector: 'datana-converter-widget',
@@ -99,7 +100,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       map((data: any) => {
         return new RecommendationModel(
           new Date(data?.time as number),
-          data?.title as string,
+          data?.category as RecommendationCategoryModel,
           data?.textMessage as string
         );
       })

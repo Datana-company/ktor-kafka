@@ -6,6 +6,7 @@ import codes.spectrum.konveyor.konveyor
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.serialization.json.Json
 import ru.datana.smart.logger.DatanaLogContext
+import ru.datana.smart.ui.converter.app.common.RecommendationTimer
 import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.cor.handlers.*
 import ru.datana.smart.ui.converter.app.websocket.WsManager
@@ -19,6 +20,7 @@ class ForwardServiceKafkaUi(
     var topicConverter: String,
     var topicVideo: String,
     var topicMeta: String,
+    var recommendationTimer: RecommendationTimer,
     var sensorId: String,
 ) {
 
@@ -37,6 +39,7 @@ class ForwardServiceKafkaUi(
                 it.topicConverter = topicConverter
                 it.topicVideo = topicVideo
                 it.topicMeta = topicMeta
+                it.recommendationTimer = recommendationTimer
                 it.sensorId = sensorId
             },
             env

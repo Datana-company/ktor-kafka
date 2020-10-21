@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.serialization.json.Json
 import ru.datana.smart.common.transport.models.ws.IWsDsmartResponse
 import ru.datana.smart.logger.DatanaLogContext
+import ru.datana.smart.ui.converter.app.common.RecommendationTimer
 import ru.datana.smart.ui.converter.app.websocket.WsManager
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicLong
@@ -28,5 +29,6 @@ class ConverterBeContext<K, V> (
     lateinit var topicConverter: String
     lateinit var topicVideo: String
     lateinit var topicMeta: String
+    lateinit var recommendationTimer: RecommendationTimer
     lateinit var sensorId: String
 }
