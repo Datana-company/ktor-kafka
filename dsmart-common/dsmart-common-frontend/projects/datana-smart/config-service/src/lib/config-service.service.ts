@@ -5,7 +5,7 @@ import { BaseService } from './base.service';
 @Injectable()
 export class ConfigServiceService  extends BaseService {
 
-  private envUrl = '/api/settings';
+  private envUrl = '/front-config';
   private configSettings: any = null;
 
   get settings() {
