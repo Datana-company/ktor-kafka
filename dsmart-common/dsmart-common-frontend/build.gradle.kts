@@ -24,9 +24,12 @@ val ngLibs: Configuration by configurations.creating
 
 tasks {
     val ngBuildWebsocket by ngLibBuild("websocket")
+    val ngBuildConfigService by ngLibBuild("config-service")
+
 
     val ngBuildLibs by creating {
         dependsOn(ngBuildWebsocket)
+        dependsOn(ngBuildConfigService)
     }
 
     val ngBuildApp by creating(com.moowork.gradle.node.npm.NpxTask::class.java) {
