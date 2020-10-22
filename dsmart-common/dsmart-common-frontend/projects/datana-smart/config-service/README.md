@@ -22,3 +22,35 @@ Run `ng test config-service` to execute the unit tests via [Karma](https://karma
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+### Пример как подключить Библиотеку в приложение.
+```@NgModule({
+   declarations: [
+     AppComponent
+   ],
+   imports: [
+     BrowserModule,
+     ConfigServiceModule.forRoot({restWsUrl: 'http://localhost:8080/front-config'})
+   ],
+   providers: [
+   ],
+   bootstrap: [AppComponent]
+ })
+```
+>
+#####Снизу строчка которая вызывает Конфигурационный Модуль и мы передаем в методе forRoot  URL к Rest Сервису 
+```
+ConfigServiceModule.forRoot({restWsUrl: 'http://localhost:8080/front-config'})
+```
+##### Мы можем так же эти setting которые мы получаем из Rest  подключить для представления, через конструктор
+```
+export class AppComponent implements OnInit {
+      constructor(private appConfigService: ConfigServiceService) {}
+      settings: any;
+    
+      ngOnInit() {
+        this.settings = this.appConfigService.settings;
+        console.log("this.settings from config-service : " , this.settings)
+      }
+    }
+```

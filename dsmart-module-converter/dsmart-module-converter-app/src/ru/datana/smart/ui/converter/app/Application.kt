@@ -94,19 +94,6 @@ fun Application.module(testing: Boolean = false) {
                 wsManager.delSession(this)
             }
         }
-        get("/front-config") {
-            call.respondText(
-                """
-                {
-                    "settings": [
-                        {"variable": "variable1"},
-                        {"variable": "variable2"},
-                        {"variable": "variable3"}
-                    ]
-                }
-                """.trimIndent()
-            )
-        }
 
         kafka(listOf(topicTemperature, topicConverter, topicVideo, topicMeta)) {
             val context = ConverterBeContext(

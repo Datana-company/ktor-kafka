@@ -81,6 +81,19 @@ fun Application.module(testing: Boolean = false) {
                 """.trimIndent()
             )
         }
+        get("/front-config") {
+            call.respondText(
+                """
+                {
+                    "settings": [
+                        {"variable": "variable1"},
+                        {"variable": "variable2"},
+                        {"variable": "variable3"}
+                    ]
+                }
+                """.trimIndent()
+            )
+        }
 
         get("/send") {
             val timeStart = Instant.now().toEpochMilli()
@@ -91,6 +104,7 @@ fun Application.module(testing: Boolean = false) {
                     val timeStart = timeStart
                 }
             )
+
             val case = call.parameters["case"] ?: throw BadRequestException("No case is specified")
             val meltInfo = try {
                 val metaText = File("$pathToCatalog/$case/meta.json").readText()
