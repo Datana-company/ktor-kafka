@@ -95,19 +95,22 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.converterMetaData = data;
     });
 
-    this.wsService.on('recommendation-update').pipe(
+    this.wsService.on('recommendations-update').pipe(
       takeUntil(this._unsubscribe),
-      map((data: any) => {
-        return new RecommendationModel(
-          new Date(data?.time as number),
-          data?.category as RecommendationCategoryModel,
-          data?.textMessage as string
-        );
-      })
+      map((data: any) => data?.list.map(
+        rec => new RecommendationModel(
+          rec?.id as string,
+          new Date(rec?.timeStart as number),
+          new Date(rec?.timeFinish as number),
+          rec?.title as string,
+          rec?.textMessage as string,
+          rec?.category as RecommendationCategoryModel,
+          rec?.isActive as boolean
+        )
+      ) as Array<RecommendationModel>)
     ).subscribe(data => {
-      this.recommendations.push(data);
+      this.recommendations = data;
     });
-
   }
 
   ngOnDestroy(): void {

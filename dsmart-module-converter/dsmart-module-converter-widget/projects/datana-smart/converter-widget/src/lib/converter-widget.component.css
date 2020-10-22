@@ -108,23 +108,33 @@
     width: fit-content;
     padding: 0.25rem;
     height: 1.5rem;
-    background-color: #C23557;
-    border: 2px solid #C23557;
+    background-color: #CCDBEB;
+    border: 2px solid #CCDBEB;
     border-radius: 4px 4px 0 0;
     font-weight: 600;
     font-size: 1.25rem;
     color: white;
 }
 
+.widget-recommendation-item-warning-active {
+    background-color: #C23557;
+    border: 2px solid #C23557;
+}
+
 .widget-recommendation-item-instruction {
     height: 5.5rem;
     padding: 0.25rem;
-    border: 2px solid #C23557;
+    border: 2px solid #CCDBEB;
     border-radius: 0 4px 4px 4px;
     font-size: 1.2rem;
     font-weight: 500;
     background-color: white;
 }
+
+.widget-recommendation-item-instruction-active {
+    border: 2px solid #C23557;
+}
+
 .widget-boiling {
     /*height: 100%;*/
 }

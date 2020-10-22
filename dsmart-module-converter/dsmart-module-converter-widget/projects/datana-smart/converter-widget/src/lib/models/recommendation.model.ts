@@ -2,9 +2,13 @@ import {RecommendationCategoryModel} from "./recommendation-category.model";
 
 export class RecommendationModel {
   constructor(
-    public date: Date,
+    public id: string,
+    public dateStart: Date,
+    public dateFinish: Date,
+    public title: string,
+    public textMessage: string,
     public category: RecommendationCategoryModel,
-    public textMessage: string
+    public isActive: boolean
   ) {
   }
 }

@@ -1,5 +1,6 @@
 export enum RecommendationCategoryModel {
   CRITICAL = "CRITICAL",
   WARNING = "WARNING",
-  INFO = "INFO"
+  INFO = "INFO",
+  HINT = "HINT"
 }

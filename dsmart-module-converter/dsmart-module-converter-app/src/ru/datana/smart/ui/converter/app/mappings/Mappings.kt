@@ -2,11 +2,13 @@ package ru.datana.smart.ui.converter.app.mappings
 
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import ru.datana.smart.ui.converter.app.cor.context.InnerRecord
+import ru.datana.smart.ui.converter.app.cor.repository.IUserEvent
 import ru.datana.smart.ui.converter.ws.models.*
 import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import ru.datana.smart.ui.viml.models.ConverterTransportViMl
+import kotlin.streams.toList
 
 fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     topic = topic(),
@@ -85,6 +87,19 @@ fun toWsConverterMetaModel(converterMeltInfo: ConverterMeltInfo) =
             )
         ),
     )
+
+fun toWsRecommendationModel(event: IUserEvent) =
+    WsDsmartRecommendation(
+        id = event.id,
+        timeStart = event.timeStart,
+        timeFinish = event.timeFinish,
+        title = event.title,
+        textMessage = event.textMessage,
+        category = WsDsmartRecommendation.Category.valueOf(event.category.toString()),
+        isActive = event.isActive
+    )
+
+fun toWsRecommendationListModel(events: List<IUserEvent>) = events.stream().map { event -> toWsRecommendationModel(event) }.toList()
 
 fun toWsTemperatureModel(temperatureProcUiDto: TemperatureProcUiDto) =
     WsDsmartTemperature(
