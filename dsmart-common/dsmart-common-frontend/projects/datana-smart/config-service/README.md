@@ -43,8 +43,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ConfigServiceModule.forRoot({restWsUrl: 'http://localhost:8080/front-config'})
 ```
 ##### Мы можем так же эти setting которые мы получаем из Rest  подключить для представления, через конструктор
-```
-export class AppComponent implements OnInit {
+```export class AppComponent implements OnInit {
       constructor(private appConfigService: ConfigServiceService) {}
       settings: any;
     
