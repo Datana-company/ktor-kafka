@@ -1,4 +1,8 @@
+<p *ngIf="selectedCase != null"> Был выбран каталог: {{selectedCase}}</p>
 <div class="widget-mock-list widget-col">
     <h1>Список кейсов</h1>
-    <mock-list-component [mockList]="mockList"></mock-list-component>
+    <mock-list-component
+        [mockList] = "mockList"
+        (selectedCase) = "setSelectedCase($event)">
+    </mock-list-component>
 </div>
