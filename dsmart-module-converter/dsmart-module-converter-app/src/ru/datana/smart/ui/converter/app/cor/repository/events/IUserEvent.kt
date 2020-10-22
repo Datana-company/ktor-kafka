@@ -1,4 +1,4 @@
-package ru.datana.smart.ui.converter.app.cor.repository
+package ru.datana.smart.ui.converter.app.cor.repository.events
 
 interface IUserEvent {
     val id: String

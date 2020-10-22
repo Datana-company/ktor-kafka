@@ -5,9 +5,9 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.cor.context.CorError
 import ru.datana.smart.ui.converter.app.cor.context.CorStatus
-import ru.datana.smart.ui.converter.app.cor.repository.ConveyorMetalRateCriticalEvent
-import ru.datana.smart.ui.converter.app.cor.repository.ConveyorMetalRateExceedsEvent
-import ru.datana.smart.ui.converter.app.cor.repository.ConveyorMetalRateNormalEvent
+import ru.datana.smart.ui.converter.app.cor.repository.events.ConveyorMetalRateCriticalEvent
+import ru.datana.smart.ui.converter.app.cor.repository.events.ConveyorMetalRateExceedsEvent
+import ru.datana.smart.ui.converter.app.cor.repository.events.ConveyorMetalRateNormalEvent
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 
 object MetalRateCriticalHandler : IKonveyorHandler<ConverterBeContext<String, String>> {
@@ -31,14 +31,16 @@ object MetalRateCriticalHandler : IKonveyorHandler<ConverterBeContext<String, St
                     is ConveyorMetalRateCriticalEvent -> {
                         val currentTime = obj.frameTime ?: it.timeFinish
                         val event = if (currentTime - it.timeFinish > 20000) {
-                            context.eventsRepository.put(ConveyorMetalRateCriticalEvent(
+                            context.eventsRepository.put(
+                                ConveyorMetalRateCriticalEvent(
                                 id = it.id,
                                 timeStart = it.timeStart,
                                 timeFinish = it.timeFinish,
                                 steelRate = it.steelRate,
                                 title = it.title,
                                 isActive = false
-                            ))
+                            )
+                            )
                             ConveyorMetalRateCriticalEvent(
                                 timeStart = currentTime,
                                 timeFinish = currentTime,

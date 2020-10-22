@@ -1,5 +1,6 @@
 package ru.datana.smart.ui.converter.app.cor.repository
 
+import ru.datana.smart.ui.converter.app.cor.repository.events.IUserEvent
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.streams.toList

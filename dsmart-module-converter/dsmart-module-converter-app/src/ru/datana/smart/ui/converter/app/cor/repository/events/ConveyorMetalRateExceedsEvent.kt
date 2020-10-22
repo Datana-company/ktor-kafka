@@ -1,4 +1,4 @@
-package ru.datana.smart.ui.converter.app.cor.repository
+package ru.datana.smart.ui.converter.app.cor.repository.events
 
 import java.time.Instant
 import java.util.*

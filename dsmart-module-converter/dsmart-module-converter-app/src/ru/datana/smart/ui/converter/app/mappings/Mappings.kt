@@ -2,7 +2,7 @@ package ru.datana.smart.ui.converter.app.mappings
 
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import ru.datana.smart.ui.converter.app.cor.context.InnerRecord
-import ru.datana.smart.ui.converter.app.cor.repository.IUserEvent
+import ru.datana.smart.ui.converter.app.cor.repository.events.IUserEvent
 import ru.datana.smart.ui.converter.ws.models.*
 import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
