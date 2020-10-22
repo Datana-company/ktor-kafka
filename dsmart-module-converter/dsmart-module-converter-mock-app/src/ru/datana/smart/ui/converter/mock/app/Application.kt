@@ -19,8 +19,12 @@ import ru.datana.smart.ui.meta.models.ConverterMeltDevices
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import java.io.File
 import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.time.Instant
 import java.util.*
+import kotlin.streams.toList
 
 /**
  * Location for uploading videos.
@@ -76,7 +80,7 @@ fun Application.module(testing: Boolean = false) {
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
 
-    val uploadDir = File(pathToUpload)//"F:\\_WORK\\_DATANA\\upload")
+    val uploadDir = File(pathToUpload)
     if (!uploadDir.mkdirs() && !uploadDir.exists()) {
         throw IOException("Failed to create directory ${uploadDir.absolutePath}")
     }
@@ -88,21 +92,47 @@ fun Application.module(testing: Boolean = false) {
         }
 
         get("/list") {
-            call.respondText(
-                """
-                {
-                    "cases": [
-                        {"name": "Case1", "dir": "Case1"},
-                        {"name": "Case2", "dir": "Case2"},
-                        {"name": "Case3", "dir": "Case3"},
-                        {"name": "Case4", "dir": "Case4"}
-                    ]
+            logger.info(" +++ GET /list")
+            var absolutePathToCatalog: Path?
+            try {
+                absolutePathToCatalog = Paths.get(pathToCatalog).toAbsolutePath()
+            } catch (e: Throwable) {
+                logger.error(e.localizedMessage)
+                call.respond(HttpStatusCode.InternalServerError)
+                return@get
+            }
+            if (!Files.exists(absolutePathToCatalog)) {
+                val errorMsg = "По пути " + absolutePathToCatalog + " каталог не найден"
+                logger.error(errorMsg)
+                call.respond(HttpStatusCode.InternalServerError, errorMsg)
+                return@get
+            }
+            if (!Files.isDirectory(absolutePathToCatalog)) {
+                val errorMsg = "По пути " + absolutePathToCatalog + " находится файл, а должен быть каталог"
+                logger.error(errorMsg)
+                call.respond(HttpStatusCode.InternalServerError, errorMsg)
+                return@get
+            }
+            val converterCaseListModel = ConverterCaseListModel(cases = Files.walk(
+                absolutePathToCatalog,
+                1
+            ) // Смотрим только 1 уровень (т.е. не заходим в каталоги)
+                .filter { item -> Files.isDirectory(item) && item.fileName.toString().startsWith("case-") } // Оставляем только каталоги начинающиеся с "case-"
+                .map {
+                    ConverterCaseModel(
+                        name = it.fileName.toString(),
+                        dir = it.toString()
+                    )
                 }
-                """.trimIndent()
+                .toList()
             )
+            val converterCaseListJsonString = objectMapper.writeValueAsString(converterCaseListModel)
+            call.respondText(converterCaseListJsonString.trimIndent())
         }
 
         get("/send") {
+            logger.info(" +++ GET /send")
+            logger.debug("parameters count: " + call.parameters.names().size)
             val timeStart = Instant.now().toEpochMilli()
             logger.info(
                 msg = "Send event is caught by converter-mock backend",
@@ -112,8 +142,11 @@ fun Application.module(testing: Boolean = false) {
                 }
             )
             val case = call.parameters["case"] ?: throw BadRequestException("No case is specified")
+            logger.debug("case: " + case)
+            logger.debug("kafkaServers: " + kafkaServers + " --- kafkaTopic: " + kafkaTopic + " --- pathToCatalog: " + pathToCatalog)
             val meltInfo = try {
                 val metaText = File("$pathToCatalog/$case/meta.json").readText()
+                logger.debug("metaText" + metaText)
                 objectMapper.readValue<ConverterMeltInfo>(metaText)
             } catch (e: Throwable) {
                 ConverterMeltInfo(
@@ -152,7 +185,6 @@ fun Application.module(testing: Boolean = false) {
                 logger.error("Send event failed due to kafka producer {}", objs = arrayOf(e))
                 call.respond(HttpStatusCode.InternalServerError)
             }
-
         }
 
         upload(uploadDir)

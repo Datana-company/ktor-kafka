@@ -1,19 +1,21 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import {MockListItemModel} from "../models/mock-list-item-model";
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'mock-list-component',
-  templateUrl: './mock-list.component.html',
-  styleUrls: ['./mock-list.component.css']
+    selector: 'mock-list-component',
+    templateUrl: './mock-list.component.html',
+    styleUrls: ['./mock-list.component.css']
 })
 export class MockListComponent implements OnInit {
 
-  @Input() mockList: Array<MockListItemModel>;
+    @Input() mockList: Array<MockListItemModel>;
 
-  constructor() { }
+    @Output('selectedCase')
+    transitionalSelectedCase = new EventEmitter<String>();
 
-  ngOnInit(): void {
-  }
+    constructor() {
+    }
 
+    ngOnInit(): void {
+    }
 }
