@@ -5,10 +5,9 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.cor.context.CorError
 import ru.datana.smart.ui.converter.app.cor.context.CorStatus
-import ru.datana.smart.ui.converter.app.cor.repository.events.ConveyorMetalRateCriticalEvent
-import ru.datana.smart.ui.converter.app.cor.repository.events.ConveyorMetalRateExceedsEvent
-import ru.datana.smart.ui.converter.app.cor.repository.events.ConveyorMetalRateNormalEvent
+import ru.datana.smart.ui.converter.app.cor.repository.events.*
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
+import java.time.Instant
 
 object MetalRateCriticalHandler : IKonveyorHandler<ConverterBeContext<String, String>> {
 
@@ -21,69 +20,87 @@ object MetalRateCriticalHandler : IKonveyorHandler<ConverterBeContext<String, St
         try {
             val obj = context.jacksonSerializer.readValue(record.value, ConverterTransportMlUi::class.java)!!
 
-            val steelRate = obj.steelRate ?: return
-            if (steelRate < 0.8) {
+            val metalRate = obj.steelRate ?: return
+            if (metalRate < 0.8) {
                 return
             }
 
-            context.eventsRepository.getActive().map {
+            val frameTime = obj.frameTime ?: Instant.now().toEpochMilli()
+            val activeEvent: IConveyorMetalRateEvent? = context.eventsRepository.getActive().find { it is IConveyorMetalRateEvent } as? IConveyorMetalRateEvent
+
+            activeEvent?.let {
                 when(it) {
                     is ConveyorMetalRateCriticalEvent -> {
-                        val currentTime = obj.frameTime ?: it.timeFinish
-                        val event = if (currentTime - it.timeFinish > 20000) {
-                            context.eventsRepository.put(
-                                ConveyorMetalRateCriticalEvent(
-                                id = it.id,
-                                timeStart = it.timeStart,
-                                timeFinish = it.timeFinish,
-                                steelRate = it.steelRate,
-                                title = it.title,
-                                isActive = false
-                            )
-                            )
-                            ConveyorMetalRateCriticalEvent(
-                                timeStart = currentTime,
-                                timeFinish = currentTime,
-                                steelRate = steelRate
-                            )
-                        } else {
-                            ConveyorMetalRateCriticalEvent(
-                                id = it.id,
-                                timeStart = if (it.timeStart > currentTime) currentTime else it.timeStart,
-                                timeFinish = if (it.timeFinish < currentTime) currentTime else it.timeFinish,
-                                steelRate = it.steelRate,
-                                title = it.title,
-                                isActive = true
-                            )
-                        }
-                        context.eventsRepository.put(event)
+                        val updateEvent = ConveyorMetalRateCriticalEvent(
+                            id = it.id,
+                            timeStart = if (it.timeStart > frameTime) frameTime else it.timeStart,
+                            timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
+                            metalRate = it.metalRate,
+                            title = it.title,
+                            isActive = it.isActive
+                        )
+                        context.eventsRepository.put(updateEvent)
                     }
                     is ConveyorMetalRateExceedsEvent -> {
-                        val event = ConveyorMetalRateExceedsEvent(
+                        val historicalEvent = ConveyorMetalRateExceedsEvent(
                             id = it.id,
                             timeStart = it.timeStart,
                             timeFinish = it.timeFinish,
-                            steelRate = it.steelRate,
+                            metalRate = it.metalRate,
                             title = it.title,
                             isActive = false
                         )
-                        context.eventsRepository.put(event)
+                        context.eventsRepository.put(historicalEvent)
+                        val newEvent = ConveyorMetalRateCriticalEvent(
+                            timeStart = frameTime,
+                            timeFinish = frameTime,
+                            metalRate = metalRate
+                        )
+                        context.eventsRepository.put(newEvent)
                     }
                     is ConveyorMetalRateNormalEvent -> {
-                        val event = ConveyorMetalRateNormalEvent(
+                        val historicalEvent = ConveyorMetalRateNormalEvent(
                             id = it.id,
                             timeStart = it.timeStart,
                             timeFinish = it.timeFinish,
-                            steelRate = it.steelRate,
+                            metalRate = it.metalRate,
                             title = it.title,
                             isActive = false
                         )
-                        context.eventsRepository.put(event)
+                        context.eventsRepository.put(historicalEvent)
+                        val newEvent = ConveyorMetalRateCriticalEvent(
+                            timeStart = frameTime,
+                            timeFinish = frameTime,
+                            metalRate = metalRate
+                        )
+                        context.eventsRepository.put(newEvent)
+                    }
+                    is ConveyorMetalRateInfoEvent -> {
+                        val historicalEvent = ConveyorMetalRateInfoEvent(
+                            id = it.id,
+                            timeStart = it.timeStart,
+                            timeFinish = it.timeFinish,
+                            metalRate = it.metalRate,
+                            title = it.title,
+                            isActive = false
+                        )
+                        context.eventsRepository.put(historicalEvent)
+                        val newEvent = ConveyorMetalRateCriticalEvent(
+                            timeStart = frameTime,
+                            timeFinish = frameTime,
+                            metalRate = metalRate
+                        )
+                        context.eventsRepository.put(newEvent)
                     }
                 }
-            }
+            } ?: context.eventsRepository.put(
+                ConveyorMetalRateCriticalEvent(
+                timeStart = obj.frameTime ?: Instant.now().toEpochMilli(),
+                timeFinish = obj.frameTime ?: Instant.now().toEpochMilli(),
+                metalRate = metalRate
+            ))
         } catch (e: Throwable) {
-            val msg = "Error parsing data for [Proc]: ${record}"
+            val msg = "Error parsing data for [Proc]: ${record.value}"
             context.logger.error(msg)
             context.errors.add(CorError(msg))
             context.status = CorStatus.FAILING

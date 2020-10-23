@@ -9,7 +9,7 @@ import ru.datana.smart.ui.converter.app.cor.repository.events.*
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import java.time.Instant
 
-object MetalRateNormalHandler: IKonveyorHandler<ConverterBeContext<String, String>> {
+object MetalRateInfoHandler: IKonveyorHandler<ConverterBeContext<String, String>> {
 
     override suspend fun exec(context: ConverterBeContext<String, String>, env: IKonveyorEnvironment) {
         val record = context.records.firstOrNull { it.topic == context.topicConverter } ?: return
@@ -20,7 +20,7 @@ object MetalRateNormalHandler: IKonveyorHandler<ConverterBeContext<String, Strin
             val obj = context.jacksonSerializer.readValue(record.value, ConverterTransportMlUi::class.java)!!
 
             val metalRate = obj.steelRate ?: return
-            if (metalRate != 0.05) {
+            if (metalRate >= 0.05) {
                 return
             }
 
@@ -29,12 +29,12 @@ object MetalRateNormalHandler: IKonveyorHandler<ConverterBeContext<String, Strin
 
             activeEvent?.let {
                 when(it) {
-                    is ConveyorMetalRateNormalEvent -> {
-                        val updateEvent = ConveyorMetalRateNormalEvent(
+                    is ConveyorMetalRateInfoEvent -> {
+                        val updateEvent = ConveyorMetalRateInfoEvent(
                             id = it.id,
                             timeStart = if (it.timeStart > frameTime) frameTime else it.timeStart,
                             timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
-                            metalRate = if (it.metalRate < metalRate) metalRate else it.metalRate,
+                            metalRate = it.metalRate,
                             title = it.title,
                             isActive = it.isActive
                         )
@@ -50,7 +50,7 @@ object MetalRateNormalHandler: IKonveyorHandler<ConverterBeContext<String, Strin
                             isActive = false
                         )
                         context.eventsRepository.put(historicalEvent)
-                        val newEvent = ConveyorMetalRateNormalEvent(
+                        val newEvent = ConveyorMetalRateInfoEvent(
                             timeStart = frameTime,
                             timeFinish = frameTime,
                             metalRate = metalRate
@@ -67,15 +67,15 @@ object MetalRateNormalHandler: IKonveyorHandler<ConverterBeContext<String, Strin
                             isActive = false
                         )
                         context.eventsRepository.put(historicalEvent)
-                        val newEvent = ConveyorMetalRateNormalEvent(
+                        val newEvent = ConveyorMetalRateInfoEvent(
                             timeStart = frameTime,
                             timeFinish = frameTime,
                             metalRate = metalRate
                         )
                         context.eventsRepository.put(newEvent)
                     }
-                    is ConveyorMetalRateInfoEvent -> {
-                        val historicalEvent = ConveyorMetalRateInfoEvent(
+                    is ConveyorMetalRateNormalEvent -> {
+                        val historicalEvent = ConveyorMetalRateNormalEvent(
                             id = it.id,
                             timeStart = it.timeStart,
                             timeFinish = it.timeFinish,
@@ -84,7 +84,7 @@ object MetalRateNormalHandler: IKonveyorHandler<ConverterBeContext<String, Strin
                             isActive = false
                         )
                         context.eventsRepository.put(historicalEvent)
-                        val newEvent = ConveyorMetalRateNormalEvent(
+                        val newEvent = ConveyorMetalRateInfoEvent(
                             timeStart = frameTime,
                             timeFinish = frameTime,
                             metalRate = metalRate
@@ -93,11 +93,12 @@ object MetalRateNormalHandler: IKonveyorHandler<ConverterBeContext<String, Strin
                     }
                 }
             } ?: context.eventsRepository.put(
-                ConveyorMetalRateNormalEvent(
+                ConveyorMetalRateInfoEvent(
                     timeStart = obj.frameTime ?: Instant.now().toEpochMilli(),
                     timeFinish = obj.frameTime ?: Instant.now().toEpochMilli(),
                     metalRate = metalRate
-                ))
+                )
+            )
         } catch (e: Throwable) {
             val msg = "Error parsing data for [Proc]: ${record.value}"
             context.logger.error(msg)
