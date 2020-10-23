@@ -26,7 +26,7 @@ object ConverterUiHandler : IKonveyorHandler<ConverterBeContext<String, String>>
             response.data?.angle?.isFinite()?.apply { context.forwardObjects.add(response) }
 
         } catch (e: Throwable) {
-            val msg = "Error parsing data for [Proc]: ${record}"
+            val msg = "Error parsing data for [Proc]: ${record.value}"
             context.logger.error(msg)
             context.errors.add(CorError(msg))
             context.status = CorStatus.FAILING

@@ -1,7 +1,6 @@
 package ru.datana.smart.ui.converter.app
 
 import ch.qos.logback.classic.Logger
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -23,12 +22,13 @@ import io.ktor.util.KtorExperimentalAPI
 import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
-import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
+import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
+import ru.datana.smart.ui.converter.app.cor.repository.UserEventsRepository
 import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.app.mappings.toInnerModel
 import java.time.Duration
@@ -73,6 +73,18 @@ fun Application.module(testing: Boolean = false) {
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
     val sensorId by lazy { environment.config.property("ktor.datana.sensor.id").getString().trim() }
+    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.datana.metalRateEventGen.timeout").getString().trim().toLong() }
+    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.datana.metalRateEventGen.maxValue").getString().trim().toDouble() }
+    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.datana.metalRateEventGen.minValue").getString().trim().toDouble() }
+    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.datana.metalRateEventGen.changeValue").getString().trim().toDouble() }
+
+    val metalRateEventGenerator = MetalRateEventGenerator(
+        timeout = metalRateEventGenTimeout,
+        maxValue = metalRateEventGenMax,
+        minValue = metalRateEventGenMin,
+        changeValue = metalRateEventGenChange
+    )
+    val userEventsRepository = UserEventsRepository()
 
     routing {
         static("/") {
@@ -101,14 +113,14 @@ fun Application.module(testing: Boolean = false) {
             )
             ForwardServiceKafkaUi(
                 logger = logger,
-                jacksonSerializer = ObjectMapper(),
-                kotlinxSerializer = Json { encodeDefaults = true },
                 wsManager = wsManager,
                 topicTemperature = topicTemperature,
                 topicConverter = topicConverter,
                 topicVideo = topicVideo,
                 topicMeta = topicMeta,
-                sensorId = sensorId
+                metalRateEventGenerator = metalRateEventGenerator,
+                sensorId = sensorId,
+                eventsRepository = userEventsRepository
             ).exec(context)
 
             commitAll()
