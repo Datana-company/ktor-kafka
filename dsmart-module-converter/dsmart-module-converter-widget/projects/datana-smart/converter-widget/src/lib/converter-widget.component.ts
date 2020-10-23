@@ -9,6 +9,7 @@ import {ConverterVideoModel} from "./models/converter-video.model";
 import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
 import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
 import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
+import {ConfigServiceService} from "@datana-smart/config-service";
 
 @Component({
   selector: 'datana-converter-widget',
@@ -26,14 +27,17 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   public recommendations: Array<RecommendationModel> = new Array<RecommendationModel>();
 
   playlist: string;
+  settings: any;
 
   constructor(
-    @Inject(configProvide) private wsService: IWebsocketService
+    @Inject(configProvide) private wsService: IWebsocketService,
+    private appConfigService: ConfigServiceService
   ) { }
 
   ngOnInit(): void {
     this.playlist = "http://camera.d.datana.ru/playlist.m3u8"
-
+    this.settings = this.appConfigService.settings;
+    console.log("this.settings from config-service : " , this.settings)
     this.wsService.on('temperature-update').pipe(
       takeUntil(this._unsubscribe),
       map((data: any) => {

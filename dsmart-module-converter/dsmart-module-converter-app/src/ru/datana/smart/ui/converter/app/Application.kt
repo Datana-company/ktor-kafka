@@ -73,11 +73,24 @@ fun Application.module(testing: Boolean = false) {
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
     val sensorId by lazy { environment.config.property("ktor.datana.sensor.id").getString().trim() }
+    val videoAdapterStream by lazy {environment.config.property("ktor.datana.video.adapter.url").getString().trim()}
 
     routing {
         static("/") {
             defaultResource("static/index.html")
             resources("static")
+        }
+//        {"videoadapterstreamurl": "$videoAdapterStream"}
+        get("/front-config") {
+            call.respondText(
+                """
+                {
+                    "settings": [
+                        {"videoadapterstreamurl": "$videoAdapterStream"}
+                    ]
+                }
+                """.trimIndent()
+            )
         }
 
         webSocket("/ws") {

@@ -119,19 +119,19 @@ fun Application.module(testing: Boolean = false) {
             val converterCaseListJsonString = objectMapper.writeValueAsString(converterCaseListModel)
             call.respondText(converterCaseListJsonString.trimIndent())
         }
-        get("/front-config") {
-            call.respondText(
-                """
-                {
-                    "settings": [
-                        {"variable": "variable1"},
-                        {"variable": "variable2"},
-                        {"variable": "variable3"}
-                    ]
-                }
-                """.trimIndent()
-            )
-        }
+//        get("/front-config") {
+//            call.respondText(
+//                """
+//                {
+//                    "settings": [
+//                        {"variable": "variable1"},
+//                        {"variable": "variable2"},
+//                        {"variable": "variable3"}
+//                    ]
+//                }
+//                """.trimIndent()
+//            )
+//        }
 
         get("/send") {
             logger.info(" +++ GET /send")
