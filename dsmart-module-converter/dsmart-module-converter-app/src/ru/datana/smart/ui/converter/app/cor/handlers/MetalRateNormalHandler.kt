@@ -12,12 +12,17 @@ import java.time.Instant
 object MetalRateNormalHandler: IKonveyorHandler<ConverterBeContext<String, String>> {
 
     override suspend fun exec(context: ConverterBeContext<String, String>, env: IKonveyorEnvironment) {
-        val record = context.records.firstOrNull { it.topic == context.topicConverter } ?: return
 
-        context.logger.trace("topic = ${record.topic}, partition = ${record.partition}, offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
+//        val record = context.records.firstOrNull { it.topic == context.topicConverter } ?: return
+//
+//        context.logger.trace("topic = ${record.topic}, partition = ${record.partition}, offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
+
+        val steelRate = context.metalRateEventGenerator.generateValue
+        val currentTime = Instant.now().toEpochMilli()
+        val record = "{\"frameId\": \"1\", \"frameTime\": $currentTime, \"framePath\": \"/frame/to/path\", \"angle\": 79.123, \"steelRate\": $steelRate, \"slagRate\": 0.05, \"meltInfo\": {\"id\": \"1\", \"timeStart\": 1602796302129, \"meltNumber\": \"12\", \"steelGrade\": \"ММК\", \"crewNumber\": \"3\", \"shiftNumber\": \"2\", \"mode\": 1, \"devices\": {\"irCamera\": {\"id\": \"c17ea7ca-7bbf-4f89-a644-7899f21ac629\", \"name\": \"GoPro\", \"uri\": \"video/path\", \"type\": 1}}}}"
 
         try {
-            val obj = context.jacksonSerializer.readValue(record.value, ConverterTransportMlUi::class.java)!!
+            val obj = context.jacksonSerializer.readValue(record/*.value*/, ConverterTransportMlUi::class.java)!!
 
             val metalRate = obj.steelRate ?: return
             if (metalRate != 0.05) {
@@ -99,7 +104,7 @@ object MetalRateNormalHandler: IKonveyorHandler<ConverterBeContext<String, Strin
                     metalRate = metalRate
                 ))
         } catch (e: Throwable) {
-            val msg = "Error parsing data for [Proc]: ${record.value}"
+            val msg = "Error parsing data for [Proc]: ${record/*.value*/}"
             context.logger.error(msg)
             context.errors.add(CorError(msg))
             context.status = CorStatus.FAILING
