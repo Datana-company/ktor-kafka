@@ -32,16 +32,16 @@
         </div>
       </div>
     </div>
-    <!--      <div class="widget-recommendations widget-col" *ngFor="let recommendation of recommendations">-->
-    <div class="widget-recommendations widget-col" >
-      <div class="widget-recommendation-item" *ngFor="let recommendation of recommendations">
-        <div [class.widget-recommendation-item-warning-active]="recommendation.isActive" class="widget-recommendation-item-warning">
-          {{ recommendation?.dateStart | date: 'yyyy-MM-dd HH:mm:ss' }}
+    <!--      <div class="widget-events widget-col" *ngFor="let event of events">-->
+    <div class="widget-events widget-col" >
+      <div class="widget-event-item" *ngFor="let event of events">
+        <div [class.widget-event-item-warning-active]="event.isActive" class="widget-event-item-warning">
+          {{ event?.dateStart | date: 'yyyy-MM-dd HH:mm:ss' }}
         </div>
-        <div [class.widget-recommendation-item-instruction-active]="recommendation.isActive" class="widget-recommendation-item-instruction">
+        <div [class.widget-event-item-instruction-active]="event.isActive" class="widget-event-item-instruction">
           <!--                    Время начала плавки:{{ timeStartMeltStream$ | async }}-->
-          {{ recommendation?.category }}
-          {{ recommendation?.textMessage }}
+          {{ event?.category }}
+          {{ event?.textMessage }}
         </div>
       </div>
     </div>

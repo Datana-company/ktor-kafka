@@ -4,7 +4,7 @@ import java.util.Timer
 import kotlin.concurrent.schedule
 
 /**
- * Класс RecommendationTimer
+ * Класс EventTimer
  *
  * Класс используется для повторного отображения рекомендаций через заданное время
  *
@@ -14,7 +14,7 @@ import kotlin.concurrent.schedule
  * @property timer объект таймера
  */
 
-class RecommendationTimer(
+class EventTimer(
     val timeout: Long = 0L,
     private var tag: String? = null,
     private var isActive: Boolean = false,

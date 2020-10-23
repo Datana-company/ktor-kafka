@@ -88,18 +88,18 @@ fun toWsConverterMetaModel(converterMeltInfo: ConverterMeltInfo) =
         ),
     )
 
-fun toWsRecommendationModel(event: IUserEvent) =
-    WsDsmartRecommendation(
+fun toWsEventModel(event: IUserEvent) =
+    WsDsmartEvent(
         id = event.id,
         timeStart = event.timeStart,
         timeFinish = event.timeFinish,
         title = event.title,
         textMessage = event.textMessage,
-        category = WsDsmartRecommendation.Category.valueOf(event.category.toString()),
+        category = WsDsmartEvent.Category.valueOf(event.category.toString()),
         isActive = event.isActive
     )
 
-fun toWsRecommendationListModel(events: List<IUserEvent>) = events.stream().map { event -> toWsRecommendationModel(event) }.toList()
+fun toWsEventListModel(events: List<IUserEvent>) = events.stream().map { event -> toWsEventModel(event) }.toList()
 
 fun toWsTemperatureModel(temperatureProcUiDto: TemperatureProcUiDto) =
     WsDsmartTemperature(

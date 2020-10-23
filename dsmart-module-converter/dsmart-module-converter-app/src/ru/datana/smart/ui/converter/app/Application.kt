@@ -23,7 +23,7 @@ import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.converter.app.common.RecommendationTimer
+import ru.datana.smart.ui.converter.app.common.EventTimer
 import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.cor.repository.UserEventsRepository
 import ru.datana.smart.ui.converter.app.websocket.WsManager
@@ -72,7 +72,7 @@ fun Application.module(testing: Boolean = false) {
     val sensorId by lazy { environment.config.property("ktor.datana.sensor.id").getString().trim() }
     val recommendationTimerDelay: Long by lazy { environment.config.property("ktor.datana.recommendationTimer.delay").getString().trim().toLong() }
 
-    val recommendationTimer = RecommendationTimer(recommendationTimerDelay)
+    val recommendationTimer = EventTimer(recommendationTimerDelay)
     val userEventsRepository = UserEventsRepository()
 
     routing {
@@ -107,7 +107,7 @@ fun Application.module(testing: Boolean = false) {
                 topicConverter = topicConverter,
                 topicVideo = topicVideo,
                 topicMeta = topicMeta,
-                recommendationTimer = recommendationTimer,
+                eventTimer = recommendationTimer,
                 sensorId = sensorId,
                 eventsRepository = userEventsRepository
             ).exec(context)

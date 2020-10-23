@@ -16,7 +16,7 @@ object JsonSerializerHandler : IKonveyorHandler<ConverterBeContext<String, Strin
                 is WsDsmartResponseConverterVi -> context.kotlinxSerializer.encodeToString(WsDsmartResponseConverterVi.serializer(), it)
                 is WsDsmartResponseConverterMeta -> context.kotlinxSerializer.encodeToString(WsDsmartResponseConverterMeta.serializer(), it)
                 is WsDsmartResponseTemperature -> context.kotlinxSerializer.encodeToString(WsDsmartResponseTemperature.serializer(), it)
-                is WsDsmartResponseRecommendations -> context.kotlinxSerializer.encodeToString(WsDsmartResponseRecommendations.serializer(), it)
+                is WsDsmartResponseEvents -> context.kotlinxSerializer.encodeToString(WsDsmartResponseEvents.serializer(), it)
                 else -> {
                     val msg = "Unknown type of data"
                     context.logger.trace(msg)

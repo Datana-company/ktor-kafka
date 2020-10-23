@@ -2,14 +2,14 @@ import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from "rxjs";
 import {map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
-import {RecommendationModel} from "./models/recommendation.model";
+import {EventModel} from "./models/event-model";
 import {TemperatureModel} from "./models/temperature.model";
 import {ConverterModel} from "./models/converter.model";
 import {ConverterVideoModel} from "./models/converter-video.model";
 import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
 import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
 import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
-import {RecommendationCategoryModel} from "./models/recommendation-category.model";
+import {EventCategoryModel} from "./models/event-category.model";
 
 @Component({
   selector: 'datana-converter-widget',
@@ -24,7 +24,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   public converterData: ConverterModel;
   public converterVideoData: ConverterVideoModel;
   public converterMetaData: ConverterMeltInfoModel;
-  public recommendations: Array<RecommendationModel> = new Array<RecommendationModel>();
+  public events: Array<EventModel> = new Array<EventModel>();
 
   playlist: string;
 
@@ -95,21 +95,21 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.converterMetaData = data;
     });
 
-    this.wsService.on('recommendations-update').pipe(
+    this.wsService.on('events-update').pipe(
       takeUntil(this._unsubscribe),
       map((data: any) => data?.list.map(
-        rec => new RecommendationModel(
-          rec?.id as string,
-          new Date(rec?.timeStart as number),
-          new Date(rec?.timeFinish as number),
-          rec?.title as string,
-          rec?.textMessage as string,
-          rec?.category as RecommendationCategoryModel,
-          rec?.isActive as boolean
+        event => new EventModel(
+          event?.id as string,
+          new Date(event?.timeStart as number),
+          new Date(event?.timeFinish as number),
+          event?.title as string,
+          event?.textMessage as string,
+          event?.category as EventCategoryModel,
+          event?.isActive as boolean
         )
-      ) as Array<RecommendationModel>)
+      ) as Array<EventModel>)
     ).subscribe(data => {
-      this.recommendations = data;
+      this.events = data;
     });
   }
 

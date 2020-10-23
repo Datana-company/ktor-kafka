@@ -4,7 +4,7 @@ import codes.spectrum.konveyor.DefaultKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.konveyor
 import ru.datana.smart.logger.DatanaLogContext
-import ru.datana.smart.ui.converter.app.common.RecommendationTimer
+import ru.datana.smart.ui.converter.app.common.EventTimer
 import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.cor.handlers.*
 import ru.datana.smart.ui.converter.app.cor.repository.UserEventsRepository
@@ -17,7 +17,7 @@ class ForwardServiceKafkaUi(
     var topicConverter: String,
     var topicVideo: String,
     var topicMeta: String,
-    var recommendationTimer: RecommendationTimer,
+    var eventTimer: EventTimer,
     var sensorId: String,
     var eventsRepository: UserEventsRepository
 ) {
@@ -35,7 +35,7 @@ class ForwardServiceKafkaUi(
                 it.topicConverter = topicConverter
                 it.topicVideo = topicVideo
                 it.topicMeta = topicMeta
-                it.recommendationTimer = recommendationTimer
+                it.eventTimer = eventTimer
                 it.sensorId = sensorId
                 it.eventsRepository = eventsRepository
             },
@@ -52,7 +52,7 @@ class ForwardServiceKafkaUi(
             +ConverterUiHandler
             +ConverterViHandler
             +ConverterMetaHandler
-            +RecommendationHandler
+            +EventHandler
             +JsonSerializerHandler
             +WsSendHandler
             +FinishHandler

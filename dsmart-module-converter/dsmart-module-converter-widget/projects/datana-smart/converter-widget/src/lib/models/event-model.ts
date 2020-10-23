@@ -1,13 +1,13 @@
-import {RecommendationCategoryModel} from "./recommendation-category.model";
+import {EventCategoryModel} from "./event-category.model";
 
-export class RecommendationModel {
+export class EventModel {
   constructor(
     public id: string,
     public dateStart: Date,
     public dateFinish: Date,
     public title: string,
     public textMessage: string,
-    public category: RecommendationCategoryModel,
+    public category: EventCategoryModel,
     public isActive: boolean
   ) {
   }
