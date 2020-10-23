@@ -6,6 +6,7 @@ import {CommonModule} from "@angular/common";
 import {HttpClientModule} from "@angular/common/http";
 import {FileUploadComponent} from "./file-upload/file-upload.component";
 import {CaseEditorComponent} from "./case-editor/case-editor.component";
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import {CaseEditorComponent} from "./case-editor/case-editor.component";
     ],
     imports: [
         CommonModule,
-        HttpClientModule
+        HttpClientModule,
+        ReactiveFormsModule
     ],
     exports: [ConverterWidgetMockComponent]
 })

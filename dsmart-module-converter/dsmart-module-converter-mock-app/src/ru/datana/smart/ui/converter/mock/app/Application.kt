@@ -10,6 +10,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
 import io.ktor.locations.*
+import io.ktor.request.receiveText
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -68,6 +69,9 @@ fun Application.module(testing: Boolean = false) {
     // Allows to use classes annotated with @Location to represent URLs.
     // They are typed, can be constructed to generate URLs, and can be used to register routes.
     install(Locations)
+
+    install(DefaultHeaders)
+    install(CallLogging)
 
     install(CORS) {
         method(HttpMethod.Options)
@@ -183,6 +187,27 @@ fun Application.module(testing: Boolean = false) {
                 call.respond(HttpStatusCode.OK)
             } catch (e: Throwable) {
                 logger.error("Send event failed due to kafka producer {}", objs = arrayOf(e))
+                call.respond(HttpStatusCode.InternalServerError)
+            }
+        }
+
+        post("/add_case") {
+            logger.info(" +++ POST /add_case")
+            val metaText = call.receiveText()
+            logger.info("request body: " + metaText)
+            try {
+                objectMapper.readValue<ConverterMeltInfo>(metaText)
+                val currentTime = Instant.now().toEpochMilli()
+                val caseDir = File("$pathToCatalog/case-$currentTime")
+                if (caseDir.mkdirs() && caseDir.exists()) {
+                    val caseJsonFile = File(caseDir.absolutePath, "meta.json")
+                    if (caseJsonFile.createNewFile()) {
+                        caseJsonFile.writeText(metaText)
+                    }
+                }
+                call.respond(HttpStatusCode.OK)
+            } catch (e: Throwable) {
+                logger.error("Receive incorrect data", objs = arrayOf(e))
                 call.respond(HttpStatusCode.InternalServerError)
             }
         }

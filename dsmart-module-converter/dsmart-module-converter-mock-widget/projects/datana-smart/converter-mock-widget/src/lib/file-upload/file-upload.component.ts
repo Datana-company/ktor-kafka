@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpEventType, HttpResponse} from "@angular/common/http";
-import {FileUploadService} from "../case-editor/file-upload.service";
+import {FileUploadService} from "./file-upload.service";
 
 @Component({
     selector: 'file-upload-component',
