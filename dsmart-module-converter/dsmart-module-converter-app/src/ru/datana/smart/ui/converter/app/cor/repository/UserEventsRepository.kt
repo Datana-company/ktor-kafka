@@ -17,6 +17,7 @@ class UserEventsRepository(
         return events.values.stream()
             .sorted(Comparator.comparing(IUserEvent::timeStart).reversed())
             .sorted(Comparator.comparing(IUserEvent::isActive).reversed())
+            .limit(10)
             .toList()
     }
 
