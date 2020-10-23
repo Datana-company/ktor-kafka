@@ -119,6 +119,19 @@ fun Application.module(testing: Boolean = false) {
             val converterCaseListJsonString = objectMapper.writeValueAsString(converterCaseListModel)
             call.respondText(converterCaseListJsonString.trimIndent())
         }
+        get("/front-config") {
+            call.respondText(
+                """
+                {
+                    "settings": [
+                        {"variable": "variable1"},
+                        {"variable": "variable2"},
+                        {"variable": "variable3"}
+                    ]
+                }
+                """.trimIndent()
+            )
+        }
 
         get("/send") {
             logger.info(" +++ GET /send")
@@ -131,6 +144,7 @@ fun Application.module(testing: Boolean = false) {
                     val timeStart = timeStart
                 }
             )
+
             val case = call.parameters["case"] ?: throw BadRequestException("No case is specified")
             logger.debug("case: " + case)
             logger.debug("kafkaServers: " + kafkaServers + " --- kafkaTopic: " + kafkaTopic + " --- pathToCatalog: " + pathToCatalog)
