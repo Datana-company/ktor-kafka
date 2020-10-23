@@ -16,7 +16,7 @@ object MetalRateExceedsHandler : IKonveyorHandler<ConverterBeContext<String, Str
 //
 //        context.logger.trace("topic = ${record.topic}, partition = ${record.partition}, offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
 
-        val steelRate = String.format("%8.2f", context.metalRateEventGenerator.generateValue).replace(',', '.')
+        val steelRate = context.metalRateEventGenerator.generateValue
         val currentTime = Instant.now().toEpochMilli()
         val record = "{\"frameId\": \"1\", \"frameTime\": $currentTime, \"framePath\": \"/frame/to/path\", \"angle\": 79.123, \"steelRate\": $steelRate, \"slagRate\": 0.05, \"meltInfo\": {\"id\": \"1\", \"timeStart\": 1602796302129, \"meltNumber\": \"12\", \"steelGrade\": \"ММК\", \"crewNumber\": \"3\", \"shiftNumber\": \"2\", \"mode\": 1, \"devices\": {\"irCamera\": {\"id\": \"c17ea7ca-7bbf-4f89-a644-7899f21ac629\", \"name\": \"GoPro\", \"uri\": \"video/path\", \"type\": 1}}}}"
 
