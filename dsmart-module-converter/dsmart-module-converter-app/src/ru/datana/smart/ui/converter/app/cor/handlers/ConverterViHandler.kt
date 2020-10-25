@@ -14,7 +14,14 @@ object ConverterViHandler : IKonveyorHandler<ConverterBeContext<String, String>>
     override suspend fun exec(context: ConverterBeContext<String, String>, env: IKonveyorEnvironment) {
         val record = context.records.firstOrNull { it.topic == context.topicVideo } ?: return
 
-        context.logger.trace("topic = ${record.topic}, partition = ${record.partition}, offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
+        context.logger.trace("topic = {}, partition = {}, offset = {}, key = {}, value = {}",
+            objs = arrayOf(
+                record.topic,
+                record.partition,
+                record.offset,
+                record.key,
+                record.value
+            ))
 //        val record = "{\"frameId\": \"2\", \"frameTime\": 1601796315751, \"framePath\": \"/frame/to/path\", \"meltInfo\": {\"id\": \"2\", \"timeStart\": 1601796302129, \"meltNumber\": \"11\", \"steelGrade\": \"ММК\", \"crewNumber\": \"1\", \"shiftNumber\": \"3\", \"mode\": 1, \"devices\": {\"irCamera\": {\"id\": \"c5542e80-50f0-4f1f-bf8e-66eb52452f68\", \"name\": \"GoPro\", \"uri\": \"video/path\", \"type\": 1}}}}"
 
         try {

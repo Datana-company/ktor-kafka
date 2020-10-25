@@ -15,7 +15,14 @@ object TemperatureTopicHandler : IKonveyorHandler<ConverterBeContext<String, Str
     override suspend fun exec(context: ConverterBeContext<String, String>, env: IKonveyorEnvironment) {
         val record = context.records.firstOrNull { it.topic == context.topicTemperature } ?: return
 
-        context.logger.trace("topic = ${record.topic}, partition = ${record.partition}, offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
+        context.logger.trace("topic = {}, partition = {}, offset = {}, key = {}, value = {}",
+            objs = arrayOf(
+                record.topic,
+                record.partition,
+                record.offset,
+                record.key,
+                record.value
+            ))
 
         try {
             val obj = context.jacksonSerializer.readValue(record.value, TemperatureProcUiDto::class.java)!!

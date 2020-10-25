@@ -13,10 +13,6 @@ object EventHandler : IKonveyorHandler<ConverterBeContext<String, String>> {
 
     override suspend fun exec(context: ConverterBeContext<String, String>, env: IKonveyorEnvironment) {
 
-        if (context.metalRateEventGenerator.isNotActive()) {
-            context.metalRateEventGenerator.start()
-        }
-
         UserEventGenerator().exec(context, env)
 
         val response = WsDsmartResponseEvents(

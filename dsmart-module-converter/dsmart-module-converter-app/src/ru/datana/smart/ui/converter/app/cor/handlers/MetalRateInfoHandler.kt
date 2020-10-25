@@ -8,6 +8,7 @@ import ru.datana.smart.ui.converter.app.cor.context.CorStatus
 import ru.datana.smart.ui.converter.app.cor.repository.events.*
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import java.time.Instant
+import java.util.*
 
 object MetalRateInfoHandler: IKonveyorHandler<ConverterBeContext<String, String>> {
 
@@ -15,7 +16,14 @@ object MetalRateInfoHandler: IKonveyorHandler<ConverterBeContext<String, String>
 
 //        val record = context.records.firstOrNull { it.topic == context.topicConverter } ?: return
 //
-//        context.logger.trace("topic = ${record.topic}, partition = ${record.partition}, offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
+//        context.logger.trace("topic = {}, partition = {}, offset = {}, key = {}, value = {}",
+//            objs = arrayOf(
+//                record.topic,
+//                record.partition,
+//                record.offset,
+//                record.key,
+//                record.value
+//            ))
 
         val steelRate = context.metalRateEventGenerator.generateValue
         val currentTime = Instant.now().toEpochMilli()
@@ -25,7 +33,8 @@ object MetalRateInfoHandler: IKonveyorHandler<ConverterBeContext<String, String>
             val obj = context.jacksonSerializer.readValue(record/*.value*/, ConverterTransportMlUi::class.java)!!
 
             val metalRate = obj.steelRate ?: return
-            if (metalRate >= 0.05) {
+            val normalPoint = context.metalRateNormalPoint
+            if (metalRate >= normalPoint) {
                 return
             }
 
@@ -56,6 +65,7 @@ object MetalRateInfoHandler: IKonveyorHandler<ConverterBeContext<String, String>
                         )
                         context.eventsRepository.put(historicalEvent)
                         val newEvent = ConveyorMetalRateInfoEvent(
+                            id = UUID.randomUUID().toString(),
                             timeStart = frameTime,
                             timeFinish = frameTime,
                             metalRate = metalRate
@@ -73,6 +83,7 @@ object MetalRateInfoHandler: IKonveyorHandler<ConverterBeContext<String, String>
                         )
                         context.eventsRepository.put(historicalEvent)
                         val newEvent = ConveyorMetalRateInfoEvent(
+                            id = UUID.randomUUID().toString(),
                             timeStart = frameTime,
                             timeFinish = frameTime,
                             metalRate = metalRate
@@ -90,6 +101,7 @@ object MetalRateInfoHandler: IKonveyorHandler<ConverterBeContext<String, String>
                         )
                         context.eventsRepository.put(historicalEvent)
                         val newEvent = ConveyorMetalRateInfoEvent(
+                            id = UUID.randomUUID().toString(),
                             timeStart = frameTime,
                             timeFinish = frameTime,
                             metalRate = metalRate
@@ -99,6 +111,7 @@ object MetalRateInfoHandler: IKonveyorHandler<ConverterBeContext<String, String>
                 }
             } ?: context.eventsRepository.put(
                 ConveyorMetalRateInfoEvent(
+                    id = UUID.randomUUID().toString(),
                     timeStart = obj.frameTime ?: Instant.now().toEpochMilli(),
                     timeFinish = obj.frameTime ?: Instant.now().toEpochMilli(),
                     metalRate = metalRate

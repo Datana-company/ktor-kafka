@@ -2,7 +2,7 @@ package ru.datana.smart.ui.converter.app.mappings
 
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import ru.datana.smart.ui.converter.app.cor.context.InnerRecord
-import ru.datana.smart.ui.converter.app.cor.repository.events.IUserEvent
+import ru.datana.smart.ui.converter.app.cor.repository.events.IBizEvent
 import ru.datana.smart.ui.converter.ws.models.*
 import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
@@ -88,7 +88,7 @@ fun toWsConverterMetaModel(converterMeltInfo: ConverterMeltInfo) =
         ),
     )
 
-fun toWsEventModel(event: IUserEvent) =
+fun toWsEventModel(event: IBizEvent) =
     WsDsmartEvent(
         id = event.id,
         timeStart = event.timeStart,
@@ -99,7 +99,7 @@ fun toWsEventModel(event: IUserEvent) =
         isActive = event.isActive
     )
 
-fun toWsEventListModel(events: List<IUserEvent>) = events.stream().map { event -> toWsEventModel(event) }.toList()
+fun toWsEventListModel(events: List<IBizEvent>) = events.stream().map { event -> toWsEventModel(event) }.toList()
 
 fun toWsTemperatureModel(temperatureProcUiDto: TemperatureProcUiDto) =
     WsDsmartTemperature(

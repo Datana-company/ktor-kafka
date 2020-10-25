@@ -28,6 +28,8 @@ class ConverterBeContext<K, V> (
     var topicVideo: String = "",
     var topicMeta: String = "",
     var metalRateEventGenerator: MetalRateEventGenerator = MetalRateEventGenerator(),
+    var metalRateCriticalPoint: Double = 0.0,
+    var metalRateNormalPoint: Double = 0.0,
     var sensorId: String = "",
     var eventsRepository: UserEventsRepository = UserEventsRepository()
 ) {
