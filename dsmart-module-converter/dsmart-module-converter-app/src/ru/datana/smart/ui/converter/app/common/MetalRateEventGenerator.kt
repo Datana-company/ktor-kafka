@@ -32,11 +32,15 @@ class MetalRateEventGenerator(
     private var isIncrease: Boolean = false
 
     /**
+     * Константное значение задержки таймера
+     */
+    private val delay: Long = 5000L
+    /**
      * Запускается таймер, который каждый раз через заданное время
      * будет возвращать сгенерированное значение
      */
     fun start() {
-        Timer().scheduleAtFixedRate(5000L, timeout) {
+        Timer().scheduleAtFixedRate(delay, timeout) {
             generate()
         }
     }
