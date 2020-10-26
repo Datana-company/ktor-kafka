@@ -1,7 +1,6 @@
 import {Component, Input, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {BarChartData} from './bar-chart-data';
 import {ConverterModel} from "../models/converter.model";
 
 @Component({
@@ -12,21 +11,6 @@ import {ConverterModel} from "../models/converter.model";
 export class BarChartComponent {
 
     @Input() converterData: ConverterModel;
-
-    converterDataTest: any[] = [
-        {
-            "name": "Шлак",
-            "value": 60
-        },
-        {
-            "name": "Допустимая доля металла",
-            "value": 20
-        },
-        {
-            "name": "Металл",
-            "value": 40
-        }
-    ];
 
     view: any[] = [600, 200];
 
@@ -46,7 +30,7 @@ export class BarChartComponent {
     };
 
     constructor() {
-        Object.assign(this, this.converterDataTest);
+        Object.assign(this, this.mapData());
     }
 
     onSelect(data): void {
@@ -65,7 +49,7 @@ export class BarChartComponent {
         return [
             {
                 "name": "Шлак",
-                "value": this.converterData?.slagRate
+                "value": this.converterData?.slagRate*100
             },
             {
                 "name": "Допустимая доля металла",
@@ -73,7 +57,7 @@ export class BarChartComponent {
             },
             {
                 "name": "Металл",
-                "value": 40//this.converterData?.steelRate
+                "value": this.converterData?.steelRate*100
             }
         ];
     }
