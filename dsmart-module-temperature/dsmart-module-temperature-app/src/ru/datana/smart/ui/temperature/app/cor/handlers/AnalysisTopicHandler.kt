@@ -15,7 +15,14 @@ object AnalysisTopicHandler : IKonveyorHandler<TemperatureBeContext<String, Stri
     override suspend fun exec(context: TemperatureBeContext<String, String>, env: IKonveyorEnvironment) {
         val record = context.records.firstOrNull { it.topic == context.topicAnalysis } ?: return
 
-        context.logger.trace("topic = ${record.topic}, partition = ${record.partition}, offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
+        context.logger.trace("topic = {}, partition = {}, offset = {}, key = {}, value = {}",
+            objs = arrayOf(
+                record.topic,
+                record.partition,
+                record.offset,
+                record.key,
+                record.value
+            ))
 
         record.value.let { json ->
             try {

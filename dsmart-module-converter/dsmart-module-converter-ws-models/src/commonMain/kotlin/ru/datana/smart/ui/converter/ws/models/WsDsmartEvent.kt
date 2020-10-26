@@ -11,6 +11,7 @@ data class WsDsmartEvent (
     val category: WsDsmartEvent.Category? = null,
     val isActive: Boolean? = false
 ) {
+    @Serializable
     enum class Category(val value: String){
         CRITICAL("CRITICAL"),
         WARNING("WARNING"),

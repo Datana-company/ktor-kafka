@@ -18,6 +18,8 @@ class ForwardServiceKafkaUi(
     var topicVideo: String,
     var topicMeta: String,
     var metalRateEventGenerator: MetalRateEventGenerator,
+    var metalRateCriticalPoint: Double,
+    var metalRateNormalPoint: Double,
     var sensorId: String,
     var eventsRepository: UserEventsRepository
 ) {
@@ -36,6 +38,8 @@ class ForwardServiceKafkaUi(
                 it.topicVideo = topicVideo
                 it.topicMeta = topicMeta
                 it.metalRateEventGenerator = metalRateEventGenerator
+                it.metalRateCriticalPoint = metalRateCriticalPoint
+                it.metalRateNormalPoint = metalRateNormalPoint
                 it.sensorId = sensorId
                 it.eventsRepository = eventsRepository
             },

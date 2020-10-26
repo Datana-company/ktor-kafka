@@ -73,10 +73,12 @@ fun Application.module(testing: Boolean = false) {
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
     val sensorId by lazy { environment.config.property("ktor.datana.sensor.id").getString().trim() }
-    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.datana.metalRateEventGen.timeout").getString().trim().toLong() }
-    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.datana.metalRateEventGen.maxValue").getString().trim().toDouble() }
-    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.datana.metalRateEventGen.minValue").getString().trim().toDouble() }
-    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.datana.metalRateEventGen.changeValue").getString().trim().toDouble() }
+    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
+    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
+    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
+    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
+    val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
+    val metalRateNormalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.normal").getString().trim().toDouble() }
 
     val metalRateEventGenerator = MetalRateEventGenerator(
         timeout = metalRateEventGenTimeout,
@@ -84,6 +86,8 @@ fun Application.module(testing: Boolean = false) {
         minValue = metalRateEventGenMin,
         changeValue = metalRateEventGenChange
     )
+    metalRateEventGenerator.start()
+
     val userEventsRepository = UserEventsRepository()
 
     routing {
@@ -120,6 +124,8 @@ fun Application.module(testing: Boolean = false) {
                 topicMeta = topicMeta,
                 metalRateEventGenerator = metalRateEventGenerator,
                 sensorId = sensorId,
+                metalRateCriticalPoint = metalRateCriticalPoint,
+                metalRateNormalPoint = metalRateNormalPoint,
                 eventsRepository = userEventsRepository
             ).exec(context)
 

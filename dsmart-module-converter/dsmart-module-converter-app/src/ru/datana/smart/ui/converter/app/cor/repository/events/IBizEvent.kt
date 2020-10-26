@@ -1,6 +1,6 @@
 package ru.datana.smart.ui.converter.app.cor.repository.events
 
-interface IUserEvent {
+interface IBizEvent {
     val id: String
     val timeStart: Long
     val timeFinish: Long
