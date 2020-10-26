@@ -1,30 +1,35 @@
 package ru.datana.smart.ui.converter.app.cor.repository
 
-import ru.datana.smart.ui.converter.app.cor.repository.events.IUserEvent
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
+import ru.datana.smart.ui.converter.app.cor.repository.events.IBizEvent
 import java.util.*
-import kotlin.collections.HashMap
+import java.util.concurrent.TimeUnit
 import kotlin.streams.toList
 
-class UserEventsRepository(
-    private val events: HashMap<String, IUserEvent> = hashMapOf()
-): IUserEventsRepository<IUserEvent> {
+class UserEventsRepository : IUserEventsRepository {
 
-    override fun put(event: IUserEvent) {
-        events[event.id] = event
+    private val events: Cache<String, IBizEvent> = CacheBuilder
+        .newBuilder()
+        .expireAfterWrite(10, TimeUnit.MINUTES)
+        .build()
+
+    override fun put(event: IBizEvent) {
+        events.put(event.id, event)
     }
 
-    override fun getAll(): List<IUserEvent> {
-        return events.values.stream()
-            .sorted(Comparator.comparing(IUserEvent::timeStart).reversed())
-            .sorted(Comparator.comparing(IUserEvent::isActive).reversed())
+    override fun getAll(): List<IBizEvent> {
+        return events.asMap().values.stream()
+            .sorted(Comparator.comparing(IBizEvent::timeStart).reversed())
+            .sorted(Comparator.comparing(IBizEvent::isActive).reversed())
             .limit(10)
             .toList()
     }
 
-    override fun getActive(): List<IUserEvent> {
-        return events.values.stream()
+    override fun getActive(): List<IBizEvent> {
+        return events.asMap().values.stream()
             .filter { recommendation -> recommendation.isActive }
-            .sorted(Comparator.comparingLong(IUserEvent::timeStart).reversed())
+            .sorted(Comparator.comparingLong(IBizEvent::timeStart).reversed())
             .toList()
     }
 

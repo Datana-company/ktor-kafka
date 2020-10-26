@@ -1,7 +1,8 @@
 package ru.datana.smart.ui.converter.app.cor.repository
+import ru.datana.smart.ui.converter.app.cor.repository.events.IBizEvent
 
-interface IUserEventsRepository<T> {
-    fun put(event: T)
-    fun getActive(): List<T>
-    fun getAll(): List<T>
+interface IUserEventsRepository {
+    fun put(event: IBizEvent)
+    fun getActive(): List<IBizEvent>
+    fun getAll(): List<IBizEvent>
 }
