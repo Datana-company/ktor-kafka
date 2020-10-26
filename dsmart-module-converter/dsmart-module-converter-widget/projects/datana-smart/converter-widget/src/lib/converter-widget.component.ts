@@ -10,6 +10,7 @@ import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
 import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
 import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
 import {EventCategoryModel} from "./models/event-category.model";
+import {BarChartData} from "./bar-chart/bar-chart-data";
 
 @Component({
   selector: 'datana-converter-widget',
@@ -25,6 +26,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   public converterVideoData: ConverterVideoModel;
   public converterMetaData: ConverterMeltInfoModel;
   public events: Array<EventModel> = new Array<EventModel>();
+  public barChartData: BarChartData;
 
   playlist: string;
 
@@ -60,7 +62,11 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
         );
       })
     ).subscribe(data => {
+        console.log("------------------------------------------------");
+        console.log("---" + data);
       this.converterData = data;
+      this.barChartData.slagRate = this.converterData.slagRate;
+      this.barChartData.steelRate = this.converterData.steelRate;
     });
 
     this.wsService.on('converter-video-update').pipe(
