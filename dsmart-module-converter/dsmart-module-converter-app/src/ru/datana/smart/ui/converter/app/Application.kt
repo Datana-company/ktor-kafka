@@ -80,7 +80,7 @@ fun Application.module(testing: Boolean = false) {
             defaultResource("static/index.html")
             resources("static")
         }
-//        {"videoadapterstreamurl": "$videoAdapterStream"}
+
         get("/front-config") {
             call.respondText(
                 """

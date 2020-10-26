@@ -30,13 +30,13 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   settings: any;
 
   constructor(
+    private configServiceService: ConfigServiceService,
     @Inject(configProvide) private wsService: IWebsocketService,
-    private appConfigService: ConfigServiceService
-  ) { }
+    ) { }
 
   ngOnInit(): void {
     this.playlist = "http://camera.d.datana.ru/playlist.m3u8"
-    this.settings = this.appConfigService.settings;
+    this.settings = this.configServiceService.settings;
     console.log("this.settings from config-service : " , this.settings)
     this.wsService.on('temperature-update').pipe(
       takeUntil(this._unsubscribe),

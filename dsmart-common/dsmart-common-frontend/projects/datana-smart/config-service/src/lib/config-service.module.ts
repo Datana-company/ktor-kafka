@@ -9,7 +9,6 @@ export function init_app(configService: ConfigServiceService) {
 
 interface ConfigServiceConfig {
   restWsUrl: string;
-
 }
 export const USER_REST_WS_URL = new InjectionToken<ConfigServiceConfig>('unique.string.for.config');
 

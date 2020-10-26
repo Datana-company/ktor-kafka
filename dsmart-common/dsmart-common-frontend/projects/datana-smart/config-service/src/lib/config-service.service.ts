@@ -13,6 +13,7 @@ export class ConfigServiceService extends BaseService {
 
   public load(): Promise<any> {
     return new Promise((resolve, reject) => {
+      console.log('Pre Response from the server URL :::', this.restWsUrl);
       this.getAPI(this.restWsUrl).subscribe((response: any) => {
         console.log('Response from the server /front-config :::', response);
         this.configSettings = response;

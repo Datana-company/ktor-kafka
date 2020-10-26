@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from "./app-routing.module";
 import {WebsocketModule} from "@datana-smart/websocket";
 import {environment} from "../environments/environment";
+import {ConfigServiceModule} from "@datana-smart/config-service";
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import {environment} from "../environments/environment";
     WebsocketModule.config({
       url: environment.ws
     }),
+    // ConfigServiceModule.forRoot({restWsUrl: 'http://localhost:8080/front-config'}),
     AppRoutingModule.config({
       url: environment.ws
     }),
@@ -25,3 +27,4 @@ import {environment} from "../environments/environment";
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
