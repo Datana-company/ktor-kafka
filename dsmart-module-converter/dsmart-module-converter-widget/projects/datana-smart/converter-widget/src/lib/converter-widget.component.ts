@@ -65,8 +65,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
         console.log("------------------------------------------------");
         console.log("---" + data);
       this.converterData = data;
-      this.barChartData.slagRate = this.converterData.slagRate;
-      this.barChartData.steelRate = this.converterData.steelRate;
+      // this.barChartData.slagRate = this.converterData.slagRate;
+      // this.barChartData.steelRate = this.converterData.steelRate;
     });
 
     this.wsService.on('converter-video-update').pipe(

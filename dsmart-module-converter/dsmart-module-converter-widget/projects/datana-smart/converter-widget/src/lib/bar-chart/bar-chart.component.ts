@@ -28,10 +28,10 @@ export class BarChartComponent {
         }
     ];
 
-    view: any[] = [700, 400];
+    view: any[] = [600, 200];
 
     // options
-    showXAxis: boolean = true;
+    showXAxis: boolean = false;
     showYAxis: boolean = true;
     gradient: boolean = false;
     showLegend: boolean = false;
@@ -39,9 +39,10 @@ export class BarChartComponent {
     yAxisLabel: string = '';
     showYAxisLabel: boolean = false;
     xAxisLabel: string = '';
+    showDataLabel: boolean = true;
 
     colorScheme = {
-        domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+        domain: ['#C5C5C5', '#CBF76F', '#FF8740', '#AAAAAA']
     };
 
     constructor() {
@@ -64,7 +65,7 @@ export class BarChartComponent {
         return [
             {
                 "name": "Шлак",
-                "value": 60//this.converterData?.slagRate
+                "value": this.converterData?.slagRate
             },
             {
                 "name": "Допустимая доля металла",
