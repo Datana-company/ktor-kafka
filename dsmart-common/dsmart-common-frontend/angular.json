@@ -162,6 +162,46 @@
           }
         }
       }
+    },
+    "@datana-smart/config-service": {
+      "projectType": "library",
+      "root": "projects/datana-smart/config-service",
+      "sourceRoot": "projects/datana-smart/config-service/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/datana-smart/config-service/tsconfig.lib.json",
+            "project": "projects/datana-smart/config-service/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/datana-smart/config-service/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/datana-smart/config-service/src/test.ts",
+            "tsConfig": "projects/datana-smart/config-service/tsconfig.spec.json",
+            "karmaConfig": "projects/datana-smart/config-service/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/datana-smart/config-service/tsconfig.lib.json",
+              "projects/datana-smart/config-service/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "@datana-smart/frontend-app"

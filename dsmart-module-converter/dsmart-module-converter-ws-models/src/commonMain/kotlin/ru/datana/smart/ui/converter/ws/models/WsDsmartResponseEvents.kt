@@ -7,11 +7,11 @@ import ru.datana.smart.common.transport.models.ws.IWsDsmartResponseError
 import ru.datana.smart.ui.converter.common.Config
 
 @Serializable
-@SerialName("recommendation-update")
-data class WsDsmartResponseRecommendation(
-    override val data: WsDsmartRecommendation? = null,
+@SerialName("events-update")
+data class WsDsmartResponseEvents(
+    override val data: WsDsmartEventList? = null,
     override val errors: List<IWsDsmartResponseError>? = null,
-    override val event: String? = "recommendation-update"
-) : IWsDsmartResponse<WsDsmartRecommendation> {
+    override val event: String? = "events-update"
+) : IWsDsmartResponse<WsDsmartEventList> {
     override val module: String? = Config.moduleName
 }

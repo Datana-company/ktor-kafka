@@ -6,6 +6,7 @@ val kafkaVersion: String by project
 val dsmartLoggingVersion: String by project
 val konveyorVersion: String by project
 val serializationVersion: String by project
+val guavaVersion: String by project
 
 plugins {
     application
@@ -73,7 +74,8 @@ dependencies {
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
     implementation("codes.spectrum:konveyor:$konveyorVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
-
+    implementation("com.google.guava:guava:$guavaVersion")
+    implementation(kotlin("test-junit"))
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 
