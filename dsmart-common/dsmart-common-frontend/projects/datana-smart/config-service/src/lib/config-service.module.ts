@@ -2,15 +2,15 @@ import {NgModule, APP_INITIALIZER, SkipSelf, Optional, ModuleWithProviders, Inje
 import { HttpClientModule } from '@angular/common/http';
 
 import {ConfigServiceService} from './config-service.service';
+import {USER_REST_WS_URL} from "./config-service.config";
 
 export function init_app(configService: ConfigServiceService) {
   return () => configService.load();
 }
 
-interface ConfigServiceConfig {
+export interface ConfigServiceConfig {
   restWsUrl: string;
 }
-export const USER_REST_WS_URL = new InjectionToken<ConfigServiceConfig>('unique.string.for.config');
 
 
 @NgModule({
@@ -28,13 +28,13 @@ export class ConfigServiceModule {
   constructor (@Optional() @SkipSelf() parentModule: ConfigServiceModule) {
     if (parentModule) {
       throw new Error(
-        'ConfigServiceModule is already loaded. Import it in the AppModule only');
+        'ConfigServiceModule 111 is already loaded. Import it in the AppModule only');
     }
   }
 
   /**
    * Метод который будет вызван когда модуль импортиться в root модуле
-   * @param config - конфигурация, в данном случае задается имя пользователя
+   * @param config - конфигурация, в данном случае задается имя url
    */
   static forRoot(config: ConfigServiceConfig): ModuleWithProviders<ConfigServiceModule> {
     return {

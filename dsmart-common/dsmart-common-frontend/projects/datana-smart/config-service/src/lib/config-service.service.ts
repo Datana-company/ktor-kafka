@@ -1,10 +1,10 @@
 import {Inject, Injectable, InjectionToken} from '@angular/core';
 import { BaseService } from './base.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ConfigServiceService extends BaseService {
-
-  private restWsUrl = 'http://localhost:8080/front-config';
+  // private restWsUrl = 'http://localhost:8080/front-config';
+  private restWsUrl = '';
   private configSettings: any = null;
 
   get settings() {

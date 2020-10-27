@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {NgModule, Optional, SkipSelf} from '@angular/core';
 import { ConverterWidgetComponent } from './converter-widget.component';
 import { VideoPlayerComponent } from './video-player-component/video-player.component';
 import {ConverterWidgetRoutingModule} from "./converter-widget-routing.module";
@@ -21,4 +21,11 @@ import {HttpClientModule} from "@angular/common/http";
   providers: [ ConfigServiceService],
   exports: [ConverterWidgetComponent]
 })
-export class ConverterWidgetModule { }
+export class ConverterWidgetModule {
+  // constructor (@Optional() @SkipSelf() parentModule: ConfigServiceModule) {
+  //   if (parentModule) {
+  //     throw new Error(
+  //       'ConfigServiceModule 22 is already loaded. Import it in the AppModule only');
+  //   }
+  // }
+}
