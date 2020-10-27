@@ -21,7 +21,7 @@ version = rootProject.version
 val frontDist = "$buildDir/frontDist"
 
 application {
-    mainClassName = "ru.datana.smart.ui.converter.app.Application"
+    mainClassName = "ru.datana.smart.ui.converter.app.ApplicationKt"
 }
 
 docker {
@@ -77,6 +77,12 @@ dependencies {
     implementation("com.google.guava:guava:$guavaVersion")
     implementation(kotlin("test-junit"))
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+
+    implementation("net.logstash.logback:logstash-logback-encoder:6.4")
+    implementation("com.github.danielwegener:logback-kafka-appender:0.2.0-RC2")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("org.apache.kafka:kafka-clients:2.5.0")
+
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")

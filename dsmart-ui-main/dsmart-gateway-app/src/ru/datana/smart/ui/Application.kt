@@ -41,7 +41,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
     val wsSessions = ConcurrentHashMap.newKeySet<DefaultWebSocketSession>()
-    val log = datanaLog()
+    val log = datanaLogger(::main::class.java)
     val json = Json {
         encodeDefaults = true
     }

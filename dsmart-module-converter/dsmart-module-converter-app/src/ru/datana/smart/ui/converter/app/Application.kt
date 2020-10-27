@@ -40,7 +40,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 @KtorExperimentalAPI
 fun Application.module(testing: Boolean = false) {
-    val logger = datanaLogger(this.log as Logger)
+    val logger = datanaLogger(::main::class.java)
 
     install(CallLogging) {
         level = Level.INFO
