@@ -1,6 +1,5 @@
 val ktorVersion: String by project
 val kotlinVersion: String by project
-val logbackVersion: String by project
 val projectMaintainer: String by project
 val kafkaVersion: String by project
 val dsmartLoggingVersion: String by project
@@ -66,7 +65,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
@@ -77,11 +75,6 @@ dependencies {
     implementation("com.google.guava:guava:$guavaVersion")
     implementation(kotlin("test-junit"))
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
-
-    implementation("net.logstash.logback:logstash-logback-encoder:6.4")
-    implementation("com.github.danielwegener:logback-kafka-appender:0.2.0-RC2")
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation("org.apache.kafka:kafka-clients:2.5.0")
 
 }
 

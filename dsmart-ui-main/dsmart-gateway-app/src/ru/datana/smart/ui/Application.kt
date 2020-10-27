@@ -1,6 +1,5 @@
 package ru.datana.smart.ui
 
-import ch.qos.logback.classic.Logger
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.application.*
 import io.ktor.features.*
@@ -9,28 +8,20 @@ import io.ktor.http.cio.websocket.*
 import io.ktor.http.content.*
 import io.ktor.request.*
 import io.ktor.routing.*
-import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.consumer.KafkaConsumer
-import org.apache.kafka.common.errors.WakeupException
-import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.event.Level
+import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
+import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.common.transport.models.ws.IWsDsmartResponse
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.ml.models.TemperatureMlUiDto
 import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
 import ru.datana.smart.ui.temperature.ws.models.*
-import ru.datana.smart.common.ktor.kafka.kafka
-import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import java.time.Duration
 import java.time.Instant
-import java.time.temporal.ChronoUnit
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.max
@@ -144,7 +135,6 @@ fun Application.module(testing: Boolean = false) {
     }
 }
 
-private fun Application.datanaLog() = datanaLogger(this.log as Logger)
 private val jacksonMapper = ObjectMapper()
 
 private fun Application.parseKafkaInputTemperature(jsonString: String?, sensorId: String): WsDsmartResponseTemperature? {
@@ -182,7 +172,7 @@ private fun Application.parseKafkaInputTemperature(jsonString: String?, sensorId
 }
 
 private fun Application.parseKafkaInputAnalysis(value: String?, sensorId: String): WsDsmartResponseAnalysis? = value?.let { json ->
-    val log = datanaLogger(this.log as Logger)
+    val log = datanaLogger("ru.datana.smart.ui:Application.parseKafkaInputAnalysis")
     try {
         val obj = jacksonMapper.readValue(json, TemperatureMlUiDto::class.java)!!
         if (obj.version != "0.2") {

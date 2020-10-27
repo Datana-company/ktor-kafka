@@ -1,25 +1,15 @@
 package ru.datana.smart.ui.temperature.app
 
-import ch.qos.logback.classic.Logger
-import codes.spectrum.konveyor.DefaultKonveyorEnvironment
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.ktor.application.Application
-import io.ktor.application.install
-import io.ktor.application.log
-import io.ktor.features.CORS
-import io.ktor.features.CallLogging
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.cio.websocket.pingPeriod
-import io.ktor.http.cio.websocket.timeout
-import io.ktor.http.content.defaultResource
-import io.ktor.http.content.resources
-import io.ktor.http.content.static
-import io.ktor.request.path
-import io.ktor.routing.routing
-import io.ktor.util.KtorExperimentalAPI
-import io.ktor.websocket.WebSockets
-import io.ktor.websocket.webSocket
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.http.cio.websocket.*
+import io.ktor.http.content.*
+import io.ktor.request.*
+import io.ktor.routing.*
+import io.ktor.util.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
@@ -27,10 +17,10 @@ import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.temperature.app.cor.context.TemperatureBeContext
-import ru.datana.smart.ui.temperature.app.websocket.WsManager
-import ru.datana.smart.ui.temperature.app.mappings.toInnerModel
-import java.time.Duration
 import ru.datana.smart.ui.temperature.app.cor.services.ForwardServiceKafkaUi
+import ru.datana.smart.ui.temperature.app.mappings.toInnerModel
+import ru.datana.smart.ui.temperature.app.websocket.WsManager
+import java.time.Duration
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
