@@ -6,6 +6,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.application
 import kotlinx.coroutines.launch
 import org.apache.kafka.common.errors.WakeupException
+import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -14,7 +15,7 @@ fun Route.kafka(topics: Collection<String>, handle: suspend KtorKafkaConsumerCon
     val feature = application.feature(KtorKafkaConsumer)
     val consumer = feature.kafkaConsumer
     val isClosed = AtomicBoolean(false)
-    val log = application.log
+    val log = LoggerFactory.getLogger("ru.datana.smart.common.ktor.kafka:Route.kafka")
 
     feature.launch {
         try {

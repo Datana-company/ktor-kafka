@@ -39,7 +39,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @OptIn(KtorExperimentalAPI::class)
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
-    val logger = datanaLogger(this.log as ch.qos.logback.classic.Logger)
+    val logger = datanaLogger(::main::class.java)
     val objectMapper = jacksonObjectMapper()
     val pathToCatalog: String by lazy {
         environment.config.property("ktor.catalog.path").getString().trim()
