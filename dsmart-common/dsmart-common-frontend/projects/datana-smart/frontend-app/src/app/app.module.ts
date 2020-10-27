@@ -8,8 +8,7 @@ import {ConfigServiceModule} from "@datana-smart/config-service";
     AppComponent
   ],
   imports: [
-    BrowserModule,
-    ConfigServiceModule.forRoot({restWsUrl: 'http://localhost:8080/front-config'})
+    BrowserModule
   ],
   providers: [],
   bootstrap: [AppComponent]
