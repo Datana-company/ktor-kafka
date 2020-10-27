@@ -119,6 +119,7 @@ tasks {
     processResources.get().dependsOn(copyArtifactLibs)
 
     dockerCreateDockerfile {
+        runCommand("mkdir -p logs")
         environmentVariable(
             mapOf(
                 //example "KAFKA_BOOTSTRAP_SERVERS" to "172.29.40.58:9092,172.29.40.59:9092,172.29.40.60:9092",
