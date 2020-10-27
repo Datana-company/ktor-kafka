@@ -4,6 +4,7 @@ import { VideoPlayerComponent } from './video-player-component/video-player.comp
 import {ConverterWidgetRoutingModule} from "./converter-widget-routing.module";
 import {CommonModule} from "@angular/common";
 import {WebsocketModule} from "@datana-smart/websocket";
+import {TiltAngleComponentModule} from "./tilt-angle-component/tilt-angle-component.module";
 
 
 
@@ -12,7 +13,8 @@ import {WebsocketModule} from "@datana-smart/websocket";
   imports: [
     WebsocketModule,
     CommonModule,
-    ConverterWidgetRoutingModule
+    ConverterWidgetRoutingModule,
+    TiltAngleComponentModule
   ],
   exports: [ConverterWidgetComponent]
 })

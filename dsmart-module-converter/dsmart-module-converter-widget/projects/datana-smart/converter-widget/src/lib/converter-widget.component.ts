@@ -20,7 +20,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   _unsubscribe = new Subject<void>();
 
-  public temperatureModel: TemperatureModel;
+  // public temperatureModel: TemperatureModel;
   public converterData: ConverterModel;
   public converterVideoData: ConverterVideoModel;
   public converterMetaData: ConverterMeltInfoModel;
@@ -35,16 +35,16 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.playlist = "http://camera.d.datana.ru/playlist.m3u8"
 
-    this.wsService.on('temperature-update').pipe(
-      takeUntil(this._unsubscribe),
-      map((data: any) => {
-        return new TemperatureModel(
-          data?.temperatureAverage?.toFixed(1) as number
-        );
-      })
-    ).subscribe(data => {
-      this.temperatureModel = data;
-    });
+    // this.wsService.on('temperature-update').pipe(
+    //   takeUntil(this._unsubscribe),
+    //   map((data: any) => {
+    //     return new TemperatureModel(
+    //       data?.temperatureAverage?.toFixed(1) as number
+    //     );
+    //   })
+    // ).subscribe(data => {
+    //   this.temperatureModel = data;
+    // });
 
     this.wsService.on('converter-update').pipe(
       takeUntil(this._unsubscribe),
