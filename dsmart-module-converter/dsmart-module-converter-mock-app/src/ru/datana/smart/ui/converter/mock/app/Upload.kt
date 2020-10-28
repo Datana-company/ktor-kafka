@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import ru.datana.smart.logger.datanaLogger
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -21,6 +22,7 @@ import java.io.OutputStream
  * Register [Upload] routes.
  */
 fun Route.upload(caseCatalogDir: File) {
+    val logger = datanaLogger(::main::class.java)
 
     /**
      * Registers a POST route for [Upload] that actually read the bits sent from the client.
@@ -34,15 +36,15 @@ fun Route.upload(caseCatalogDir: File) {
         multipart.forEachPart { part ->
             if (part is PartData.FormItem) {
                 if (part.name == "file_name") {
-                    println("------------ file_name: " + part.value)
+                    logger.debug(" --- file_name: " + part.value)
                     fileName = part.value
                 } else if (part.name == "new_case_folder_name") {
-                    println("------------ new_case_folder_name: " + part.value)
+                    logger.debug(" --- new_case_folder_name: " + part.value)
                     newCaseFolderName = part.value
                 }
             } else if (part is PartData.FileItem) {
                 val uploadPath = caseCatalogDir.absolutePath + File.separatorChar + newCaseFolderName
-                println(" +++ fileDir: $uploadPath")
+                logger.debug(" --- fileDir: $uploadPath")
                 val ext = File(part.originalFileName).extension
                 val file = File(uploadPath, "$fileName.$ext")
                 part.streamProvider().use { its -> file.outputStream().buffered().use { its.copyToSuspend(it) } }
