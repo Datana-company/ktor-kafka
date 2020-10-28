@@ -2,7 +2,6 @@ package ru.datana.smart.ui.converter.app
 
 import ch.qos.logback.classic.Logger
 import io.ktor.application.Application
-import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.application.log
 import io.ktor.features.CORS
@@ -15,9 +14,7 @@ import io.ktor.http.content.defaultResource
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.request.path
-import io.ktor.response.respondText
-import io.ktor.routing.get
-import io.ktor.routing.routing
+import io.ktor.routing.*
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
@@ -27,12 +24,15 @@ import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
-import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
-import ru.datana.smart.ui.converter.app.cor.repository.UserEventsRepository
+import ru.datana.smart.ui.converter.common.context.ConverterBeContext
+import ru.datana.smart.ui.converter.app.mappings.*
+import ru.datana.smart.ui.converter.app.mappings.toModelTemperature
 import ru.datana.smart.ui.converter.app.websocket.WsManager
-import ru.datana.smart.ui.converter.app.mappings.toInnerModel
+import ru.datana.smart.ui.converter.backend.ConverterFacade
 import java.time.Duration
-import ru.datana.smart.ui.converter.app.cor.services.ForwardServiceKafkaUi
+import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
+import ru.datana.smart.ui.converter.repository.inmemory.UserEventsRepository
+import java.util.concurrent.atomic.AtomicReference
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -72,7 +72,7 @@ fun Application.module(testing: Boolean = false) {
     val topicConverter by lazy { environment.config.property("ktor.kafka.consumer.topic.converter").getString().trim() }
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
-    val sensorId by lazy { environment.config.property("ktor.datana.sensor.id").getString().trim() }
+    val converterDeviceId by lazy { environment.config.property("ktor.datana.converterDevice.id").getString().trim() }
     val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
     val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
     val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
@@ -90,6 +90,17 @@ fun Application.module(testing: Boolean = false) {
 
     val userEventsRepository = UserEventsRepository()
 
+    var currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference()
+
+    val converterFacade = ConverterFacade(
+        converterRepository = userEventsRepository,
+        wsManager = wsManager,
+        metalRateCriticalPoint = metalRateCriticalPoint,
+        metalRateWarningPoint = metalRateNormalPoint,
+        converterDeviceId = converterDeviceId,
+        currentMeltInfo = currentMeltInfo
+    )
+
     routing {
         static("/") {
             defaultResource("static/index.html")
@@ -98,7 +109,7 @@ fun Application.module(testing: Boolean = false) {
 
         webSocket("/ws") {
             println("onConnect")
-            wsManager.addSession(this)
+            wsManager.addSession(this, ConverterBeContext(currentMeltInfo = currentMeltInfo))
             try {
                 for (frame in incoming) {
                 }
@@ -112,24 +123,69 @@ fun Application.module(testing: Boolean = false) {
         }
 
         kafka(listOf(topicTemperature, topicConverter, topicVideo, topicMeta)) {
-            val context = ConverterBeContext(
-                records = records.map { it.toInnerModel() }
-            )
-            ForwardServiceKafkaUi(
-                logger = logger,
-                wsManager = wsManager,
-                topicTemperature = topicTemperature,
-                topicConverter = topicConverter,
-                topicVideo = topicVideo,
-                topicMeta = topicMeta,
-                metalRateEventGenerator = metalRateEventGenerator,
-                sensorId = sensorId,
-                metalRateCriticalPoint = metalRateCriticalPoint,
-                metalRateNormalPoint = metalRateNormalPoint,
-                eventsRepository = userEventsRepository
-            ).exec(context)
+            try {
+                val innerModel = records.map { it.toInnerModel() }
+                val record = innerModel.firstOrNull()
+                when (record?.topic) {
+                    topicTemperature -> {
+                        val kafkaModel = toTemperatureProcUiDto(record)
+                        val conveyorModel = toModelTemperature(kafkaModel)
+                        val context = ConverterBeContext(
+                            temperature = conveyorModel
+                        )
+                        converterFacade.handleTemperature(context)
+                    }
+                    topicConverter -> {
+                        val kafkaModel = toConverterTransportMlUi(record)
+                        val conveyorModelSlagRate = toModelSlagRate(kafkaModel)
+                        val conveyorModelFrame = toModelFrame(kafkaModel)
+                        val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
+                        val context = ConverterBeContext(
+                            slagRate = conveyorModelSlagRate,
+                            frame = conveyorModelFrame,
+                            meltInfo = conveyorModelMeltInfo
+                        )
+                        converterFacade.handleSlagRate(context)
+                    }
+                    topicVideo -> {
+                        val kafkaModel = toConverterTransportViMl(record)
+                        val conveyorModelFrame = toModelFrame(kafkaModel)
+                        val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
+                        val context = ConverterBeContext(
+                            frame = conveyorModelFrame,
+                            meltInfo = conveyorModelMeltInfo
+                        )
+                        converterFacade.handleFrame(context)
+                    }
+                    topicMeta -> {
+                        val kafkaModel = toConverterMeltInfo(record)
+                        val conveyorModel = toModelMeltInfo(kafkaModel)
+                        val context = ConverterBeContext(
+                            meltInfo = conveyorModel
+                        )
+                        converterFacade.handleMeltInfo(context)
+                    }
+                }
+            } catch(e: Exception) {
 
-            commitAll()
+            } finally {
+                commitAll()
+            }
         }
     }
 }
+
+//suspend inline fun <reified T, reified K> KtorKafkaConsumerContext.handleMessage(block: (InnerRecord<String, String>) -> Unit) {
+//    try {
+//        val context = ConverterBeContext()
+//
+//        val kafkaModel = toConverterTransportMlUi(record)
+//        val conveyorModel = toModelAnalysis(kafkaModel) // rate
+////        val context = ConverterBeContext(
+////            analysis = conveyorModel // добавить поля и маппинг функции
+////        )
+//        converterFacade.handleSlagRate(context)
+//    } catch (e: Throwable) {
+//
+//    }
+//}

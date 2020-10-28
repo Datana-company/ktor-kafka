@@ -74,9 +74,9 @@ components:
       type: object
       properties:
         irCamera:
-          $ref: '#/components/schemas/ConverterDevicesIrCamerta'
+          $ref: '#/components/schemas/ConverterDevicesIrCamera'
 
-    ConverterDevicesIrCamerta:
+    ConverterDevicesIrCamera:
       title: ИК-камера
       description: Инфракрасная камера, встроенная в корпус конвертера, для отслеживания слива металла
       type: object

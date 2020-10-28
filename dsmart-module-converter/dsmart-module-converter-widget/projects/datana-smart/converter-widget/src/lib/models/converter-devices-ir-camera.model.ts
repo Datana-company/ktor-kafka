@@ -1,12 +1,12 @@
-import {DevicesIrCamertaTypeModel} from "./devices-ir-camera-type.model";
+import {DevicesIrCameraTypeModel} from "./devices-ir-camera-type.model";
 
 
-export class ConverterDevicesIrCamertaModel {
+export class ConverterDevicesIrCameraModel {
   constructor(
     public id: string,
     public name: string,
     public uri: string,
-    public type: DevicesIrCamertaTypeModel
+    public type: DevicesIrCameraTypeModel
   ) {
   }
 }

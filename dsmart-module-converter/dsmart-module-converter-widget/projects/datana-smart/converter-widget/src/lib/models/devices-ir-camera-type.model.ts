@@ -1,4 +1,4 @@
-export enum DevicesIrCamertaTypeModel {
+export enum DevicesIrCameraTypeModel {
   DEVICE = "DEVICE",
   FILE = "FILE"
 }

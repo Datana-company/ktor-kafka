@@ -1,8 +1,8 @@
-import {ConverterDevicesIrCamertaModel} from "./converter-devices-ir-camera.model";
+import {ConverterDevicesIrCameraModel} from "./converter-devices-ir-camera.model";
 
 export class ConverterMeltDevicesModel {
   constructor(
-    public irCamera: ConverterDevicesIrCamertaModel
+    public irCamera: ConverterDevicesIrCameraModel
   ) {
   }
 }
