@@ -36,7 +36,7 @@ fun Route.upload(caseCatalogDir: File) {
         multipart.forEachPart { part ->
             if (part is PartData.FormItem) {
                 if (part.name == "file_name") {
-                    logger.debug(" --- file_name: " + part.value)
+                    logger.debug(" --- file_name: {}", objs = arrayOf(part.value))
                     fileName = part.value
                 } else if (part.name == "new_case_folder_name") {
                     logger.debug(" --- new_case_folder_name: {}", objs = arrayOf(part.value))
@@ -44,7 +44,7 @@ fun Route.upload(caseCatalogDir: File) {
                 }
             } else if (part is PartData.FileItem) {
                 val uploadPath = caseCatalogDir.absolutePath + File.separatorChar + newCaseFolderName
-                logger.debug(" --- fileDir: $uploadPath")
+                logger.debug(" --- fileDir: {}", objs = arrayOf(uploadPath))
                 val ext = File(part.originalFileName).extension
                 val file = File(uploadPath, "$fileName.$ext")
                 part.streamProvider().use { its -> file.outputStream().buffered().use { its.copyToSuspend(it) } }

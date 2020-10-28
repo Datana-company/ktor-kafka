@@ -148,7 +148,7 @@ fun Application.module(testing: Boolean = false) {
 
         get("/send") {
             logger.info(" +++ GET /send")
-            logger.debug("parameters count: " + call.parameters.names().size)
+            logger.debug("parameters count: {}", objs = arrayOf(call.parameters.names().size))
             val timeStart = Instant.now().toEpochMilli()
             logger.info(
                 msg = "Send event is caught by converter-mock backend",
@@ -159,11 +159,12 @@ fun Application.module(testing: Boolean = false) {
             )
 
             val case = call.parameters["case"] ?: throw BadRequestException("No case is specified")
-            logger.debug("case: " + case)
-            logger.debug("kafkaServers: " + kafkaServers + " --- kafkaTopic: " + kafkaTopic + " --- pathToCatalog: " + pathToCatalog)
+            logger.debug("case: {}", objs = arrayOf(case))
+            logger.debug("kafkaServers: {} --- kafkaTopic: {} --- pathToCatalog: {}",
+                objs = arrayOf(kafkaServers, kafkaTopic, pathToCatalog))
             val meltInfo = try {
                 val metaText = File("$pathToCatalog/$case/meta.json").readText()
-                logger.debug("metaText" + metaText)
+                logger.debug("metaText: {}", objs = arrayOf(metaText))
                 objectMapper.readValue<ConverterMeltInfo>(metaText)
             } catch (e: Throwable) {
                 ConverterMeltInfo(
@@ -207,10 +208,10 @@ fun Application.module(testing: Boolean = false) {
         post("/add_case") {
             logger.info(" +++ POST /add_case")
             val metaText = call.receiveText()
-            logger.info("request body: " + metaText)
+            logger.info("request body: {}", objs = arrayOf(metaText))
             try {
                 objectMapper.readValue<ConverterMeltInfo>(metaText)
-                val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_mm.ss.SSS"))
+                val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss.SSS"))
                 val newCaseFolderName = "case-$currentTime"
                 val caseDir = File("$pathToCatalog/$newCaseFolderName")
                 if (caseDir.mkdirs() && caseDir.exists()) {
