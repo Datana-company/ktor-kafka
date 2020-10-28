@@ -24,6 +24,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.streams.toList
 
@@ -48,9 +50,6 @@ fun Application.module(testing: Boolean = false) {
     }
     val kafkaTopic: String by lazy {
         environment.config.property("ktor.kafka.producer.topic.meta").getString().trim()
-    }
-    val pathToUpload: String by lazy {
-        environment.config.property("ktor.upload.path").getString().trim()
     }
     val kafkaProducer: KafkaProducer<String, String> by lazy {
         val props = Properties().apply {
@@ -84,9 +83,9 @@ fun Application.module(testing: Boolean = false) {
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
 
-    val uploadDir = File(pathToUpload)
-    if (!uploadDir.mkdirs() && !uploadDir.exists()) {
-        throw IOException("Failed to create directory ${uploadDir.absolutePath}")
+    val caseCatalogDir = File(pathToCatalog)
+    if (!caseCatalogDir.mkdirs() && !caseCatalogDir.exists()) {
+        throw IOException("Failed to create directory ${caseCatalogDir.absolutePath}")
     }
 
     routing {
@@ -197,21 +196,22 @@ fun Application.module(testing: Boolean = false) {
             logger.info("request body: " + metaText)
             try {
                 objectMapper.readValue<ConverterMeltInfo>(metaText)
-                val currentTime = Instant.now().toEpochMilli()
-                val caseDir = File("$pathToCatalog/case-$currentTime")
+                val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_mm.ss.SSS"))
+                val newCaseFolderName = "case-$currentTime"
+                val caseDir = File("$pathToCatalog/$newCaseFolderName")
                 if (caseDir.mkdirs() && caseDir.exists()) {
                     val caseJsonFile = File(caseDir.absolutePath, "meta.json")
                     if (caseJsonFile.createNewFile()) {
                         caseJsonFile.writeText(metaText)
                     }
                 }
-                call.respond(HttpStatusCode.OK)
+                call.respondText("{\"newCaseFolderName\":\"$newCaseFolderName\"}", status = HttpStatusCode.OK)
             } catch (e: Throwable) {
                 logger.error("Receive incorrect data", objs = arrayOf(e))
                 call.respond(HttpStatusCode.InternalServerError)
             }
         }
 
-        upload(uploadDir)
+        upload(caseCatalogDir)
     }
 }

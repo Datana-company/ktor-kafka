@@ -1,18 +1,20 @@
-<h4>Загрузка видеофайла</h4>
-<table>
+<div class="widget-container">
+  <h4>Загрузка видеофайла</h4>
+  <table class="widget-container">
     <tr>
-        <td>
-            <input type="file" (change)="upload($event.target.files)">
-        </td>
-        <td>
-            {{percentCompleted}}% Загружено
-        </td>
+      <td>
+        <input type="file" (change)="setUploadFile($event.target.files)">
+      </td>
+      <td>
+        {{percentCompleted}}% Загружено
+      </td>
     </tr>
     <tr>
-        <td colspan="2">
-            <div *ngIf="isUploaded" class="success">
-                Файл успешно загружен.
-            </div>
-        </td>
+      <td colspan="2">
+        <div *ngIf="isUploaded" class="success">
+          Файл успешно загружен.
+        </div>
+      </td>
     </tr>
-</table>
+  </table>
+</div>

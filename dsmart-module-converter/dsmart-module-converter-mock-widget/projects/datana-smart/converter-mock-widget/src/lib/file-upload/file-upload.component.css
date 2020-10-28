@@ -11,3 +11,7 @@ table, th, td {
 .success {
     color: green;
 }
+
+.widget-container {
+    width: 100%;
+}

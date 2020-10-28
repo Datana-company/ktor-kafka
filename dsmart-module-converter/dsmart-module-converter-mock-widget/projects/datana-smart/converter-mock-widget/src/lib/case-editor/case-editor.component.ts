@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {takeUntil} from "rxjs/operators";
 import {CaseEditorService} from "./case-editor.service";
 import {Subject} from "rxjs";
+import {FileUploadComponent} from "../file-upload/file-upload.component";
 
 @Component({
     selector: 'case-editor-component',
@@ -10,6 +11,10 @@ import {Subject} from "rxjs";
     styleUrls: ['./case-editor.component.css']
 })
 export class CaseEditorComponent implements OnInit {
+
+    @Output() newCase = new EventEmitter<String>();
+
+    @ViewChild(FileUploadComponent) fileUpload: FileUploadComponent;
 
     _unsubscribe = new Subject<void>();
 
@@ -58,6 +63,8 @@ export class CaseEditorComponent implements OnInit {
             takeUntil(this._unsubscribe)
         ).subscribe(data => {
             console.log(data);
+            this.newCase.emit("newCase");
+            this.fileUpload.upload(data.newCaseFolderName, this.caseEditorForm.value.devices.irCamera.id);
         });
     }
 

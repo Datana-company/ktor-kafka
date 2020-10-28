@@ -20,24 +20,31 @@ import java.io.OutputStream
 /**
  * Register [Upload] routes.
  */
-fun Route.upload(uploadDir: File) {
+fun Route.upload(caseCatalogDir: File) {
 
     /**
      * Registers a POST route for [Upload] that actually read the bits sent from the client.
      */
     post<Upload> {
         val multipart = call.receiveMultipart()
-        var title = ""
+        var newCaseFolderName: String = ""
+        var fileName: String = "default-video-file-name"
 
         // Processes each part of the multipart input content
         multipart.forEachPart { part ->
             if (part is PartData.FormItem) {
-                if (part.name == "title") {
-                    title = part.value
+                if (part.name == "file_name") {
+                    println("------------ file_name: " + part.value)
+                    fileName = part.value
+                } else if (part.name == "new_case_folder_name") {
+                    println("------------ new_case_folder_name: " + part.value)
+                    newCaseFolderName = part.value
                 }
             } else if (part is PartData.FileItem) {
+                val uploadPath = caseCatalogDir.absolutePath + File.separatorChar + newCaseFolderName
+                println(" +++ fileDir: $uploadPath")
                 val ext = File(part.originalFileName).extension
-                val file = File(uploadDir, "upload-${System.currentTimeMillis()}-${title.hashCode()}.$ext")
+                val file = File(uploadPath, "$fileName.$ext")
                 part.streamProvider().use { its -> file.outputStream().buffered().use { its.copyToSuspend(it) } }
             }
             part.dispose()

@@ -21,11 +21,7 @@ export class ConverterWidgetMockComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.service.getList().pipe(
-            takeUntil(this._unsubscribe)
-        ).subscribe(data => {
-            this.mockList = data?.cases
-        })
+      this.getCaseList();
     }
 
     ngOnDestroy(): void {
@@ -35,5 +31,17 @@ export class ConverterWidgetMockComponent implements OnInit, OnDestroy {
 
     setSelectedCase(selectedCase) {
         this.selectedCase = selectedCase;
+    }
+
+    newCase(newCaseName) {
+      this.getCaseList();
+    }
+
+    getCaseList() {
+      this.service.getList().pipe(
+        takeUntil(this._unsubscribe)
+      ).subscribe(data => {
+        this.mockList = data?.cases;
+      });
     }
 }

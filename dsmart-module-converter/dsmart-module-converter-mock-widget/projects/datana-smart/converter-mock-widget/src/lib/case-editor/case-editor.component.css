@@ -20,11 +20,13 @@ input {
 
 button {
     font-family: Arial;
+    font-size: large;
     background-color: #eee;
     border: none;
     padding: 5px 10px;
     border-radius: 4px;
     cursor: pointer;
+    margin-left: 10px;
 }
 
 button:hover {
@@ -35,4 +37,26 @@ button:disabled {
     background-color: #eee;
     color: #ccc;
     cursor: auto;
+}
+
+.widget-col-50 {
+    width: 50%;
+}
+
+.widget-container {
+    display: flex;
+    width: 100%;
+    background: #EAEEF0;
+}
+
+.button-conteiner {
+    width: 100%;
+    child-align: left;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.group-container {
+    border: 1px solid grey;
+    padding: 10px;
 }

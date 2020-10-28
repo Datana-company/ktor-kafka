@@ -7,9 +7,7 @@
     </mock-list-component>
 </div>
 <div>
-    <case-editor-component></case-editor-component>
-</div>
-<div class="widget-col">
-    <h1>Редактор кейсов</h1>
-    <case-editor-component></case-editor-component>
+    <case-editor-component
+        (newCase) = "newCase($event)">
+    </case-editor-component>
 </div>
