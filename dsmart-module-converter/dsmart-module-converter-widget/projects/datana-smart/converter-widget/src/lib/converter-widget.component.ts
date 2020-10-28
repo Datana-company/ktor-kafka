@@ -3,7 +3,7 @@ import {Subject} from "rxjs";
 import {map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
 import {EventModel} from "./models/event-model";
-// import {TemperatureModel} from "./models/temperature.model";
+import {TemperatureModel} from "./models/temperature.model";
 import {ConverterModel} from "./models/converter.model";
 import {ConverterVideoModel} from "./models/converter-video.model";
 import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
@@ -20,7 +20,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   _unsubscribe = new Subject<void>();
 
-  // public temperatureModel: TemperatureModel;
+  public temperatureModel: TemperatureModel;
   public converterData: ConverterModel;
   public converterVideoData: ConverterVideoModel;
   public converterMetaData: ConverterMeltInfoModel;
@@ -35,16 +35,16 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.playlist = "http://camera.d.datana.ru/playlist.m3u8"
 
-    // this.wsService.on('temperature-update').pipe(
-    //   takeUntil(this._unsubscribe),
-    //   map((data: any) => {
-    //     return new TemperatureModel(
-    //       data?.temperatureAverage?.toFixed(1) as number
-    //     );
-    //   })
-    // ).subscribe(data => {
-    //   this.temperatureModel = data;
-    // });
+    this.wsService.on('temperature-update').pipe(
+      takeUntil(this._unsubscribe),
+      map((data: any) => {
+        return new TemperatureModel(
+          data?.temperatureAverage?.toFixed(1) as number
+        );
+      })
+    ).subscribe(data => {
+      this.temperatureModel = data;
+    });
 
     this.wsService.on('converter-update').pipe(
       takeUntil(this._unsubscribe),
@@ -95,22 +95,22 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.converterMetaData = data;
     });
 
-  //   this.wsService.on('events-update').pipe(
-  //     takeUntil(this._unsubscribe),
-  //     map((data: any) => data?.list.map(
-  //       event => new EventModel(
-  //         event?.id as string,
-  //         new Date(event?.timeStart as number),
-  //         new Date(event?.timeFinish as number),
-  //         event?.title as string,
-  //         event?.textMessage as string,
-  //         event?.category as EventCategoryModel,
-  //         event?.isActive as boolean
-  //       )
-  //     ) as Array<EventModel>)
-  //   ).subscribe(data => {
-  //     this.events = data;
-  //   });
+    this.wsService.on('events-update').pipe(
+      takeUntil(this._unsubscribe),
+      map((data: any) => data?.list.map(
+        event => new EventModel(
+          event?.id as string,
+          new Date(event?.timeStart as number),
+          new Date(event?.timeFinish as number),
+          event?.title as string,
+          event?.textMessage as string,
+          event?.category as EventCategoryModel,
+          event?.isActive as boolean
+        )
+      ) as Array<EventModel>)
+    ).subscribe(data => {
+      this.events = data;
+    });
   }
 
   ngOnDestroy(): void {

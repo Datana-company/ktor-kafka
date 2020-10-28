@@ -15,38 +15,31 @@
   <div class="widget-container-main widget-container">
     <div class="widget-info widget-col-65">
       <div class="widget-info-container widget-container">
-        <video-player-component class="widget-col-65 widget-info-boiling" [playlist]="playlist">
+        <video-player-component class="widget-col-65 widget-info-boiling"
+                                [playlist]="playlist">
         </video-player-component>
-        <tilt-angle-component class="widget-boiling widget-info-boiling"></tilt-angle-component>
-        <!--                <div class="widget-boiling widget-info-boiling widget-col">-->
-        <!--        <div class="widget-boiling widget-info-boiling widget-col">-->
-        <!--          <div class="widget-boiling-label">-->
-        <!--            Угол наклона в градусах-->
-        <!--          </div>-->
-        <!--          <div class="widget-boiling-time">-->
-        <!--            <div class="widget-boiling-time-value">&lt;!&ndash; {{ durationToBoil }}&ndash;&gt;-->
-        <!--              {{ temperatureModel?.temperatureAverage}}-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--        </div>-->
+        <tilt-angle-component class="widget-boiling widget-info-boiling widget-col"
+                              [temperatureModel]="temperatureModel">
+        </tilt-angle-component>
       </div>
     </div>
-<!--          <div class="widget-events widget-col" *ngFor="let event of events">-->
-    <!--    <div class="widget-events widget-col" >-->
-          <event-recommendation-component class="widget-events widget-col">
-          </event-recommendation-component>
-    <!--      <div class="widget-event-item" *ngFor="let event of events">-->
-    <!--        <div [class.widget-event-item-warning-active]="event.isActive" class="widget-event-item-warning">-->
-    <!--          {{ event?.dateStart | date: 'yyyy-MM-dd HH:mm:ss' }}-->
-    <!--        </div>-->
-    <!--        <div [class.widget-event-item-instruction-active]="event.isActive" class="widget-event-item-instruction">-->
-    <!--          &lt;!&ndash;                    Время начала плавки:{{ timeStartMeltStream$ | async }}&ndash;&gt;-->
-    <!--          {{ event?.category }}-->
-    <!--          {{ event?.textMessage }}-->
-    <!--        </div>-->
-    <!--      </div>-->
-    <!--    </div>-->
+    <div class="widget-events widget-col">
+      <event-recommendation-component [events]="events"></event-recommendation-component>
+    </div>
   </div>
+    <!--    <div class="widget-events widget-col" >-->
+    <!--        <div class="widget-event-item" *ngFor="let event of events">-->
+    <!--          <div [class.widget-event-item-warning-active]="event.isActive" class="widget-event-item-warning">-->
+    <!--            {{ event?.dateStart | date: 'yyyy-MM-dd HH:mm:ss' }}-->
+    <!--          </div>-->
+    <!--          <div [class.widget-event-item-instruction-active]="event.isActive" class="widget-event-item-instruction">-->
+    <!--            &lt;!&ndash;                    Время начала плавки:{{ timeStartMeltStream$ | async }}&ndash;&gt;-->
+    <!--            {{ event?.category }}-->
+    <!--            {{ event?.textMessage }}-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+<!--  </div>-->
 </div>
 <ng-template #noData>
   <div class="temperature">

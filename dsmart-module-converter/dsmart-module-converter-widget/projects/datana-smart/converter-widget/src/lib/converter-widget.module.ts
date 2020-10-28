@@ -6,12 +6,8 @@ import {CommonModule} from "@angular/common";
 import {WebsocketModule} from "@datana-smart/websocket";
 import {TiltAngleComponentModule} from "./tilt-angle-component/tilt-angle-component.module";
 import {EventRecommendationModule} from "./event-recommendation-component/event-recommendation.module";
-// import { EventRecommendationComponent } from './event-recommendation-component/event-recommendation.component';
-
-
 
 @NgModule({
-  // declarations: [ConverterWidgetComponent, VideoPlayerComponent, EventRecommendationComponent],
   declarations: [ConverterWidgetComponent, VideoPlayerComponent],
   imports: [
     WebsocketModule,
