@@ -87,8 +87,12 @@
     height: 100%;
 }
 
+.widget-bar-chart {
+    height: 35%;
+}
+
 .widget-info-container {
-    height: 100%;
+    height: 65%;
 }
 
 .widget-events {
