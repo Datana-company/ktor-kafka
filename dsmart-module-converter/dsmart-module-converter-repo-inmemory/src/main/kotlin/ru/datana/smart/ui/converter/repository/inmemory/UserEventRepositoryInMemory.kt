@@ -8,7 +8,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.streams.toList
 
-class UserEventsRepository : IUserEventsRepository {
+class UserEventRepositoryInMemory: IUserEventsRepository {
 
     private val events: Cache<String, IBizEvent> = CacheBuilder
         .newBuilder()

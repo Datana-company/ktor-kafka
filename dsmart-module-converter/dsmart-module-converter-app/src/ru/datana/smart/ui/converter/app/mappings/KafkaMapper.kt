@@ -16,9 +16,11 @@ fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     value = value()
 )
 
+val jacksonSerializer: ObjectMapper = ObjectMapper()
+
 fun toConverterMeltInfo(record: InnerRecord<String, String>): ConverterMeltInfo {
     return try {
-        ObjectMapper().readValue(record.value, ConverterMeltInfo::class.java)!!
+        jacksonSerializer.readValue(record.value, ConverterMeltInfo::class.java)!!
     } catch (e: Exception) {
         ConverterMeltInfo()
     }
@@ -26,7 +28,7 @@ fun toConverterMeltInfo(record: InnerRecord<String, String>): ConverterMeltInfo 
 
 fun toConverterTransportMlUi(record: InnerRecord<String, String>): ConverterTransportMlUi {
     return try {
-        ObjectMapper().readValue(record.value, ConverterTransportMlUi::class.java)!!
+        jacksonSerializer.readValue(record.value, ConverterTransportMlUi::class.java)!!
     } catch (e: Exception) {
         ConverterTransportMlUi()
     }
@@ -34,7 +36,7 @@ fun toConverterTransportMlUi(record: InnerRecord<String, String>): ConverterTran
 
 fun toConverterTransportViMl(record: InnerRecord<String, String>): ConverterTransportViMl {
     return try {
-        ObjectMapper().readValue(record.value, ConverterTransportViMl::class.java)!!
+        jacksonSerializer.readValue(record.value, ConverterTransportViMl::class.java)!!
     } catch (e: Exception) {
         ConverterTransportViMl()
     }
@@ -42,7 +44,7 @@ fun toConverterTransportViMl(record: InnerRecord<String, String>): ConverterTran
 
 fun toTemperatureProcUiDto(record: InnerRecord<String, String>): TemperatureProcUiDto {
     return try {
-        ObjectMapper().readValue(record.value, TemperatureProcUiDto::class.java)!!
+        jacksonSerializer.readValue(record.value, TemperatureProcUiDto::class.java)!!
     } catch (e: Exception) {
         TemperatureProcUiDto()
     }

@@ -1,5 +1,5 @@
 package ru.datana.smart.ui.converter.common.events
 
-interface IConveyorMetalRateEvent : IBizEvent {
+interface IMetalRateEvent : IBizEvent {
     val metalRate: Double
 }

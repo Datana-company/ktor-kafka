@@ -7,6 +7,7 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.IWsManager
+import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
@@ -52,6 +53,26 @@ class SlagRateChain(
                     wsManager.sendMeltInfo(this)
                     wsManager.sendFrames(this)
                     wsManager.sendSlagRate(this)
+                }
+            }
+
+            konveyor {
+                +MetalRateCriticalHandler
+                +MetalRateExceedsHandler
+                +MetalRateNormalHandler
+                +MetalRateInfoHandler
+                handler {
+                    onEnv { status == CorStatus.STARTED }
+                    exec {
+                        events = ModelEvents(events = eventsRepository.getAll())
+                    }
+                }
+            }
+
+            handler {
+                onEnv { status == CorStatus.STARTED }
+                exec {
+                    wsManager.sendEvents(this)
                 }
             }
 

@@ -13,115 +13,91 @@ object MetalRateInfoHandler: IKonveyorHandler<ConverterBeContext> {
 
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
 
-//        val record = context.records.firstOrNull { it.topic == context.topicConverter } ?: return
-//
-//        context.logger.trace("topic = {}, partition = {}, offset = {}, key = {}, value = {}",
-//            objs = arrayOf(
-//                record.topic,
-//                record.partition,
-//                record.offset,
-//                record.key,
-//                record.value
-//            ))
+        val metalRate = context.slagRate.steelRate ?: return
+        val warningPoint = context.metalRateWarningPoint
+        if (metalRate >= warningPoint) {
+            return
+        }
 
-//        val steelRate = context.metalRateEventGenerator.generateValue
-//        val currentTime = Instant.now().toEpochMilli()
-//        val record = "{\"frameId\": \"1\", \"frameTime\": $currentTime, \"framePath\": \"/frame/to/path\", \"angle\": 79.123, \"steelRate\": $steelRate, \"slagRate\": 0.05, \"meltInfo\": {\"id\": \"1\", \"timeStart\": 1602796302129, \"meltNumber\": \"12\", \"steelGrade\": \"ММК\", \"crewNumber\": \"3\", \"shiftNumber\": \"2\", \"mode\": 1, \"devices\": {\"irCamera\": {\"id\": \"c17ea7ca-7bbf-4f89-a644-7899f21ac629\", \"name\": \"GoPro\", \"uri\": \"video/path\", \"type\": 1}}}}"
-//
-//        try {
-//            val obj = context.jacksonSerializer.readValue(record/*.value*/, ConverterTransportMlUi::class.java)!!
-//
-//            val metalRate = obj.steelRate ?: return
-//            val normalPoint = context.metalRateNormalPoint
-//            if (metalRate >= normalPoint) {
-//                return
-//            }
-//
-//            val frameTime = obj.frameTime ?: Instant.now().toEpochMilli()
-//            val activeEvent: IConveyorMetalRateEvent? = context.eventsRepository.getActive().find { it is IConveyorMetalRateEvent } as? IConveyorMetalRateEvent
-//
-//            activeEvent?.let {
-//                when(it) {
-//                    is ConveyorMetalRateInfoEvent -> {
-//                        val updateEvent = ConveyorMetalRateInfoEvent(
-//                            id = it.id,
-//                            timeStart = if (it.timeStart > frameTime) frameTime else it.timeStart,
-//                            timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
-//                            metalRate = it.metalRate,
-//                            title = it.title,
-//                            isActive = it.isActive
-//                        )
-//                        context.eventsRepository.put(updateEvent)
-//                    }
-//                    is ConveyorMetalRateCriticalEvent -> {
-//                        val historicalEvent = ConveyorMetalRateCriticalEvent(
-//                            id = it.id,
-//                            timeStart = it.timeStart,
-//                            timeFinish = it.timeFinish,
-//                            metalRate = it.metalRate,
-//                            title = it.title,
-//                            isActive = false
-//                        )
-//                        context.eventsRepository.put(historicalEvent)
-//                        val newEvent = ConveyorMetalRateInfoEvent(
-//                            id = UUID.randomUUID().toString(),
-//                            timeStart = frameTime,
-//                            timeFinish = frameTime,
-//                            metalRate = metalRate
-//                        )
-//                        context.eventsRepository.put(newEvent)
-//                    }
-//                    is ConveyorMetalRateExceedsEvent -> {
-//                        val historicalEvent = ConveyorMetalRateExceedsEvent(
-//                            id = it.id,
-//                            timeStart = it.timeStart,
-//                            timeFinish = it.timeFinish,
-//                            metalRate = it.metalRate,
-//                            title = it.title,
-//                            isActive = false
-//                        )
-//                        context.eventsRepository.put(historicalEvent)
-//                        val newEvent = ConveyorMetalRateInfoEvent(
-//                            id = UUID.randomUUID().toString(),
-//                            timeStart = frameTime,
-//                            timeFinish = frameTime,
-//                            metalRate = metalRate
-//                        )
-//                        context.eventsRepository.put(newEvent)
-//                    }
-//                    is ConveyorMetalRateNormalEvent -> {
-//                        val historicalEvent = ConveyorMetalRateNormalEvent(
-//                            id = it.id,
-//                            timeStart = it.timeStart,
-//                            timeFinish = it.timeFinish,
-//                            metalRate = it.metalRate,
-//                            title = it.title,
-//                            isActive = false
-//                        )
-//                        context.eventsRepository.put(historicalEvent)
-//                        val newEvent = ConveyorMetalRateInfoEvent(
-//                            id = UUID.randomUUID().toString(),
-//                            timeStart = frameTime,
-//                            timeFinish = frameTime,
-//                            metalRate = metalRate
-//                        )
-//                        context.eventsRepository.put(newEvent)
-//                    }
-//                }
-//            } ?: context.eventsRepository.put(
-//                ConveyorMetalRateInfoEvent(
-//                    id = UUID.randomUUID().toString(),
-//                    timeStart = obj.frameTime ?: Instant.now().toEpochMilli(),
-//                    timeFinish = obj.frameTime ?: Instant.now().toEpochMilli(),
-//                    metalRate = metalRate
-//                )
-//            )
-//        } catch (e: Throwable) {
-//            val msg = "Error parsing data for [Proc]: ${record/*.value*/}"
-//            context.logger.error(msg)
-//            context.errors.add(CorError(msg))
-//            context.status = CorStatus.FAILING
-//        }
+        val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
+        val activeEvent: IMetalRateEvent? = context.eventsRepository.getActive().find { it is IMetalRateEvent } as? IMetalRateEvent
+
+        activeEvent?.let {
+            when(it) {
+                is MetalRateInfoEvent -> {
+                    val updateEvent = MetalRateInfoEvent(
+                        id = it.id,
+                        timeStart = if (it.timeStart > frameTime) frameTime else it.timeStart,
+                        timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
+                        metalRate = it.metalRate,
+                        title = it.title,
+                        isActive = it.isActive
+                    )
+                    context.eventsRepository.put(updateEvent)
+                }
+                is MetalRateCriticalEvent -> {
+                    val historicalEvent = MetalRateCriticalEvent(
+                        id = it.id,
+                        timeStart = it.timeStart,
+                        timeFinish = it.timeFinish,
+                        metalRate = it.metalRate,
+                        title = it.title,
+                        isActive = false
+                    )
+                    context.eventsRepository.put(historicalEvent)
+                    val newEvent = MetalRateInfoEvent(
+                        id = UUID.randomUUID().toString(),
+                        timeStart = frameTime,
+                        timeFinish = frameTime,
+                        metalRate = metalRate
+                    )
+                    context.eventsRepository.put(newEvent)
+                }
+                is MetalRateExceedsEvent -> {
+                    val historicalEvent = MetalRateExceedsEvent(
+                        id = it.id,
+                        timeStart = it.timeStart,
+                        timeFinish = it.timeFinish,
+                        metalRate = it.metalRate,
+                        title = it.title,
+                        isActive = false
+                    )
+                    context.eventsRepository.put(historicalEvent)
+                    val newEvent = MetalRateInfoEvent(
+                        id = UUID.randomUUID().toString(),
+                        timeStart = frameTime,
+                        timeFinish = frameTime,
+                        metalRate = metalRate
+                    )
+                    context.eventsRepository.put(newEvent)
+                }
+                is MetalRateNormalEvent -> {
+                    val historicalEvent = MetalRateNormalEvent(
+                        id = it.id,
+                        timeStart = it.timeStart,
+                        timeFinish = it.timeFinish,
+                        metalRate = it.metalRate,
+                        title = it.title,
+                        isActive = false
+                    )
+                    context.eventsRepository.put(historicalEvent)
+                    val newEvent = MetalRateInfoEvent(
+                        id = UUID.randomUUID().toString(),
+                        timeStart = frameTime,
+                        timeFinish = frameTime,
+                        metalRate = metalRate
+                    )
+                    context.eventsRepository.put(newEvent)
+                }
+            }
+        } ?: context.eventsRepository.put(
+            MetalRateInfoEvent(
+                id = UUID.randomUUID().toString(),
+                timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),
+                timeFinish = context.frame.frameTime ?: Instant.now().toEpochMilli(),
+                metalRate = metalRate
+            )
+        )
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

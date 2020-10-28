@@ -53,6 +53,8 @@ fun toWsEventModel(event: IBizEvent) =
         isActive = event.isActive
     )
 
+fun toWsEventListModel(events: List<IBizEvent>) = events.stream().map { event -> toWsEventModel(event) }.toList()
+
 fun toWsEventListModel(modelEvents: ModelEvents) = modelEvents.events?.stream()?.map { event -> toWsEventModel(event) }
     ?.toList()
     ?: mutableListOf()

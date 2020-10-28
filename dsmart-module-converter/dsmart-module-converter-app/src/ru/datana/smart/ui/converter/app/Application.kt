@@ -31,7 +31,7 @@ import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.backend.ConverterFacade
 import java.time.Duration
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
-import ru.datana.smart.ui.converter.repository.inmemory.UserEventsRepository
+import ru.datana.smart.ui.converter.repository.inmemory.UserEventRepositoryInMemory
 import java.util.concurrent.atomic.AtomicReference
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -88,9 +88,14 @@ fun Application.module(testing: Boolean = false) {
     )
     metalRateEventGenerator.start()
 
-    val userEventsRepository = UserEventsRepository()
+    val userEventsRepository = UserEventRepositoryInMemory()
 
-    var currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference()
+    val currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference()
+
+    val websocketContext = ConverterBeContext(
+        currentMeltInfo = currentMeltInfo,
+        eventsRepository = userEventsRepository
+    )
 
     val converterFacade = ConverterFacade(
         converterRepository = userEventsRepository,
@@ -109,7 +114,7 @@ fun Application.module(testing: Boolean = false) {
 
         webSocket("/ws") {
             println("onConnect")
-            wsManager.addSession(this, ConverterBeContext(currentMeltInfo = currentMeltInfo))
+            wsManager.addSession(this, websocketContext)
             try {
                 for (frame in incoming) {
                 }

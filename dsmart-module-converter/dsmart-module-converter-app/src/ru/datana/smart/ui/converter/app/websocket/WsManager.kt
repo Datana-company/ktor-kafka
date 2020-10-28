@@ -11,29 +11,43 @@ import java.util.concurrent.ConcurrentHashMap
 class WsManager : IWsManager {
 
     val wsSessions: MutableCollection<DefaultWebSocketSession> = ConcurrentHashMap.newKeySet()
+    val kotlinxSerializer: Json = Json { encodeDefaults = true }
 
     suspend fun addSession(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
-        if (context.currentMeltInfo.get() != null) {
+        context.currentMeltInfo.get()?.let {
             val wsMeltInfo = WsDsmartResponseConverterMeltInfo(
                 data = toWsConverterMeltInfoModel(context.currentMeltInfo.get()!!)
             )
-            val meltInfoSerializedString = Json { encodeDefaults = true }.encodeToString(WsDsmartResponseConverterMeltInfo.serializer(), wsMeltInfo)
+            val meltInfoSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterMeltInfo.serializer(), wsMeltInfo)
             session.send(meltInfoSerializedString)
-//            val outObj = context.toWsInit()
-//            session.send()
         }
+
+        val wsEvents = WsDsmartResponseEvents(
+            data = WsDsmartEventList(
+                list = toWsEventListModel(context.eventsRepository.getAll())
+            )
+        )
+        val meltInfoSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseEvents.serializer(), wsEvents)
+        session.send(meltInfoSerializedString)
+
+//        val outObj = context.toWsInit()
+//        session.send()
     }
 
     override suspend fun sendToAll(context: ConverterBeContext) {
-
+        sendAngles(context)
+        sendMeltInfo(context)
+        sendSlagRate(context)
+        sendFrames(context)
+        sendEvents(context)
     }
 
     override suspend fun sendAngles(context: ConverterBeContext) {
         val wsAngles = WsDsmartResponseConverterAngles(
             data = toWsConverterAnglesModel(context.angles)
         )
-        val meltInfoSerializedString = Json { encodeDefaults = true }.encodeToString(WsDsmartResponseConverterAngles.serializer(), wsAngles)
+        val meltInfoSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterAngles.serializer(), wsAngles)
         send(meltInfoSerializedString)
     }
 
@@ -41,7 +55,7 @@ class WsManager : IWsManager {
         val wsMeltInfo = WsDsmartResponseConverterMeltInfo(
             data = toWsConverterMeltInfoModel(context.meltInfo)
         )
-        val meltInfoSerializedString = Json { encodeDefaults = true }.encodeToString(WsDsmartResponseConverterMeltInfo.serializer(), wsMeltInfo)
+        val meltInfoSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterMeltInfo.serializer(), wsMeltInfo)
         send(meltInfoSerializedString)
     }
 
@@ -49,7 +63,7 @@ class WsManager : IWsManager {
         val wsSlagRate = WsDsmartResponseConverterSlagRate(
             data = toWsConverterSlagRateModel(context.slagRate)
         )
-        val slagRateSerializedString = Json { encodeDefaults = true }.encodeToString(WsDsmartResponseConverterSlagRate.serializer(), wsSlagRate)
+        val slagRateSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterSlagRate.serializer(), wsSlagRate)
         send(slagRateSerializedString)
     }
 
@@ -57,7 +71,7 @@ class WsManager : IWsManager {
         val wsFrame = WsDsmartResponseConverterFrame(
             data = toWsConverterFrameModel(context.frame)
         )
-        val frameSerializedString = Json { encodeDefaults = true }.encodeToString(WsDsmartResponseConverterFrame.serializer(), wsFrame)
+        val frameSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterFrame.serializer(), wsFrame)
         send(frameSerializedString)
     }
 
@@ -67,7 +81,7 @@ class WsManager : IWsManager {
                 list = toWsEventListModel(context.events)
             )
         )
-        val eventsSerializedString = Json { encodeDefaults = true }.encodeToString(WsDsmartResponseEvents.serializer(), wsEvents)
+        val eventsSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseEvents.serializer(), wsEvents)
         send(eventsSerializedString)
     }
 
@@ -75,7 +89,7 @@ class WsManager : IWsManager {
         val wsTemperature = WsDsmartResponseTemperature(
             data = toWsTemperatureModel(context.temperature)
         )
-        val temperatureSerializedString = Json { encodeDefaults = true }.encodeToString(WsDsmartResponseTemperature.serializer(), wsTemperature)
+        val temperatureSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseTemperature.serializer(), wsTemperature)
         send(temperatureSerializedString)
     }
 
