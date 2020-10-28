@@ -144,11 +144,11 @@ fun Application.module(testing: Boolean = false) {
             )
 
             val case = call.parameters["case"] ?: throw BadRequestException("No case is specified")
-            logger.debug("case: " + case)
-            logger.debug("kafkaServers: " + kafkaServers + " --- kafkaTopic: " + kafkaTopic + " --- pathToCatalog: " + pathToCatalog)
+            logger.debug("case: {}", case)
+            logger.debug("kafkaServers: {} --- kafkaTopic: {} --- pathToCatalog: ", objs = arrayOf(kafkaServers, kafkaTopic , pathToCatalog))
             val meltInfo = try {
                 val metaText = File("$pathToCatalog/$case/meta.json").readText()
-                logger.debug("metaText" + metaText)
+                logger.debug("metaText {}", objs = arrayOf(metaText))
                 objectMapper.readValue<ConverterMeltInfo>(metaText)
             } catch (e: Throwable) {
                 ConverterMeltInfo(

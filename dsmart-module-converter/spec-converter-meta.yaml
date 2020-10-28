@@ -135,3 +135,58 @@ components:
         - device
         - file
         - computation
+
+    ConverterSlagRateStub:
+      title: Эмуляция по доле шлака в сливе
+      description: Структура описывает процесс изменения доли шлака и стали при сливе шлака из конвертера
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConverterSlagRateSnapshot'
+
+    ConverterSlagRateSnapshot:
+      type: object
+      description: Один временной срез для эмуляции данных по доле шлака в сливе из конвертера
+      properties:
+        timeShift:
+          title: Время
+          description: Смещение по времени текущего среза относительно начала слива в милисекундах
+          type: integer
+          format: int64
+        rateSlag:
+          title: Доля шлака
+          description: Доля шлака в безразмерных единицах в момент времени timeShift
+          type: number
+          format: double
+        rateSteel:
+          title: Доля стали
+          description: Доля стали в безразмерных единицах в момент времени timeShift
+          type: number
+          format: double
+
+    ConverterAnglesStub:
+      title: Эмуляция по углам
+      description: Структура описывает процесс изменения углов наклонения конвертера при сливе шлака
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConverterAngleSnapshot'
+
+    ConverterAngleSnapshot:
+      type: object
+      description: Один временной срез для эмуляции данных по углу наклона конвертера при сливе шлака
+      properties:
+        timeShift:
+          title: Время
+          description: Смещение по времени текущего среза относительно начала слива в милисекундах
+          type: integer
+          format: int64
+        angle:
+          title: Угол
+          description: Угол наклонения конвертера в градусах в момент времени timeShift
+          type: number
+          format: double
