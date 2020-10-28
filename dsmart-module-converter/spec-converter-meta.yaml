@@ -74,11 +74,20 @@ components:
       type: object
       properties:
         converter:
-          $ref: '#/components/schemas/ConverterDevice'
+          $ref: '#/components/schemas/ConverterDevicesConverter'
         irCamera:
-          $ref: '#/components/schemas/ConverterDevice'
+          $ref: '#/components/schemas/ConverterDevicesIrCamerta'
         selsyn:
-          $ref: '#/components/schemas/ConverterDevice'
+          $ref: '#/components/schemas/ConverterDevicesSelsyn'
+
+    ConverterDevicesConverter:
+      $ref: '#/components/schemas/ConverterDevice'
+
+    ConverterDevicesIrCamerta:
+      $ref: '#/components/schemas/ConverterDevice'
+
+    ConverterDevicesSelsyn:
+      $ref: '#/components/schemas/ConverterDevice'
 
     ConverterDevice:
       title: Прибор
