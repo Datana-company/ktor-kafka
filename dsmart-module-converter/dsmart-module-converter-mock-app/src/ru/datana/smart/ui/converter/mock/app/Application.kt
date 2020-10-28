@@ -23,9 +23,7 @@ import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG
 import org.apache.kafka.clients.producer.ProducerRecord
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.meta.models.ConverterDevicesIrCamerta
-import ru.datana.smart.ui.meta.models.ConverterMeltDevices
-import ru.datana.smart.ui.meta.models.ConverterMeltInfo
+import ru.datana.smart.ui.meta.models.*
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -146,11 +144,11 @@ fun Application.module(testing: Boolean = false) {
             )
 
             val case = call.parameters["case"] ?: throw BadRequestException("No case is specified")
-            logger.debug("case: " + case)
-            logger.debug("kafkaServers: " + kafkaServers + " --- kafkaTopic: " + kafkaTopic + " --- pathToCatalog: " + pathToCatalog)
+            logger.debug("case: {}", case)
+            logger.debug("kafkaServers: {} --- kafkaTopic: {} --- pathToCatalog: ", objs = arrayOf(kafkaServers, kafkaTopic , pathToCatalog))
             val meltInfo = try {
                 val metaText = File("$pathToCatalog/$case/meta.json").readText()
-                logger.debug("metaText" + metaText)
+                logger.debug("metaText {}", objs = arrayOf(metaText))
                 objectMapper.readValue<ConverterMeltInfo>(metaText)
             } catch (e: Throwable) {
                 ConverterMeltInfo(
@@ -160,11 +158,27 @@ fun Application.module(testing: Boolean = false) {
                     shiftNumber = "-1",
                     mode = ConverterMeltInfo.Mode.EMULATION,
                     devices = ConverterMeltDevices(
+                        converter = ConverterDevicesConverter(
+                            id = "converterUnk",
+                            name = "Неизвестный конвертер",
+                        ),
                         irCamera = ConverterDevicesIrCamerta(
-                            id = "unknown-camera",
+                            id = "converterUnk-camera",
                             name = "Неизвестная камера",
-                            type = ConverterDevicesIrCamerta.Type.FILE,
-                            uri = "file:///some/where/in/ceph/file.ravi"
+                            type = ConverterDeviceType.FILE,
+                            uri = "case-case1/file.ravi"
+                        ),
+                        selsyn = ConverterDevicesSelsyn(
+                            id = "converterUnk-selsyn",
+                            name = "Неизвестный селсин",
+                            type = ConverterDeviceType.FILE,
+                            uri = "case-case1/selsyn.json"
+                        ),
+                        slagRate = ConverterDevicesSlagRate(
+                            id = "converterUnk-composition",
+                            name = "Неизвестный селсин",
+                            type = ConverterDeviceType.FILE,
+                            uri = "case-case1/slag-rate.json"
                         )
                     )
                 )

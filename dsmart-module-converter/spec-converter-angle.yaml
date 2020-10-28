@@ -25,10 +25,10 @@ components:
 
   schemas:
 
-    ConverterTransportMlUi:
-      description: Транспортная модель для передачи данных от матмодели до UI кислородного конвертера
+    ConverterTransportAngle:
+      description: Транспортная модель для передачи данных об угле наклона конвертера при сливе шлака
       allOf:
-        - $ref: './spec-converter-ViMl.yaml#/components/schemas/ConverterTransportViMl'
+        - $ref: './spec-converter-video.yaml#/components/schemas/ConverterTransportViMl'
         - type: object
           properties:
             angle:
@@ -36,13 +36,8 @@ components:
               description: Угол в градусах, на который наклонен конвертер, определенный средствами матмодели из кадра
               type: number
               format: double
-            steelRate:
-              title: Содержание стали
-              description: Доля стали (от единицы) на поверхности при сливе плавки из конвертера
-              type: number
-              format: double
-            slagRate:
-              title: Содержание шлака
-              description: Доля шлака (от единицы) на поверхности при сливе плавки из конвертера
+            source:
+              title: Источник данных
+              description: Угол в градусах, на который наклонен конвертер, определенный средствами матмодели из кадра
               type: number
               format: double

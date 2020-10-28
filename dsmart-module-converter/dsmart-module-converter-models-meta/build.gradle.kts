@@ -40,7 +40,8 @@ openApiGenerate {
         "dateLibrary" to "string",
         "enumPropertyNaming" to "UPPERCASE",
         "library" to "multiplatform",
-        "serializationLibrary" to "jackson"
+        "serializationLibrary" to "jackson",
+        "collectionType" to "list"
     ))
 }
 
