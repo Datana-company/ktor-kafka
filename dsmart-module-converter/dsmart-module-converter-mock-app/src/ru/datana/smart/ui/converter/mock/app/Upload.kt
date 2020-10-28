@@ -39,7 +39,7 @@ fun Route.upload(caseCatalogDir: File) {
                     logger.debug(" --- file_name: " + part.value)
                     fileName = part.value
                 } else if (part.name == "new_case_folder_name") {
-                    logger.debug(" --- new_case_folder_name: " + part.value)
+                    logger.debug(" --- new_case_folder_name: {}", objs = arrayOf(part.value))
                     newCaseFolderName = part.value
                 }
             } else if (part is PartData.FileItem) {
