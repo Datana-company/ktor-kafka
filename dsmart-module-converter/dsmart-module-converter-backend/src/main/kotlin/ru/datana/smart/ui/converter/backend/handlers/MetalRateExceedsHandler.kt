@@ -21,6 +21,7 @@ object MetalRateExceedsHandler : IKonveyorHandler<ConverterBeContext> {
             }
 
             val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
+        // TODO: 1. getActive().find { it is IMetalRateEvent } в метод класса репозитория UserEventRepositoryInMemory
             val activeEvent: IMetalRateEvent? = context.eventsRepository.getActive().find { it is IMetalRateEvent } as? IMetalRateEvent
 
             activeEvent?.let {

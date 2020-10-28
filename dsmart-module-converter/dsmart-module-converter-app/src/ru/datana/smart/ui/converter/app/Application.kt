@@ -80,6 +80,7 @@ fun Application.module(testing: Boolean = false) {
     val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
     val metalRateNormalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.normal").getString().trim().toDouble() }
 
+    // TODO: 3. Сейчас генератор нигде не используется, нужно придумать, как его использовать в конвейере, чтобы тестировать на фронте события
     val metalRateEventGenerator = MetalRateEventGenerator(
         timeout = metalRateEventGenTimeout,
         maxValue = metalRateEventGenMax,
