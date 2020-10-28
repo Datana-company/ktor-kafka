@@ -30,5 +30,9 @@ export class TiltAngleComponentComponent implements OnInit {
       this.temperatureModel = data;
     });
   }
+  ngOnDestroy(): void {
+    this._unsubscribe.next();
+    this._unsubscribe.complete();
+  }
 
 }

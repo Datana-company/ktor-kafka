@@ -1,0 +1,4 @@
+.widget-event-item {
+    width: calc(100% - 0.5rem);
+    height: calc(6rem + 8px);
+}
