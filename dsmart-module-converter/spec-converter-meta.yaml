@@ -79,15 +79,24 @@ components:
           $ref: '#/components/schemas/ConverterDevicesIrCamerta'
         selsyn:
           $ref: '#/components/schemas/ConverterDevicesSelsyn'
+        slagRate:
+          $ref: '#/components/schemas/ConverterDevicesSlagRate'
 
     ConverterDevicesConverter:
-      $ref: '#/components/schemas/ConverterDevice'
+      allOf:
+        - $ref: '#/components/schemas/ConverterDevice'
 
     ConverterDevicesIrCamerta:
-      $ref: '#/components/schemas/ConverterDevice'
+      allOf:
+        - $ref: '#/components/schemas/ConverterDevice'
 
     ConverterDevicesSelsyn:
-      $ref: '#/components/schemas/ConverterDevice'
+      allOf:
+        - $ref: '#/components/schemas/ConverterDevice'
+
+    ConverterDevicesSlagRate:
+      allOf:
+        - $ref: '#/components/schemas/ConverterDevice'
 
     ConverterDevice:
       title: Прибор
@@ -109,8 +118,14 @@ components:
           description: Адрес файла или устройства, с которого снимать изображение
           type: string
           example: "case-case1/video.ravi"
+        deviceType:
+          title: Тип устройства
+          description: Техническое поле для десериализации. Указывает тип устройства
+          type: string
         type:
           $ref: '#/components/schemas/ConverterDeviceType'
+      discriminator:
+        propertyName: petType
 
     ConverterDeviceType:
       title: Тип устройства
@@ -119,3 +134,4 @@ components:
       enum:
         - device
         - file
+        - computation
