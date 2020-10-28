@@ -24,7 +24,7 @@ kotlin.sourceSets["main"].kotlin.srcDirs("$generatedSourcesDir/src/main/kotlin")
 
 openApiGenerate {
     generatorName.set("kotlin")
-    inputSpec.set("${project(":dsmart-module-converter").projectDir}/spec-converter-ViMl.yaml")
+    inputSpec.set("${project(":dsmart-module-converter").projectDir}/spec-converter-video.yaml")
     outputDir.set(generatedSourcesDir)
     val basePackage = "${project.group}.viml"
     apiPackage.set("$basePackage.api")

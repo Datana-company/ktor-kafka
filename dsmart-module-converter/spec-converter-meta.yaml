@@ -73,32 +73,40 @@ components:
       description: Данные об оборудовании, которое используется для мониторинга на данном агрегате
       type: object
       properties:
+        converter:
+          $ref: '#/components/schemas/ConverterDevice'
         irCamera:
-          $ref: '#/components/schemas/ConverterDevicesIrCamerta'
+          $ref: '#/components/schemas/ConverterDevice'
+        selsyn:
+          $ref: '#/components/schemas/ConverterDevice'
 
-    ConverterDevicesIrCamerta:
-      title: ИК-камера
-      description: Инфракрасная камера, встроенная в корпус конвертера, для отслеживания слива металла
+    ConverterDevice:
+      title: Прибор
+      description: Прибор - источник данных о процессах и параметрах конвертера
       type: object
       properties:
         id:
-          title: Идентификатор камеры
-          description: Уникальный идентификатор или серийный номер камеры, с которой производится съемка видео
+          title: Идентификтор прибора
+          description: Уникальный идентификатор прибора, с которого производится съем данных
+          example: converter123-irCamera1
           type: string
         name:
           title: Название
-          description: Название камеры
+          description: Название прибора
           example: "Камера на Конвертере-2"
           type: string
         uri:
           title: Адрес устройства
           description: Адрес файла или устройства, с которого снимать изображение
           type: string
-          example: "file:///catalog/case1/video.ravi"
+          example: "case-case1/video.ravi"
         type:
-          title: Тип устройства
-          description: "Тип устройства: настоящая камера (устройство) или файл"
-          type: string
-          enum:
-            - device
-            - file
+          $ref: '#/components/schemas/ConverterDeviceType'
+
+    ConverterDeviceType:
+      title: Тип устройства
+      description: "Тип устройства: настоящее устройство или эмуляция из файла"
+      type: string
+      enum:
+        - device
+        - file

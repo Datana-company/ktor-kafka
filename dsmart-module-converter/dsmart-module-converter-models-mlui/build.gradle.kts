@@ -24,7 +24,7 @@ kotlin.sourceSets["main"].kotlin.srcDirs("$generatedSourcesDir/src/main/kotlin")
 
 openApiGenerate {
     generatorName.set("kotlin")
-    inputSpec.set("${project(":dsmart-module-converter").projectDir}/spec-converter-MlUi.yaml")
+    inputSpec.set("${project(":dsmart-module-converter").projectDir}/spec-converter-math.yaml")
     outputDir.set(generatedSourcesDir)
     val basePackage = "${project.group}.mlui"
     apiPackage.set("$basePackage.api")
