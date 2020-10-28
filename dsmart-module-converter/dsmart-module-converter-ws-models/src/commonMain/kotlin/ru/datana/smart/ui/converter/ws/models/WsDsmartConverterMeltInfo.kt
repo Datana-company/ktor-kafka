@@ -13,6 +13,7 @@ data class WsDsmartConverterMeltInfo(
     val mode: WsDsmartConverterMeltInfo.Mode? = null,
     val devices: WsDsmartConverterMeltDevices? = null
 ) {
+    @Serializable
     enum class Mode(val value: String){
         PROD("prod"),
         EMULATION("emulation"),

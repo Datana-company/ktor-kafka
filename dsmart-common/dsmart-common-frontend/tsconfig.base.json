@@ -18,10 +18,6 @@
     "paths": {
       "@datana-smart/*": [
         "build/dist/datana-smart/*"
-      ],
-      "@datana-smart/websocket": [
-        "dist/datana-smart/websocket/datana-smart-websocket",
-        "dist/datana-smart/websocket"
       ]
     }
   }
