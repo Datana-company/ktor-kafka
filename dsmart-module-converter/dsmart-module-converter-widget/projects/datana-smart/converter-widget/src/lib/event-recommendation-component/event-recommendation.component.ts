@@ -8,6 +8,5 @@ import {EventModel} from "../models/event-model";
   styleUrls: ['./event-recommendation-component.component.css']
 })
 export class EventRecommendationComponent  {
-  // @Input() events: EventModel;
   @Input() events:  Array<EventModel> = new Array<EventModel>();
 }
