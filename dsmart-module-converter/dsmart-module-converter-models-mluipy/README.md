@@ -1,7 +1,7 @@
 # `dsmart-module-converter-models-mluipy`
 
 Модуль для генерации транспортных моделей для передачи данных из матмодели на
-UI. Генерация из [openapi спеки](../spec-converter-MlUi.yaml).
+UI. Генерация из [openapi спеки](../spec-converter-math.yaml).
 
 Pypi-пакет генерируется и публикуется на корпоративном Nexus сервере.
 
