@@ -31,9 +31,14 @@
           </div>
         </div>
       </div>
+      <div class="widget-bar-chart widget-container">
+        <bar-chart-component
+          [converterData]="converterData">
+        </bar-chart-component>
+      </div>
     </div>
     <!--      <div class="widget-events widget-col" *ngFor="let event of events">-->
-    <div class="widget-events widget-col" >
+    <div class="widget-events widget-col">
       <div class="widget-event-item" *ngFor="let event of events">
         <div [class.widget-event-item-warning-active]="event.isActive" class="widget-event-item-warning">
           {{ event?.dateStart | date: 'yyyy-MM-dd HH:mm:ss' }}
