@@ -1,7 +1,7 @@
 import {Component, Input, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {ConverterModel} from '../models/converter.model';
+import {SlagRateModel} from "../models/slag-rate.model";
 
 @Component({
     selector: 'bar-chart-component',
@@ -10,7 +10,7 @@ import {ConverterModel} from '../models/converter.model';
 })
 export class BarChartComponent {
 
-    @Input() converterData: ConverterModel;
+    @Input() slagRateModel: SlagRateModel;
 
     view: any[] = [600, 200];
 
@@ -49,7 +49,7 @@ export class BarChartComponent {
         return [
             {
                 'name': 'Шлак',
-                'value': (this.converterData?.slagRate || 0) * 100
+                'value': (this.slagRateModel?.slagRate || 0) * 100
             },
             {
                 'name': 'Допустимая доля металла',
@@ -57,7 +57,7 @@ export class BarChartComponent {
             },
             {
                 'name': 'Металл',
-                'value': (this.converterData?.steelRate || 0) * 100
+                'value': (this.slagRateModel?.steelRate || 0) * 100
             }
         ];
     }
