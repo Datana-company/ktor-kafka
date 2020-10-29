@@ -125,7 +125,7 @@ components:
         type:
           $ref: '#/components/schemas/ConverterDeviceType'
       discriminator:
-        propertyName: petType
+        propertyName: deviceType
 
     ConverterDeviceType:
       title: Тип устройства
