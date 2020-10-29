@@ -4,5 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WsDsmartConverterMeltDevices (
-    val irCamera: WsDsmartConverterDevicesIrCamerta? = null
+    val converter: WsDsmartConverterDevicesConverter? = null,
+    val irCamera: WsDsmartConverterDevicesIrCamera? = null,
+    val selsyn: WsDsmartConverterDevicesSelsyn? = null,
+    val slagRate: WsDsmartConverterDevicesSlagRate? = null
 )
