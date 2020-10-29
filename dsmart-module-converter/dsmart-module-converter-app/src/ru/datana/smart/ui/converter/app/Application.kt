@@ -1,9 +1,7 @@
 package ru.datana.smart.ui.converter.app
 
-import ch.qos.logback.classic.Logger
 import io.ktor.application.Application
 import io.ktor.application.install
-import io.ktor.application.log
 import io.ktor.features.CORS
 import io.ktor.features.CallLogging
 import io.ktor.http.HttpHeaders
