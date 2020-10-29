@@ -9,6 +9,7 @@ data class WsDsmartConverterDevicesIrCamerta (
     val uri: String? = null,
     val type: WsDsmartConverterDevicesIrCamerta.Type? = null
 ) {
+    @Serializable
     enum class Type(val value: String){
         DEVICE("device"),
         FILE("file");

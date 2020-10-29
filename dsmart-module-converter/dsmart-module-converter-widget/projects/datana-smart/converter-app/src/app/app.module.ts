@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from "./app-routing.module";
 import {WebsocketModule} from "@datana-smart/websocket";
 import {environment} from "../environments/environment";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import {environment} from "../environments/environment";
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     WebsocketModule.config({
       url: environment.ws
@@ -26,4 +28,3 @@ import {environment} from "../environments/environment";
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-

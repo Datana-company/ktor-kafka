@@ -1,11 +1,12 @@
-import {NgModule, Optional, SkipSelf} from '@angular/core';
+import { NgModule } from '@angular/core';
 import { ConverterWidgetComponent } from './converter-widget.component';
 import { VideoPlayerComponent } from './video-player-component/video-player.component';
-import {ConverterWidgetRoutingModule} from "./converter-widget-routing.module";
-import {CommonModule} from "@angular/common";
-import {WebsocketModule} from "@datana-smart/websocket";
+import {ConverterWidgetRoutingModule} from './converter-widget-routing.module';
+import {CommonModule} from '@angular/common';
+import {WebsocketModule} from '@datana-smart/websocket';
+import {HttpClientModule} from '@angular/common/http';
 import {ConfigServiceModule, ConfigServiceService} from "@datana-smart/config-service";
-import {HttpClientModule} from "@angular/common/http";
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 
 
@@ -15,17 +16,10 @@ import {HttpClientModule} from "@angular/common/http";
     WebsocketModule,
     HttpClientModule,
     CommonModule,
-    ConfigServiceModule.forRoot({restWsUrl: 'http://localhost:8080/front-config'}),
-    ConverterWidgetRoutingModule
+    ConverterWidgetRoutingModule,
+    NgxChartsModule
   ],
   providers: [ ConfigServiceService],
   exports: [ConverterWidgetComponent]
 })
-export class ConverterWidgetModule {
-  // constructor (@Optional() @SkipSelf() parentModule: ConfigServiceModule) {
-  //   if (parentModule) {
-  //     throw new Error(
-  //       'ConfigServiceModule 22 is already loaded. Import it in the AppModule only');
-  //   }
-  // }
-}
+export class ConverterWidgetModule { }

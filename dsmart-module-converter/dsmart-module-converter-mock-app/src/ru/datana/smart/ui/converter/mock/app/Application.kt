@@ -2,30 +2,18 @@ package ru.datana.smart.ui.converter.mock.app
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.application.log
-import io.ktor.features.BadRequestException
-import io.ktor.features.CORS
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.content.defaultResource
-import io.ktor.http.content.resources
-import io.ktor.http.content.static
-import io.ktor.response.respond
-import io.ktor.response.respondText
-import io.ktor.routing.get
-import io.ktor.routing.routing
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.http.content.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import io.ktor.util.*
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG
 import org.apache.kafka.clients.producer.ProducerRecord
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.meta.models.ConverterDevicesIrCamerta
-import ru.datana.smart.ui.meta.models.ConverterMeltDevices
-import ru.datana.smart.ui.meta.models.ConverterMeltInfo
+import ru.datana.smart.ui.meta.models.*
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -39,7 +27,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @OptIn(KtorExperimentalAPI::class)
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
-    val logger = datanaLogger(this.log as ch.qos.logback.classic.Logger)
+    val logger = datanaLogger(::main::class.java)
     val objectMapper = jacksonObjectMapper()
     val pathToCatalog: String by lazy {
         environment.config.property("ktor.catalog.path").getString().trim()
@@ -146,11 +134,11 @@ fun Application.module(testing: Boolean = false) {
             )
 
             val case = call.parameters["case"] ?: throw BadRequestException("No case is specified")
-            logger.debug("case: " + case)
-            logger.debug("kafkaServers: " + kafkaServers + " --- kafkaTopic: " + kafkaTopic + " --- pathToCatalog: " + pathToCatalog)
+            logger.debug("case: {}", case)
+            logger.debug("kafkaServers: {} --- kafkaTopic: {} --- pathToCatalog: ", objs = arrayOf(kafkaServers, kafkaTopic , pathToCatalog))
             val meltInfo = try {
                 val metaText = File("$pathToCatalog/$case/meta.json").readText()
-                logger.debug("metaText" + metaText)
+                logger.debug("metaText {}", objs = arrayOf(metaText))
                 objectMapper.readValue<ConverterMeltInfo>(metaText)
             } catch (e: Throwable) {
                 ConverterMeltInfo(
@@ -160,11 +148,27 @@ fun Application.module(testing: Boolean = false) {
                     shiftNumber = "-1",
                     mode = ConverterMeltInfo.Mode.EMULATION,
                     devices = ConverterMeltDevices(
+                        converter = ConverterDevicesConverter(
+                            id = "converterUnk",
+                            name = "Неизвестный конвертер",
+                        ),
                         irCamera = ConverterDevicesIrCamerta(
-                            id = "unknown-camera",
+                            id = "converterUnk-camera",
                             name = "Неизвестная камера",
-                            type = ConverterDevicesIrCamerta.Type.FILE,
-                            uri = "file:///some/where/in/ceph/file.ravi"
+                            type = ConverterDeviceType.FILE,
+                            uri = "case-case1/file.ravi"
+                        ),
+                        selsyn = ConverterDevicesSelsyn(
+                            id = "converterUnk-selsyn",
+                            name = "Неизвестный селсин",
+                            type = ConverterDeviceType.FILE,
+                            uri = "case-case1/selsyn.json"
+                        ),
+                        slagRate = ConverterDevicesSlagRate(
+                            id = "converterUnk-composition",
+                            name = "Неизвестный селсин",
+                            type = ConverterDeviceType.FILE,
+                            uri = "case-case1/slag-rate.json"
                         )
                     )
                 )

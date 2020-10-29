@@ -1,11 +1,11 @@
 val ktorVersion: String by project
 val kotlinVersion: String by project
-val logbackVersion: String by project
 val projectMaintainer: String by project
 val kafkaVersion: String by project
 val dsmartLoggingVersion: String by project
 val konveyorVersion: String by project
 val serializationVersion: String by project
+val guavaVersion: String by project
 
 plugins {
     application
@@ -65,7 +65,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
@@ -73,8 +72,10 @@ dependencies {
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
     implementation("codes.spectrum:konveyor:$konveyorVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
-
+    implementation("com.google.guava:guava:$guavaVersion")
+    implementation(kotlin("test-junit"))
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
@@ -117,6 +118,7 @@ tasks {
     processResources.get().dependsOn(copyArtifactLibs)
 
     dockerCreateDockerfile {
+        runCommand("mkdir -p logs")
         environmentVariable(
             mapOf(
                 //example "KAFKA_BOOTSTRAP_SERVERS" to "172.29.40.58:9092,172.29.40.59:9092,172.29.40.60:9092",
