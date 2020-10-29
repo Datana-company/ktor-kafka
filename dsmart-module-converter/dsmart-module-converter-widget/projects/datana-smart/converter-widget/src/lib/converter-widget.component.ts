@@ -34,7 +34,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.playlist = "http://camera.d.datana.ru/playlist.m3u8"
+    this.playlist = 'http://camera.d.datana.ru/playlist.m3u8'
 
     this.wsService.on('temperature-update').pipe(
       takeUntil(this._unsubscribe),
