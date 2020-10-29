@@ -58,16 +58,33 @@ class SlagRateChain(
 
             konveyor {
                 konveyor {
-                    on { slagRate.steelRate?.let { it > metalRateCriticalPoint  } ?: false }
+                    on { slagRate.steelRate?.let { it >= metalRateCriticalPoint  } ?: false }
                     +UpdateExceedsEventHandler
                     +UpdateNormalEventHandler
                     +UpdateInfoEventHandler
                     +CreateCriticalEventHandler
                 }
-                //TODO: 2. Переделать MetalRateExceedsHandler, MetalRateNormalHandler, MetalRateInfoHandler по образу и подобию как сверху
-                +MetalRateExceedsHandler
-                +MetalRateNormalHandler
-                +MetalRateInfoHandler
+                konveyor {
+                    on { slagRate.steelRate?.let { it > metalRateWarningPoint  } ?: false }
+                    +UpdateCriticalEventHandler
+                    +UpdateNormalEventHandler
+                    +UpdateInfoEventHandler
+                    +CreateExceedsEventHandler
+                }
+                konveyor {
+                    on { slagRate.steelRate?.let { it == metalRateWarningPoint  } ?: false }
+                    +UpdateCriticalEventHandler
+                    +UpdateExceedsEventHandler
+                    +UpdateInfoEventHandler
+                    +CreateNormalEventHandler
+                }
+                konveyor {
+                    on { slagRate.steelRate?.let { it < metalRateWarningPoint  } ?: false }
+                    +UpdateCriticalEventHandler
+                    +UpdateExceedsEventHandler
+                    +UpdateNormalEventHandler
+                    +CreateInfoEventHandler
+                }
                 handler {
                     onEnv { status == CorStatus.STARTED }
                     exec {
