@@ -13,6 +13,7 @@ class WsManager : IWsManager {
     val wsSessions: MutableCollection<DefaultWebSocketSession> = ConcurrentHashMap.newKeySet()
     val kotlinxSerializer: Json = Json { encodeDefaults = true }
 
+    // TODO: Переписать метод
     suspend fun addSession(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
         context.currentMeltInfo.get()?.let {
@@ -90,7 +91,7 @@ class WsManager : IWsManager {
             data = toWsTemperatureModel(context.temperature)
         )
         val temperatureSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseTemperature.serializer(), wsTemperature)
-//        send(temperatureSerializedString)
+        send(temperatureSerializedString)
     }
 
     private suspend fun send(serializedString: String) {

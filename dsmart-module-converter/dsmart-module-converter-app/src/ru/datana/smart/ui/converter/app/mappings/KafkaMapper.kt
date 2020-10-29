@@ -22,6 +22,7 @@ fun toConverterMeltInfo(record: InnerRecord<String, String>): ConverterMeltInfo 
     return try {
         jacksonSerializer.readValue(record.value, ConverterMeltInfo::class.java)!!
     } catch (e: Exception) {
+        // TODO: добавить обработку исключения
         ConverterMeltInfo()
     }
 }
@@ -30,6 +31,7 @@ fun toConverterTransportMlUi(record: InnerRecord<String, String>): ConverterTran
     return try {
         jacksonSerializer.readValue(record.value, ConverterTransportMlUi::class.java)!!
     } catch (e: Exception) {
+        // TODO: добавить обработку исключения
         ConverterTransportMlUi()
     }
 }
@@ -38,6 +40,7 @@ fun toConverterTransportViMl(record: InnerRecord<String, String>): ConverterTran
     return try {
         jacksonSerializer.readValue(record.value, ConverterTransportViMl::class.java)!!
     } catch (e: Exception) {
+        // TODO: добавить обработку исключения
         ConverterTransportViMl()
     }
 }
@@ -46,6 +49,7 @@ fun toTemperatureProcUiDto(record: InnerRecord<String, String>): TemperatureProc
     return try {
         jacksonSerializer.readValue(record.value, TemperatureProcUiDto::class.java)!!
     } catch (e: Exception) {
+        // TODO: добавить обработку исключения
         TemperatureProcUiDto()
     }
 }

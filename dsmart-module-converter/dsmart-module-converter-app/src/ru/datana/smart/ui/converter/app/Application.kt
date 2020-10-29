@@ -21,6 +21,7 @@ import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
+import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.mappings.toModelTemperature
@@ -79,6 +80,7 @@ fun Application.module(testing: Boolean = false) {
     val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
     val metalRateNormalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.normal").getString().trim().toDouble() }
 
+    // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
 //        timeout = metalRateEventGenTimeout,
 //        maxValue = metalRateEventGenMax,
@@ -171,7 +173,7 @@ fun Application.module(testing: Boolean = false) {
                     }
                 }
             } catch(e: Exception) {
-
+                // TODO: добавить обработку исключения
             } finally {
                 commitAll()
             }
@@ -179,6 +181,7 @@ fun Application.module(testing: Boolean = false) {
     }
 }
 
+// TODO: дописать метод
 //suspend inline fun <reified T, reified K> KtorKafkaConsumerContext.handleMessage(block: (InnerRecord<String, String>) -> Unit) {
 //    try {
 //        val context = ConverterBeContext()
