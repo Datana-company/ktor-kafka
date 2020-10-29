@@ -24,11 +24,12 @@ fun Application.module(testing: Boolean = false) {
     }
 
     val logger = datanaLogger(::main::class.java)
+    val anglesBasePath by lazy { environment.config.property("paths.angle.base").getString().trim() }
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
     val kafkaServers: String by lazy {
         environment.config.property("ktor.kafka.bootstrap.servers").getString().trim()
     }
-    val producerTopic: String by lazy {
+    val topicAngles: String by lazy {
         environment.config.property("ktor.kafka.producer.topic.angles").getString().trim()
     }
     val kafkaProducer: KafkaProducer<String, String> by lazy {
@@ -53,7 +54,10 @@ fun Application.module(testing: Boolean = false) {
             )
             ForwardServiceKafka(
                 logger = logger,
-                kafkaProducer = kafkaProducer
+                anglesBasePath = anglesBasePath,
+                topicAngles = topicAngles,
+                kafkaProducer = kafkaProducer,
+
             ).exec(context)
 
             commitAll()

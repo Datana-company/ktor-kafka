@@ -53,11 +53,6 @@ repositories {
 
 dependencies {
 
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-common"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-ws-models"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-ml-models"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-mlui"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-viml"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
     implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
@@ -71,8 +66,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
     implementation("com.google.guava:guava:$guavaVersion")
     implementation(kotlin("test-junit"))
-    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 
+    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
@@ -87,7 +82,7 @@ tasks {
         runCommand("mkdir -p logs")
         environmentVariable(
             mapOf(
-                //example "KAFKA_BOOTSTRAP_SERVERS" to "172.29.40.58:9092,172.29.40.59:9092,172.29.40.60:9092",
+                // example "KAFKA_BOOTSTRAP_SERVERS" to "172.29.40.58:9092,172.29.40.59:9092,172.29.40.60:9092",
                 "KAFKA_BOOTSTRAP_SERVERS" to "",
                 "KAFKA_TOPIC_TEMPERATURE" to "",
                 "KAFKA_TOPIC_CONVERTER" to "",
@@ -99,7 +94,7 @@ tasks {
                 "LOGS_KAFKA_HOSTS" to "",
                 "LOGS_KAFKA_TOPIC" to "",
                 "LOGS_DIR" to "",
-                "SERVICE_NAME" to "dsmart-module-temperature",
+                "SERVICE_NAME" to "dsmart-module-converter-angle",
                 "LOG_MAX_HISTORY_DAYS" to "3",
                 "LOG_MAX_FILE_SIZE" to "10MB",
                 "LOG_TOTAL_SIZE_CAP" to "24MB",
