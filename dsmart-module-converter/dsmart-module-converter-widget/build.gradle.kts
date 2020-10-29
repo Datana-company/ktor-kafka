@@ -78,6 +78,7 @@ tasks {
     }
 
     val ngStart by ngLibBuild("converter-app") {
+        dependsOn(ngBuildWidget)
         setArgs(
             listOf(
                 "serve",

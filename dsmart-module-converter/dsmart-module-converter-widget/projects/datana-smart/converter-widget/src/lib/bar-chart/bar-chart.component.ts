@@ -1,7 +1,7 @@
 import {Component, Input, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {ConverterModel} from "../models/converter.model";
+import {ConverterModel} from '../models/converter.model';
 
 @Component({
     selector: 'bar-chart-component',
@@ -15,15 +15,15 @@ export class BarChartComponent {
     view: any[] = [600, 200];
 
     // options
-    showXAxis: boolean = false;
-    showYAxis: boolean = true;
-    gradient: boolean = false;
-    showLegend: boolean = false;
-    showXAxisLabel: boolean = false;
-    yAxisLabel: string = '';
-    showYAxisLabel: boolean = false;
-    xAxisLabel: string = '';
-    showDataLabel: boolean = true;
+    showXAxis = false;
+    showYAxis = true;
+    gradient = false;
+    showLegend = false;
+    showXAxisLabel = false;
+    yAxisLabel = '';
+    showYAxisLabel = false;
+    xAxisLabel = '';
+    showDataLabel = true;
 
     colorScheme = {
         domain: ['#C5C5C5', '#CBF76F', '#FF8740', '#AAAAAA']
@@ -48,16 +48,16 @@ export class BarChartComponent {
     mapData(): any[] {
         return [
             {
-                "name": "Шлак",
-                "value": this.converterData?.slagRate*100
+                'name': 'Шлак',
+                'value': (this.converterData?.slagRate || 0) * 100
             },
             {
-                "name": "Допустимая доля металла",
-                "value": 20
+                'name': 'Допустимая доля металла',
+                'value': 20
             },
             {
-                "name": "Металл",
-                "value": this.converterData?.steelRate*100
+                'name': 'Металл',
+                'value': (this.converterData?.steelRate || 0) * 100
             }
         ];
     }
