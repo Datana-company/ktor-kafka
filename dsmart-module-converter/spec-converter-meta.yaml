@@ -73,32 +73,120 @@ components:
       description: Данные об оборудовании, которое используется для мониторинга на данном агрегате
       type: object
       properties:
+        converter:
+          $ref: '#/components/schemas/ConverterDevicesConverter'
         irCamera:
-          $ref: '#/components/schemas/ConverterDevicesIrCamera'
+          $ref: '#/components/schemas/ConverterDevicesIrCamerta'
+        selsyn:
+          $ref: '#/components/schemas/ConverterDevicesSelsyn'
+        slagRate:
+          $ref: '#/components/schemas/ConverterDevicesSlagRate'
 
-    ConverterDevicesIrCamera:
-      title: ИК-камера
-      description: Инфракрасная камера, встроенная в корпус конвертера, для отслеживания слива металла
+    ConverterDevicesConverter:
+      allOf:
+        - $ref: '#/components/schemas/ConverterDevice'
+
+    ConverterDevicesIrCamerta:
+      allOf:
+        - $ref: '#/components/schemas/ConverterDevice'
+
+    ConverterDevicesSelsyn:
+      allOf:
+        - $ref: '#/components/schemas/ConverterDevice'
+
+    ConverterDevicesSlagRate:
+      allOf:
+        - $ref: '#/components/schemas/ConverterDevice'
+
+    ConverterDevice:
+      title: Прибор
+      description: Прибор - источник данных о процессах и параметрах конвертера
       type: object
       properties:
         id:
-          title: Идентификатор камеры
-          description: Уникальный идентификатор или серийный номер камеры, с которой производится съемка видео
+          title: Идентификтор прибора
+          description: Уникальный идентификатор прибора, с которого производится съем данных
+          example: converter123-irCamera1
           type: string
         name:
           title: Название
-          description: Название камеры
+          description: Название прибора
           example: "Камера на Конвертере-2"
           type: string
         uri:
           title: Адрес устройства
           description: Адрес файла или устройства, с которого снимать изображение
           type: string
-          example: "file:///catalog/case1/video.ravi"
-        type:
+          example: "case-case1/video.ravi"
+        deviceType:
           title: Тип устройства
-          description: "Тип устройства: настоящая камера (устройство) или файл"
+          description: Техническое поле для десериализации. Указывает тип устройства
           type: string
-          enum:
-            - device
-            - file
+        type:
+          $ref: '#/components/schemas/ConverterDeviceType'
+      discriminator:
+        propertyName: deviceType
+
+    ConverterDeviceType:
+      title: Тип устройства
+      description: "Тип устройства: настоящее устройство или эмуляция из файла"
+      type: string
+      enum:
+        - device
+        - file
+        - computation
+
+    ConverterSlagRateStub:
+      title: Эмуляция по доле шлака в сливе
+      description: Структура описывает процесс изменения доли шлака и стали при сливе шлака из конвертера
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConverterSlagRateSnapshot'
+
+    ConverterSlagRateSnapshot:
+      type: object
+      description: Один временной срез для эмуляции данных по доле шлака в сливе из конвертера
+      properties:
+        timeShift:
+          title: Время
+          description: Смещение по времени текущего среза относительно начала слива в милисекундах
+          type: integer
+          format: int64
+        rateSlag:
+          title: Доля шлака
+          description: Доля шлака в безразмерных единицах в момент времени timeShift
+          type: number
+          format: double
+        rateSteel:
+          title: Доля стали
+          description: Доля стали в безразмерных единицах в момент времени timeShift
+          type: number
+          format: double
+
+    ConverterAnglesStub:
+      title: Эмуляция по углам
+      description: Структура описывает процесс изменения углов наклонения конвертера при сливе шлака
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConverterAngleSnapshot'
+
+    ConverterAngleSnapshot:
+      type: object
+      description: Один временной срез для эмуляции данных по углу наклона конвертера при сливе шлака
+      properties:
+        timeShift:
+          title: Время
+          description: Смещение по времени текущего среза относительно начала слива в милисекундах
+          type: integer
+          format: int64
+        angle:
+          title: Угол
+          description: Угол наклонения конвертера в градусах в момент времени timeShift
+          type: number
+          format: double
