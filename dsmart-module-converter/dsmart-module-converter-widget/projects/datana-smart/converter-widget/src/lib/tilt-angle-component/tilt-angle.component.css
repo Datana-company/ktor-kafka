@@ -5,12 +5,12 @@
     justify-content: center;
     text-align: center;
     width: calc(100% - 2rem - 4px); /*- 2rem - 4px*/
-    height: 4rem;
+    height: 1rem;
     padding: 1rem;
     /*border: 2px solid #22588F;*/
     border-radius: 4px 4px 0 0;
     background-color: white;
-    color: black;
+    color: #222220;
     font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
@@ -24,7 +24,7 @@
 .widget-boiling-time {
     display: flex;
     flex-direction: column;
-    height: calc(60% - 6rem - 8px);
+    height: calc(91.5% - 6rem - 8px);
     align-items: center;
     justify-content: center;
     text-align: center;
