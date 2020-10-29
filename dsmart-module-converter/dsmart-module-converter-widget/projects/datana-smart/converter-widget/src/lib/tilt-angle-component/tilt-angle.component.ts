@@ -4,10 +4,10 @@ import {TemperatureModel} from "../models/temperature.model";
 
 @Component({
   selector: 'tilt-angle-component',
-  templateUrl: './tilt-angle-component.component.html',
-  styleUrls: ['./tilt-angle-component.component.css']
+  templateUrl: './tilt-angle.component.html',
+  styleUrls: ['./tilt-angle.component.css']
 })
-export class TiltAngleComponentComponent  {
+export class TiltAngleComponent  {
 
   @Input() temperatureModel: TemperatureModel;
 

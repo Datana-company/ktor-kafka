@@ -4,14 +4,14 @@ import {VideoPlayerComponent} from './video-player-component/video-player.compon
 import {ConverterWidgetRoutingModule} from "./converter-widget-routing.module";
 import {CommonModule} from "@angular/common";
 import {WebsocketModule} from "@datana-smart/websocket";
-import {TiltAngleComponentComponent} from "./tilt-angle-component/tilt-angle-component.component";
+import {TiltAngleComponent} from "./tilt-angle-component/tilt-angle.component";
 import {EventRecommendationComponent} from "./event-recommendation-component/event-recommendation.component";
 
 @NgModule({
   declarations: [
     ConverterWidgetComponent,
     VideoPlayerComponent,
-    TiltAngleComponentComponent,
+    TiltAngleComponent,
     EventRecommendationComponent
   ],
   imports: [

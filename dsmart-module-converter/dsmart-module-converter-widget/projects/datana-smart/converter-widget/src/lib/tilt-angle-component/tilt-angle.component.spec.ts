@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TiltAngleComponentComponent } from './tilt-angle-component.component';
+import { TiltAngleComponent } from './tilt-angle.component';
 
 describe('TiltAngleComponentComponent', () => {
-  let component: TiltAngleComponentComponent;
-  let fixture: ComponentFixture<TiltAngleComponentComponent>;
+  let component: TiltAngleComponent;
+  let fixture: ComponentFixture<TiltAngleComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TiltAngleComponentComponent ]
+      declarations: [ TiltAngleComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TiltAngleComponentComponent);
+    fixture = TestBed.createComponent(TiltAngleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

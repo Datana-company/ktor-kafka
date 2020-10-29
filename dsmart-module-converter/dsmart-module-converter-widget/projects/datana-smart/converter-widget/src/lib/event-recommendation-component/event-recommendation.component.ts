@@ -4,8 +4,8 @@ import {EventModel} from "../models/event-model";
 
 @Component({
   selector: 'event-recommendation-component',
-  templateUrl: './event-recommendation-component.component.html',
-  styleUrls: ['./event-recommendation-component.component.css']
+  templateUrl: './event-recommendation.component.html',
+  styleUrls: ['./event-recommendation.component.css']
 })
 export class EventRecommendationComponent  {
   @Input() events:  Array<EventModel> = new Array<EventModel>();
