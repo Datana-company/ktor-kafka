@@ -19,7 +19,7 @@
 
 .lineTop {
     position: absolute;
-    width: 1318px;
+    width: 90%;
     height: 1px;
     left: 62px;
     top: 108px;
@@ -124,7 +124,7 @@
 .widget-info-container {
     height: 65%;
     background: #FFFFFF;
-    margin-top: 45px;
+    margin: 50px;
 }
 
 .widget-events {
