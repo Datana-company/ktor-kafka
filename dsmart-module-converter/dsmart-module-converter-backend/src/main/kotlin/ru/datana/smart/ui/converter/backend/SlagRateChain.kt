@@ -65,7 +65,7 @@ class SlagRateChain(
                     +CreateCriticalEventHandler
                 }
                 konveyor {
-                    on { slagRate.steelRate?.let { it > metalRateWarningPoint  } ?: false }
+                    on { slagRate.steelRate?.let { it > metalRateWarningPoint && it < metalRateCriticalPoint  } ?: false }
                     +UpdateCriticalEventHandler
                     +UpdateNormalEventHandler
                     +UpdateInfoEventHandler

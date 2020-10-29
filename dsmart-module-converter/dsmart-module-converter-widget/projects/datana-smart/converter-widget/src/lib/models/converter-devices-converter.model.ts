@@ -1,7 +1,7 @@
 import {DeviceTypeModel} from "./device-type.model";
 import {ConverterDevice} from "./converter-device";
 
-export class ConverterDevicesIrCameraModel implements ConverterDevice {
+export class ConverterDevicesConverterModel implements ConverterDevice {
   id: string;
   name: number;
   uri: string;

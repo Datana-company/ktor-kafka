@@ -21,7 +21,6 @@ import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.mappings.toModelTemperature
@@ -66,26 +65,27 @@ fun Application.module(testing: Boolean = false) {
     install(KtorKafkaConsumer)
 
     val wsManager = WsManager()
-    val topicTemperature by lazy { environment.config.property("ktor.kafka.consumer.topic.temperature").getString().trim() }
-    val topicConverter by lazy { environment.config.property("ktor.kafka.consumer.topic.converter").getString().trim() }
-    val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
+    val topicMath by lazy { environment.config.property("ktor.kafka.consumer.topic.math").getString().trim() }
+    val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
+    val topicAngles by lazy { environment.config.property("ktor.kafka.consumer.topic.angles").getString().trim() }
+    val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
+    val topicTemperature by lazy { environment.config.property("ktor.kafka.consumer.topic.temperature").getString().trim() }
     val converterDeviceId by lazy { environment.config.property("ktor.datana.converterDevice.id").getString().trim() }
-    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
-    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
-    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
-    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
+//    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
+//    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
+//    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
+//    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
     val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
     val metalRateNormalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.normal").getString().trim().toDouble() }
 
-    // TODO: 3. Сейчас генератор нигде не используется, нужно придумать, как его использовать в конвейере, чтобы тестировать на фронте события
-    val metalRateEventGenerator = MetalRateEventGenerator(
-        timeout = metalRateEventGenTimeout,
-        maxValue = metalRateEventGenMax,
-        minValue = metalRateEventGenMin,
-        changeValue = metalRateEventGenChange
-    )
-    metalRateEventGenerator.start()
+//    val metalRateEventGenerator = MetalRateEventGenerator(
+//        timeout = metalRateEventGenTimeout,
+//        maxValue = metalRateEventGenMax,
+//        minValue = metalRateEventGenMin,
+//        changeValue = metalRateEventGenChange
+//    )
+//    metalRateEventGenerator.start()
 
     val userEventsRepository = UserEventRepositoryInMemory()
 
@@ -126,7 +126,7 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        kafka(listOf(topicTemperature, topicConverter, topicVideo, topicMeta)) {
+        kafka(listOf(topicTemperature, topicMath, topicVideo, topicMeta)) {
             try {
                 val innerModel = records.map { it.toInnerModel() }
                 val record = innerModel.firstOrNull()
@@ -139,7 +139,7 @@ fun Application.module(testing: Boolean = false) {
                         )
                         converterFacade.handleTemperature(context)
                     }
-                    topicConverter -> {
+                    topicMath -> {
                         val kafkaModel = toConverterTransportMlUi(record)
                         val conveyorModelSlagRate = toModelSlagRate(kafkaModel)
                         val conveyorModelFrame = toModelFrame(kafkaModel)

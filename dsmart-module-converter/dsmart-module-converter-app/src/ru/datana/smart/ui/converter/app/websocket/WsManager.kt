@@ -90,7 +90,7 @@ class WsManager : IWsManager {
             data = toWsTemperatureModel(context.temperature)
         )
         val temperatureSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseTemperature.serializer(), wsTemperature)
-        send(temperatureSerializedString)
+//        send(temperatureSerializedString)
     }
 
     private suspend fun send(serializedString: String) {

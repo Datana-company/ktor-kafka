@@ -1,6 +1,6 @@
 package ru.datana.smart.ui.converter.common.models
 
-data class ModelDevicesIrCamera (
+data class ModelDevicesSelsyn(
     override val id: String? = null,
     override val name: String? = null,
     override val uri: String? = null,

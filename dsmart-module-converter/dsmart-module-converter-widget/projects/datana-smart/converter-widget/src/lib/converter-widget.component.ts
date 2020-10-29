@@ -22,11 +22,10 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   _unsubscribe = new Subject<void>();
 
   public temperatureData: TemperatureModel;
-  public converterAnglesData: AnglesModel;
-  public converterEvents: Array<EventModel> = new Array<EventModel>();
-  public converterFrameData: ConverterFrameModel;
   public converterMeltInfoData: ConverterMeltInfoModel;
   public converterSlagRateData: SlagRateModel;
+  public converterFrameData: ConverterFrameModel;
+  public converterEvents: Array<EventModel> = new Array<EventModel>();
 
   playlist: string;
 
@@ -46,47 +45,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       })
     ).subscribe(data => {
       this.temperatureData = data;
-    });
-
-    this.wsService.on('converter-angles-update').pipe(
-      takeUntil(this._unsubscribe),
-      map((data: any) => {
-        return new AnglesModel(
-          data?.angle as number
-        );
-      })
-    ).subscribe(data => {
-      this.converterAnglesData = data;
-    });
-
-    this.wsService.on('events-update').pipe(
-      takeUntil(this._unsubscribe),
-      map((data: any) => data?.list.map(
-        event => new EventModel(
-          event?.id as string,
-          new Date(event?.timeStart as number),
-          new Date(event?.timeFinish as number),
-          event?.title as string,
-          event?.textMessage as string,
-          event?.category as EventCategoryModel,
-          event?.isActive as boolean
-        )
-      ) as Array<EventModel>)
-    ).subscribe(data => {
-      this.converterEvents = data;
-    });
-
-    this.wsService.on('converter-frame-update').pipe(
-      takeUntil(this._unsubscribe),
-      map((data: any) => {
-        return new ConverterFrameModel(
-          data?.frameId as string,
-          data?.frameTime as number,
-          data?.framePath as string
-        );
-      })
-    ).subscribe(data => {
-      this.converterFrameData = data;
     });
 
     this.wsService.on('converter-melt-info-update').pipe(
@@ -117,6 +75,36 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       })
     ).subscribe(data => {
       this.converterSlagRateData = data;
+    });
+
+    this.wsService.on('converter-frame-update').pipe(
+      takeUntil(this._unsubscribe),
+      map((data: any) => {
+        return new ConverterFrameModel(
+          data?.frameId as string,
+          data?.frameTime as number,
+          data?.framePath as string
+        );
+      })
+    ).subscribe(data => {
+      this.converterFrameData = data;
+    });
+
+    this.wsService.on('events-update').pipe(
+      takeUntil(this._unsubscribe),
+      map((data: any) => data?.list.map(
+        event => new EventModel(
+          event?.id as string,
+          new Date(event?.timeStart as number),
+          new Date(event?.timeFinish as number),
+          event?.title as string,
+          event?.textMessage as string,
+          event?.category as EventCategoryModel,
+          event?.isActive as boolean
+        )
+      ) as Array<EventModel>)
+    ).subscribe(data => {
+      this.converterEvents = data;
     });
   }
 

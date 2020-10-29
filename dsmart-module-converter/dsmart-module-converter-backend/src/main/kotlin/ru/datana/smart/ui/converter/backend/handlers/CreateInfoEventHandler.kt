@@ -4,7 +4,6 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.IMetalRateEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
 import java.time.Instant
 import java.util.*
@@ -12,7 +11,7 @@ import java.util.*
 object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
-        val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActive().find { it is IMetalRateEvent } as? MetalRateInfoEvent
+        val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateInfoEvent
         activeEvent?.let {
             val updateEvent = MetalRateInfoEvent(
                 id = it.id,

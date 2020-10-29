@@ -3,6 +3,7 @@ package ru.datana.smart.ui.converter.repository.inmemory
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import ru.datana.smart.ui.converter.common.events.IBizEvent
+import ru.datana.smart.ui.converter.common.events.IMetalRateEvent
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -29,9 +30,15 @@ class UserEventRepositoryInMemory: IUserEventsRepository {
 
     override fun getActive(): List<IBizEvent> {
         return events.asMap().values.stream()
-            .filter { recommendation -> recommendation.isActive }
+            .filter { event -> event.isActive }
             .sorted(Comparator.comparingLong(IBizEvent::timeStart).reversed())
             .toList()
+    }
+
+    override fun getActiveMetalRateEvent(): IMetalRateEvent? {
+        return events.asMap().values.stream()
+            .filter { event -> event.isActive }
+            .filter { event -> event is IMetalRateEvent } as? IMetalRateEvent
     }
 
 }

@@ -14,13 +14,35 @@ fun toModelMeltInfo(converterMeltInfo: ConverterMeltInfo) =
         steelGrade = converterMeltInfo.steelGrade,
         crewNumber = converterMeltInfo.crewNumber,
         shiftNumber = converterMeltInfo.shiftNumber,
-        mode = ModelMeltInfo.Mode.valueOf(converterMeltInfo.mode.toString()),
+        mode = converterMeltInfo.mode?.let { ModelMeltInfo.Mode.valueOf(it.name) },
         devices = ModelMeltDevices(
+            converter = ModelDevicesConverter(
+                id = converterMeltInfo.devices?.converter?.id,
+                name = converterMeltInfo.devices?.converter?.name,
+                uri = converterMeltInfo.devices?.converter?.uri,
+                deviceType = converterMeltInfo.devices?.converter?.deviceType,
+                type = converterMeltInfo.devices?.converter?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
             irCamera = ModelDevicesIrCamera(
                 id = converterMeltInfo.devices?.irCamera?.id,
                 name = converterMeltInfo.devices?.irCamera?.name,
                 uri = converterMeltInfo.devices?.irCamera?.uri,
-                type = ModelDevicesIrCamera.Type.valueOf(converterMeltInfo.devices?.irCamera?.type.toString())
+                deviceType = converterMeltInfo.devices?.irCamera?.deviceType,
+                type = converterMeltInfo.devices?.irCamera?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
+            selsyn = ModelDevicesSelsyn(
+                id = converterMeltInfo.devices?.selsyn?.id,
+                name = converterMeltInfo.devices?.selsyn?.name,
+                uri = converterMeltInfo.devices?.selsyn?.uri,
+                deviceType = converterMeltInfo.devices?.selsyn?.deviceType,
+                type = converterMeltInfo.devices?.selsyn?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
+            slagRate = ModelDevicesSlagRate(
+                id = converterMeltInfo.devices?.slagRate?.id,
+                name = converterMeltInfo.devices?.slagRate?.name,
+                uri = converterMeltInfo.devices?.slagRate?.uri,
+                deviceType = converterMeltInfo.devices?.slagRate?.deviceType,
+                type = converterMeltInfo.devices?.slagRate?.type?.let { ModelDeviceType.valueOf(it.name) }
             )
         )
     )
@@ -33,13 +55,35 @@ fun toModelMeltInfo(converterTransportViMl: ConverterTransportViMl) =
         steelGrade = converterTransportViMl.meltInfo?.steelGrade,
         crewNumber = converterTransportViMl.meltInfo?.crewNumber,
         shiftNumber = converterTransportViMl.meltInfo?.shiftNumber,
-        mode = ModelMeltInfo.Mode.valueOf(converterTransportViMl.meltInfo?.mode.toString()),
+        mode = converterTransportViMl.meltInfo?.mode?.let { ModelMeltInfo.Mode.valueOf(it.name) },
         devices = ModelMeltDevices(
+            converter = ModelDevicesConverter(
+                id = converterTransportViMl.meltInfo?.devices?.converter?.id,
+                name = converterTransportViMl.meltInfo?.devices?.converter?.name,
+                uri = converterTransportViMl.meltInfo?.devices?.converter?.uri,
+                deviceType = converterTransportViMl.meltInfo?.devices?.converter?.deviceType,
+                type = converterTransportViMl.meltInfo?.devices?.converter?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
             irCamera = ModelDevicesIrCamera(
                 id = converterTransportViMl.meltInfo?.devices?.irCamera?.id,
                 name = converterTransportViMl.meltInfo?.devices?.irCamera?.name,
                 uri = converterTransportViMl.meltInfo?.devices?.irCamera?.uri,
-                type = ModelDevicesIrCamera.Type.valueOf(converterTransportViMl.meltInfo?.devices?.irCamera?.type.toString())
+                deviceType = converterTransportViMl.meltInfo?.devices?.irCamera?.deviceType,
+                type = converterTransportViMl.meltInfo?.devices?.irCamera?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
+            selsyn = ModelDevicesSelsyn(
+                id = converterTransportViMl.meltInfo?.devices?.selsyn?.id,
+                name = converterTransportViMl.meltInfo?.devices?.selsyn?.name,
+                uri = converterTransportViMl.meltInfo?.devices?.selsyn?.uri,
+                deviceType = converterTransportViMl.meltInfo?.devices?.selsyn?.deviceType,
+                type = converterTransportViMl.meltInfo?.devices?.selsyn?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
+            slagRate = ModelDevicesSlagRate(
+                id = converterTransportViMl.meltInfo?.devices?.slagRate?.id,
+                name = converterTransportViMl.meltInfo?.devices?.slagRate?.name,
+                uri = converterTransportViMl.meltInfo?.devices?.slagRate?.uri,
+                deviceType = converterTransportViMl.meltInfo?.devices?.slagRate?.deviceType,
+                type = converterTransportViMl.meltInfo?.devices?.slagRate?.type?.let { ModelDeviceType.valueOf(it.name) }
             )
         )
     )
@@ -52,13 +96,35 @@ fun toModelMeltInfo(converterTransportMlUi: ConverterTransportMlUi) =
         steelGrade = converterTransportMlUi.meltInfo?.steelGrade,
         crewNumber = converterTransportMlUi.meltInfo?.crewNumber,
         shiftNumber = converterTransportMlUi.meltInfo?.shiftNumber,
-        mode = ModelMeltInfo.Mode.valueOf(converterTransportMlUi.meltInfo?.mode.toString()),
+        mode = converterTransportMlUi.meltInfo?.mode?.let { ModelMeltInfo.Mode.valueOf(it.name) },
         devices = ModelMeltDevices(
+            converter = ModelDevicesConverter(
+                id = converterTransportMlUi.meltInfo?.devices?.converter?.id,
+                name = converterTransportMlUi.meltInfo?.devices?.converter?.name,
+                uri = converterTransportMlUi.meltInfo?.devices?.converter?.uri,
+                deviceType = converterTransportMlUi.meltInfo?.devices?.converter?.deviceType,
+                type = converterTransportMlUi.meltInfo?.devices?.converter?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
             irCamera = ModelDevicesIrCamera(
                 id = converterTransportMlUi.meltInfo?.devices?.irCamera?.id,
                 name = converterTransportMlUi.meltInfo?.devices?.irCamera?.name,
                 uri = converterTransportMlUi.meltInfo?.devices?.irCamera?.uri,
-                type = ModelDevicesIrCamera.Type.valueOf(converterTransportMlUi.meltInfo?.devices?.irCamera?.type.toString())
+                deviceType = converterTransportMlUi.meltInfo?.devices?.irCamera?.deviceType,
+                type = converterTransportMlUi.meltInfo?.devices?.irCamera?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
+            selsyn = ModelDevicesSelsyn(
+                id = converterTransportMlUi.meltInfo?.devices?.selsyn?.id,
+                name = converterTransportMlUi.meltInfo?.devices?.selsyn?.name,
+                uri = converterTransportMlUi.meltInfo?.devices?.selsyn?.uri,
+                deviceType = converterTransportMlUi.meltInfo?.devices?.selsyn?.deviceType,
+                type = converterTransportMlUi.meltInfo?.devices?.selsyn?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
+            slagRate = ModelDevicesSlagRate(
+                id = converterTransportMlUi.meltInfo?.devices?.slagRate?.id,
+                name = converterTransportMlUi.meltInfo?.devices?.slagRate?.name,
+                uri = converterTransportMlUi.meltInfo?.devices?.slagRate?.uri,
+                deviceType = converterTransportMlUi.meltInfo?.devices?.slagRate?.deviceType,
+                type = converterTransportMlUi.meltInfo?.devices?.slagRate?.type?.let { ModelDeviceType.valueOf(it.name) }
             )
         )
     )
