@@ -1,31 +1,21 @@
 package ru.datana.smart.ui.converter.mock.app
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import io.ktor.locations.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
-import io.ktor.locations.*
-import io.ktor.request.receiveText
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG
-import org.apache.kafka.clients.producer.ProducerRecord
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.meta.models.*
+import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.streams.toList
 
 /**
  * Location for uploading videos.
@@ -38,17 +28,13 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @OptIn(KtorExperimentalAPI::class)
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
+
     val logger = datanaLogger(::main::class.java)
-    val objectMapper = jacksonObjectMapper()
-    val pathToCatalog: String by lazy {
-        environment.config.property("ktor.catalog.path").getString().trim()
-    }
-    val kafkaServers: String by lazy {
-        environment.config.property("ktor.kafka.bootstrap.servers").getString().trim()
-    }
-    val kafkaTopic: String by lazy {
-        environment.config.property("ktor.kafka.producer.topic.meta").getString().trim()
-    }
+
+    val pathToCatalog: String by lazy { environment.config.property("ktor.catalog.path").getString().trim() }
+    val kafkaServers: String by lazy { environment.config.property("ktor.kafka.bootstrap.servers").getString().trim() }
+    val kafkaTopic: String by lazy { environment.config.property("ktor.kafka.producer.topic.meta").getString().trim() }
+
     val kafkaProducer: KafkaProducer<String, String> by lazy {
         val props = Properties().apply {
             put(BOOTSTRAP_SERVERS_CONFIG, kafkaServers)
@@ -86,6 +72,23 @@ fun Application.module(testing: Boolean = false) {
         throw IOException("Failed to create directory ${caseCatalogDir.absolutePath}")
     }
 
+    val listService by lazy { ConverterMockListService(
+        pathToCatalog = pathToCatalog
+    ) }
+    val startService by lazy { ConverterMockStartService(
+        pathToCatalog = pathToCatalog,
+        kafkaProducer = kafkaProducer,
+        kafkaTopic = kafkaTopic
+    ) }
+    val createService by lazy { ConverterMockCreateService(
+        pathToCatalog = pathToCatalog
+    ) }
+    val uploadService by lazy { ConverterMockStartService(
+        pathToCatalog = pathToCatalog,
+        kafkaProducer = kafkaProducer,
+        kafkaTopic = kafkaTopic
+    ) }
+
     routing {
         static("/") {
             defaultResource("static/index.html")
@@ -93,43 +96,15 @@ fun Application.module(testing: Boolean = false) {
         }
 
         get("/list") {
-            logger.info(" +++ GET /list")
-            var absolutePathToCatalog: Path?
-            try {
-                absolutePathToCatalog = Paths.get(pathToCatalog).toAbsolutePath()
-            } catch (e: Throwable) {
-                logger.error(e.localizedMessage)
-                call.respond(HttpStatusCode.InternalServerError)
-                return@get
+            val context = ConverterMockContext()
+            listService.exec(context)
+            when(context.status) {
+                ConverterMockContext.Statuses.OK -> call.respond(context.responseData)
+                else -> call.respond(HttpStatusCode.InternalServerError)
             }
-            if (!Files.exists(absolutePathToCatalog)) {
-                val errorMsg = "По пути " + absolutePathToCatalog + " каталог не найден"
-                logger.error(errorMsg)
-                call.respond(HttpStatusCode.InternalServerError, errorMsg)
-                return@get
-            }
-            if (!Files.isDirectory(absolutePathToCatalog)) {
-                val errorMsg = "По пути " + absolutePathToCatalog + " находится файл, а должен быть каталог"
-                logger.error(errorMsg)
-                call.respond(HttpStatusCode.InternalServerError, errorMsg)
-                return@get
-            }
-            val converterCaseListModel = ConverterCaseListModel(cases = Files.walk(
-                absolutePathToCatalog,
-                1
-            ) // Смотрим только 1 уровень (т.е. не заходим в каталоги)
-                .filter { item -> Files.isDirectory(item) && item.fileName.toString().startsWith("case-") } // Оставляем только каталоги начинающиеся с "case-"
-                .map {
-                    ConverterCaseModel(
-                        name = it.fileName.toString(),
-                        dir = it.toString()
-                    )
-                }
-                .toList()
-            )
-            val converterCaseListJsonString = objectMapper.writeValueAsString(converterCaseListModel)
-            call.respondText(converterCaseListJsonString.trimIndent())
         }
+
+
         get("/front-config") {
             call.respondText(
                 """
@@ -145,102 +120,44 @@ fun Application.module(testing: Boolean = false) {
         }
 
         get("/send") {
-            logger.info(" +++ GET /send")
-            logger.debug("parameters count: {}", objs = arrayOf(call.parameters.names().size))
-            val timeStart = Instant.now().toEpochMilli()
-            logger.info(
-                msg = "Send event is caught by converter-mock backend",
-                data = object {
-                    val id = "datana-smart-converter-mock-send-caught"
-                    val timeStart = timeStart
-                }
-            )
-
             val case = call.parameters["case"] ?: throw BadRequestException("No case is specified")
-            logger.debug("case: {}", objs = arrayOf(case))
-            logger.debug("kafkaServers: {} --- kafkaTopic: {} --- pathToCatalog: {}",
-                objs = arrayOf(kafkaServers, kafkaTopic, pathToCatalog))
-            val meltInfo = try {
-                val metaText = File("$pathToCatalog/$case/meta.json").readText()
-                logger.debug("metaText: {}", objs = arrayOf(metaText))
-                objectMapper.readValue<ConverterMeltInfo>(metaText)
-            } catch (e: Throwable) {
-                ConverterMeltInfo(
-                    meltNumber = "unknown",
-                    steelGrade = "unknown",
-                    crewNumber = "0",
-                    shiftNumber = "-1",
-                    mode = ConverterMeltInfo.Mode.EMULATION,
-                    devices = ConverterMeltDevices(
-                        converter = ConverterDevicesConverter(
-                            id = "converterUnk",
-                            name = "Неизвестный конвертер",
-                        ),
-                        irCamera = ConverterDevicesIrCamerta(
-                            id = "converterUnk-camera",
-                            name = "Неизвестная камера",
-                            type = ConverterDeviceType.FILE,
-                            uri = "case-case1/file.ravi"
-                        ),
-                        selsyn = ConverterDevicesSelsyn(
-                            id = "converterUnk-selsyn",
-                            name = "Неизвестный селсин",
-                            type = ConverterDeviceType.FILE,
-                            uri = "case-case1/selsyn.json"
-                        ),
-                        slagRate = ConverterDevicesSlagRate(
-                            id = "converterUnk-composition",
-                            name = "Неизвестный селсин",
-                            type = ConverterDeviceType.FILE,
-                            uri = "case-case1/slag-rate.json"
-                        )
-                    )
-                )
-            }
-            val meltId = "${meltInfo.meltNumber}-$timeStart"
-            val meltInfoInit = meltInfo.copy(
-                id = meltId,
-                timeStart = timeStart
+            val context = ConverterMockContext(
+                startCase = case
             )
-            val readyJsonString = objectMapper.writeValueAsString(meltInfoInit)
-            try {
-                kafkaProducer.send(ProducerRecord(kafkaTopic, meltId, readyJsonString))
-                logger.biz(
-                    msg = "Send event is caught by converter-mock backend and successfully handled",
-                    data = object {
-                        val id = "datana-smart-converter-mock-send-done"
-                        val meltInfo = meltInfoInit
-                    }
-                )
-                call.respond(HttpStatusCode.OK)
-            } catch (e: Throwable) {
-                logger.error("Send event failed due to kafka producer {}", objs = arrayOf(e))
-                call.respond(HttpStatusCode.InternalServerError)
+            startService.exec(context)
+            when(context.status) {
+                ConverterMockContext.Statuses.OK -> call.respond(HttpStatusCode.OK)
+                else -> call.respond(HttpStatusCode.InternalServerError)
             }
         }
 
         post("/add_case") {
-            logger.info(" +++ POST /add_case")
-            val metaText = call.receiveText()
-            logger.info("request body: {}", objs = arrayOf(metaText))
-            try {
-                objectMapper.readValue<ConverterMeltInfo>(metaText)
-                val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss.SSS"))
-                val newCaseFolderName = "case-$currentTime"
-                val caseDir = File("$pathToCatalog/$newCaseFolderName")
-                if (caseDir.mkdirs() && caseDir.exists()) {
-                    val caseJsonFile = File(caseDir.absolutePath, "meta.json")
-                    if (caseJsonFile.createNewFile()) {
-                        caseJsonFile.writeText(metaText)
-                    }
-                }
-                call.respondText("{\"newCaseFolderName\":\"$newCaseFolderName\"}", status = HttpStatusCode.OK)
+            val request: ConverterCaseSaveRequest = try {
+                call.receive()
             } catch (e: Throwable) {
-                logger.error("Receive incorrect data", objs = arrayOf(e))
-                call.respond(HttpStatusCode.InternalServerError)
+                logger.error("Error parsing meltInfo body from frontend: {}", call.receiveText())
+                return@post
+            }
+            val context = ConverterMockContext(
+                requestToSave = request
+            )
+            createService.exec(context)
+            when(context.status) {
+                ConverterMockContext.Statuses.OK -> call.respond(HttpStatusCode.OK, context.responseToSave)
+                else -> call.respond(HttpStatusCode.InternalServerError)
             }
         }
 
-        upload(caseCatalogDir)
+        post<Upload> {
+            call.respond(HttpStatusCode.OK)
+            val multipart = call.receiveMultipart()
+            val context = ConverterMockContext(
+            )
+            createService.exec(context)
+            when(context.status) {
+                ConverterMockContext.Statuses.OK -> call.respond(HttpStatusCode.OK, context.responseToSave)
+                else -> call.respond(HttpStatusCode.InternalServerError)
+            }
+        }
     }
 }

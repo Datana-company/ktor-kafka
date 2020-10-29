@@ -1,6 +1,7 @@
 package ru.datana.smart.ui.converter.mock.app
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 
 data class ConverterCaseListModel(
     @JsonProperty("cases")
@@ -13,3 +14,19 @@ data class ConverterCaseModel(
     @JsonProperty("dir")
     val dir: kotlin.String? = null
 ) {}
+
+data class ConverterCaseSaveRequest(
+    @JsonProperty("caseName")
+    val caseName: String? = null,
+
+    @JsonProperty("meltInfo")
+    val meltInfo: ConverterMeltInfo? = null
+)
+
+data class ConverterCaseSaveResponse(
+    @JsonProperty("caseName")
+    val caseName: String? = null,
+
+    @JsonProperty("meltInfo")
+    val meltInfo: ConverterMeltInfo? = null
+)
