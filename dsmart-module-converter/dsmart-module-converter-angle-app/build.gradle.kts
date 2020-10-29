@@ -54,6 +54,7 @@ repositories {
 dependencies {
 
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-angle"))
     implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")

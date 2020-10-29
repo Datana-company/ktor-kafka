@@ -3,24 +3,26 @@ package ru.datana.smart.ui.converter.angle.app.cor.handlers
 import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.angle.app.cor.context.ConverterAngleContext
-import ru.datana.smart.ui.converter.angle.app.cor.context.CorError
 import ru.datana.smart.ui.converter.angle.app.cor.context.CorStatus
-import java.nio.file.Files
+import java.time.Instant
 
-object DataExtractorHandler: IKonveyorHandler<ConverterAngleContext<String, String>> {
+object FinishHandler : IKonveyorHandler<ConverterAngleContext<String, String>> {
 
     override suspend fun exec(context: ConverterAngleContext<String, String>, env: IKonveyorEnvironment) {
-        if (Files.exists(context.anglesFilePath) && !Files.isDirectory(context.anglesFilePath)) {
-            val msg = "No file in path ${context.anglesFilePath}"
-            context.logger.error(msg)
-            context.errors.add(CorError(msg))
-            context.status = CorStatus.FAILING
-        }
+        context.status = if (context.errors.isEmpty()) CorStatus.SUCCESS else CorStatus.ERROR
+        context.timeStop = Instant.now()
 
-
+        context.logger.trace(
+            "Conveyor has ended. Started: {}. Finished: {}",
+            objs = *arrayOf(
+                context.timeStart,
+                context.timeStop
+            )
+        )
     }
 
     override fun match(context: ConverterAngleContext<String, String>, env: IKonveyorEnvironment): Boolean {
-        return context.status == CorStatus.STARTED
+        return true
     }
+
 }

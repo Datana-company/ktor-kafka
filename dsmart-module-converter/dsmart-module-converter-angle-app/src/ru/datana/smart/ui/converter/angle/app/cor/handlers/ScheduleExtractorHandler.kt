@@ -5,27 +5,27 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.angle.app.cor.context.ConverterAngleContext
 import ru.datana.smart.ui.converter.angle.app.cor.context.CorError
 import ru.datana.smart.ui.converter.angle.app.cor.context.CorStatus
-import ru.datana.smart.ui.mlui.models.ConverterMeltInfo
+import ru.datana.smart.ui.converter.angle.app.models.AngleSchedule
+import java.io.File
 
-
-object ConverterMetaHandler : IKonveyorHandler<ConverterAngleContext<String, String>> {
+object ScheduleExtractorHandler : IKonveyorHandler<ConverterAngleContext<String, String>> {
 
     override suspend fun exec(context: ConverterAngleContext<String, String>, env: IKonveyorEnvironment) {
-        val record = context.records.first()
-        context.logger.trace(
-            "topic = {}, partition = {}, offset = {}, key = {}, value = {}",
-            objs = *arrayOf(
-                record.topic,
-                record.partition,
-                record.offset,
-                record.key,
-                record.value
-            )
-        )
         try {
-            context.metaInfo = context.jacksonSerializer.readValue(
-                record.value,
-                ConverterMeltInfo::class.java
+            val scheduleAbsolutePath = "${context.scheduleBasePath}/${context.scheduleRelativePath}"
+            context.logger.trace(
+                "Reading file: {}",
+                objs = *arrayOf(
+                    scheduleAbsolutePath
+                )
+            )
+
+            val json = File(scheduleAbsolutePath).readText(Charsets.UTF_8)
+//            val json = File("resources/schedule.json").readText(Charsets.UTF_8)
+
+            context.angleSchedule = context.jacksonSerializer.readValue(
+                json,
+                AngleSchedule::class.java
             )
         } catch (e: Throwable) {
             val msg = e.message ?: ""

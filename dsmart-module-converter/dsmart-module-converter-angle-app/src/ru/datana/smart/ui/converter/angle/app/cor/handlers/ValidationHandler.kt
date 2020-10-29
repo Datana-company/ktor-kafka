@@ -5,28 +5,24 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.angle.app.cor.context.ConverterAngleContext
 import ru.datana.smart.ui.converter.angle.app.cor.context.CorError
 import ru.datana.smart.ui.converter.angle.app.cor.context.CorStatus
-import ru.datana.smart.ui.mlui.models.ConverterMeltInfo
+import java.lang.IllegalArgumentException
 
 
-object ConverterMetaHandler : IKonveyorHandler<ConverterAngleContext<String, String>> {
+object ValidationHandler : IKonveyorHandler<ConverterAngleContext<String, String>> {
 
     override suspend fun exec(context: ConverterAngleContext<String, String>, env: IKonveyorEnvironment) {
-        val record = context.records.first()
-        context.logger.trace(
-            "topic = {}, partition = {}, offset = {}, key = {}, value = {}",
-            objs = *arrayOf(
-                record.topic,
-                record.partition,
-                record.offset,
-                record.key,
-                record.value
-            )
-        )
         try {
-            context.metaInfo = context.jacksonSerializer.readValue(
-                record.value,
-                ConverterMeltInfo::class.java
+            val timeStart = context.metaInfo?.timeStart
+                ?: throw IllegalArgumentException(
+                    "ConverterMeltInfo does not contain value 'timeStart: ${context.metaInfo}"
+                )
+            if (timeStart <= 0) throw IllegalArgumentException(
+                "Field 'timeStart' in ConverterMeltInfo should be positive: ${context.metaInfo}"
             )
+            context.scheduleRelativePath = context.metaInfo?.devices?.selsyn?.uri
+                ?: throw IllegalArgumentException(
+                    "ConverterMeltInfo does not contain value 'devices.selsyn.uri': ${context.metaInfo}"
+                )
         } catch (e: Throwable) {
             val msg = e.message ?: ""
             context.logger.error(msg)

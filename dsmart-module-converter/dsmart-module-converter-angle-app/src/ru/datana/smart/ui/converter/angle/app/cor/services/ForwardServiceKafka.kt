@@ -6,12 +6,11 @@ import codes.spectrum.konveyor.konveyor
 import org.apache.kafka.clients.producer.KafkaProducer
 import ru.datana.smart.logger.DatanaLogContext
 import ru.datana.smart.ui.converter.angle.app.cor.context.ConverterAngleContext
-import ru.datana.smart.ui.converter.angle.app.cor.handlers.ConverterMetaHandler
-import ru.datana.smart.ui.converter.angle.app.cor.handlers.DataExtractorHandler
+import ru.datana.smart.ui.converter.angle.app.cor.handlers.*
 
 class ForwardServiceKafka(
     val logger: DatanaLogContext,
-    val anglesBasePath: String,
+    val scheduleBasePath: String,
     val topicAngles: String,
     val kafkaProducer: KafkaProducer<String, String>
 ) {
@@ -24,7 +23,7 @@ class ForwardServiceKafka(
         konveyor.exec(
             context.also {
                 it.logger = logger
-                it.anglesBasePath = anglesBasePath
+                it.scheduleBasePath = scheduleBasePath
                 it.topicAngles = topicAngles
                 it.kafkaProducer = kafkaProducer
             },
@@ -38,7 +37,10 @@ class ForwardServiceKafka(
             timeout { 1000 }
 
             +ConverterMetaHandler
-            +DataExtractorHandler
+            +ValidationHandler
+            +ScheduleExtractorHandler
+            +SendingHandler
+            +FinishHandler
         }
     }
 }
