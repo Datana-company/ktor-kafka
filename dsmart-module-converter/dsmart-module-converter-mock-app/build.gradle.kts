@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val ktorVersion: String by project
 val kotlinVersion: String by project
-val logbackVersion: String by project
 val projectMaintainer: String by project
 val kafkaVersion: String by project
 val dsmartLoggingVersion: String by project
@@ -63,7 +62,7 @@ dependencies {
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
 
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
-    implementation("ru.datana.smart:datana-smart-logging-logback:$dsmartLoggingVersion")
+    implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
     implementation("codes.spectrum:konveyor:$konveyorVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")

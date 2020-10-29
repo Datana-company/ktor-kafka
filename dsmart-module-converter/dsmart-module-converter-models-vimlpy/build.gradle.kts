@@ -18,7 +18,7 @@ val generatedSourcesDir = "$buildDir/generated"
 
 openApiGenerate {
     generatorName.set("python-flask")
-    inputSpec.set("${project(":dsmart-module-converter").projectDir}/spec-converter-ViMl.yaml")
+    inputSpec.set("${project(":dsmart-module-converter").projectDir}/spec-converter-video.yaml")
     outputDir.set(generatedSourcesDir)
     val basePackage = "${project.group.toString().replace(".", "_")}_viml"
     packageName.set(basePackage)

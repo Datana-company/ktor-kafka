@@ -18,7 +18,7 @@ val generatedSourcesDir = "$buildDir/generated"
 
 openApiGenerate {
     generatorName.set("python-flask")
-    inputSpec.set("${project(":dsmart-module-converter").projectDir}/spec-converter-MlUi.yaml")
+    inputSpec.set("${project(":dsmart-module-converter").projectDir}/spec-converter-math.yaml")
     outputDir.set(generatedSourcesDir)
     val basePackage = "${project.group.toString().replace(".", "_")}_mlui"
     packageName.set(basePackage)

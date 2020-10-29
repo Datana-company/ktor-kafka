@@ -1,26 +1,14 @@
 package ru.datana.smart.ui.converter.app
 
-import ch.qos.logback.classic.Logger
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.application.log
-import io.ktor.features.CORS
-import io.ktor.features.CallLogging
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.cio.websocket.pingPeriod
-import io.ktor.http.cio.websocket.timeout
-import io.ktor.http.content.defaultResource
-import io.ktor.http.content.resources
-import io.ktor.http.content.static
-import io.ktor.request.path
-import io.ktor.response.respondText
-import io.ktor.routing.get
-import io.ktor.routing.routing
-import io.ktor.util.KtorExperimentalAPI
-import io.ktor.websocket.WebSockets
-import io.ktor.websocket.webSocket
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.http.cio.websocket.*
+import io.ktor.http.content.*
+import io.ktor.request.*
+import io.ktor.routing.*
+import io.ktor.util.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
@@ -29,10 +17,10 @@ import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.cor.repository.UserEventsRepository
-import ru.datana.smart.ui.converter.app.websocket.WsManager
-import ru.datana.smart.ui.converter.app.mappings.toInnerModel
-import java.time.Duration
 import ru.datana.smart.ui.converter.app.cor.services.ForwardServiceKafkaUi
+import ru.datana.smart.ui.converter.app.mappings.toInnerModel
+import ru.datana.smart.ui.converter.app.websocket.WsManager
+import java.time.Duration
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -40,7 +28,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 @KtorExperimentalAPI
 fun Application.module(testing: Boolean = false) {
-    val logger = datanaLogger(this.log as Logger)
+    val logger = datanaLogger(::main::class.java)
 
     install(CallLogging) {
         level = Level.INFO
