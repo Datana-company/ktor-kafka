@@ -12,7 +12,7 @@ object UpdateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateWarningEvent
         activeEvent?.let {
-            val isCompletedEvent = it.angleFinish?.let { angleFinish -> it.angleStart?.compareTo(angleFinish)?.let { it >= 0 } } ?: false
+            val isCompletedEvent = it.angleFinish?.let { angleFinish -> it.angleStart?.compareTo(angleFinish)?.let { it > 0 } } ?: false
                 && (it.metalRate > context.slagRate.steelRate!!)
             val historicalEvent = MetalRateWarningEvent(
                 id = it.id,
