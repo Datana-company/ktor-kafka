@@ -1,0 +1,46 @@
+
+.widget-boiling-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: calc(100% - 2rem - 4px); /*- 2rem - 4px*/
+    height: 1rem;
+    padding: 1rem;
+    /*border: 2px solid #22588F;*/
+    border-radius: 4px 4px 0 0;
+    background-color: white;
+    color: #222220;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 20px;
+    /* or 111% */
+
+    text-align: center;
+}
+
+.widget-boiling-time {
+    display: flex;
+    flex-direction: column;
+    height: calc(91.5% - 6rem - 8px);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: calc(100% - 4px);
+    /*border: 2px solid #22588F;*/
+    border-radius: 0 0 4px 4px;
+    font-size: 3rem;
+    font-weight: 500;
+    background: #CCDBEB;
+}
+
+.widget-boiling-time-value {
+    height: calc(30% - 16rem - 4px);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
