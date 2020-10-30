@@ -110,22 +110,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
     });
   }
 
-  public isCompleted(executionStatus: ExecutionStatusModel) {
-    return executionStatus == ExecutionStatusModel.COMPLETED;
-  }
-
-  public isFailed(executionStatus: ExecutionStatusModel) {
-    return executionStatus == ExecutionStatusModel.FAILED;
-  }
-
-  public isWarning(eventCategoryModel: EventCategoryModel) {
-    return eventCategoryModel == EventCategoryModel.CRITICAL || eventCategoryModel == EventCategoryModel.WARNING;
-  }
-
-  public isInfo(eventCategoryModel: EventCategoryModel) {
-    return eventCategoryModel == EventCategoryModel.INFO || eventCategoryModel == EventCategoryModel.HINT;
-  }
-
   ngOnDestroy(): void {
     this._unsubscribe.next();
     this._unsubscribe.complete();
