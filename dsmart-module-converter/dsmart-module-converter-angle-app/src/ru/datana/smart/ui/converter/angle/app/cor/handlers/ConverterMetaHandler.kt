@@ -18,7 +18,7 @@ object ConverterMetaHandler : IKonveyorHandler<ConverterAngleContext<String, Str
         val record = context.records.first()
         logger.trace(
             "topic = {}, partition = {}, offset = {}, key = {}, value = {}",
-            objs = *arrayOf(
+            objs = arrayOf(
                 record.topic,
                 record.partition,
                 record.offset,

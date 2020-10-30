@@ -18,7 +18,7 @@ object ScheduleExtractorHandler : IKonveyorHandler<ConverterAngleContext<String,
             val scheduleAbsolutePath = "${context.scheduleBasePath}/${context.scheduleRelativePath}"
             logger.trace(
                 "Reading file: {}",
-                objs = *arrayOf(
+                objs = arrayOf(
                     scheduleAbsolutePath
                 )
             )
