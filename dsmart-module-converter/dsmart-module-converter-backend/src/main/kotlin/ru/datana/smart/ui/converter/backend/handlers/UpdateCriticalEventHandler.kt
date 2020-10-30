@@ -11,7 +11,8 @@ object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateCriticalEvent
         activeEvent?.let {
-            val isCompletedEvent = it.angleFinish?.let { angleFinish -> it.angleStart?.compareTo(angleFinish)?.let { it > 0 } } ?: false
+            val isCompletedEvent = it.angleFinish?.let { angleFinish -> it.angleStart?.compareTo(angleFinish)?.let { it >= 0 } } ?: false
+                && (it.metalRate > context.slagRate.steelRate!!)
             val historicalEvent = MetalRateCriticalEvent(
                 id = it.id,
                 timeStart = it.timeStart,

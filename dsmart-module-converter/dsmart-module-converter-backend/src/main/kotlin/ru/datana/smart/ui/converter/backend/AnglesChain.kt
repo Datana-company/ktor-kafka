@@ -43,7 +43,7 @@ class AnglesChain(
 
             timeout { 1000 }
 
-            +DevicesFilterHandler
+//            +DevicesFilterHandler
             +CurrentMeltInfoHandler
 
             handler {

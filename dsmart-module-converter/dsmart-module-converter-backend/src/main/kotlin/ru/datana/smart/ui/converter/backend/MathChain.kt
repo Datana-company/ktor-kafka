@@ -44,7 +44,7 @@ class MathChain(
 
             timeout { 1000 }
 
-            +DevicesFilterHandler
+//            +DevicesFilterHandler
             +CurrentMeltInfoHandler
 
             handler {

@@ -43,7 +43,7 @@ class FrameChain(
 
             timeout { 1000 }
 
-            +DevicesFilterHandler
+//            +DevicesFilterHandler
             +CurrentMeltInfoHandler
 
             handler {
