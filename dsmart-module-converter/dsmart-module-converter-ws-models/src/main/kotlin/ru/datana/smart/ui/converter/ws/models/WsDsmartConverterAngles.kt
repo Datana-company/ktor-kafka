@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WsDsmartConverterAngles(
-    val angle: Double? = null
+    val angle: Double? = null,
+    val source: Double? = null
 )

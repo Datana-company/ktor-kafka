@@ -24,7 +24,6 @@ import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
-import ru.datana.smart.ui.converter.app.mappings.toModelTemperature
 import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.backend.ConverterFacade
 import java.time.Duration
@@ -71,14 +70,13 @@ fun Application.module(testing: Boolean = false) {
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicAngles by lazy { environment.config.property("ktor.kafka.consumer.topic.angles").getString().trim() }
     val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
-    val topicTemperature by lazy { environment.config.property("ktor.kafka.consumer.topic.temperature").getString().trim() }
     val converterDeviceId by lazy { environment.config.property("ktor.datana.converterDevice.id").getString().trim() }
 //    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
 //    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
 //    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
 //    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
     val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
-    val metalRateNormalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.normal").getString().trim().toDouble() }
+    val metalRateWarningPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble() }
 
     // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
@@ -102,7 +100,7 @@ fun Application.module(testing: Boolean = false) {
         converterRepository = userEventsRepository,
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
-        metalRateWarningPoint = metalRateNormalPoint,
+        metalRateWarningPoint = metalRateWarningPoint,
         converterDeviceId = converterDeviceId,
         currentMeltInfo = currentMeltInfo
     )
@@ -128,19 +126,11 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        kafka(listOf(topicTemperature, topicMath, topicVideo, topicMeta)) {
+        kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles)) {
             try {
                 val innerModel = records.map { it.toInnerModel() }
                 val record = innerModel.firstOrNull()
                 when (record?.topic) {
-                    topicTemperature -> {
-                        val kafkaModel = toTemperatureProcUiDto(record)
-                        val conveyorModel = toModelTemperature(kafkaModel)
-                        val context = ConverterBeContext(
-                            temperature = conveyorModel
-                        )
-                        converterFacade.handleTemperature(context)
-                    }
                     topicMath -> {
                         val kafkaModel = toConverterTransportMlUi(record)
                         val conveyorModelSlagRate = toModelSlagRate(kafkaModel)
@@ -151,7 +141,7 @@ fun Application.module(testing: Boolean = false) {
                             frame = conveyorModelFrame,
                             meltInfo = conveyorModelMeltInfo
                         )
-                        converterFacade.handleSlagRate(context)
+                        converterFacade.handleMath(context)
                     }
                     topicVideo -> {
                         val kafkaModel = toConverterTransportViMl(record)
@@ -170,6 +160,16 @@ fun Application.module(testing: Boolean = false) {
                             meltInfo = conveyorModel
                         )
                         converterFacade.handleMeltInfo(context)
+                    }
+                    topicAngles -> {
+                        val kafkaModel = toConverterTransportAngle(record)
+                        val conveyorModelAngles = toModelAngles(kafkaModel)
+                        val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
+                        val context = ConverterBeContext(
+                            angles = conveyorModelAngles,
+                            meltInfo = conveyorModelMeltInfo
+                        )
+                        converterFacade.handleAngles(context)
                     }
                 }
             } catch(e: Exception) {

@@ -10,7 +10,7 @@ import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
 
-class MetlInfoChain(
+class MeltInfoChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
@@ -42,7 +42,7 @@ class MetlInfoChain(
 
             timeout { 1000 }
 
-            +DevicesFilterHandler
+//            +DevicesFilterHandler
             +CurrentMeltInfoHandler
 
             handler {

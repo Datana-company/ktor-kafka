@@ -38,7 +38,10 @@ class UserEventRepositoryInMemory: IUserEventsRepository {
     override fun getActiveMetalRateEvent(): IMetalRateEvent? {
         return events.asMap().values.stream()
             .filter { event -> event.isActive }
-            .filter { event -> event is IMetalRateEvent } as? IMetalRateEvent
+            .sorted(Comparator.comparingLong(IBizEvent::timeStart).reversed())
+            .filter { event -> event is IMetalRateEvent }
+            .map { event -> event as? IMetalRateEvent }
+            .findFirst()
+            .orElse(null)
     }
-
 }

@@ -4,19 +4,25 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 
 object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateCriticalEvent
         activeEvent?.let {
+            val isCompletedEvent = it.angleFinish?.let { angleFinish -> it.angleStart?.compareTo(angleFinish)?.let { it > 0 } } ?: false
+                && (it.metalRate > context.slagRate.steelRate!!)
             val historicalEvent = MetalRateCriticalEvent(
                 id = it.id,
                 timeStart = it.timeStart,
                 timeFinish = it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = false
+                isActive = false,
+                angleStart = it.angleStart,
+                angleFinish = it.angleFinish,
+                executionStatus = if (isCompletedEvent) IBizEvent.ExecutionStatus.COMPLETED else IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(historicalEvent)
         } ?: return

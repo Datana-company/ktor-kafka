@@ -7,11 +7,12 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.IWsManager
+import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
 
-class TemperatureChain(
+class EventsChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
@@ -19,7 +20,6 @@ class TemperatureChain(
     var converterDeviceId: String,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?>
 ) {
-
     suspend fun exec(context: ConverterBeContext) {
         exec(context, DefaultKonveyorEnvironment)
     }
@@ -43,10 +43,41 @@ class TemperatureChain(
 
             timeout { 1000 }
 
+            konveyor {
+                on { slagRate.steelRate?.let { it >= metalRateCriticalPoint  } ?: false }
+                +UpdateWarningEventHandler
+                +UpdateInfoEventHandler
+                +CreateCriticalEventHandler
+            }
+            konveyor {
+                on { slagRate.steelRate?.let { it > metalRateWarningPoint && it < metalRateCriticalPoint  } ?: false }
+                +UpdateCriticalEventHandler
+                +UpdateInfoEventHandler
+                +CreateWarningEventHandler
+            }
+            konveyor {
+                on { slagRate.steelRate?.let { it <= metalRateWarningPoint  } ?: false }
+                +UpdateCriticalEventHandler
+                +UpdateWarningEventHandler
+                +CreateInfoEventHandler
+            }
+            konveyor {
+                on { angles.angle != null }
+                +UpdateAngleCriticalEventHandler
+                +UpdateAngleWarningEventHandler
+                +UpdateAngleInfoEventHandler
+            }
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    wsManager.sendTemperature(this)
+                    events = ModelEvents(events = eventsRepository.getAll())
+                }
+            }
+
+            handler {
+                onEnv { status == CorStatus.STARTED }
+                exec {
+                    wsManager.sendEvents(this)
                 }
             }
 

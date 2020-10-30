@@ -19,7 +19,9 @@ object CreateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = it.isActive
+                isActive = it.isActive,
+                angleStart = it.angleStart,
+                angleFinish = it.angleFinish
             )
             context.eventsRepository.put(updateEvent)
         } ?: context.eventsRepository.put(
@@ -28,7 +30,8 @@ object CreateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),
                 timeFinish = context.frame.frameTime ?: Instant.now().toEpochMilli(),
                 metalRate = context.slagRate.steelRate!!
-            ))
+            )
+        )
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

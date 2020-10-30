@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import ru.datana.smart.ui.converter.common.context.InnerRecord
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
-import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import ru.datana.smart.ui.viml.models.ConverterTransportViMl
+import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
 
 fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     topic = topic(),
@@ -45,11 +45,11 @@ fun toConverterTransportViMl(record: InnerRecord<String, String>): ConverterTran
     }
 }
 
-fun toTemperatureProcUiDto(record: InnerRecord<String, String>): TemperatureProcUiDto {
+fun toConverterTransportAngle(record: InnerRecord<String, String>): ConverterTransportAngle {
     return try {
-        jacksonSerializer.readValue(record.value, TemperatureProcUiDto::class.java)!!
+        jacksonSerializer.readValue(record.value, ConverterTransportAngle::class.java)!!
     } catch (e: Exception) {
         // TODO: добавить обработку исключения
-        TemperatureProcUiDto()
+        ConverterTransportAngle()
     }
 }

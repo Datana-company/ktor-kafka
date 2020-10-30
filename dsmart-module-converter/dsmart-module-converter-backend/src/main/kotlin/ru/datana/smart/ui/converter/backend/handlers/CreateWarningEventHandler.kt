@@ -4,26 +4,28 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.MetalRateNormalEvent
+import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 import java.time.Instant
 import java.util.*
 
-object CreateNormalEventHandler: IKonveyorHandler<ConverterBeContext> {
+object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
-        val activeEvent: MetalRateNormalEvent? = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateNormalEvent
+        val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateWarningEvent
         activeEvent?.let {
-            val updateEvent = MetalRateNormalEvent(
+            val updateEvent = MetalRateWarningEvent(
                 id = it.id,
                 timeStart = if (it.timeStart > frameTime) frameTime else it.timeStart,
                 timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = it.isActive
+                isActive = it.isActive,
+                angleStart = it.angleStart,
+                angleFinish = it.angleFinish
             )
             context.eventsRepository.put(updateEvent)
         } ?: context.eventsRepository.put(
-            MetalRateNormalEvent(
+            MetalRateWarningEvent(
                 id = UUID.randomUUID().toString(),
                 timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),
                 timeFinish = context.frame.frameTime ?: Instant.now().toEpochMilli(),

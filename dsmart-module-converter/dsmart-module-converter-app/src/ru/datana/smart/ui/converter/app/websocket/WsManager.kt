@@ -36,14 +36,6 @@ class WsManager : IWsManager {
 //        session.send()
     }
 
-    override suspend fun sendToAll(context: ConverterBeContext) {
-        sendAngles(context)
-        sendMeltInfo(context)
-        sendSlagRate(context)
-        sendFrames(context)
-        sendEvents(context)
-    }
-
     override suspend fun sendAngles(context: ConverterBeContext) {
         val wsAngles = WsDsmartResponseConverterAngles(
             data = toWsConverterAnglesModel(context.angles)
@@ -84,14 +76,6 @@ class WsManager : IWsManager {
         )
         val eventsSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseEvents.serializer(), wsEvents)
         send(eventsSerializedString)
-    }
-
-    override suspend fun sendTemperature(context: ConverterBeContext) {
-        val wsTemperature = WsDsmartResponseTemperature(
-            data = toWsTemperatureModel(context.temperature)
-        )
-        val temperatureSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseTemperature.serializer(), wsTemperature)
-        send(temperatureSerializedString)
     }
 
     private suspend fun send(serializedString: String) {
