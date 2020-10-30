@@ -1,4 +1,4 @@
-import {ConverterMeltInfoModel} from "./converter-melt-info.model";
+import {ConverterMeltInfoModel} from './converter-melt-info.model';
 
 export class ConverterModel {
   constructor(
