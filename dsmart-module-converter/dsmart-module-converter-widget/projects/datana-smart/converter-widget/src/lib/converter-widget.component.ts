@@ -1,16 +1,17 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {Subject} from "rxjs";
 import {map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
-import {EventModel} from "./models/event-model";
-import {TemperatureModel} from "./models/temperature.model";
-import {ConverterModel} from "./models/converter.model";
-import {ConverterVideoModel} from "./models/converter-video.model";
-import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
-import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
-import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
-import {EventCategoryModel} from "./models/event-category.model";
-import {ConfigServiceService} from "@datana-smart/config-service";
+import {EventModel} from './models/event-model';
+import {TemperatureModel} from './models/temperature.model';
+import {ConverterModel} from './models/converter.model';
+import {ConverterVideoModel} from './models/converter-video.model';
+import {ConverterMeltInfoModel} from './models/converter-melt-info.model';
+import {ConverterMeltModeModel} from './models/converter-melt-mode.model';
+import {ConverterMeltDevicesModel} from './models/converter-melt-devices.model';
+import {EventCategoryModel} from './models/event-category.model';
+import {configServiceConfig, configServiceProvide, ConfigServiceService} from '@datana-smart/config-service';
+// import {} from '@swimlane/ngx-charts';
+import {Subject} from 'rxjs';
 
 @Component({
   selector: 'datana-converter-widget',
@@ -31,14 +32,17 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   settings: any;
 
   constructor(
-    private configServiceService: ConfigServiceService,
+    @Inject(configServiceProvide) private csService: ConfigServiceService,
+    // private csService: ConfigServiceService,
     @Inject(configProvide) private wsService: IWebsocketService,
-    ) { }
+  ) {
+    console.log('this.settings from config-service : ', this.csService.serviceId, this.csService.settings);
+  }
 
   ngOnInit(): void {
-    this.settings = this.configServiceService.settings;
-    console.log('this.settings from config-service : ' , this.settings)
-    this.playlist = 'http://camera.d.datana.ru/playlist.m3u8'
+    this.settings = this.csService.settings;
+    console.log('this.settings from config-service : ', this.csService.serviceId, this.settings);
+    this.playlist = 'http://camera.d.datana.ru/playlist.m3u8';
 
     this.wsService.on('temperature-update').pipe(
       takeUntil(this._unsubscribe),

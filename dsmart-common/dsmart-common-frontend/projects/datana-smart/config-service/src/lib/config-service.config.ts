@@ -1,4 +1,4 @@
-import {InjectionToken} from "@angular/core";
-import {ConfigServiceConfig} from "./config-service.module";
+import {InjectionToken} from '@angular/core';
 
-export const USER_REST_WS_URL = new InjectionToken<ConfigServiceConfig>('unique.string.for.config');
+export const configServiceConfig: InjectionToken<string> = new InjectionToken('config-service.config');
+export const configServiceProvide = new InjectionToken<string>('config-service.service');
