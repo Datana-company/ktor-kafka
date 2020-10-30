@@ -4,7 +4,6 @@ data class AngleSchedule (
     val items: MutableList<AngleMessage>? = null
 )
 
-
 data class AngleMessage (
     val angle: Double? = null,
     val timeShift: Long? = null

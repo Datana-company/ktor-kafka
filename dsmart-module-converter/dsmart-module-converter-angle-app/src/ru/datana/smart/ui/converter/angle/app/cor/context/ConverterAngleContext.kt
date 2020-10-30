@@ -11,7 +11,6 @@ import java.time.Instant
 
 class ConverterAngleContext<K, V>(
     var records: Collection<InnerRecord<K, V>>,
-    var forwardObjects: MutableList<ConverterTransportAngle> = mutableListOf(),
     var scheduleRelativePath: String? = null,
     var metaInfo: ConverterMeltInfo? = null,
     var angleSchedule: AngleSchedule? = null,

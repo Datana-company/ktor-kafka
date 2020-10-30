@@ -57,7 +57,6 @@ fun Application.module(testing: Boolean = false) {
                 scheduleBasePath = scheduleBasePath,
                 topicAngles = topicAngles,
                 kafkaProducer = kafkaProducer,
-
             ).exec(context)
 
             commitAll()

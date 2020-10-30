@@ -18,6 +18,7 @@ object SendingHandler : IKonveyorHandler<ConverterAngleContext<String, String>> 
         try {
             val messages = context.angleSchedule?.items?.run {
                 filter { it.angle != null && it.timeShift != null }
+                // для отправки по порядку
                 sortBy { it.timeShift }
                 toList()
             } ?: throw EmptyMessageList("No messages in schedule to send")
@@ -27,13 +28,17 @@ object SendingHandler : IKonveyorHandler<ConverterAngleContext<String, String>> 
                     meltInfo = context.metaInfo,
                     angle = message.angle
                 )
+                val metaTimeStart = context.metaInfo!!.timeStart!!
+                val angleTimeShift = message.timeShift!!
+                val key = "$metaTimeStart-angle-$angleTimeShift"
                 val json = context.jacksonSerializer.writeValueAsString(converterTransportAngle)
-                val startDate = Date(context.metaInfo!!.timeStart!! + message.timeShift!!)
-                val record = ProducerRecord(context.topicAngles, "key?", json)
+                val record = ProducerRecord(context.topicAngles, key, json)
+                val startDate = Date(metaTimeStart + angleTimeShift)
+
                 Timer().schedule(startDate) {
                     context.kafkaProducer.send(record)
                     context.logger.trace(
-                        "Sent message to {}. Message: {}",
+                        "Sent message to {}. Record: {}",
                         objs = *arrayOf(
                             context.topicAngles,
                             record
