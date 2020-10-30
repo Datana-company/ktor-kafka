@@ -10,17 +10,19 @@
       </div>
     </div>
   </div>
-  <div class="titlesTop1">Плавка:{{converterMetaData?.meltNumber}} Марка: {{converterMetaData?.steelGrade}}
-    Бригада: {{converterMetaData?.crewNumber}}
+  <div class="widget-container-main-top">
+    <div class="titlesTop1">Плавка:{{converterMetaData?.meltNumber}} Марка: {{converterMetaData?.steelGrade}}
+      Бригада: {{converterMetaData?.crewNumber}}
+    </div>
   </div>
   <div class="lineTop"></div>
   <div class="widget-container-main widget-container">
     <div class="widget-info widget-col-65">
       <div class="widget-info-container widget-container">
-        <video-player-component class="widget-col-65 widget-info-boiling"
+        <video-player-component class="widget-col-65 "
                                 [playlist]="playlist">
         </video-player-component>
-        <tilt-angle-component class="widget-boiling widget-info-boiling widget-col"
+        <tilt-angle-component class="widget-boiling widget-col"
                               [temperatureModel]="temperatureModel">
         </tilt-angle-component>
       </div>
