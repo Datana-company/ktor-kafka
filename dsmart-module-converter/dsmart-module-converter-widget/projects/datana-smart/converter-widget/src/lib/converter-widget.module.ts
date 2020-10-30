@@ -7,18 +7,21 @@ import {CommonModule} from '@angular/common';
 import {WebsocketModule} from '@datana-smart/websocket';
 import {TiltAngleComponent} from "./tilt-angle-component/tilt-angle.component";
 import {EventRecommendationComponent} from "./event-recommendation-component/event-recommendation.component";
+import {NgxChartsModule} from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
     ConverterWidgetComponent,
     VideoPlayerComponent,
     TiltAngleComponent,
-    EventRecommendationComponent
+    EventRecommendationComponent,
+    BarChartComponent
   ],
   imports: [
     WebsocketModule,
     CommonModule,
     ConverterWidgetRoutingModule,
+    NgxChartsModule
   ],
   exports: [ConverterWidgetComponent]
 })

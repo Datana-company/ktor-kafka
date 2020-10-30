@@ -95,7 +95,7 @@
 }
 
 .widget-container-main {
-    height: calc(0.5rem + 6 * (6.5rem + 8px));
+    /*height: calc(0.5rem + 6 * (6.5rem + 8px));*/
     min-width: 1360px;
 }
 
@@ -108,8 +108,7 @@
 .widget-col {
     width: 35%;
 }
-
-.widget-col-65 {
+.widget-col-65{
     width: 60%;
 }
 
