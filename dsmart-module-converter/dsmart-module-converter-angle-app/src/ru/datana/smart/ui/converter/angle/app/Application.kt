@@ -29,7 +29,7 @@ fun Application.module(testing: Boolean = false) {
     val kafkaServers: String by lazy {
         environment.config.property("ktor.kafka.bootstrap.servers").getString().trim()
     }
-    val topicAngles: String by lazy {
+    val topicAngle: String by lazy {
         environment.config.property("ktor.kafka.producer.topic.angle").getString().trim()
     }
     val kafkaProducer: KafkaProducer<String, String> by lazy {
@@ -55,7 +55,7 @@ fun Application.module(testing: Boolean = false) {
             ForwardServiceKafka(
                 logger = logger,
                 scheduleBasePath = scheduleBasePath,
-                topicAngles = topicAngles,
+                topicAngles = topicAngle,
                 kafkaProducer = kafkaProducer,
             ).exec(context)
 
