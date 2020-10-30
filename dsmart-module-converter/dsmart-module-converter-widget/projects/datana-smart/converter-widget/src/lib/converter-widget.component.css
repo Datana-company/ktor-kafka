@@ -106,14 +106,15 @@
 .widget-event-item {
     width: calc(100% - 0.5rem);
     height: calc(6rem + 8px);
+    padding-bottom: 40px;
 }
 
 .widget-event-item-warning {
     width: fit-content;
     padding: 0.25rem;
     height: 1.5rem;
-    background-color: #CCDBEB;
-    border: 2px solid #CCDBEB;
+    background-color: #E6A5B8;
+    border: 2px solid #E6A5B8;
     border-radius: 4px 4px 0 0;
     font-weight: 600;
     font-size: 1.25rem;
@@ -128,7 +129,7 @@
 .widget-event-item-instruction {
     height: 5.5rem;
     padding: 0.25rem;
-    border: 2px solid #CCDBEB;
+    border: 2px solid #E6A5B8;
     border-radius: 0 4px 4px 4px;
     font-size: 1.2rem;
     font-weight: 500;
@@ -137,6 +138,37 @@
 
 .widget-event-item-instruction-active {
     border: 2px solid #C23557;
+}
+
+.widget-event-item-info-warning {
+    width: fit-content;
+    padding: 0.25rem;
+    height: 1.5rem;
+    background-color: #C1D0E0;
+    border: 2px solid #C1D0E0;
+    border-radius: 4px 4px 0 0;
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: white;
+}
+
+.widget-event-item-info-warning-active {
+    background-color: #4E80B2;
+    border: 2px solid #4E80B2;
+}
+
+.widget-event-item-info-instruction {
+    height: 5.5rem;
+    padding: 0.25rem;
+    border: 2px solid #C1D0E0;
+    border-radius: 0 4px 4px 4px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    background-color: white;
+}
+
+.widget-event-item-info-instruction-active {
+    border: 2px solid #4E80B2;
 }
 
 .widget-boiling {
@@ -196,5 +228,23 @@
     margin-top: auto;
 }
 
+.widget-event-execution-status-completed {
+    color: #26C0A9;
+}
 
+.widget-event-execution-status-failed {
+    color: #C23557;
+}
 
+.widget-event-title {
+    float: left;
+    font-weight: bold;
+}
+
+.widget-event-execution-status {
+    float: right;
+}
+
+.widget-event-text-message {
+    clear: left;
+}

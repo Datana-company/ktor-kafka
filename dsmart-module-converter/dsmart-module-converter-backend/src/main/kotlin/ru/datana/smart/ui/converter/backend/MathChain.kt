@@ -12,7 +12,7 @@ import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
 
-class SlagRateChain(
+class MathChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
@@ -56,51 +56,16 @@ class SlagRateChain(
                 }
             }
 
-            konveyor {
-                konveyor {
-                    on { slagRate.steelRate?.let { it >= metalRateCriticalPoint  } ?: false }
-                    +UpdateExceedsEventHandler
-                    +UpdateNormalEventHandler
-                    +UpdateInfoEventHandler
-                    +CreateCriticalEventHandler
-                }
-                konveyor {
-                    on { slagRate.steelRate?.let { it > metalRateWarningPoint && it < metalRateCriticalPoint  } ?: false }
-                    +UpdateCriticalEventHandler
-                    +UpdateNormalEventHandler
-                    +UpdateInfoEventHandler
-                    +CreateExceedsEventHandler
-                }
-                konveyor {
-                    on { slagRate.steelRate?.let { it == metalRateWarningPoint  } ?: false }
-                    +UpdateCriticalEventHandler
-                    +UpdateExceedsEventHandler
-                    +UpdateInfoEventHandler
-                    +CreateNormalEventHandler
-                }
-                konveyor {
-                    on { slagRate.steelRate?.let { it < metalRateWarningPoint  } ?: false }
-                    +UpdateCriticalEventHandler
-                    +UpdateExceedsEventHandler
-                    +UpdateNormalEventHandler
-                    +CreateInfoEventHandler
-                }
-                handler {
-                    onEnv { status == CorStatus.STARTED }
-                    exec {
-                        events = ModelEvents(events = eventsRepository.getAll())
-                    }
-                }
+            exec {
+                EventsChain(
+                    eventsRepository = eventsRepository,
+                    wsManager = wsManager,
+                    metalRateCriticalPoint = metalRateCriticalPoint,
+                    metalRateWarningPoint = metalRateWarningPoint,
+                    converterDeviceId = converterDeviceId,
+                    currentMeltInfo = currentMeltInfo
+                ).exec(this)
             }
-
-            handler {
-                onEnv { status == CorStatus.STARTED }
-                exec {
-                    wsManager.sendEvents(this)
-                }
-            }
-
-            +FinishHandler
         }
     }
 }

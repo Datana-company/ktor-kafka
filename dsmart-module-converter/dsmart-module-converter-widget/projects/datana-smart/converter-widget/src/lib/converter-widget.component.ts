@@ -10,7 +10,7 @@ import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
 import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
 import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
 import {EventCategoryModel} from "./models/event-category.model";
-import {AnglesModel} from "./models/angles.model";
+import {ExecutionStatusModel} from "./models/event-execution-status.model";
 
 @Component({
   selector: 'datana-converter-widget',
@@ -100,12 +100,29 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
           event?.title as string,
           event?.textMessage as string,
           event?.category as EventCategoryModel,
-          event?.isActive as boolean
+          event?.isActive as boolean,
+          event?.executionStatus as ExecutionStatusModel
         )
       ) as Array<EventModel>)
     ).subscribe(data => {
       this.converterEvents = data;
     });
+  }
+
+  public isCompleted(executionStatus: ExecutionStatusModel) {
+    return executionStatus == ExecutionStatusModel.COMPLETED;
+  }
+
+  public isFailed(executionStatus: ExecutionStatusModel) {
+    return executionStatus == ExecutionStatusModel.FAILED;
+  }
+
+  public isWarning(eventCategoryModel: EventCategoryModel) {
+    return eventCategoryModel == EventCategoryModel.CRITICAL || eventCategoryModel == EventCategoryModel.WARNING;
+  }
+
+  public isInfo(eventCategoryModel: EventCategoryModel) {
+    return eventCategoryModel == EventCategoryModel.INFO || eventCategoryModel == EventCategoryModel.HINT;
   }
 
   ngOnDestroy(): void {

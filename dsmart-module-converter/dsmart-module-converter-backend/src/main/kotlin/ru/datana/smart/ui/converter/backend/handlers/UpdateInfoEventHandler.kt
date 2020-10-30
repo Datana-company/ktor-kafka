@@ -4,6 +4,7 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.events.IMetalRateEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
 
 object UpdateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
@@ -16,7 +17,9 @@ object UpdateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 timeFinish = it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = false
+                isActive = false,
+                angleStart = it.angleStart,
+                angleFinish = context.angles.angle!!
             )
             context.eventsRepository.put(historicalEvent)
         } ?: return

@@ -1,16 +1,20 @@
 package ru.datana.smart.ui.converter.common.events
 
+import ru.datana.smart.ui.converter.common.utils.toPercent
 import java.time.Instant
 
-class MetalRateInfoEvent (
+data class MetalRateInfoEvent(
     override val id: String = "",
     override val timeStart: Long = Instant.now().toEpochMilli(),
     override val timeFinish: Long = Instant.now().toEpochMilli(),
     override val metalRate: Double,
-    override val title: String = "Информация",
+    override val angleStart: Double,
+    override val angleFinish: Double,
+    override val title: String = "Информационное сообщение",
     override val textMessage: String = """
-                                        Допустимая норма потерь металла не была превышена.
+                                        В потоке детектирован ${toPercent(metalRate)}% металла.
                                         """.trimIndent(),
     override val category: IBizEvent.Category = IBizEvent.Category.INFO,
-    override val isActive: Boolean = true
+    override val isActive: Boolean = true,
+    override val executionStatus: IBizEvent.ExecutionStatus = IBizEvent.ExecutionStatus.NONE,
 ): IMetalRateEvent

@@ -1,7 +1,11 @@
 package ru.datana.smart.ui.converter.app.common
 
+import ru.datana.smart.ui.converter.backend.ConverterFacade
+import ru.datana.smart.ui.converter.common.context.ConverterBeContext
+import ru.datana.smart.ui.converter.common.models.ModelAngles
+import ru.datana.smart.ui.converter.common.models.ModelSlagRate
 import java.util.Timer
-import kotlin.concurrent.scheduleAtFixedRate
+import kotlin.concurrent.schedule
 
 /**
  * Класс MetalRateEventGenerator
@@ -14,10 +18,11 @@ import kotlin.concurrent.scheduleAtFixedRate
  * @property changeValue значение, на которое будет изменяться генерированное значение через заданное время
  */
 class MetalRateEventGenerator(
-    val timeout: Long = 0L,
+    val timeout: Long = 5000L,
     val minValue: Double = 0.0,
     val maxValue: Double = 1.0,
     val changeValue: Double = 0.05,
+    val converterFacade: ConverterFacade
 ) {
 
     /**
@@ -39,10 +44,16 @@ class MetalRateEventGenerator(
      * Запускается таймер, который каждый раз через заданное время
      * будет возвращать сгенерированное значение
      */
-    fun start() {
-        Timer().scheduleAtFixedRate(delay, timeout) {
-            generate()
-        }
+    suspend fun start() {
+//        Timer().schedule(delay, timeout) {
+//          generate()
+//        }
+        generate()
+        val context = ConverterBeContext(
+            angles = ModelAngles(generateValue),
+            slagRate = ModelSlagRate(generateValue, 1 - generateValue)
+        )
+        converterFacade.handleEvents(context)
     }
 
     /**

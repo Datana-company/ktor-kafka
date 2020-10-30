@@ -14,7 +14,7 @@ class ConverterFacade(
     converterDeviceId: String = "",
     currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference()
 ) {
-    private val analysisChain = SlagRateChain(
+    private val mathChain = MathChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
@@ -46,6 +46,14 @@ class ConverterFacade(
         converterDeviceId = converterDeviceId,
         currentMeltInfo = currentMeltInfo
     )
+    private val eventsChain = EventsChain(
+        eventsRepository = converterRepository,
+        wsManager = wsManager,
+        metalRateCriticalPoint = metalRateCriticalPoint,
+        metalRateWarningPoint = metalRateWarningPoint,
+        converterDeviceId = converterDeviceId,
+        currentMeltInfo = currentMeltInfo
+    )
     private val temperatureChain = TemperatureChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
@@ -55,9 +63,10 @@ class ConverterFacade(
         currentMeltInfo = currentMeltInfo
     )
 
-    suspend fun handleSlagRate(context: ConverterBeContext) = analysisChain.exec(context)
+    suspend fun handleSlagRate(context: ConverterBeContext) = mathChain.exec(context)
     suspend fun handleAngle(context: ConverterBeContext) = angleChain.exec(context)
     suspend fun handleFrame(context: ConverterBeContext) = frameChain.exec(context)
     suspend fun handleMeltInfo(context: ConverterBeContext) = meltInfoChain.exec(context)
+    suspend fun handleEvents(context: ConverterBeContext) = eventsChain.exec(context)
     suspend fun handleTemperature(context: ConverterBeContext) = temperatureChain.exec(context)
 }

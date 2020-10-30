@@ -72,7 +72,8 @@ fun toWsEventModel(event: IBizEvent) =
         title = event.title,
         textMessage = event.textMessage,
         category = event.category?.let { WsDsmartEvent.Category.valueOf(it.name) },
-        isActive = event.isActive
+        isActive = event.isActive,
+        executionStatus = WsDsmartEvent.ExecutionStatus.valueOf(event.executionStatus.name)
     )
 
 fun toWsEventListModel(events: List<IBizEvent>) = events.stream().map { event -> toWsEventModel(event) }.toList()
