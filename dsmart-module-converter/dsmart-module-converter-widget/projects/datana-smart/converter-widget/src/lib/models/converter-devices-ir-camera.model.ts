@@ -1,12 +1,24 @@
-import {DevicesIrCamertaTypeModel} from "./devices-ir-camera-type.model";
+import {DeviceTypeModel} from "./device-type.model";
+import {ConverterDevice} from "./converter-device";
 
+export class ConverterDevicesIrCameraModel implements ConverterDevice {
+  id: string;
+  name: number;
+  uri: string;
+  deviceType: string;
+  type: DeviceTypeModel;
 
-export class ConverterDevicesIrCamertaModel {
   constructor(
-    public id: string,
-    public name: string,
-    public uri: string,
-    public type: DevicesIrCamertaTypeModel
+    id: string,
+    name: number,
+    uri: string,
+    deviceType: string,
+    type: DeviceTypeModel
   ) {
+    this.id = id;
+    this.name = name;
+    this.uri = uri;
+    this.deviceType = deviceType;
+    this.type = type;
   }
 }

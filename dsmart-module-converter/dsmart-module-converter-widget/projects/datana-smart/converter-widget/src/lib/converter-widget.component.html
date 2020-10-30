@@ -10,8 +10,8 @@
       </div>
     </div>
   </div>
-  <div>Плавка:{{converterMetaData?.meltNumber}} Марка: {{converterMetaData?.steelGrade}}
-    Бригада: {{converterMetaData?.crewNumber}}</div>
+  <div>Плавка:{{converterMeltInfoData?.meltNumber}} Марка: {{converterMeltInfoData?.steelGrade}}
+    Бригада: {{converterMeltInfoData?.crewNumber}}</div>
   <div class="widget-container-main widget-container">
     <div class="widget-info widget-col-65">
       <div class="widget-info-container widget-container">
@@ -26,20 +26,20 @@
           </div>
           <div class="widget-boiling-time">
             <div class="widget-boiling-time-value"><!-- {{ durationToBoil }}-->
-              {{ temperatureModel?.temperatureAverage}}
+              {{ temperatureData?.temperatureAverage}}
             </div>
           </div>
         </div>
       </div>
       <div class="widget-bar-chart widget-container">
         <bar-chart-component
-          [converterData]="converterData">
+          [slagRateModel]="converterSlagRateData">
         </bar-chart-component>
       </div>
     </div>
     <!--      <div class="widget-events widget-col" *ngFor="let event of events">-->
     <div class="widget-events widget-col">
-      <div class="widget-event-item" *ngFor="let event of events">
+      <div class="widget-event-item" *ngFor="let event of converterEvents">
         <div [class.widget-event-item-warning-active]="event.isActive" class="widget-event-item-warning">
           {{ event?.dateStart | date: 'yyyy-MM-dd HH:mm:ss' }}
         </div>
