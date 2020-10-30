@@ -1,0 +1,52 @@
+{
+  "items": [
+    {
+      "angle": 22.1,
+      "timeShift": 7654
+    },
+    {
+      "angle": 17.9,
+      "timeShift": 904
+    },
+    {
+      "angle": 19.6,
+      "timeShift": 5218
+    },
+    {
+      "angle": 29.0,
+      "timeShift": 12424
+    },
+    {
+      "angle": 22.1,
+      "timeShift": 1654
+    },
+    {
+      "angle": 17.9,
+      "timeShift": 3904
+    },
+    {
+      "angle": 19.6,
+      "timeShift": 1288
+    },
+    {
+      "angle": 29.0,
+      "timeShift": 2991
+    },
+    {
+      "angle": 22.1,
+      "timeShift": 654
+    },
+    {
+      "angle": 17.9,
+      "timeShift": 5602
+    },
+    {
+      "angle": 19.6,
+      "timeShift": 8181
+    },
+    {
+      "angle": 29.0,
+      "timeShift": 9898
+    }
+  ]
+}
