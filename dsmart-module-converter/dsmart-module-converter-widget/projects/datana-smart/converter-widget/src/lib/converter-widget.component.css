@@ -1,5 +1,4 @@
-.topLinePath77
-{
+.topLinePath77 {
     position: absolute;
     width: 1980px;
     height: 8px;
@@ -8,8 +7,8 @@
 
     background: linear-gradient(90deg, #CCDBEB 16.55%, #22588F 82.04%);
 }
-.rectangleTop
-{
+
+.rectangleTop {
     /*position: absolute;*/
     width: 1980px;
     height: 54px;
@@ -17,7 +16,35 @@
     top: 0px;
     background: #22588F;
 }
-.title{
+
+.lineTop {
+    position: absolute;
+    width: 91%;
+    height: 1px;
+    left: 62px;
+    top: 108px;
+    background: #B7B7B7;
+    padding: 0.5px;
+}
+.widget-container-main-top{
+    height: 20px;
+    background: #EAEEF0;
+    left: 1%;
+    min-width: 1360px;
+}
+.titlesTop1 {
+    padding: 0.4%;
+    padding-left: 3.5rem;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 25px;
+    /* identical to box height */
+    color: #222220;
+}
+
+.title {
     position: absolute;
     width: 751px;
     height: 25px;
@@ -35,6 +62,7 @@
 
     color: #FFFFFF;
 }
+
 .logo {
     position: absolute;
     width: 295px;
@@ -43,6 +71,7 @@
     top: 17px;
     /*background: url(Vector Smart Object.png);*/
 }
+
 .widget-header {
     display: flex;
     width: 100%;
@@ -65,8 +94,7 @@
 }
 
 .widget-container-main {
-    height: calc(0.5rem + 6 * (6.5rem + 8px));
-    /*margin-top: 1%;*/
+    /*height: calc(0.5rem + 6 * (6.5rem + 8px));*/
     min-width: 1360px;
 }
 
@@ -93,6 +121,8 @@
 
 .widget-info-container {
     height: 65%;
+    background: #FFFFFF;
+    margin: 50px;
 }
 
 .widget-events {
@@ -103,6 +133,7 @@
 .widget-info-temperature {
     margin-left: 2%;
 }
+
 .widget-event-item {
     width: calc(100% - 0.5rem);
     height: calc(6rem + 8px);
@@ -200,7 +231,7 @@
 .widget-boiling-time {
     display: flex;
     flex-direction: column;
-    height: calc(60% - 6rem - 8px);
+    height: calc(90% - 6rem - 8px);
     align-items: center;
     justify-content: center;
     text-align: center;

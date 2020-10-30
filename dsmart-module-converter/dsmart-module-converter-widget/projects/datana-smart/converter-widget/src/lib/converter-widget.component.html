@@ -1,6 +1,6 @@
 <div>
   <div class="widget-header">
-    <div class="topLinePath77"></div>
+<!--    <div class="topLinePath77"></div>-->
     <div class="rectangleTop">
       <div class="logo">
         <img src="/assets/image/VectorSmartObject1.png">
@@ -10,57 +10,32 @@
       </div>
     </div>
   </div>
-  <div>Плавка:{{converterMeltInfoData?.meltNumber}} Марка: {{converterMeltInfoData?.steelGrade}}
-    Бригада: {{converterMeltInfoData?.crewNumber}}</div>
+  <div class="widget-container-main-top">
+    <div class="titlesTop1">
+      Плавка:{{converterMeltInfoData?.meltNumber}}
+      Марка: {{converterMeltInfoData?.steelGrade}}
+      Бригада: {{converterMeltInfoData?.crewNumber}}
+    </div>
+  </div>
+  <div class="lineTop"></div>
   <div class="widget-container-main widget-container">
     <div class="widget-info widget-col-65">
       <div class="widget-info-container widget-container">
-        <video-player-component class="widget-col-65 widget-info-boiling" [playlist]="playlist">
-          <!--                <video-player-component [playlist]="playlist">-->
+        <video-player-component class="widget-col-65 "
+                                [playlist]="playlist">
         </video-player-component>
-        <!--                <div class="widget-boiling widget-info-boiling widget-col">-->
-        <div class="widget-boiling widget-info-boiling widget-col">
-          <!--                        <div class="widget-boiling-label">-->
-          <div class="widget-boiling-label">
-            Угол наклона в градусах
-          </div>
-          <div class="widget-boiling-time">
-            <div class="widget-boiling-time-value"><!-- {{ durationToBoil }}-->
-              {{ converterAnglesData?.angle}}
-            </div>
-          </div>
-        </div>
+        <tilt-angle-component class="widget-boiling widget-col"
+                              [temperatureData]="temperatureData">
+        </tilt-angle-component>
       </div>
-      <div class="widget-bar-chart widget-container">
+      <div class="widget-bar-chart widget-info-container widget-info widget-container">
         <bar-chart-component
           [slagRateModel]="converterSlagRateData">
         </bar-chart-component>
       </div>
     </div>
-    <!--      <div class="widget-events widget-col" *ngFor="let event of events">-->
     <div class="widget-events widget-col">
-      <div class="widget-event-item" *ngFor="let event of converterEvents">
-        <div *ngIf="isWarning(event?.category)">
-          <div [class.widget-event-item-warning-active]="event?.isActive" class="widget-event-item-warning">
-            {{ event?.dateStart | date: 'HH:mm:ss' }}
-          </div>
-          <div [class.widget-event-item-instruction-active]="event?.isActive" class="widget-event-item-instruction">
-            <!--                    Время начала плавки:{{ timeStartMeltStream$ | async }}-->
-            <div class="widget-event-title">{{ event?.title }}</div><div class="widget-event-execution-status"><div *ngIf="isCompleted(event?.executionStatus)" class="widget-event-execution-status-completed">Выполнено</div><div *ngIf="isFailed(event?.executionStatus)" class="widget-event-execution-status-failed">Не выполнено</div></div>
-            <div class="widget-event-text-message">{{ event?.textMessage }}</div>
-          </div>
-        </div>
-        <div *ngIf="isInfo(event?.category)">
-          <div [class.widget-event-item-info-warning-active]="event?.isActive" class="widget-event-item-info-warning">
-            {{ event?.dateStart | date: 'HH:mm:ss' }}
-          </div>
-          <div [class.widget-event-item-info-instruction-active]="event?.isActive" class="widget-event-item-info-instruction">
-            <!--                    Время начала плавки:{{ timeStartMeltStream$ | async }}-->
-            <div class="widget-event-title">{{ event?.title }}</div><div class="widget-event-execution-status"><div *ngIf="isCompleted(event?.executionStatus)" class="widget-event-execution-status-completed">Выполнено</div><div *ngIf="isFailed(event?.executionStatus)" class="widget-event-execution-status-failed">Не выполнено</div></div>
-            <div class="widget-event-text-message">{{ event?.textMessage }}</div>
-          </div>
-        </div>
-      </div>
+      <event-recommendation-component [events]="converterEvents"></event-recommendation-component>
     </div>
   </div>
 </div>
