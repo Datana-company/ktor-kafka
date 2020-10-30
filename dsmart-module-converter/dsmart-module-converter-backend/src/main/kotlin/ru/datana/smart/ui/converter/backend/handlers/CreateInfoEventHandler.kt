@@ -19,9 +19,7 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = it.isActive,
-                angleStart = it.angleStart,
-                angleFinish = context.angles.angle!!
+                isActive = it.isActive
             )
             context.eventsRepository.put(updateEvent)
         } ?: context.eventsRepository.put(
@@ -29,9 +27,7 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 id = UUID.randomUUID().toString(),
                 timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),
                 timeFinish = context.frame.frameTime ?: Instant.now().toEpochMilli(),
-                metalRate = context.slagRate.steelRate!!,
-                angleStart = context.angles.angle!!,
-                angleFinish = context.angles.angle!!
+                metalRate = context.slagRate.steelRate!!
             )
         )
     }

@@ -8,8 +8,8 @@ data class MetalRateWarningEvent(
     override val timeStart: Long = Instant.now().toEpochMilli(),
     override val timeFinish: Long = Instant.now().toEpochMilli(),
     override val metalRate: Double,
-    override val angleStart: Double,
-    override val angleFinish: Double,
+    override val angleStart: Double? = null,
+    override val angleFinish: Double? = null,
     override val title: String = "Предупреждение",
     override val textMessage: String = """
                                         В потоке детектирован ${toPercent(metalRate)}% металла.

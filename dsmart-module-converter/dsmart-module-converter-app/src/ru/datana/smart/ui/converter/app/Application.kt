@@ -127,7 +127,7 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        kafka(listOf(topicTemperature, topicMath, topicVideo, topicMeta)) {
+        kafka(listOf(topicTemperature, topicMath, topicVideo, topicMeta, topicAngles)) {
             try {
                 val innerModel = records.map { it.toInnerModel() }
                 val record = innerModel.firstOrNull()
@@ -169,6 +169,16 @@ fun Application.module(testing: Boolean = false) {
                             meltInfo = conveyorModel
                         )
                         converterFacade.handleMeltInfo(context)
+                    }
+                    topicAngles -> {
+                        val kafkaModel = toConverterTransportAngle(record)
+                        val conveyorModelAngles = toModelAngles(kafkaModel)
+                        val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
+                        val context = ConverterBeContext(
+                            angles = conveyorModelAngles,
+                            meltInfo = conveyorModelMeltInfo
+                        )
+                        converterFacade.handleAngles(context)
                     }
                 }
             } catch(e: Exception) {

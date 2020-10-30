@@ -43,12 +43,27 @@ class AnglesChain(
 
             timeout { 1000 }
 
+            +DevicesFilterHandler
+            +CurrentMeltInfoHandler
+
             handler {
                 onEnv { status == CorStatus.STARTED }
-                exec { wsManager.sendAngles(this) }
+                exec {
+                    wsManager.sendMeltInfo(this)
+                    wsManager.sendAngles(this)
+                }
             }
 
-            +FinishHandler
+            exec {
+                EventsChain(
+                    eventsRepository = eventsRepository,
+                    wsManager = wsManager,
+                    metalRateCriticalPoint = metalRateCriticalPoint,
+                    metalRateWarningPoint = metalRateWarningPoint,
+                    converterDeviceId = converterDeviceId,
+                    currentMeltInfo = currentMeltInfo
+                ).exec(this)
+            }
         }
     }
 }

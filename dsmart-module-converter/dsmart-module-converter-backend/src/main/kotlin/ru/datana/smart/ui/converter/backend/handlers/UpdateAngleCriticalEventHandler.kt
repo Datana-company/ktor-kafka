@@ -4,24 +4,25 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
+import java.time.Instant
 
-object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
+object UpdateAngleCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateCriticalEvent
+        val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
+        val activeEvent = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateCriticalEvent
+        val currentAngle = context.angles.angle!!
         activeEvent?.let {
-            val isCompletedEvent = it.angleFinish?.let { angleFinish -> it.angleStart?.compareTo(angleFinish)?.let { it > 0 } } ?: false
+            val angleStart = it.angleStart ?: currentAngle
             val historicalEvent = MetalRateCriticalEvent(
                 id = it.id,
-                timeStart = it.timeStart,
-                timeFinish = it.timeFinish,
+                timeStart = if (it.timeStart > frameTime) frameTime else it.timeStart,
+                timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = false,
-                angleStart = it.angleStart,
-                angleFinish = it.angleFinish,
-                executionStatus = if (isCompletedEvent) IBizEvent.ExecutionStatus.COMPLETED else IBizEvent.ExecutionStatus.FAILED
+                isActive = it.isActive,
+                angleStart = angleStart,
+                angleFinish = currentAngle
             )
             context.eventsRepository.put(historicalEvent)
         } ?: return

@@ -5,6 +5,7 @@ import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import ru.datana.smart.ui.viml.models.ConverterTransportViMl
 import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
+import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
 
 fun toModelMeltInfo(converterMeltInfo: ConverterMeltInfo) =
     ModelMeltInfo(
@@ -129,6 +130,47 @@ fun toModelMeltInfo(converterTransportMlUi: ConverterTransportMlUi) =
         )
     )
 
+fun toModelMeltInfo(converterTransportAngle: ConverterTransportAngle) =
+    ModelMeltInfo(
+        id = converterTransportAngle.meltInfo?.id,
+        timeStart = converterTransportAngle.meltInfo?.timeStart,
+        meltNumber = converterTransportAngle.meltInfo?.meltNumber,
+        steelGrade = converterTransportAngle.meltInfo?.steelGrade,
+        crewNumber = converterTransportAngle.meltInfo?.crewNumber,
+        shiftNumber = converterTransportAngle.meltInfo?.shiftNumber,
+        mode = converterTransportAngle.meltInfo?.mode?.let { ModelMeltInfo.Mode.valueOf(it.name) },
+        devices = ModelMeltDevices(
+            converter = ModelDevicesConverter(
+                id = converterTransportAngle.meltInfo?.devices?.converter?.id,
+                name = converterTransportAngle.meltInfo?.devices?.converter?.name,
+                uri = converterTransportAngle.meltInfo?.devices?.converter?.uri,
+                deviceType = converterTransportAngle.meltInfo?.devices?.converter?.deviceType,
+                type = converterTransportAngle.meltInfo?.devices?.converter?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
+            irCamera = ModelDevicesIrCamera(
+                id = converterTransportAngle.meltInfo?.devices?.irCamera?.id,
+                name = converterTransportAngle.meltInfo?.devices?.irCamera?.name,
+                uri = converterTransportAngle.meltInfo?.devices?.irCamera?.uri,
+                deviceType = converterTransportAngle.meltInfo?.devices?.irCamera?.deviceType,
+                type = converterTransportAngle.meltInfo?.devices?.irCamera?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
+            selsyn = ModelDevicesSelsyn(
+                id = converterTransportAngle.meltInfo?.devices?.selsyn?.id,
+                name = converterTransportAngle.meltInfo?.devices?.selsyn?.name,
+                uri = converterTransportAngle.meltInfo?.devices?.selsyn?.uri,
+                deviceType = converterTransportAngle.meltInfo?.devices?.selsyn?.deviceType,
+                type = converterTransportAngle.meltInfo?.devices?.selsyn?.type?.let { ModelDeviceType.valueOf(it.name) }
+            ),
+            slagRate = ModelDevicesSlagRate(
+                id = converterTransportAngle.meltInfo?.devices?.slagRate?.id,
+                name = converterTransportAngle.meltInfo?.devices?.slagRate?.name,
+                uri = converterTransportAngle.meltInfo?.devices?.slagRate?.uri,
+                deviceType = converterTransportAngle.meltInfo?.devices?.slagRate?.deviceType,
+                type = converterTransportAngle.meltInfo?.devices?.slagRate?.type?.let { ModelDeviceType.valueOf(it.name) }
+            )
+        )
+    )
+
 fun toModelFrame(converterTransportViMl: ConverterTransportViMl) =
     ModelFrame(
         frameId = converterTransportViMl.frameId,
@@ -149,9 +191,10 @@ fun toModelSlagRate(converterTransportMlUi: ConverterTransportMlUi) =
         slagRate = converterTransportMlUi.slagRate
     )
 
-fun toModelAngles(temperatureProcUiDto: TemperatureProcUiDto) =
+fun toModelAngles(converterTransportAngle: ConverterTransportAngle) =
     ModelAngles(
-        angle = temperatureProcUiDto.temperatureAverage
+        angle = converterTransportAngle.angle,
+        source = converterTransportAngle.source
     )
 
 fun toModelTemperature(temperatureProcUiDto: TemperatureProcUiDto) =

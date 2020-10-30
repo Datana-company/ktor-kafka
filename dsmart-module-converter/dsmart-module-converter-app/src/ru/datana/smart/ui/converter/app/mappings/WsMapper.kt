@@ -13,7 +13,8 @@ fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
 
 fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
     WsDsmartConverterAngles(
-        angle = modelAngles.angle
+        angle = modelAngles.angle,
+        source = modelAngles.source
     )
 
 fun toWsConverterFrameModel(modelFrame: ModelFrame) =
@@ -71,7 +72,7 @@ fun toWsEventModel(event: IBizEvent) =
         timeFinish = event.timeFinish,
         title = event.title,
         textMessage = event.textMessage,
-        category = event.category?.let { WsDsmartEvent.Category.valueOf(it.name) },
+        category = WsDsmartEvent.Category.valueOf(event.category.name),
         isActive = event.isActive,
         executionStatus = WsDsmartEvent.ExecutionStatus.valueOf(event.executionStatus.name)
     )

@@ -61,6 +61,12 @@ class EventsChain(
                 +UpdateWarningEventHandler
                 +CreateInfoEventHandler
             }
+            konveyor {
+                on { angles.angle != null }
+                +UpdateAngleCriticalEventHandler
+                +UpdateAngleWarningEventHandler
+                +UpdateAngleInfoEventHandler
+            }
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {

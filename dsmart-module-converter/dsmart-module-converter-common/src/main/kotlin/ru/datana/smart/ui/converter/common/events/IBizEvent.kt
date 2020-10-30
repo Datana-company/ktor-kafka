@@ -4,9 +4,9 @@ interface IBizEvent {
     val id: String
     val timeStart: Long
     val timeFinish: Long
-    val title: String?
-    val textMessage: String?
-    val category: Category?
+    val title: String
+    val textMessage: String
+    val category: Category
     val isActive: Boolean
     val executionStatus: ExecutionStatus
 

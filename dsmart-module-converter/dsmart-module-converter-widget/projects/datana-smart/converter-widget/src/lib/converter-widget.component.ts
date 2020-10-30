@@ -11,6 +11,7 @@ import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
 import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
 import {EventCategoryModel} from "./models/event-category.model";
 import {ExecutionStatusModel} from "./models/event-execution-status.model";
+import {ConverterAnglesModel} from "./models/converter-angles-model";
 
 @Component({
   selector: 'datana-converter-widget',
@@ -25,6 +26,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   public converterMeltInfoData: ConverterMeltInfoModel;
   public converterSlagRateData: SlagRateModel;
   public converterFrameData: ConverterFrameModel;
+  public converterAnglesData: ConverterAnglesModel;
   public converterEvents: Array<EventModel> = new Array<EventModel>();
 
   playlist: string;
@@ -88,6 +90,18 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       })
     ).subscribe(data => {
       this.converterFrameData = data;
+    });
+
+    this.wsService.on('converter-angles-update').pipe(
+      takeUntil(this._unsubscribe),
+      map((data: any) => {
+        return new ConverterAnglesModel(
+          data?.angle?.toFixed(1) as number,
+          data?.source as number
+        );
+      })
+    ).subscribe(data => {
+      this.converterAnglesData = data;
     });
 
     this.wsService.on('events-update').pipe(
