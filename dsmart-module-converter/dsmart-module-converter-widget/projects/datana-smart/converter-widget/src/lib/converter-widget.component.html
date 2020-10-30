@@ -12,9 +12,9 @@
   </div>
   <div class="widget-container-main-top">
     <div class="titlesTop1">
-      Плавка:{{converterMetaData?.meltNumber}}
-      Марка: {{converterMetaData?.steelGrade}}
-      Бригада: {{converterMetaData?.crewNumber}}
+      Плавка:{{converterMeltInfoData?.meltNumber}}
+      Марка: {{converterMeltInfoData?.steelGrade}}
+      Бригада: {{converterMeltInfoData?.crewNumber}}
     </div>
   </div>
   <div class="lineTop"></div>
@@ -25,17 +25,17 @@
                                 [playlist]="playlist">
         </video-player-component>
         <tilt-angle-component class="widget-boiling widget-col"
-                              [temperatureModel]="temperatureModel">
+                              [temperatureData]="temperatureData">
         </tilt-angle-component>
       </div>
-      <div class="widget-bar-chart widget-container">
+      <div class="widget-bar-chart widget-info-container widget-info widget-container">
         <bar-chart-component
           [slagRateModel]="converterSlagRateData">
         </bar-chart-component>
       </div>
     </div>
     <div class="widget-events widget-col">
-      <event-recommendation-component [events]="events"></event-recommendation-component>
+      <event-recommendation-component [events]="converterEvents"></event-recommendation-component>
     </div>
   </div>
 </div>

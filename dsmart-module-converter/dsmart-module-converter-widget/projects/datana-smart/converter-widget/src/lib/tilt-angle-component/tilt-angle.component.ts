@@ -9,6 +9,6 @@ import {TemperatureModel} from "../models/temperature.model";
 })
 export class TiltAngleComponent  {
 
-  @Input() temperatureModel: TemperatureModel;
+  @Input() temperatureData: TemperatureModel;
 
 }
