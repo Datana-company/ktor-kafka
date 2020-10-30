@@ -16,9 +16,6 @@
       Марка: {{converterMetaData?.steelGrade}}
       Бригада: {{converterMetaData?.crewNumber}}
     </div>
-    <div class="titlesTop2">
-<!--      <h3-->
-    </div>
   </div>
   <div class="lineTop"></div>
   <div class="widget-container-main widget-container">
@@ -31,11 +28,11 @@
                               [temperatureModel]="temperatureModel">
         </tilt-angle-component>
       </div>
-        <div class="widget-bar-chart widget-info-container widget-info widget-container">
-          <bar-chart-component
-            [converterData]="converterData">
-          </bar-chart-component>
-        </div>
+      <div class="widget-bar-chart widget-container">
+        <bar-chart-component
+          [slagRateModel]="converterSlagRateData">
+        </bar-chart-component>
+      </div>
     </div>
     <div class="widget-events widget-col">
       <event-recommendation-component [events]="events"></event-recommendation-component>

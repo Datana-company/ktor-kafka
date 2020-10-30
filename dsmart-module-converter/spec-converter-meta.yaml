@@ -76,7 +76,7 @@ components:
         converter:
           $ref: '#/components/schemas/ConverterDevicesConverter'
         irCamera:
-          $ref: '#/components/schemas/ConverterDevicesIrCamerta'
+          $ref: '#/components/schemas/ConverterDevicesIrCamera'
         selsyn:
           $ref: '#/components/schemas/ConverterDevicesSelsyn'
         slagRate:
@@ -86,7 +86,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/ConverterDevice'
 
-    ConverterDevicesIrCamerta:
+    ConverterDevicesIrCamera:
       allOf:
         - $ref: '#/components/schemas/ConverterDevice'
 
