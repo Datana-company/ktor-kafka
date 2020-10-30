@@ -20,8 +20,8 @@ object ScheduleExtractorHandler : IKonveyorHandler<ConverterAngleContext<String,
                 )
             )
 
-//            val json = File(scheduleAbsolutePath).readText(Charsets.UTF_8)
-            val json = File("resources/schedule.json").readText(Charsets.UTF_8)
+            val json = File(scheduleAbsolutePath).readText(Charsets.UTF_8)
+//            val json = File("resources/schedule.json").readText(Charsets.UTF_8)
 
             context.angleSchedule = context.jacksonSerializer.readValue(
                 json,
