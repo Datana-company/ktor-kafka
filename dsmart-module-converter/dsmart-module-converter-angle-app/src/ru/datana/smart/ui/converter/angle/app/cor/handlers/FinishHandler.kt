@@ -16,8 +16,8 @@ object FinishHandler : IKonveyorHandler<ConverterAngleContext<String, String>> {
         context.timeStop = Instant.now()
 
         logger.trace(
-            "Conveyor has ended. Started: {}. Finished: {}",
-            objs = *arrayOf(
+            "Conveyor has finished operation. Started: {}. Finished: {}",
+            objs = arrayOf(
                 context.timeStart,
                 context.timeStop
             )

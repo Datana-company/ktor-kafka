@@ -19,8 +19,8 @@ class ConverterAngleContext<K, V>(
     var timeStart: Instant = Instant.now(),
     var timeStop: Instant = Instant.now(),
     var jacksonSerializer: ObjectMapper = ObjectMapper(),
+    var scheduleBasePath: String = "",
+    var topicAngles: String = ""
 ) {
-    lateinit var scheduleBasePath: String
     lateinit var kafkaProducer: KafkaProducer<String, String>
-    lateinit var topicAngles: String
 }
