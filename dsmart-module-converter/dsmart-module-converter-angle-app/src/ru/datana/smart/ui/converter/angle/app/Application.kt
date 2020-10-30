@@ -24,13 +24,13 @@ fun Application.module(testing: Boolean = false) {
     }
 
     val logger = datanaLogger(::main::class.java)
-    val scheduleBasePath by lazy { environment.config.property("paths.angle.base").getString().trim() }
+    val scheduleBasePath by lazy { environment.config.property("paths.schedule.base ").getString().trim() }
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
     val kafkaServers: String by lazy {
         environment.config.property("ktor.kafka.bootstrap.servers").getString().trim()
     }
     val topicAngles: String by lazy {
-        environment.config.property("ktor.kafka.producer.topic.angles").getString().trim()
+        environment.config.property("ktor.kafka.producer.topic.angle").getString().trim()
     }
     val kafkaProducer: KafkaProducer<String, String> by lazy {
         val props = Properties().apply {
