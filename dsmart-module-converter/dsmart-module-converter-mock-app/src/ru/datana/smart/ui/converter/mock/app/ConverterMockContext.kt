@@ -1,5 +1,6 @@
 package ru.datana.smart.ui.converter.mock.app
 
+import io.ktor.http.content.MultiPartData
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 
 data class ConverterMockContext(
@@ -7,7 +8,7 @@ data class ConverterMockContext(
     var startCase: String = "",
     var requestToSave: ConverterCaseSaveRequest = ConverterCaseSaveRequest(),
     var responseData: ConverterCaseListModel = ConverterCaseListModel(),
-    var responseToSave: ConverterCaseSaveResponse = ConverterCaseSaveResponse(),
+    var responseToSave: ConverterCaseSaveResponse = ConverterCaseSaveResponse()
 ) {
     enum class Statuses {
         NONE,

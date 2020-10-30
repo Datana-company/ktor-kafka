@@ -1,68 +1,70 @@
 <div class="group-container">
   <h1>Редактор кейсов</h1>
   <form [formGroup]="caseEditorForm" (ngSubmit)="onSubmit()">
-    <div class="widget-container">
-      <div class="widget-col-50">
-        <label>
-          Время начала плавки:
-          <br>
-          <input type="date" formControlName="timeStart" required>
-        </label>
-        <label>
-          Номер плавки:
-          <br>
-          <input type="text" formControlName="meltNumber" required>
-        </label>
-        <label>
-          Марка стали:
-          <br>
-          <input type="text" formControlName="steelGrade">
-        </label>
-        <label>
-          Номер бригады:
-          <br>
-          <input type="text" formControlName="crewNumber">
-        </label>
-        <label>
-          Номер смены:
-          <br>
-          <input type="text" formControlName="shiftNumber">
-        </label>
-        <label>
-          Режим: боевая, эмуляция, тестовая:
-          <br>
-          <input type="text" formControlName="mode">
-        </label>
-      </div>
-      <div class="widget-col-50">
-        <div formGroupName="devices">
-          <h3>Оборудование для мониторинга</h3>
-          <div class="group-container" formGroupName="irCamera">
-            <h4>Инфракрасная камера</h4>
-            <label>
-              Уникальный идентификатор или серийный номер камеры:
-              <br>
-              <input type="text" formControlName="id">
-            </label>
-            <label>
-              Название камеры:
-              <br>
-              <input type="text" formControlName="name">
-            </label>
-            <label>
-              Адрес файла или устройства, с которого снимать изображение:
-              <br>
-              <input type="text" formControlName="uri">
-            </label>
-            <label>
-              Тип устройства: настоящая камера или файл:
-              <br>
-              <input type="text" formControlName="type">
-            </label>
+    <label>
+      Название кейса:
+      <br>
+      <input type="text" formControlName="caseName" required>
+    </label>
+    <div formGroupName="meltInfo">
+      <div class="widget-container">
+        <div class="widget-col-50">
+          <label>
+            Номер плавки:
+            <br>
+            <input type="text" formControlName="meltNumber" required>
+          </label>
+          <label>
+            Марка стали:
+            <br>
+            <input type="text" formControlName="steelGrade">
+          </label>
+          <label>
+            Номер бригады:
+            <br>
+            <input type="text" formControlName="crewNumber">
+          </label>
+          <label>
+            Номер смены:
+            <br>
+            <input type="text" formControlName="shiftNumber">
+          </label>
+          <label>
+            Режим: боевая, эмуляция, тестовая:
+            <br>
+            <input type="text" formControlName="mode">
+          </label>
+        </div>
+        <div class="widget-col-50">
+          <div formGroupName="devices">
+            <h3>Оборудование для мониторинга</h3>
+            <div class="group-container" formGroupName="irCamera">
+              <h4>Инфракрасная камера</h4>
+              <label>
+                Уникальный идентификатор или серийный номер камеры:
+                <br>
+                <input type="text" formControlName="id">
+              </label>
+              <label>
+                Название камеры:
+                <br>
+                <input type="text" formControlName="name">
+              </label>
+              <label>
+                Адрес файла или устройства, с которого снимать изображение:
+                <br>
+                <input type="text" formControlName="uri">
+              </label>
+              <label>
+                Тип устройства: настоящая камера или файл:
+                <br>
+                <input type="text" formControlName="type">
+              </label>
+            </div>
           </div>
         </div>
+        <div class="widget-container"></div>
       </div>
-      <div class="widget-container"></div>
     </div>
     <div class="button-conteiner">
       <button type="submit" [disabled]="!caseEditorForm.valid">Добавить</button>

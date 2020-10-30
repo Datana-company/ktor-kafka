@@ -21,7 +21,7 @@ class ConverterMockUploadService(
 
     private val logger = datanaLogger(this::class.java)
 
-    fun exec(context: ConverterMockContext) {
+    suspend fun exec(context: ConverterMockContext, multipart: MultiPartData) {
         var newCaseFolderName: String = ""
         var fileName: String = "default-video-file-name"
 
@@ -36,7 +36,7 @@ class ConverterMockUploadService(
                     newCaseFolderName = part.value
                 }
             } else if (part is PartData.FileItem) {
-                val uploadPath = caseCatalogDir.absolutePath + File.separatorChar + newCaseFolderName
+                val uploadPath = pathToCatalog + File.separatorChar + newCaseFolderName
                 logger.debug(" --- fileDir: {}", objs = arrayOf(uploadPath))
                 val ext = File(part.originalFileName).extension
                 val file = File(uploadPath, "$fileName.$ext")

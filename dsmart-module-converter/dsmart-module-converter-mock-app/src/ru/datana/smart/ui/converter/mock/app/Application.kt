@@ -1,5 +1,7 @@
 package ru.datana.smart.ui.converter.mock.app
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -83,10 +85,8 @@ fun Application.module(testing: Boolean = false) {
     val createService by lazy { ConverterMockCreateService(
         pathToCatalog = pathToCatalog
     ) }
-    val uploadService by lazy { ConverterMockStartService(
-        pathToCatalog = pathToCatalog,
-        kafkaProducer = kafkaProducer,
-        kafkaTopic = kafkaTopic
+    val uploadService by lazy { ConverterMockUploadService(
+        pathToCatalog = pathToCatalog
     ) }
 
     routing {
@@ -99,7 +99,8 @@ fun Application.module(testing: Boolean = false) {
             val context = ConverterMockContext()
             listService.exec(context)
             when(context.status) {
-                ConverterMockContext.Statuses.OK -> call.respond(context.responseData)
+                ConverterMockContext.Statuses.OK -> call.respondText(
+                    jacksonObjectMapper().writeValueAsString(context.responseData))
                 else -> call.respond(HttpStatusCode.InternalServerError)
             }
         }
@@ -132,30 +133,35 @@ fun Application.module(testing: Boolean = false) {
         }
 
         post("/add_case") {
+            logger.info(" +++ POST /add_case")
             val request: ConverterCaseSaveRequest = try {
-                call.receive()
+                jacksonObjectMapper().readValue(call.receiveText())
             } catch (e: Throwable) {
-                logger.error("Error parsing meltInfo body from frontend: {}", call.receiveText())
+                logger.error("Error parsing meltInfo body from frontend: {}", e)//call.receiveText())
                 return@post
             }
+            logger.debug("request body: {}", objs = arrayOf(request))
             val context = ConverterMockContext(
                 requestToSave = request
             )
             createService.exec(context)
             when(context.status) {
-                ConverterMockContext.Statuses.OK -> call.respond(HttpStatusCode.OK, context.responseToSave)
+                ConverterMockContext.Statuses.OK -> {
+                    call.respondText(
+                        jacksonObjectMapper().writeValueAsString(context.responseToSave.caseName), status = HttpStatusCode.OK )
+                }
                 else -> call.respond(HttpStatusCode.InternalServerError)
             }
         }
 
         post<Upload> {
-            call.respond(HttpStatusCode.OK)
+            logger.info(" +++ POST /upload")
             val multipart = call.receiveMultipart()
             val context = ConverterMockContext(
             )
-            createService.exec(context)
+            uploadService.exec(context, multipart)
             when(context.status) {
-                ConverterMockContext.Statuses.OK -> call.respond(HttpStatusCode.OK, context.responseToSave)
+                ConverterMockContext.Statuses.OK -> call.respond(HttpStatusCode.OK)
                 else -> call.respond(HttpStatusCode.InternalServerError)
             }
         }

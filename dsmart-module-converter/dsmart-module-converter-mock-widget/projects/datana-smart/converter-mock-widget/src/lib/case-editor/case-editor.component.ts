@@ -19,18 +19,21 @@ export class CaseEditorComponent implements OnInit {
     _unsubscribe = new Subject<void>();
 
     caseEditorForm = this.formBuilder.group({
-        timeStart: ['', Validators.required],
-        meltNumber: ['', Validators.required],
-        steelGrade: [''],
-        crewNumber: [''],
-        shiftNumber: [''],
-        mode: [''],
-        devices: this.formBuilder.group({
-            irCamera: this.formBuilder.group({
-                id: [''],
-                name: [''],
-                uri: [''],
-                type: ['']
+        caseName: ['', Validators.required],
+        meltInfo: this.formBuilder.group({
+            meltNumber: ['', Validators.required],
+            steelGrade: [''],
+            crewNumber: [''],
+            shiftNumber: [''],
+            mode: [''],
+            devices: this.formBuilder.group({
+                irCamera: this.formBuilder.group({
+                    id: [''],
+                    name: [''],
+                    uri: [''],
+                    type: [''],
+                    deviceType: ['ConverterDevicesIrCamerta']
+                })
             })
         })
     });
@@ -40,18 +43,21 @@ export class CaseEditorComponent implements OnInit {
 
     loadTestData() {
         this.caseEditorForm.patchValue({
-            timeStart: '1603036535000',
-            meltNumber: '12_плавка',
-            steelGrade: '12Х18Н10Т',
-            crewNumber: 'Бр.№7',
-            shiftNumber: '2-ая смена',
-            mode: 'emulation',
-            devices: {
-                irCamera: {
-                    id: 'Cam#55',
-                    name: 'CameraName',
-                    uri: 'URI',
-                    type: 'file'
+            caseName: 'case-SuperPuper-' + (new Date()).getTime(),
+            meltInfo: {
+                meltNumber: '12_плавка',
+                steelGrade: '12Х18Н10Т',
+                crewNumber: 'Бр.№7',
+                shiftNumber: '2-ая смена',
+                mode: 'emulation',
+                devices: {
+                    irCamera: {
+                        id: 'Cam#55',
+                        name: 'CameraName',
+                        uri: 'URI',
+                        type: 'file',
+                        deviceType: 'ConverterDevicesIrCamerta'
+                    }
                 }
             }
         });
@@ -64,7 +70,7 @@ export class CaseEditorComponent implements OnInit {
         ).subscribe(data => {
             console.log(data);
             this.newCase.emit("newCase");
-            this.fileUpload.upload(data.newCaseFolderName, this.caseEditorForm.value.devices.irCamera.id);
+            this.fileUpload.upload(data, this.caseEditorForm.value.meltInfo.devices.irCamera.id);
         });
     }
 
