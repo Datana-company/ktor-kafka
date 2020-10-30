@@ -21,9 +21,9 @@ import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
+import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
-import ru.datana.smart.ui.converter.app.mappings.toModelTemperature
 import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.backend.ConverterFacade
 import java.time.Duration
@@ -70,7 +70,6 @@ fun Application.module(testing: Boolean = false) {
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicAngles by lazy { environment.config.property("ktor.kafka.consumer.topic.angles").getString().trim() }
     val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
-    val topicTemperature by lazy { environment.config.property("ktor.kafka.consumer.topic.temperature").getString().trim() }
     val converterDeviceId by lazy { environment.config.property("ktor.datana.converterDevice.id").getString().trim() }
 //    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
 //    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
@@ -127,19 +126,11 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        kafka(listOf(topicTemperature, topicMath, topicVideo, topicMeta, topicAngles)) {
+        kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles)) {
             try {
                 val innerModel = records.map { it.toInnerModel() }
                 val record = innerModel.firstOrNull()
                 when (record?.topic) {
-                    topicTemperature -> {
-                        val kafkaModel = toTemperatureProcUiDto(record)
-                        val conveyorModel = toModelTemperature(kafkaModel)
-                        val context = ConverterBeContext(
-                            temperature = conveyorModel
-                        )
-                        converterFacade.handleTemperature(context)
-                    }
                     topicMath -> {
                         val kafkaModel = toConverterTransportMlUi(record)
                         val conveyorModelSlagRate = toModelSlagRate(kafkaModel)

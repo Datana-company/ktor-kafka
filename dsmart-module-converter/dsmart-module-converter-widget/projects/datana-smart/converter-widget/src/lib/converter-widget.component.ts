@@ -3,7 +3,6 @@ import {Subject} from "rxjs";
 import {map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
 import {EventModel} from "./models/event-model";
-import {TemperatureModel} from "./models/temperature.model";
 import {SlagRateModel} from "./models/slag-rate.model";
 import {ConverterFrameModel} from "./models/converter-frame.model";
 import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
@@ -22,7 +21,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   _unsubscribe = new Subject<void>();
 
-  public temperatureData: TemperatureModel;
   public converterMeltInfoData: ConverterMeltInfoModel;
   public converterSlagRateData: SlagRateModel;
   public converterFrameData: ConverterFrameModel;
@@ -37,17 +35,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.playlist = 'http://camera.d.datana.ru/playlist.m3u8'
-
-    this.wsService.on('temperature-update').pipe(
-      takeUntil(this._unsubscribe),
-      map((data: any) => {
-        return new TemperatureModel(
-          data?.temperatureAverage?.toFixed(1) as number
-        );
-      })
-    ).subscribe(data => {
-      this.temperatureData = data;
-    });
 
     this.wsService.on('converter-melt-info-update').pipe(
       takeUntil(this._unsubscribe),

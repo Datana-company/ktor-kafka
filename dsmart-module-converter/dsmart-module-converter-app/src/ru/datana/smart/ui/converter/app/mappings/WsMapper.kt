@@ -82,8 +82,3 @@ fun toWsEventListModel(events: List<IBizEvent>) = events.stream().map { event ->
 fun toWsEventListModel(modelEvents: ModelEvents) = modelEvents.events?.stream()?.map { event -> toWsEventModel(event) }
     ?.toList()
     ?: mutableListOf()
-
-fun toWsTemperatureModel(modelTemperature: ModelTemperature) =
-    WsDsmartTemperature(
-        temperatureAverage = modelTemperature.temperatureAverage
-    )

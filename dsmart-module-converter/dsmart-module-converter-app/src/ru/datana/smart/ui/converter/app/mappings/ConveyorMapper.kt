@@ -4,7 +4,6 @@ import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import ru.datana.smart.ui.viml.models.ConverterTransportViMl
-import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
 import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
 
 fun toModelMeltInfo(converterMeltInfo: ConverterMeltInfo) =
@@ -195,9 +194,4 @@ fun toModelAngles(converterTransportAngle: ConverterTransportAngle) =
     ModelAngles(
         angle = converterTransportAngle.angle,
         source = converterTransportAngle.source
-    )
-
-fun toModelTemperature(temperatureProcUiDto: TemperatureProcUiDto) =
-    ModelTemperature(
-        temperatureAverage = temperatureProcUiDto.temperatureAverage
     )
