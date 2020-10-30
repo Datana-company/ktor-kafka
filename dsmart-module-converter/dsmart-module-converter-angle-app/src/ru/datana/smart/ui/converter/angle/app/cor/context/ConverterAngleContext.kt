@@ -20,7 +20,6 @@ class ConverterAngleContext<K, V>(
     var timeStop: Instant = Instant.now(),
     var jacksonSerializer: ObjectMapper = ObjectMapper(),
 ) {
-    lateinit var logger: DatanaLogContext
     lateinit var scheduleBasePath: String
     lateinit var kafkaProducer: KafkaProducer<String, String>
     lateinit var topicAngles: String

@@ -3,6 +3,7 @@ package ru.datana.smart.ui.converter.angle.app.cor.handlers
 import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import org.apache.kafka.clients.producer.ProducerRecord
+import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.angle.app.cor.context.ConverterAngleContext
 import ru.datana.smart.ui.converter.angle.app.cor.context.CorError
 import ru.datana.smart.ui.converter.angle.app.cor.context.CorStatus
@@ -13,6 +14,8 @@ import java.util.*
 import kotlin.concurrent.schedule
 
 object SendingHandler : IKonveyorHandler<ConverterAngleContext<String, String>> {
+
+    private val logger = datanaLogger(SendingHandler::class.java)
 
     override suspend fun exec(context: ConverterAngleContext<String, String>, env: IKonveyorEnvironment) {
         try {
@@ -37,7 +40,7 @@ object SendingHandler : IKonveyorHandler<ConverterAngleContext<String, String>> 
 
                 Timer().schedule(startDate) {
                     context.kafkaProducer.send(record)
-                    context.logger.trace(
+                    logger.trace(
                         "Sent message to {}. Record: {}",
                         objs = *arrayOf(
                             context.topicAngles,
@@ -48,7 +51,7 @@ object SendingHandler : IKonveyorHandler<ConverterAngleContext<String, String>> 
             }
         } catch (e: Throwable) {
             val msg = e.message ?: ""
-            context.logger.error(msg)
+            logger.error(msg)
             context.errors.add(CorError(msg))
             context.status = CorStatus.FAILING
         }
