@@ -9,7 +9,6 @@ import ru.datana.smart.ui.converter.angle.app.cor.context.ConverterAngleContext
 import ru.datana.smart.ui.converter.angle.app.cor.handlers.*
 
 class ForwardServiceKafka(
-    val logger: DatanaLogContext,
     val scheduleBasePath: String,
     val topicAngles: String,
     val kafkaProducer: KafkaProducer<String, String>
@@ -22,7 +21,6 @@ class ForwardServiceKafka(
     suspend fun exec(context: ConverterAngleContext<String, String>, env: IKonveyorEnvironment) {
         konveyor.exec(
             context.also {
-                it.logger = logger
                 it.scheduleBasePath = scheduleBasePath
                 it.topicAngles = topicAngles
                 it.kafkaProducer = kafkaProducer

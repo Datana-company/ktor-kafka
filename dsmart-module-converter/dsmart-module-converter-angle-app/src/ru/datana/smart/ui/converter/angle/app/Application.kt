@@ -23,7 +23,6 @@ fun Application.module(testing: Boolean = false) {
     install(KtorKafkaConsumer) {
     }
 
-    val logger = datanaLogger(::main::class.java)
     val scheduleBasePath by lazy { environment.config.property("paths.schedule.base ").getString().trim() }
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
     val kafkaServers: String by lazy {
@@ -53,7 +52,6 @@ fun Application.module(testing: Boolean = false) {
                 records = records.map { it.toInnerModel() }
             )
             ForwardServiceKafka(
-                logger = logger,
                 scheduleBasePath = scheduleBasePath,
                 topicAngles = topicAngle,
                 kafkaProducer = kafkaProducer,
