@@ -38,15 +38,7 @@ class ConverterFacade(
         converterDeviceId = converterDeviceId,
         currentMeltInfo = currentMeltInfo
     )
-    private val meltInfoChain = MetlInfoChain(
-        eventsRepository = converterRepository,
-        wsManager = wsManager,
-        metalRateCriticalPoint = metalRateCriticalPoint,
-        metalRateWarningPoint = metalRateWarningPoint,
-        converterDeviceId = converterDeviceId,
-        currentMeltInfo = currentMeltInfo
-    )
-    private val eventsChain = EventsChain(
+    private val meltInfoChain = MeltInfoChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
@@ -63,10 +55,9 @@ class ConverterFacade(
         currentMeltInfo = currentMeltInfo
     )
 
-    suspend fun handleSlagRate(context: ConverterBeContext) = mathChain.exec(context)
+    suspend fun handleMath(context: ConverterBeContext) = mathChain.exec(context)
     suspend fun handleAngle(context: ConverterBeContext) = angleChain.exec(context)
     suspend fun handleFrame(context: ConverterBeContext) = frameChain.exec(context)
     suspend fun handleMeltInfo(context: ConverterBeContext) = meltInfoChain.exec(context)
-    suspend fun handleEvents(context: ConverterBeContext) = eventsChain.exec(context)
     suspend fun handleTemperature(context: ConverterBeContext) = temperatureChain.exec(context)
 }

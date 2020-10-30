@@ -21,7 +21,6 @@ import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.mappings.toModelTemperature
@@ -78,7 +77,7 @@ fun Application.module(testing: Boolean = false) {
 //    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
 //    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
     val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
-    val metalRateNormalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.normal").getString().trim().toDouble() }
+    val metalRateWarningPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble() }
 
     // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
@@ -102,7 +101,7 @@ fun Application.module(testing: Boolean = false) {
         converterRepository = userEventsRepository,
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
-        metalRateWarningPoint = metalRateNormalPoint,
+        metalRateWarningPoint = metalRateWarningPoint,
         converterDeviceId = converterDeviceId,
         currentMeltInfo = currentMeltInfo
     )
@@ -151,7 +150,7 @@ fun Application.module(testing: Boolean = false) {
                             frame = conveyorModelFrame,
                             meltInfo = conveyorModelMeltInfo
                         )
-                        converterFacade.handleSlagRate(context)
+                        converterFacade.handleMath(context)
                     }
                     topicVideo -> {
                         val kafkaModel = toConverterTransportViMl(record)
