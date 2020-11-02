@@ -101,7 +101,6 @@ fun Application.module(testing: Boolean = false) {
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        converterDeviceId = converterDeviceId,
         currentMeltInfo = currentMeltInfo
     )
 
@@ -172,8 +171,9 @@ fun Application.module(testing: Boolean = false) {
                         converterFacade.handleAngles(context)
                     }
                 }
-            } catch(e: Exception) {
-                // TODO: добавить обработку исключения
+            } catch(e: Throwable) {
+                val msg = e.message ?: ""
+                logger.error(msg)
             } finally {
                 commitAll()
             }

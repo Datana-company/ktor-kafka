@@ -14,6 +14,7 @@ object UpdateAngleWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
         val currentAngle = context.angles.angle!!
         activeEvent?.let {
             val angleStart = it.angleStart ?: currentAngle
+            val angleMax = if (it.angleMax?.let { it.compareTo(currentAngle) > 0 } == true) it.angleMax else currentAngle
             val historicalEvent = MetalRateWarningEvent(
                 id = it.id,
                 timeStart = if (it.timeStart > frameTime) frameTime else it.timeStart,
@@ -22,7 +23,8 @@ object UpdateAngleWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                 title = it.title,
                 isActive = it.isActive,
                 angleStart = angleStart,
-                angleFinish = currentAngle
+                angleFinish = currentAngle,
+                angleMax = angleMax
             )
             context.eventsRepository.put(historicalEvent)
         } ?: return

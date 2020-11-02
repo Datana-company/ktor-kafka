@@ -15,7 +15,6 @@ class MeltInfoChain(
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
-    var converterDeviceId: String,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?>
 ) {
 
@@ -30,7 +29,6 @@ class MeltInfoChain(
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
-                it.converterDeviceId = converterDeviceId
                 it.currentMeltInfo = currentMeltInfo
             },
             env
@@ -42,7 +40,7 @@ class MeltInfoChain(
 
             timeout { 1000 }
 
-//            +DevicesFilterHandler
+            +DevicesFilterHandler
             +CurrentMeltInfoHandler
 
             handler {
