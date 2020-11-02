@@ -32,7 +32,7 @@ export class CaseEditorComponent implements OnInit {
                     name: [''],
                     uri: [''],
                     type: ['file'],
-                    deviceType: ['ConverterDevicesIrCamerta']
+                    deviceType: ['ConverterDevicesIrCamera']
                 })
             })
         })
@@ -56,7 +56,7 @@ export class CaseEditorComponent implements OnInit {
                         name: 'CameraName',
                         uri: 'URI',
                         type: 'file',
-                        deviceType: 'ConverterDevicesIrCamerta'
+                        deviceType: 'ConverterDevicesIrCamera'
                     }
                 }
             }

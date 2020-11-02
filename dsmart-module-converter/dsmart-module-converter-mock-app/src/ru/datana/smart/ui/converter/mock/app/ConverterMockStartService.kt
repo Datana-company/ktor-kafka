@@ -70,7 +70,7 @@ class ConverterMockStartService(
                     id = "converterUnk",
                     name = "Неизвестный конвертер",
                 ),
-                irCamera = ConverterDevicesIrCamerta(
+                irCamera = ConverterDevicesIrCamera(
                     id = "converterUnk-camera",
                     name = "Неизвестная камера",
                     type = ConverterDeviceType.FILE,
