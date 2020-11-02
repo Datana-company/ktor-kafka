@@ -21,7 +21,8 @@ object CreateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 title = it.title,
                 isActive = it.isActive,
                 angleStart = it.angleStart,
-                angleFinish = it.angleFinish
+                angleFinish = it.angleFinish,
+                angleMax = it.angleMax
             )
             context.eventsRepository.put(updateEvent)
         } ?: context.eventsRepository.put(

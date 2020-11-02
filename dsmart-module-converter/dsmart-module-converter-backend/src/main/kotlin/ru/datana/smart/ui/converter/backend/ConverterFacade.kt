@@ -11,7 +11,6 @@ class ConverterFacade(
     wsManager: IWsManager = IWsManager.NONE,
     metalRateCriticalPoint: Double = Double.MIN_VALUE,
     metalRateWarningPoint: Double = Double.MIN_VALUE,
-    converterDeviceId: String = "",
     currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference()
 ) {
     private val mathChain = MathChain(
@@ -19,7 +18,6 @@ class ConverterFacade(
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        converterDeviceId = converterDeviceId,
         currentMeltInfo = currentMeltInfo
     )
     private val anglesChain = AnglesChain(
@@ -27,7 +25,6 @@ class ConverterFacade(
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        converterDeviceId = converterDeviceId,
         currentMeltInfo = currentMeltInfo
     )
     private val frameChain = FrameChain(
@@ -35,7 +32,6 @@ class ConverterFacade(
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        converterDeviceId = converterDeviceId,
         currentMeltInfo = currentMeltInfo
     )
     private val meltInfoChain = MeltInfoChain(
@@ -43,7 +39,6 @@ class ConverterFacade(
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        converterDeviceId = converterDeviceId,
         currentMeltInfo = currentMeltInfo
     )
 
