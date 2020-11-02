@@ -14,6 +14,7 @@ import io.ktor.util.*
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG
 import ru.datana.smart.logger.datanaLogger
+import ru.datana.smart.ui.converter.mock.app.models.UploadDataModel
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import java.io.File
 import java.io.IOException
@@ -156,10 +157,17 @@ fun Application.module(testing: Boolean = false) {
 
         post<Upload> {
             logger.info(" +++ POST /upload")
-            val multipart = call.receiveMultipart()
+
+            val multipart = call.receiveMultipart().readAllParts()
+            val multiMap = multipart.associateBy { it.name }.toMap()
+            val uploadDataModel = UploadDataModel(multiMap)
+            logger.debug("uploadDataModel: {}", objs = arrayOf(uploadDataModel))
+            println(" --- uploadDataModel: " + uploadDataModel)
+
             val context = ConverterMockContext(
+                uploadDataModel = uploadDataModel
             )
-            uploadService.exec(context, multipart)
+            uploadService.exec(context)
             when(context.status) {
                 ConverterMockContext.Statuses.OK -> call.respond(HttpStatusCode.OK)
                 else -> call.respond(HttpStatusCode.InternalServerError)

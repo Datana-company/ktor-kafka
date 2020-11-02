@@ -18,6 +18,12 @@ input {
     padding-left: .4em;
 }
 
+select {
+    height: 2em;
+    font-size: 1em;
+    padding-left: .4em;
+}
+
 button {
     font-family: Arial;
     font-size: large;

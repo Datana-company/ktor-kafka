@@ -25,13 +25,13 @@ export class CaseEditorComponent implements OnInit {
             steelGrade: [''],
             crewNumber: [''],
             shiftNumber: [''],
-            mode: [''],
+            mode: ['emulation'],
             devices: this.formBuilder.group({
                 irCamera: this.formBuilder.group({
                     id: [''],
                     name: [''],
                     uri: [''],
-                    type: [''],
+                    type: ['file'],
                     deviceType: ['ConverterDevicesIrCamerta']
                 })
             })
@@ -70,7 +70,10 @@ export class CaseEditorComponent implements OnInit {
         ).subscribe(data => {
             console.log(data);
             this.newCase.emit("newCase");
-            this.fileUpload.upload(data, this.caseEditorForm.value.meltInfo.devices.irCamera.id);
+            // this.fileUpload.upload(data, this.caseEditorForm.value.meltInfo.devices.irCamera.id);
+            this.fileUpload.setNewCaseFolderName(data);
+            this.fileUpload.setFileName(this.caseEditorForm.value.meltInfo.devices.irCamera.id);
+            this.fileUpload.onFormSubmit();
         });
     }
 

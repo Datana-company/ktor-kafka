@@ -14,6 +14,7 @@ export class ConverterWidgetMockComponent implements OnInit, OnDestroy {
     _unsubscribe = new Subject<void>();
 
     selectedCase: String;
+    editorVisible: boolean = false;
 
     mockList: Array<MockListItemModel> = new Array<MockListItemModel>();
 
@@ -43,5 +44,9 @@ export class ConverterWidgetMockComponent implements OnInit, OnDestroy {
       ).subscribe(data => {
         this.mockList = data?.cases;
       });
+    }
+
+    addCase() {
+        this.editorVisible = true;
     }
 }

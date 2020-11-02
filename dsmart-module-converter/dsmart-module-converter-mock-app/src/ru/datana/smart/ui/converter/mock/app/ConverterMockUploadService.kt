@@ -10,40 +10,24 @@ import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
-/*
-1. Нужно объединить с create
-2. Принимать данные одним скопом https://stackoverflow.com/questions/62823689/check-whether-all-parameter-exist-or-not-in-multipart-request-body-with-ktor
- */
-
 class ConverterMockUploadService(
     val pathToCatalog: String = ""
 ) {
 
     private val logger = datanaLogger(this::class.java)
 
-    suspend fun exec(context: ConverterMockContext, multipart: MultiPartData) {
-        var newCaseFolderName: String = ""
-        var fileName: String = "default-video-file-name"
+    suspend fun exec(context: ConverterMockContext) {
+        val uploadPath = pathToCatalog + File.separatorChar + context.uploadDataModel.newCaseFolderName.value
+        logger.debug("uploadPath: {}", objs = arrayOf(uploadPath))
+        println(" --- uploadPath: " + uploadPath)
+        val ext = File(context.uploadDataModel.file.originalFileName).extension
+        val file = File(uploadPath, "${context.uploadDataModel.fileName.value}.$ext")
+        logger.debug("File absolute path: {}", objs = arrayOf(file.absolutePath))
+        println(" --- file.absolutePath: " + file.absolutePath)
+        context.uploadDataModel.file.streamProvider()
+            .use { input -> file.outputStream().buffered().use { output -> input.copyToSuspend(output) } }
+        logger.info("File successfully uploaded to path: {}", objs = arrayOf(file.absolutePath))
 
-        // Processes each part of the multipart input content
-        multipart.forEachPart { part ->
-            if (part is PartData.FormItem) {
-                if (part.name == "file_name") {
-                    logger.debug(" --- file_name: {}", objs = arrayOf(part.value))
-                    fileName = part.value
-                } else if (part.name == "new_case_folder_name") {
-                    logger.debug(" --- new_case_folder_name: {}", objs = arrayOf(part.value))
-                    newCaseFolderName = part.value
-                }
-            } else if (part is PartData.FileItem) {
-                val uploadPath = pathToCatalog + File.separatorChar + newCaseFolderName
-                logger.debug(" --- fileDir: {}", objs = arrayOf(uploadPath))
-                val ext = File(part.originalFileName).extension
-                val file = File(uploadPath, "$fileName.$ext")
-                part.streamProvider().use { its -> file.outputStream().buffered().use { its.copyToSuspend(it) } }
-            }
-            part.dispose()
-        }
         context.status = ConverterMockContext.Statuses.OK
     }
 }

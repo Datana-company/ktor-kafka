@@ -30,9 +30,14 @@
             <input type="text" formControlName="shiftNumber">
           </label>
           <label>
-            Режим: боевая, эмуляция, тестовая:
+            Режим: боевой, эмуляция, тестовый:
             <br>
-            <input type="text" formControlName="mode">
+            <!--<input type="text" formControlName="mode">-->
+            <select formControlName="mode">
+              <option value="prod">Боевой</option>
+              <option value="emulation">Эмуляция</option>
+              <option value="test">Тестовый</option>
+            </select>
           </label>
         </div>
         <div class="widget-col-50">
@@ -58,7 +63,12 @@
               <label>
                 Тип устройства: настоящая камера или файл:
                 <br>
-                <input type="text" formControlName="type">
+                <!--<input type="text" formControlName="type">-->
+                <select formControlName="type">
+                  <option value="device">Камера</option>
+                  <option value="file">Файл</option>
+                  <option value="computation">Вычисление</option>
+                </select>
               </label>
             </div>
           </div>

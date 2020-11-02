@@ -5,8 +5,9 @@
         [mockList] = "mockList"
         (selectedCase) = "setSelectedCase($event)">
     </mock-list-component>
+    <button type="button" (click)="addCase()">Добавить кейс</button>
 </div>
-<div>
+<div *ngIf="editorVisible">
     <case-editor-component
         (newCase) = "newCase($event)">
     </case-editor-component>
