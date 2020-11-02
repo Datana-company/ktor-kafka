@@ -1,7 +1,8 @@
 package ru.datana.smart.ui.converter.mock.app
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.ktor.http.*
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import ru.datana.smart.logger.datanaLogger
 import java.io.File
 
@@ -10,7 +11,8 @@ class ConverterMockCreateService(
 ) {
 
     private val logger = datanaLogger(this::class.java)
-    private val objectMapper = ObjectMapper()
+    private val objectMapper: ObjectMapper = jacksonObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
 
     fun exec(context: ConverterMockContext) {
         logger.info("request body: {}", objs = arrayOf(context.requestToSave))

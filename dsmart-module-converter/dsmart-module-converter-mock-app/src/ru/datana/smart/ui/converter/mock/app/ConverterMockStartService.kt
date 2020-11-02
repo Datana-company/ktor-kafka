@@ -1,20 +1,15 @@
 package ru.datana.smart.ui.converter.mock.app
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.http.*
-import io.ktor.response.*
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.meta.models.*
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.time.Instant
-import kotlin.streams.toList
 
 class ConverterMockStartService(
     val pathToCatalog: String = "",
@@ -23,7 +18,8 @@ class ConverterMockStartService(
 ) {
 
     private val logger = datanaLogger(this::class.java)
-    private val objectMapper = ObjectMapper()
+    private val objectMapper: ObjectMapper = jacksonObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
 
     fun exec(context: ConverterMockContext) {
         logger.info(" +++ GET /send")

@@ -1,5 +1,7 @@
 package ru.datana.smart.ui.converter.mock.app
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.application.*
@@ -135,8 +137,10 @@ fun Application.module(testing: Boolean = false) {
 
         post("/add_case") {
             logger.info(" +++ POST /add_case")
+            val jacksonObjectMapper: ObjectMapper = jacksonObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
             val request: ConverterCaseSaveRequest = try {
-                jacksonObjectMapper().readValue(call.receiveText())
+                jacksonObjectMapper.readValue(call.receiveText())
             } catch (e: Throwable) {
                 logger.error("Error parsing meltInfo body from frontend: {}", e)//call.receiveText())
                 return@post
@@ -149,7 +153,7 @@ fun Application.module(testing: Boolean = false) {
             when(context.status) {
                 ConverterMockContext.Statuses.OK -> {
                     call.respondText(
-                        jacksonObjectMapper().writeValueAsString(context.responseToSave.caseName), status = HttpStatusCode.OK )
+                        jacksonObjectMapper.writeValueAsString(context.responseToSave.caseName), status = HttpStatusCode.OK )
                 }
                 else -> call.respond(HttpStatusCode.InternalServerError)
             }
