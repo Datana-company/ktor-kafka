@@ -24,7 +24,7 @@
 .widget-boiling-time {
     display: flex;
     flex-direction: column;
-    height: calc(91.5% - 6rem - 8px);
+    height: calc(94.5% - 3rem - 1px);
     align-items: center;
     justify-content: center;
     text-align: center;
