@@ -27,17 +27,22 @@ components:
 
     ConverterTransportAngle:
       description: Транспортная модель для передачи данных об угле наклона конвертера при сливе шлака
-      allOf:
-        - $ref: './spec-converter-video.yaml#/components/schemas/ConverterTransportViMl'
-        - type: object
-          properties:
-            angle:
-              title: Угол конвертера
-              description: Угол в градусах, на который наклонен конвертер, определенный средствами матмодели из кадра
-              type: number
-              format: double
-            source:
-              title: Источник данных
-              description: Угол в градусах, на который наклонен конвертер, определенный средствами матмодели из кадра
-              type: number
-              format: double
+      type: object
+      properties:
+        angleTime:
+          title: Время измерения угла
+          description: Время в миллисекундах от Unix-эпохи в GMT, когда был получен соответствующий угол
+          type: integer
+          format: int64
+        angle:
+          title: Угол конвертера
+          description: Угол в градусах, на который наклонен конвертер, определенный средствами матмодели из кадра
+          type: number
+          format: double
+        source:
+          title: Источник данных
+          description: Угол в градусах, на который наклонен конвертер, определенный средствами матмодели из кадра
+          type: number
+          format: double
+        meltInfo:
+          $ref: './spec-converter-meta.yaml#/components/schemas/ConverterMeltInfo'

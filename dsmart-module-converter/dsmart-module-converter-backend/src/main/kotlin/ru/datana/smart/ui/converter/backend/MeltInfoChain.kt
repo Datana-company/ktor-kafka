@@ -10,12 +10,11 @@ import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
 
-class MetlInfoChain(
+class MeltInfoChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
-    var converterDeviceId: String,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?>
 ) {
 
@@ -30,7 +29,6 @@ class MetlInfoChain(
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
-                it.converterDeviceId = converterDeviceId
                 it.currentMeltInfo = currentMeltInfo
             },
             env

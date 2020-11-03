@@ -13,7 +13,6 @@ class ConverterBeContext (
     var frame: ModelFrame = ModelFrame.NONE,
     var slagRate: ModelSlagRate = ModelSlagRate.NONE,
     var events: ModelEvents = ModelEvents.NONE,
-    var temperature: ModelTemperature = ModelTemperature.NONE,
     var lastTimeProc: AtomicLong = AtomicLong(0),
     var status: CorStatus = CorStatus.STARTED,
     var errors: MutableList<CorError> = mutableListOf(),
@@ -22,7 +21,6 @@ class ConverterBeContext (
     var wsManager: IWsManager = IWsManager.NONE,
     var metalRateCriticalPoint: Double = Double.MIN_VALUE,
     var metalRateWarningPoint: Double = Double.MIN_VALUE,
-    var converterDeviceId: String = "",
     var eventsRepository: IUserEventsRepository = IUserEventsRepository.NONE,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference()
 )

@@ -13,7 +13,8 @@ fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
 
 fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
     WsDsmartConverterAngles(
-        angle = modelAngles.angle
+        angle = modelAngles.angle,
+        source = modelAngles.source
     )
 
 fun toWsConverterFrameModel(modelFrame: ModelFrame) =
@@ -71,8 +72,9 @@ fun toWsEventModel(event: IBizEvent) =
         timeFinish = event.timeFinish,
         title = event.title,
         textMessage = event.textMessage,
-        category = event.category?.let { WsDsmartEvent.Category.valueOf(it.name) },
-        isActive = event.isActive
+        category = WsDsmartEvent.Category.valueOf(event.category.name),
+        isActive = event.isActive,
+        executionStatus = WsDsmartEvent.ExecutionStatus.valueOf(event.executionStatus.name)
     )
 
 fun toWsEventListModel(events: List<IBizEvent>) = events.stream().map { event -> toWsEventModel(event) }.toList()
@@ -80,8 +82,3 @@ fun toWsEventListModel(events: List<IBizEvent>) = events.stream().map { event ->
 fun toWsEventListModel(modelEvents: ModelEvents) = modelEvents.events?.stream()?.map { event -> toWsEventModel(event) }
     ?.toList()
     ?: mutableListOf()
-
-fun toWsTemperatureModel(modelTemperature: ModelTemperature) =
-    WsDsmartTemperature(
-        temperatureAverage = modelTemperature.temperatureAverage
-    )

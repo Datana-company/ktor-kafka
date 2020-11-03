@@ -3,14 +3,14 @@ import {Subject} from "rxjs";
 import {map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
 import {EventModel} from "./models/event-model";
-import {TemperatureModel} from "./models/temperature.model";
 import {SlagRateModel} from "./models/slag-rate.model";
 import {ConverterFrameModel} from "./models/converter-frame.model";
 import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
 import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
 import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
 import {EventCategoryModel} from "./models/event-category.model";
-import {AnglesModel} from "./models/angles.model";
+import {ExecutionStatusModel} from "./models/event-execution-status.model";
+import {ConverterAnglesModel} from "./models/converter-angles-model";
 
 @Component({
   selector: 'datana-converter-widget',
@@ -21,10 +21,10 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   _unsubscribe = new Subject<void>();
 
-  public temperatureData: TemperatureModel;
   public converterMeltInfoData: ConverterMeltInfoModel;
   public converterSlagRateData: SlagRateModel;
   public converterFrameData: ConverterFrameModel;
+  public converterAnglesData: ConverterAnglesModel;
   public converterEvents: Array<EventModel> = new Array<EventModel>();
 
   playlist: string;
@@ -35,17 +35,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.playlist = 'http://camera.d.datana.ru/playlist.m3u8'
-
-    this.wsService.on('temperature-update').pipe(
-      takeUntil(this._unsubscribe),
-      map((data: any) => {
-        return new TemperatureModel(
-          data?.temperatureAverage?.toFixed(1) as number
-        );
-      })
-    ).subscribe(data => {
-      this.temperatureData = data;
-    });
 
     this.wsService.on('converter-melt-info-update').pipe(
       takeUntil(this._unsubscribe),
@@ -90,6 +79,18 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.converterFrameData = data;
     });
 
+    this.wsService.on('converter-angles-update').pipe(
+      takeUntil(this._unsubscribe),
+      map((data: any) => {
+        return new ConverterAnglesModel(
+          data?.angle?.toFixed(1) as number,
+          data?.source as number
+        );
+      })
+    ).subscribe(data => {
+      this.converterAnglesData = data;
+    });
+
     this.wsService.on('events-update').pipe(
       takeUntil(this._unsubscribe),
       map((data: any) => data?.list.map(
@@ -100,7 +101,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
           event?.title as string,
           event?.textMessage as string,
           event?.category as EventCategoryModel,
-          event?.isActive as boolean
+          event?.isActive as boolean,
+          event?.executionStatus as ExecutionStatusModel
         )
       ) as Array<EventModel>)
     ).subscribe(data => {

@@ -1,12 +1,14 @@
 package ru.datana.smart.ui.converter.app.mappings
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import ru.datana.smart.ui.converter.app.common.exceptions.ConverterDeserializationException
 import ru.datana.smart.ui.converter.common.context.InnerRecord
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
-import ru.datana.smart.ui.ml.models.TemperatureProcUiDto
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import ru.datana.smart.ui.viml.models.ConverterTransportViMl
+import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
 
 fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     topic = topic(),
@@ -16,40 +18,36 @@ fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     value = value()
 )
 
-val jacksonSerializer: ObjectMapper = ObjectMapper()
+val jacksonSerializer: ObjectMapper = ObjectMapper().configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
 
 fun toConverterMeltInfo(record: InnerRecord<String, String>): ConverterMeltInfo {
-    return try {
-        jacksonSerializer.readValue(record.value, ConverterMeltInfo::class.java)!!
+    try {
+        return jacksonSerializer.readValue(record.value, ConverterMeltInfo::class.java)!!
     } catch (e: Exception) {
-        // TODO: добавить обработку исключения
-        ConverterMeltInfo()
+        throw ConverterDeserializationException(e.message, e.cause)
     }
 }
 
 fun toConverterTransportMlUi(record: InnerRecord<String, String>): ConverterTransportMlUi {
-    return try {
-        jacksonSerializer.readValue(record.value, ConverterTransportMlUi::class.java)!!
+    try {
+        return jacksonSerializer.readValue(record.value, ConverterTransportMlUi::class.java)!!
     } catch (e: Exception) {
-        // TODO: добавить обработку исключения
-        ConverterTransportMlUi()
+        throw ConverterDeserializationException(e.message, e.cause)
     }
 }
 
 fun toConverterTransportViMl(record: InnerRecord<String, String>): ConverterTransportViMl {
-    return try {
-        jacksonSerializer.readValue(record.value, ConverterTransportViMl::class.java)!!
+    try {
+        return jacksonSerializer.readValue(record.value, ConverterTransportViMl::class.java)!!
     } catch (e: Exception) {
-        // TODO: добавить обработку исключения
-        ConverterTransportViMl()
+        throw ConverterDeserializationException(e.message, e.cause)
     }
 }
 
-fun toTemperatureProcUiDto(record: InnerRecord<String, String>): TemperatureProcUiDto {
-    return try {
-        jacksonSerializer.readValue(record.value, TemperatureProcUiDto::class.java)!!
+fun toConverterTransportAngle(record: InnerRecord<String, String>): ConverterTransportAngle {
+    try {
+        return jacksonSerializer.readValue(record.value, ConverterTransportAngle::class.java)!!
     } catch (e: Exception) {
-        // TODO: добавить обработку исключения
-        TemperatureProcUiDto()
+        throw ConverterDeserializationException(e.message, e.cause)
     }
 }

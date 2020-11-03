@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {TemperatureModel} from "../models/temperature.model";
+import {ConverterAnglesModel} from '../models/converter-angles-model'
 
 
 @Component({
@@ -9,6 +9,6 @@ import {TemperatureModel} from "../models/temperature.model";
 })
 export class TiltAngleComponent  {
 
-  @Input() temperatureData: TemperatureModel;
+  @Input() angleData: ConverterAnglesModel;
 
 }

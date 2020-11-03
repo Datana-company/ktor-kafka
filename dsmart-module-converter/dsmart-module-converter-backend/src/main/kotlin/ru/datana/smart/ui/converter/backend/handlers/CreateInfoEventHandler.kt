@@ -19,7 +19,10 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = it.isActive
+                isActive = it.isActive,
+                angleStart = it.angleStart,
+                angleFinish = it.angleFinish,
+                angleMax = it.angleMax
             )
             context.eventsRepository.put(updateEvent)
         } ?: context.eventsRepository.put(

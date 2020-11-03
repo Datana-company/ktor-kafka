@@ -11,7 +11,7 @@ import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
 
-class AnglesChain(
+class MathChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
@@ -47,7 +47,7 @@ class AnglesChain(
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    wsManager.sendAngles(this)
+                    wsManager.sendSlagRate(this)
                 }
             }
 

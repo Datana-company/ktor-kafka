@@ -57,10 +57,10 @@ dependencies {
     implementation(project(":dsmart-module-converter:dsmart-module-converter-backend"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-repo-inmemory"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-ws-models"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-ml-models"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-mlui"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-viml"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-angle"))
     implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")

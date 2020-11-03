@@ -4,31 +4,30 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.MetalRateExceedsEvent
+import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 import java.time.Instant
-import java.util.*
 
-object CreateExceedsEventHandler: IKonveyorHandler<ConverterBeContext> {
+object UpdateAngleWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
-        val activeEvent: MetalRateExceedsEvent? = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateExceedsEvent
+        val activeEvent = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateWarningEvent
+        val currentAngle = context.angles.angle!!
         activeEvent?.let {
-            val updateEvent = MetalRateExceedsEvent(
+            val angleStart = it.angleStart ?: currentAngle
+            val angleMax = if (it.angleMax?.let { it.compareTo(currentAngle) > 0 } == true) it.angleMax else currentAngle
+            val historicalEvent = MetalRateWarningEvent(
                 id = it.id,
                 timeStart = if (it.timeStart > frameTime) frameTime else it.timeStart,
                 timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = it.isActive
+                isActive = it.isActive,
+                angleStart = angleStart,
+                angleFinish = currentAngle,
+                angleMax = angleMax
             )
-            context.eventsRepository.put(updateEvent)
-        } ?: context.eventsRepository.put(
-            MetalRateExceedsEvent(
-                id = UUID.randomUUID().toString(),
-                timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),
-                timeFinish = context.frame.frameTime ?: Instant.now().toEpochMilli(),
-                metalRate = context.slagRate.steelRate!!
-            ))
+            context.eventsRepository.put(historicalEvent)
+        } ?: return
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {
