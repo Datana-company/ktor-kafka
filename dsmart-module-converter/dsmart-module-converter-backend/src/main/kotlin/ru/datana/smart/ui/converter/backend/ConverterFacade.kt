@@ -11,35 +11,40 @@ class ConverterFacade(
     wsManager: IWsManager = IWsManager.NONE,
     metalRateCriticalPoint: Double = Double.MIN_VALUE,
     metalRateWarningPoint: Double = Double.MIN_VALUE,
-    currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference()
+    currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference(),
+    converterId: String = ""
 ) {
     private val mathChain = MathChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        currentMeltInfo = currentMeltInfo
+        currentMeltInfo = currentMeltInfo,
+        converterId = converterId
     )
     private val anglesChain = AnglesChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        currentMeltInfo = currentMeltInfo
+        currentMeltInfo = currentMeltInfo,
+        converterId = converterId
     )
     private val frameChain = FrameChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        currentMeltInfo = currentMeltInfo
+        currentMeltInfo = currentMeltInfo,
+        converterId = converterId
     )
     private val meltInfoChain = MeltInfoChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        currentMeltInfo = currentMeltInfo
+        currentMeltInfo = currentMeltInfo,
+        converterId = converterId
     )
 
     suspend fun handleMath(context: ConverterBeContext) = mathChain.exec(context)
