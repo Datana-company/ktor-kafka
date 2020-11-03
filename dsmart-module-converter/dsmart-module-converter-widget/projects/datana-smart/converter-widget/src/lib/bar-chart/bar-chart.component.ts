@@ -6,13 +6,16 @@ import {SlagRateModel} from "../models/slag-rate.model";
 @Component({
     selector: 'bar-chart-component',
     templateUrl: './bar-chart.component.html',
-    styleUrls: ['./bar-chart.component.css']
+    styleUrls: ['./bar-chart.component.scss']
 })
 export class BarChartComponent {
 
+  // public xAxisTickFormattingFn = this.xAxisTickFormatting.bind(this);
+  // public xAxisTickFormattingFn = (value) => `${value.toString()+"%"}`;
+ // public xAxisTickFormattingFn = value => `X ${value.toLocaleString()}`;
     @Input() slagRateModel: SlagRateModel;
 
-    view: any[] = [600, 200];
+    view: any[] = [800, 200];
 
     // options
     showXAxis = false;
@@ -24,9 +27,10 @@ export class BarChartComponent {
     showYAxisLabel = false;
     xAxisLabel = '';
     showDataLabel = true;
+    // barPadding = '8px';
 
     colorScheme = {
-        domain: ['#C5C5C5', '#CBF76F', '#FF8740', '#AAAAAA']
+        domain: ['#4E80B2','#BEEAE4' , '#C23557']
     };
 
     constructor() {
@@ -61,4 +65,10 @@ export class BarChartComponent {
             }
         ];
     }
+
+  // xAxisTickFormatting(value: any){
+  //   return value + " %" ;
+  // }
+  // value.toLocaleString()
+
 }
