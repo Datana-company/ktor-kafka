@@ -22,5 +22,6 @@ class ConverterBeContext (
     var metalRateCriticalPoint: Double = Double.MIN_VALUE,
     var metalRateWarningPoint: Double = Double.MIN_VALUE,
     var eventsRepository: IUserEventsRepository = IUserEventsRepository.NONE,
-    var currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference()
+    var currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference(),
+    var converterId: String = ""
 )

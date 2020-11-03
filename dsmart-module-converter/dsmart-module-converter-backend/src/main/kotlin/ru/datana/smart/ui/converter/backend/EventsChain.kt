@@ -17,7 +17,8 @@ class EventsChain(
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
-    var currentMeltInfo: AtomicReference<ModelMeltInfo?>
+    var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
+    var converterId: String
 ) {
     suspend fun exec(context: ConverterBeContext) {
         exec(context, DefaultKonveyorEnvironment)
@@ -31,6 +32,7 @@ class EventsChain(
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
                 it.currentMeltInfo = currentMeltInfo
+                it.converterId = converterId
             },
             env
         )

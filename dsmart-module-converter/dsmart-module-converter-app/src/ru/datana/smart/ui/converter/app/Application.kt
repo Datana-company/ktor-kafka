@@ -70,7 +70,7 @@ fun Application.module(testing: Boolean = false) {
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicAngles by lazy { environment.config.property("ktor.kafka.consumer.topic.angles").getString().trim() }
     val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
-    val converterDeviceId by lazy { environment.config.property("ktor.datana.converterDevice.id").getString().trim() }
+    val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
 //    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
 //    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
 //    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
@@ -101,7 +101,8 @@ fun Application.module(testing: Boolean = false) {
         wsManager = wsManager,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        currentMeltInfo = currentMeltInfo
+        currentMeltInfo = currentMeltInfo,
+        converterId = converterId
     )
 
     routing {
