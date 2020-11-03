@@ -24,7 +24,7 @@
     left: 62px;
     top: 108px;
     background: #B7B7B7;
-    padding: 0.5px;
+    padding: 0.1px;
 }
 .widget-container-main-top{
     height: 20px;
@@ -96,6 +96,7 @@
 .widget-container-main {
     /*height: calc(0.5rem + 6 * (6.5rem + 8px));*/
     min-width: 1360px;
+    padding-top: 1.5rem;
 }
 
 .widget-container {
@@ -105,7 +106,7 @@
 }
 
 .widget-col {
-    width: 35%;
+    width: 40%;
 }
 .widget-col-65{
     width: 60%;
