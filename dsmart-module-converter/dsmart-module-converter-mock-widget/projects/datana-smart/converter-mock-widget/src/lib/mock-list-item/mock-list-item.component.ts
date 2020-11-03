@@ -16,6 +16,10 @@ export class MockListItemComponent implements OnInit, OnDestroy {
     @Input() mockListItem: MockListItemModel;
 
     @Output() selectedCase = new EventEmitter<String>();
+    @Output() startedCase = new EventEmitter<String>();
+
+    selectedItemCssClassName = "widget-mock-list-item-selected"
+    itemCssSelectionClass = ""
 
     constructor(private service: ConverterWidgetMockService) {
     }
@@ -24,12 +28,26 @@ export class MockListItemComponent implements OnInit, OnDestroy {
     }
 
     startCase() {
+        console.log(" --- MockListItemComponent::startCase()")
         this.service.startCase(this.mockListItem.name).pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(data => {
             console.log(data);
-            this.selectedCase.emit(this.mockListItem.name);
+            this.startedCase.emit(this.mockListItem.name);
         });
+    }
+
+    selectCase() {
+        console.log(" --- MockListItemComponent::selectCase()")
+        this.itemCssSelectionClass = this.selectedItemCssClassName;
+        this.selectedCase.emit(this.mockListItem.name);
+    }
+
+    unselectCase(newCaseName) {
+        console.log(" --- MockListItemComponent::unselectCase() --- newCaseName: " + newCaseName)
+        if (newCaseName != this.mockListItem.name) {
+            this.itemCssSelectionClass = "";
+        }
     }
 
     ngOnDestroy(): void {

@@ -1,8 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MockListItemModel} from "./models/mock-list-item-model";
 import {Subject} from "rxjs";
 import {ConverterWidgetMockService} from "./converter-widget-mock.service";
 import {takeUntil} from "rxjs/operators";
+import {CaseEditorComponent} from "./case-editor/case-editor.component";
 
 @Component({
     selector: 'datana-converter-mock-widget',
@@ -11,9 +12,12 @@ import {takeUntil} from "rxjs/operators";
 })
 export class ConverterWidgetMockComponent implements OnInit, OnDestroy {
 
+    @ViewChild(CaseEditorComponent) caseEditor: CaseEditorComponent;
+
     _unsubscribe = new Subject<void>();
 
-    selectedCase: String;
+    selectedCaseName: String;
+    startedCaseName: String;
     editorVisible: boolean = false;
 
     mockList: Array<MockListItemModel> = new Array<MockListItemModel>();
@@ -30,8 +34,15 @@ export class ConverterWidgetMockComponent implements OnInit, OnDestroy {
         this._unsubscribe.complete();
     }
 
-    setSelectedCase(selectedCase) {
-        this.selectedCase = selectedCase;
+    setSelectedCase(selectedCaseName) {
+        this.selectedCaseName = selectedCaseName;
+        if (this.editorVisible) {
+            this.caseEditor.caseSelected(selectedCaseName)
+        }
+    }
+
+    setStartedCase(startedCaseName) {
+        this.startedCaseName = startedCaseName;
     }
 
     newCase(newCaseName) {

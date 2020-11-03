@@ -108,6 +108,18 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
+        get("/get_case_data/{case_name}") {
+            val caseName = call.parameters["case_name"]
+            logger.info(" +++ GET /get_case_data/$caseName")
+            val pathToMetaJson = "$pathToCatalog/$caseName/meta.json"
+
+            val metaText = try {
+                File(pathToMetaJson).readText(Charsets.UTF_8)
+            } catch (e: Throwable) {
+                ""
+            }
+            call.respondText(metaText, status = HttpStatusCode.OK)
+        }
 
         get("/front-config") {
             call.respondText(

@@ -16,6 +16,8 @@ export class CaseEditorComponent implements OnInit {
 
     @ViewChild(FileUploadComponent) fileUpload: FileUploadComponent;
 
+    selectedCaseName: String ="";
+
     _unsubscribe = new Subject<void>();
 
     caseEditorForm = this.formBuilder.group({
@@ -74,6 +76,44 @@ export class CaseEditorComponent implements OnInit {
             this.fileUpload.setNewCaseFolderName(data);
             this.fileUpload.setFileName(this.caseEditorForm.value.meltInfo.devices.irCamera.id);
             this.fileUpload.onFormSubmit();
+        });
+    }
+
+    caseSelected(selectedCaseName) {
+        console.log(" --- CaseEditorComponent::caseSelected() --- selectedCaseName: " + selectedCaseName );
+        // this.selectedCaseName = " (" + selectedCaseName + ")";
+        this.selectedCaseName = selectedCaseName;
+        this.service.getSelectedCaseData(selectedCaseName).pipe(
+            takeUntil(this._unsubscribe)
+        ).subscribe(caseData => {
+            console.log(caseData);
+            if (caseData == null) {
+                this.caseEditorForm.reset();
+            } else {
+                this.loadCaseToForm(caseData);
+            }
+        });
+    }
+
+    loadCaseToForm(caseData) {
+        this.caseEditorForm.patchValue({
+            caseName: this.selectedCaseName,
+            meltInfo: {
+                meltNumber: caseData.meltNumber,
+                steelGrade: caseData.steelGrade,
+                crewNumber: caseData.crewNumber,
+                shiftNumber: caseData.shiftNumber,
+                mode: caseData.mode,
+                devices: {
+                    irCamera: {
+                        id: caseData.devices.irCamera.id,
+                        name: caseData.devices.irCamera.name,
+                        uri: caseData.devices.irCamera.uri,
+                        type: caseData.devices.irCamera.type,
+                        deviceType: caseData.devices.irCamera.deviceType
+                    }
+                }
+            }
         });
     }
 

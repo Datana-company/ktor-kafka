@@ -22,6 +22,13 @@ export class CaseEditorService {
             .pipe(catchError(err => this.handleError(err)));
     }
 
+    getSelectedCaseData(selectedCaseName): Observable<any> {
+        console.log(` +++ GET /get_case_data --- selectedCaseName = ${selectedCaseName}`)
+        const headers = new HttpHeaders({'Content-Type': 'text/html; charset=utf-8'})
+        return this.http.get(`/get_case_data/${selectedCaseName}`, {headers})
+            .pipe(catchError(err => this.handleError(err)));
+    }
+
     private handleError(error: any) {
         return throwError(error);
     }

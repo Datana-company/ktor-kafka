@@ -1,11 +1,13 @@
-<p *ngIf="selectedCase != null"> Был выбран каталог: {{selectedCase}}</p>
+<!--<p *ngIf="selectedCaseName != null"> Был выбран каталог: {{selectedCaseName}}</p>-->
+<p *ngIf="startedCaseName != null"> Был запущен кейс: {{startedCaseName}}</p>
 <div class="widget-mock-list widget-col">
     <h1>Список кейсов</h1>
     <mock-list-component
         [mockList] = "mockList"
-        (selectedCase) = "setSelectedCase($event)">
+        (selectedCase) = "setSelectedCase($event)"
+        (startedCase) = "setStartedCase($event)">
     </mock-list-component>
-    <button type="button" (click)="addCase()">Добавить кейс</button>
+    <button type="button" class="add-case-button" [disabled]="editorVisible" (click)="addCase()">Добавить кейс</button>
 </div>
 <div *ngIf="editorVisible">
     <case-editor-component
