@@ -1,6 +1,6 @@
 .topLinePath77 {
     position: absolute;
-    width: 1980px;
+    width: 100%;
     height: 8px;
     left: 0px;
     top: 0px;
@@ -10,7 +10,7 @@
 
 .rectangleTop {
     /*position: absolute;*/
-    width: 1980px;
+    width: max-content;
     height: 54px;
     left: 0px;
     top: 0px;
@@ -27,9 +27,9 @@
     padding: 0.1px;
 }
 .widget-container-main-top{
-    height: 20px;
+    /*height: 20px;*/
     background: #EAEEF0;
-    left: 1%;
+    /*left: 1%;*/
     min-width: 1360px;
 }
 .titlesTop1 {
@@ -48,18 +48,16 @@
     position: absolute;
     width: 751px;
     height: 25px;
-    left: 335px;
-    top: 20px;
+    /*left: 335px;*/
+    top: 1.5rem;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
     line-height: 25px;
-    /* identical to box height */
-
+    padding-right: 7.5rem;
     text-align: center;
-
     color: #FFFFFF;
 }
 
@@ -72,52 +70,72 @@
     /*background: url(Vector Smart Object.png);*/
 }
 
+.exit{
+    position: absolute;
+    top: 17px;
+    width: 19.61px;
+    height: 26.15px;
+}
+.alarm{
+    width: 18px;
+    height: 18px;
+}
+
 .widget-header {
-    display: flex;
+    /*display: flex;*/
     width: 100%;
     height: 4rem;
-    align-items: center;
-    justify-content: flex-end;
+    /*align-items: center;*/
+    /*justify-content: flex-end;*/
     background-color: #22588F;
     color: white;
     font-weight: 500;
     font-size: 1.2rem;
 }
 
-.widget-header > div {
-    margin-right: 2rem;
-}
+/*.widget-header > div {*/
+/*    margin-right: 2rem;*/
+/*}*/
 
-.widget-header-status {
-    padding-left: 2rem;
-    margin-right: auto;
-}
+/*.widget-header-status {*/
+/*    padding-left: 2rem;*/
+/*    margin-right: auto;*/
+/*}*/
 
 .widget-container-main {
     /*height: calc(0.5rem + 6 * (6.5rem + 8px));*/
     min-width: 1360px;
-    padding-top: 1.5rem;
-}
-
-.widget-container {
-    display: flex;
-    width: 100%;
+    /*padding-top: 1.5rem;*/
     background: #EAEEF0;
 }
 
-.widget-col {
-    width: 40%;
-}
-.widget-col-65{
-    width: 60%;
+.widget-container-row {
+    /*display: flex;*/
+    margin-left:3.4%;
+    margin-right: 3.4%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    background: #ffffff;
 }
 
-.widget-info {
-    height: 100%;
-}
+/*.widget-col {*/
+/*    width: 40%;*/
+/*}*/
+/*.widget-col-65{*/
+/*    width: 60%;*/
+/*}*/
+
+/*.widget-info {*/
+/*    height: 100%;*/
+/*}*/
 
 .widget-bar-chart {
     height: 35%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    /*margin-left:4.9%;*/
+    width: 86%;
+    background: #ffffff;
 }
 
 .widget-info-container {
@@ -132,12 +150,12 @@
     height: 100%;
 }
 
-.widget-info-temperature {
-    margin-left: 2%;
-}
-.widget-boiling {
-    /*height: 100%;*/
-}
+/*.widget-info-temperature {*/
+/*    margin-left: 2%;*/
+/*}*/
+/*.widget-boiling {*/
+/*    !*height: 100%;*!*/
+/*}*/
 
 .widget-boiling-label {
     display: flex;
