@@ -16,8 +16,8 @@ class AnglesChain(
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
-    var converterDeviceId: String,
-    var currentMeltInfo: AtomicReference<ModelMeltInfo?>
+    var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
+    var converterId: String
 ) {
 
     suspend fun exec(context: ConverterBeContext) {
@@ -31,8 +31,8 @@ class AnglesChain(
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
-                it.converterDeviceId = converterDeviceId
                 it.currentMeltInfo = currentMeltInfo
+                it.converterId = converterId
             },
             env
         )
@@ -43,13 +43,12 @@ class AnglesChain(
 
             timeout { 1000 }
 
-//            +DevicesFilterHandler
-            +CurrentMeltInfoHandler
+            +DevicesFilterHandler
+            +MeltFilterHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    wsManager.sendMeltInfo(this)
                     wsManager.sendAngles(this)
                 }
             }
@@ -60,8 +59,8 @@ class AnglesChain(
                     wsManager = wsManager,
                     metalRateCriticalPoint = metalRateCriticalPoint,
                     metalRateWarningPoint = metalRateWarningPoint,
-                    converterDeviceId = converterDeviceId,
-                    currentMeltInfo = currentMeltInfo
+                    currentMeltInfo = currentMeltInfo,
+                    converterId = converterId
                 ).exec(this)
             }
         }

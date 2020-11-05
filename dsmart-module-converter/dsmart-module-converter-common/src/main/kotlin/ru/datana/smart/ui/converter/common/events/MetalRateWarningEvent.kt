@@ -10,6 +10,7 @@ data class MetalRateWarningEvent(
     override val metalRate: Double,
     override val angleStart: Double? = null,
     override val angleFinish: Double? = null,
+    override val angleMax: Double? = null,
     override val title: String = "Предупреждение",
     override val textMessage: String = """
                                         В потоке детектирован ${toPercent(metalRate)}% металла.

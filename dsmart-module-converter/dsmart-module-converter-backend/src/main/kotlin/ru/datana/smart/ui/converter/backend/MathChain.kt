@@ -7,7 +7,6 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.IWsManager
-import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
@@ -17,8 +16,8 @@ class MathChain(
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
-    var converterDeviceId: String,
-    var currentMeltInfo: AtomicReference<ModelMeltInfo?>
+    var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
+    var converterId: String
 ) {
 
     suspend fun exec(context: ConverterBeContext) {
@@ -32,8 +31,8 @@ class MathChain(
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
-                it.converterDeviceId = converterDeviceId
                 it.currentMeltInfo = currentMeltInfo
+                it.converterId = converterId
             },
             env
         )
@@ -44,14 +43,12 @@ class MathChain(
 
             timeout { 1000 }
 
-//            +DevicesFilterHandler
-            +CurrentMeltInfoHandler
+            +DevicesFilterHandler
+            +MeltFilterHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    wsManager.sendMeltInfo(this)
-                    wsManager.sendFrames(this)
                     wsManager.sendSlagRate(this)
                 }
             }
@@ -62,8 +59,8 @@ class MathChain(
                     wsManager = wsManager,
                     metalRateCriticalPoint = metalRateCriticalPoint,
                     metalRateWarningPoint = metalRateWarningPoint,
-                    converterDeviceId = converterDeviceId,
-                    currentMeltInfo = currentMeltInfo
+                    currentMeltInfo = currentMeltInfo,
+                    converterId = converterId
                 ).exec(this)
             }
         }

@@ -21,7 +21,7 @@ class ConverterBeContext (
     var wsManager: IWsManager = IWsManager.NONE,
     var metalRateCriticalPoint: Double = Double.MIN_VALUE,
     var metalRateWarningPoint: Double = Double.MIN_VALUE,
-    var converterDeviceId: String = "",
     var eventsRepository: IUserEventsRepository = IUserEventsRepository.NONE,
-    var currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference()
+    var currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference(),
+    var converterId: String = ""
 )
