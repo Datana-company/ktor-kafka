@@ -1,5 +1,5 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
-import {EventModel} from "../models/event-model";
+import {EventModel} from "../models/event.model";
 import {ExecutionStatusModel} from "../models/event-execution-status.model";
 import {EventCategoryModel} from "../models/event-category.model";
 

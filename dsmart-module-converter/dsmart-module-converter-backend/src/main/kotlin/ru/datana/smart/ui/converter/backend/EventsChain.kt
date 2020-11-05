@@ -44,33 +44,55 @@ class EventsChain(
             timeout { 1000 }
 
             konveyor {
+                on { currentMeltInfo.get()?.let { currentId -> currentId.id?.let { id -> meltInfo.id?.let { it != id } ?: false } ?: false } ?: true }
+                +AddHistoryEventsHandler
+                +CreateStartMeltEventHandler
+            }
+            konveyor {
                 on { slagRate.steelRate?.let { it >= metalRateCriticalPoint  } ?: false }
+                on { currentMeltInfo.get()?.let { it.id != null } ?: false }
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
+                +UpdateEndEventHandler
                 +CreateCriticalEventHandler
             }
             konveyor {
                 on { slagRate.steelRate?.let { it > metalRateWarningPoint && it < metalRateCriticalPoint  } ?: false }
+                on { currentMeltInfo.get()?.let { it.id != null } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateInfoEventHandler
+                +UpdateEndEventHandler
                 +CreateWarningEventHandler
             }
             konveyor {
-                on { slagRate.steelRate?.let { it <= metalRateWarningPoint  } ?: false }
+                on { slagRate.steelRate?.let { it <= metalRateWarningPoint && it > 0.0 } ?: false }
+                on { currentMeltInfo.get()?.let { it.id != null } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
+                +UpdateEndEventHandler
                 +CreateInfoEventHandler
             }
             konveyor {
+                on { slagRate.steelRate?.let { it == 0.0 } ?: false && slagRate.slagRate?.let { it == 0.0 } ?: false }
+                on { currentMeltInfo.get()?.let { it.id != null } ?: false }
+                +UpdateCriticalEventHandler
+                +UpdateWarningEventHandler
+                +UpdateInfoEventHandler
+                +CreateEndEventHandler
+            }
+            konveyor {
                 on { angles.angle != null }
+                on { currentMeltInfo.get()?.let { it.id != null } ?: false }
                 +UpdateAngleCriticalEventHandler
                 +UpdateAngleWarningEventHandler
                 +UpdateAngleInfoEventHandler
             }
             handler {
                 onEnv { status == CorStatus.STARTED }
+                onEnv { currentMeltInfo.get()?.let { it.id != null } ?: false }
                 exec {
-                    events = ModelEvents(events = eventsRepository.getAll())
+                    val meltId: String = currentMeltInfo.get()!!.id!!
+                    events = ModelEvents(events = eventsRepository.getAllByMeltId(meltId))
                 }
             }
 
@@ -80,8 +102,6 @@ class EventsChain(
                     wsManager.sendEvents(this)
                 }
             }
-
-            +FinishHandler
         }
     }
 }

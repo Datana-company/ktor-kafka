@@ -45,6 +45,7 @@ class FrameChain(
 
             +DevicesFilterHandler
             +MeltFilterHandler
+            +FrameTimeFilterHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }

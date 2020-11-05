@@ -10,8 +10,9 @@ import java.util.*
 
 object CreateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
+        val meltId: String = context.currentMeltInfo.get()!!.id!!
         val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
-        val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateCriticalEvent
+        val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
         activeEvent?.let {
             val updateEvent = MetalRateCriticalEvent(
                 id = it.id,
@@ -24,8 +25,9 @@ object CreateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 angleFinish = it.angleFinish,
                 angleMax = it.angleMax
             )
-            context.eventsRepository.put(updateEvent)
+            context.eventsRepository.put(meltId, updateEvent)
         } ?: context.eventsRepository.put(
+            meltId,
             MetalRateCriticalEvent(
                 id = UUID.randomUUID().toString(),
                 timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),

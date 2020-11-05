@@ -45,6 +45,7 @@ class AnglesChain(
 
             +DevicesFilterHandler
             +MeltFilterHandler
+            +FrameTimeFilterHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }
@@ -53,16 +54,21 @@ class AnglesChain(
                 }
             }
 
-            exec {
-                EventsChain(
-                    eventsRepository = eventsRepository,
-                    wsManager = wsManager,
-                    metalRateCriticalPoint = metalRateCriticalPoint,
-                    metalRateWarningPoint = metalRateWarningPoint,
-                    currentMeltInfo = currentMeltInfo,
-                    converterId = converterId
-                ).exec(this)
+            handler {
+                onEnv { status == CorStatus.STARTED }
+                exec {
+                    EventsChain(
+                        eventsRepository = eventsRepository,
+                        wsManager = wsManager,
+                        metalRateCriticalPoint = metalRateCriticalPoint,
+                        metalRateWarningPoint = metalRateWarningPoint,
+                        currentMeltInfo = currentMeltInfo,
+                        converterId = converterId
+                    ).exec(this)
+                }
             }
+
+            +FinishHandler
         }
     }
 }

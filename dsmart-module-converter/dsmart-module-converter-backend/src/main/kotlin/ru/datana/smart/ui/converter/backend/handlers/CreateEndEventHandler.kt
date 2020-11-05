@@ -4,17 +4,17 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.events.MetalRateEndEvent
 import java.time.Instant
 import java.util.*
 
-object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
+object CreateEndEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.currentMeltInfo.get()!!.id!!
         val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
-        val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
+        val activeEvent: MetalRateEndEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateEndEvent
         activeEvent?.let {
-            val updateEvent = MetalRateWarningEvent(
+            val updateEvent = MetalRateEndEvent(
                 id = it.id,
                 timeStart = if (it.timeStart > frameTime) frameTime else it.timeStart,
                 timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
@@ -28,7 +28,7 @@ object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
             context.eventsRepository.put(meltId, updateEvent)
         } ?: context.eventsRepository.put(
             meltId,
-            MetalRateWarningEvent(
+            MetalRateEndEvent(
                 id = UUID.randomUUID().toString(),
                 timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),
                 timeFinish = context.frame.frameTime ?: Instant.now().toEpochMilli(),

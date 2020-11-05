@@ -9,8 +9,9 @@ import java.time.Instant
 
 object UpdateAngleInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
+        val meltId: String = context.currentMeltInfo.get()!!.id!!
         val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
-        val activeEvent = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateInfoEvent
+        val activeEvent = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
         val currentAngle = context.angles.angle!!
         activeEvent?.let {
             val angleStart = it.angleStart ?: currentAngle
@@ -26,7 +27,7 @@ object UpdateAngleInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 angleFinish = currentAngle,
                 angleMax = angleMax
             )
-            context.eventsRepository.put(historicalEvent)
+            context.eventsRepository.put(meltId, historicalEvent)
         } ?: return
     }
 

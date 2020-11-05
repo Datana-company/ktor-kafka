@@ -45,24 +45,31 @@ class MathChain(
 
             +DevicesFilterHandler
             +MeltFilterHandler
+            +SlagRateTimeFilterHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
                     wsManager.sendSlagRate(this)
+                    wsManager.sendFrames(this)
                 }
             }
 
-            exec {
-                EventsChain(
-                    eventsRepository = eventsRepository,
-                    wsManager = wsManager,
-                    metalRateCriticalPoint = metalRateCriticalPoint,
-                    metalRateWarningPoint = metalRateWarningPoint,
-                    currentMeltInfo = currentMeltInfo,
-                    converterId = converterId
-                ).exec(this)
+            handler {
+                onEnv { status == CorStatus.STARTED }
+                exec {
+                    EventsChain(
+                        eventsRepository = eventsRepository,
+                        wsManager = wsManager,
+                        metalRateCriticalPoint = metalRateCriticalPoint,
+                        metalRateWarningPoint = metalRateWarningPoint,
+                        currentMeltInfo = currentMeltInfo,
+                        converterId = converterId
+                    ).exec(this)
+                }
             }
+
+            +FinishHandler
         }
     }
 }
