@@ -59,7 +59,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       map((data: any) => {
         return new SlagRateModel(
           data?.steelRate as number,
-          data?.slagRate as number
+          data?.slagRate as number,
+          data?.encodedFrame as string
         );
       })
     ).subscribe(data => {
@@ -72,7 +73,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
         return new ConverterFrameModel(
           data?.frameId as string,
           data?.frameTime as number,
-          data?.framePath as string
+          data?.framePath as string,
+          data?.encodedFrame as string
         );
       })
     ).subscribe(data => {

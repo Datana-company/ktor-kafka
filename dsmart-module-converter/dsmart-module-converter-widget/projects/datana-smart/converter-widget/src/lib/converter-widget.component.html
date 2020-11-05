@@ -1,6 +1,6 @@
 <div>
   <div class="widget-header">
-<!--    <div class="topLinePath77"></div>-->
+    <!--    <div class="topLinePath77"></div>-->
     <div class="rectangleTop">
       <div class="logo">
         <img src="/assets/image/VectorSmartObject1.png">
@@ -22,7 +22,9 @@
     <div class="widget-info widget-col-65">
       <div class="widget-info-container widget-container">
         <video-player-component class="widget-col-65 "
-                                [playlist]="playlist">
+                                [playlist]="playlist"
+                                [encodedFrameCamera]="converterFrameData?.encodedFrame"
+                                [encodedFrameMath]="converterSlagRateData?.encodedFrame">
         </video-player-component>
         <tilt-angle-component class="widget-boiling widget-col"
                               [angleData]="converterAnglesData">

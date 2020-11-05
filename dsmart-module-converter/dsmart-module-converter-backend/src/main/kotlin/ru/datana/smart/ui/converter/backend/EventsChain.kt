@@ -73,7 +73,6 @@ class EventsChain(
                     events = ModelEvents(events = eventsRepository.getAll())
                 }
             }
-
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {

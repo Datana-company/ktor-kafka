@@ -4,7 +4,8 @@ export class ConverterFrameModel {
   constructor(
     public frameId: string,
     public frameTime: number,
-    public framePath: string
+    public framePath: string,
+    public encodedFrame: string
   ) {
   }
 }
