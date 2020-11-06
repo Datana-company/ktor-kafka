@@ -23,7 +23,8 @@ object CreateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 isActive = it.isActive,
                 angleStart = it.angleStart,
                 angleFinish = it.angleFinish,
-                angleMax = it.angleMax
+                angleMax = it.angleMax,
+                criticalPoint = it.criticalPoint
             )
             context.eventsRepository.put(meltId, updateEvent)
         } ?: context.eventsRepository.put(
@@ -32,7 +33,8 @@ object CreateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 id = UUID.randomUUID().toString(),
                 timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),
                 timeFinish = context.frame.frameTime ?: Instant.now().toEpochMilli(),
-                metalRate = context.slagRate.steelRate!!
+                metalRate = context.slagRate.steelRate!!,
+                criticalPoint = context.metalRateCriticalPoint
             )
         )
     }

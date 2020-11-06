@@ -25,7 +25,8 @@ object UpdateAngleCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 isActive = it.isActive,
                 angleStart = angleStart,
                 angleFinish = currentAngle,
-                angleMax = angleMax
+                angleMax = angleMax,
+                criticalPoint = context.metalRateCriticalPoint
             )
             context.eventsRepository.put(meltId, historicalEvent)
         } ?: return

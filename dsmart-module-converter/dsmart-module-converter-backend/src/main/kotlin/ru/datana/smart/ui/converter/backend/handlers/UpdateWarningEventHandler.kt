@@ -24,6 +24,7 @@ object UpdateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                 angleStart = it.angleStart,
                 angleFinish = it.angleFinish,
                 angleMax = it.angleMax,
+                warningPoint = it.warningPoint,
                 executionStatus = if (isCompletedEvent) IBizEvent.ExecutionStatus.COMPLETED else IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(meltId, historicalEvent)

@@ -23,6 +23,7 @@ object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 angleStart = it.angleStart,
                 angleFinish = it.angleFinish,
                 angleMax = it.angleMax,
+                criticalPoint = it.criticalPoint,
                 executionStatus = if (isCompletedEvent) IBizEvent.ExecutionStatus.COMPLETED else IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(meltId, historicalEvent)

@@ -25,6 +25,7 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
                 id = UUID.randomUUID().toString(),
                 timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),
                 timeFinish = context.frame.frameTime ?: Instant.now().toEpochMilli(),
+                warningPoint = context.metalRateWarningPoint,
                 isActive = false
             )
         )

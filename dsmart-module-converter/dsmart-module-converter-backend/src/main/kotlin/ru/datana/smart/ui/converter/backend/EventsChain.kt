@@ -10,6 +10,7 @@ import ru.datana.smart.ui.converter.common.models.IWsManager
 import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
+import ru.datana.smart.ui.converter.common.utils.toPercent
 import java.util.concurrent.atomic.AtomicReference
 
 class EventsChain(
@@ -48,28 +49,28 @@ class EventsChain(
             timeout { 1000 }
 
             konveyor {
-                on { slagRate.steelRate?.let { it >= metalRateCriticalPoint  } ?: false }
+                on { slagRate.steelRate?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
                 +UpdateEndEventHandler
                 +CreateCriticalEventHandler
             }
             konveyor {
-                on { slagRate.steelRate?.let { it > metalRateWarningPoint && it < metalRateCriticalPoint } ?: false }
+                on { slagRate.steelRate?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateInfoEventHandler
                 +UpdateEndEventHandler
                 +CreateWarningEventHandler
             }
             konveyor {
-                on { slagRate.steelRate?.let { it <= metalRateWarningPoint && it > 0.0 } ?: false }
+                on { slagRate.steelRate?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
                 +UpdateEndEventHandler
                 +CreateInfoEventHandler
             }
             konveyor {
-                on { slagRate.steelRate?.let { it == 0.0 } ?: false && slagRate.slagRate?.let { it == 0.0 } ?: false }
+                on { slagRate.steelRate?.let { toPercent(it) == 0 } ?: false && slagRate.slagRate?.let { toPercent(it) == 0 } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
