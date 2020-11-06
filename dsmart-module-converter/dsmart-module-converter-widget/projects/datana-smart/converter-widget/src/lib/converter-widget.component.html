@@ -52,7 +52,12 @@
       <div class="col-7">
         <div class="row widget-container-row">
           <div class="col-8">
-            <video-player-component [playlist]="playlist"></video-player-component>
+            <video-player-component
+              [playlist]="playlist"
+              [imageCamera]="converterFrameCameraData?.image"
+              [imageMath]="converterFrameMathData?.image">
+            >
+            </video-player-component>
           </div>
           <div class="col-4">
             <tilt-angle-component [angleData]="converterAnglesData"></tilt-angle-component>

@@ -1,6 +1,6 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from "rxjs";
-import {map, takeUntil} from 'rxjs/operators';
+import {filter, map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
 import {EventModel} from "./models/event-model";
 import {SlagRateModel} from "./models/slag-rate.model";
@@ -23,7 +23,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   public converterMeltInfoData: ConverterMeltInfoModel;
   public converterSlagRateData: SlagRateModel;
-  public converterFrameData: ConverterFrameModel;
+  public converterFrameCameraData: ConverterFrameModel;
+  public converterFrameMathData: ConverterFrameModel;
   public converterAnglesData: ConverterAnglesModel;
   public converterEvents: Array<EventModel> = new Array<EventModel>();
 
@@ -31,7 +32,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(configProvide) private wsService: IWebsocketService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.playlist = 'http://camera.d.datana.ru/playlist.m3u8'
@@ -59,25 +61,37 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       map((data: any) => {
         return new SlagRateModel(
           data?.steelRate as number,
-          data?.slagRate as number
+          data?.slagRate as number,
         );
       })
     ).subscribe(data => {
       this.converterSlagRateData = data;
     });
 
-    this.wsService.on('converter-frame-update').pipe(
+    const rawFrames = this.wsService.on('converter-frame-update').pipe(
       takeUntil(this._unsubscribe),
       map((data: any) => {
         return new ConverterFrameModel(
           data?.frameId as string,
           data?.frameTime as number,
-          data?.framePath as string
+          data?.framePath as string,
+          data?.image as string,
+          data?.channel as string
         );
       })
+    )
+
+    rawFrames.pipe(
+      filter(frame => frame.channel == 'CAMERA')
     ).subscribe(data => {
-      this.converterFrameData = data;
-    });
+      this.converterFrameCameraData = data;
+    })
+
+    rawFrames.pipe(
+      filter(frame => frame.channel == 'MATH')
+    ).subscribe(data => {
+      this.converterFrameMathData = data;
+    })
 
     this.wsService.on('converter-angles-update').pipe(
       takeUntil(this._unsubscribe),

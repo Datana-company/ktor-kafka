@@ -178,6 +178,7 @@ fun toModelFrame(converterTransportViMl: ConverterTransportViMl) =
     )
 
 fun toModelFrame(converterTransportMlUi: ConverterTransportMlUi) =
+    // будут браться другие поля, когда они появятся
     ModelFrame(
         frameId = converterTransportMlUi.frameId,
         frameTime = converterTransportMlUi.frameTime,

@@ -127,6 +127,7 @@ tasks {
                 "KAFKA_TOPIC_META" to "",
                 "KAFKA_CLIENT_ID" to "",
                 "KAFKA_GROUP_ID" to "",
+                "FRAMES_BASE_PATH" to "",
                 "SENSOR_ID" to "",
                 "LOGS_KAFKA_HOSTS" to "",
                 "LOGS_KAFKA_TOPIC" to "",

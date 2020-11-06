@@ -62,7 +62,7 @@ class WsManager : IWsManager {
 
     override suspend fun sendFrames(context: ConverterBeContext) {
         val wsFrame = WsDsmartResponseConverterFrame(
-            data = toWsConverterFrameModel(context.frame)
+            data = toWsConverterFrameDataModel(context.frame)
         )
         val frameSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterFrame.serializer(), wsFrame)
         send(frameSerializedString)
