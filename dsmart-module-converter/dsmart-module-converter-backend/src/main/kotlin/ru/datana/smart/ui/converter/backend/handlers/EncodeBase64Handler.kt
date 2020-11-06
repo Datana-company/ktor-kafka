@@ -31,7 +31,7 @@ object EncodeBase64Handler : IKonveyorHandler<ConverterBeContext> {
         } catch (e: Throwable) {
 //            logger.error("Файл {} не прочитался", objs = arrayOf(imagePath))
             println("Файл $imagePath не найден")
-            val bytes = EncodeBase64Handler::class.java.getResource("/no-image.png").readBytes()
+            val bytes = EncodeBase64Handler::class.java.getResource("/images/no-image.png").readBytes()
             context.frame.image = Base64.getEncoder().encodeToString(bytes)
         }
     }
