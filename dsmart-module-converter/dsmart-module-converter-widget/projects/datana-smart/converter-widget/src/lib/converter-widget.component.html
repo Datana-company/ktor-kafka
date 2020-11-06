@@ -41,7 +41,8 @@
       <div class="row" style="padding-top:1.5rem">
         <div class="col-8" style="text-align: left"><h5> >>Конвертер 2</h5></div>
         <div class="col-2" style="text-align: left;padding-right: 3rem"><h5> >>История рекомендаций</h5></div>
-        <div class="col-2 alarm" style="text-align: center; padding-bottom: 1%" ><img src="/assets/image/alarm1.png"></div>
+        <div class="col-2 alarm" style="text-align: center; padding-bottom: 1%"><img src="/assets/image/alarm1.png">
+        </div>
       </div>
     </div>
   </div>
@@ -57,8 +58,8 @@
             <tilt-angle-component [angleData]="converterAnglesData"></tilt-angle-component>
           </div>
         </div>
-        <div class="row  widget-bar-chart">
-          <div class="col-12 widget-container-row">
+        <div class="row  widget-container-row widget-bar-chart">
+          <div class="col-12">
             <bar-chart-component
               [slagRateModel]="converterSlagRateData">
             </bar-chart-component>
@@ -66,9 +67,12 @@
         </div>
       </div>
       <div class="col-5">
-        <div class="widget-events widget-col">
-          <event-recommendation-component [events]="converterEvents">
-          </event-recommendation-component>
+        <div class="row">
+          <div class="widget-events">
+            <event-recommendation-component
+              [events]="converterEvents">
+            </event-recommendation-component>
+          </div>
         </div>
       </div>
 

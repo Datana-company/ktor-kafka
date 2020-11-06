@@ -26,11 +26,11 @@ export class BarChartComponent {
   showYAxisLabel = false;
   xAxisLabel = '';
   showDataLabel = true;
-
+  barPadding='0px';
   barChartData: any;
 
   colorScheme = {
-    domain: ['#C5C5C5', '#CBF76F', '#FF8740', '#AAAAAA']
+    domain: ['#4E80B2', '#BDE9E3', '#C23557']
   };
 
   @Input() set slagRateModel(dat: SlagRateModel) {

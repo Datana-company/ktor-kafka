@@ -77,8 +77,9 @@
     height: 26.15px;
 }
 .alarm{
-    width: 18px;
-    height: 18px;
+    width: 6px;
+    height: 6px;
+    padding-bottom: 1%;
 }
 
 .widget-header {
@@ -145,8 +146,8 @@
 }
 
 .widget-events {
-    margin-left: 4%;
-    margin-top: 50px;
+    margin-left: 1%;
+    margin-right: 13%;
     height: 100%;
 }
 
