@@ -2,6 +2,7 @@ package ru.datana.smart.ui.converter.backend.handlers
 
 import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
+//import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorError
@@ -13,9 +14,13 @@ import kotlin.random.Random
 
 object EncodeBase64Handler : IKonveyorHandler<ConverterBeContext> {
 
+//    val logger = datanaLogger(EncodeBase64Handler::class.java)
+
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
+
+        val imagePath = "${context.framesBasePath}/${context.frame.framePath}"
         try {
-            val bytes = File("${context.framesBasePath}/${context.frame.framePath}").readBytes()
+            val bytes = File(imagePath).readBytes()
 
 //            Для тестов
 //            val folder = if (context.frame.channel == ModelFrame.Channels.CAMERA) "camera" else "math"
@@ -24,9 +29,10 @@ object EncodeBase64Handler : IKonveyorHandler<ConverterBeContext> {
 
             context.frame.image = Base64.getEncoder().encodeToString(bytes)
         } catch (e: Throwable) {
-            val msg = e.message ?: ""
-            context.errors.add(CorError(msg))
-            context.status = CorStatus.FAILING
+//            logger.error("Файл {} не прочитался", objs = arrayOf(imagePath))
+            println("Файл ${imagePath} не прочитался")
+            val bytes = EncodeBase64Handler::class.java.getResource("/images/math/0.png").readBytes()
+            context.frame.image = Base64.getEncoder().encodeToString(bytes)
         }
     }
 

@@ -10,8 +10,9 @@ import java.util.*
 
 object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
+        val meltId: String = context.currentMeltInfo.get()?.id ?: return
         val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
-        val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateWarningEvent
+        val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
         activeEvent?.let {
             val updateEvent = MetalRateWarningEvent(
                 id = it.id,
@@ -22,15 +23,18 @@ object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                 isActive = it.isActive,
                 angleStart = it.angleStart,
                 angleFinish = it.angleFinish,
-                angleMax = it.angleMax
+                angleMax = it.angleMax,
+                warningPoint = it.warningPoint
             )
-            context.eventsRepository.put(updateEvent)
+            context.eventsRepository.put(meltId, updateEvent)
         } ?: context.eventsRepository.put(
+            meltId,
             MetalRateWarningEvent(
                 id = UUID.randomUUID().toString(),
                 timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),
                 timeFinish = context.frame.frameTime ?: Instant.now().toEpochMilli(),
-                metalRate = context.slagRate.steelRate!!
+                metalRate = context.slagRate.steelRate!!,
+                warningPoint = context.metalRateWarningPoint
             )
         )
     }
