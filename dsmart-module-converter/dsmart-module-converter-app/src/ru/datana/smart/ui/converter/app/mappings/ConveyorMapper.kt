@@ -195,3 +195,13 @@ fun toModelAngles(converterTransportAngle: ConverterTransportAngle) =
         angle = converterTransportAngle.angle,
         source = converterTransportAngle.source
     )
+
+fun toModelExtEvents(converterTransportExtEvent: ConverterTransportExtEvent) =
+    ModelExtEvents(
+        alertRuleId = converterTransportExtEvent.alertRuleId,
+        containerId = converterTransportExtEvent.containerId,
+        component = converterTransportExtEvent.component,
+        timestamp = converterTransportExtEvent.timestamp,
+        loggerName = converterTransportExtEvent.loggerName,
+        message = converterTransportExtEvent.message
+    )

@@ -70,6 +70,7 @@ fun Application.module(testing: Boolean = false) {
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicAngles by lazy { environment.config.property("ktor.kafka.consumer.topic.angles").getString().trim() }
     val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
+    val topicEvents by lazy { environment.config.property("ktor.kafka.consumer.topic.events").getString().trim() }
     val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
 //    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
 //    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
@@ -126,7 +127,8 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles)) {
+        kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles, topicEvents)) {
+            println("connectedToKafka")
             try {
                 val innerModel = records.map { it.toInnerModel() }
                 val record = innerModel.firstOrNull()
@@ -170,6 +172,20 @@ fun Application.module(testing: Boolean = false) {
                             meltInfo = conveyorModelMeltInfo
                         )
                         converterFacade.handleAngles(context)
+                    }
+                    // 1) Получаем данные из Кафки
+                    topicEvents -> {
+                        println(" ------------------ topicEvents")
+                        // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
+                        val kafkaModel = toConverterTransportExtEvents(record)
+                        // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
+                        val conveyorModelExtEvents = toModelExtEvents(kafkaModel)
+                        // 4) Запихиваем эту модель в контекст
+                        val context = ConverterBeContext(
+                            extEvents = conveyorModelExtEvents
+                        )
+                        // 5) Вызываем цепочку для обработки поступившего сообщения
+                        converterFacade.handleExtEvents(context)
                     }
                 }
             } catch(e: Throwable) {

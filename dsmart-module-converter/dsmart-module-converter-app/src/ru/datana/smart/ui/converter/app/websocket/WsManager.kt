@@ -78,6 +78,18 @@ class WsManager : IWsManager {
         send(eventsSerializedString)
     }
 
+    override suspend fun sendExtEvents(context: ConverterBeContext) {
+        // Тут наверное нужно преобразовать внутреннюю модель конвеера в модель вэб сокета (WsDsmartEvent),
+        // поскольку модель для всех эвентов должна быть единой (а может и нет)
+//        val wsEvents = WsDsmartResponseEvents(
+//            data = WsDsmartEventList(
+//                list = toWsEventListModel(context.extEvents)
+//            )
+//        )
+//        val eventsSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseEvents.serializer(), wsEvents)
+//        send(eventsSerializedString)
+    }
+
     private suspend fun send(serializedString: String) {
         val wsSessionsIterator = wsSessions.iterator()
         while (wsSessionsIterator.hasNext()) {

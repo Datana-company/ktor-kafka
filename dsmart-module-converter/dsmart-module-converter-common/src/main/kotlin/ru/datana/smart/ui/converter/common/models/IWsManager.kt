@@ -13,8 +13,14 @@ interface IWsManager {
 
     suspend fun sendEvents(context: ConverterBeContext)
 
+    suspend fun sendExtEvents(context: ConverterBeContext)
+
     companion object {
         val NONE = object: IWsManager {
+            override suspend fun sendExtEvents(context: ConverterBeContext) {
+                TODO("not implemented")
+            }
+
             override suspend fun sendAngles(context: ConverterBeContext) {
                 TODO("Not yet implemented")
             }

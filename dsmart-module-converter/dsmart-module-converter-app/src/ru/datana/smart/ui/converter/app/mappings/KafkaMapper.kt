@@ -51,3 +51,11 @@ fun toConverterTransportAngle(record: InnerRecord<String, String>): ConverterTra
         throw ConverterDeserializationException(e.message, e.cause)
     }
 }
+
+fun toConverterTransportExtEvents(record: InnerRecord<String, String>): ConverterTransportExtEvent {
+    try {
+        return jacksonSerializer.readValue(record.value, ConverterTransportExtEvent::class.java)!!
+    } catch (e: Exception) {
+        throw ConverterDeserializationException(e.message, e.cause)
+    }
+}
