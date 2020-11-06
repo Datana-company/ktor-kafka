@@ -135,7 +135,7 @@ fun Application.module(testing: Boolean = false) {
     }
 }
 
-private val jacksonMapper = ObjectMapper()
+private val jacksonMapper = ObjectMapper(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS).configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true)
 
 private fun Application.parseKafkaInputTemperature(jsonString: String?, sensorId: String): WsDsmartResponseTemperature? {
     // {"info":{"id":"4a67082b-8bf4-48b7-88c0-0d542ffe2214","channelList":["clean"]},"content":[{"@class":"ru.datana.common.model.SingleSensorModel","request_id":"d076f100-3e96-4857-aba8-1c7f4c866dd5","request_datetime":1598962179670,"response_datetime":1598962179754,"sensor_id":"00000000-0000-4000-9000-000000000006","data":-247.14999999999998,"status":0,"errors":[]}]}
