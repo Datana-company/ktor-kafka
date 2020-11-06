@@ -17,6 +17,8 @@ class EventsChain(
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
+    var timeReaction: Long,
+    var timeLimitSiren: Long,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
     var converterId: String
 ) {
@@ -31,6 +33,8 @@ class EventsChain(
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
+                it.timeReaction = timeReaction
+                it.timeLimitSiren = timeLimitSiren
                 it.currentMeltInfo = currentMeltInfo
                 it.converterId = converterId
             },

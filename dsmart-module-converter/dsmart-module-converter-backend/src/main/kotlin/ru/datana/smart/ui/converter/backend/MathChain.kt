@@ -16,6 +16,8 @@ class MathChain(
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
+    var timeReaction: Long,
+    var timeLimitSiren: Long,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
     var converterId: String
 ) {
@@ -31,6 +33,8 @@ class MathChain(
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
+                it.timeReaction = timeReaction
+                it.timeLimitSiren = timeLimitSiren
                 it.currentMeltInfo = currentMeltInfo
                 it.converterId = converterId
             },
@@ -64,6 +68,8 @@ class MathChain(
                         metalRateCriticalPoint = metalRateCriticalPoint,
                         metalRateWarningPoint = metalRateWarningPoint,
                         currentMeltInfo = currentMeltInfo,
+                        timeReaction = timeReaction,
+                        timeLimitSiren = timeLimitSiren,
                         converterId = converterId
                     ).exec(this)
                 }
