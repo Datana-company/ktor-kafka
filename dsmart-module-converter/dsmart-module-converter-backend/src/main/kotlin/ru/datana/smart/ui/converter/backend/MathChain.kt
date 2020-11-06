@@ -17,6 +17,8 @@ class MathChain(
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
+    var timeReaction: Long,
+    var timeLimitSiren: Long,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
     var converterId: String,
     var framesBasePath: String
@@ -33,6 +35,8 @@ class MathChain(
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
+                it.timeReaction = timeReaction
+                it.timeLimitSiren = timeLimitSiren
                 it.currentMeltInfo = currentMeltInfo
                 it.converterId = converterId
                 it.framesBasePath = framesBasePath
@@ -46,6 +50,7 @@ class MathChain(
 
             +DevicesFilterHandler
             +MeltFilterHandler
+            +SlagRateTimeFilterHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }
@@ -60,27 +65,27 @@ class MathChain(
                 onEnv { status == CorStatus.STARTED }
                 exec {
                     wsManager.sendSlagRate(this)
+                    wsManager.sendFrames(this)
                 }
             }
 
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    this.frame
-                    wsManager.sendFrames(this)
+                    EventsChain(
+                        eventsRepository = eventsRepository,
+                        wsManager = wsManager,
+                        metalRateCriticalPoint = metalRateCriticalPoint,
+                        metalRateWarningPoint = metalRateWarningPoint,
+                        currentMeltInfo = currentMeltInfo,
+                        timeReaction = timeReaction,
+                        timeLimitSiren = timeLimitSiren,
+                        converterId = converterId
+                    ).exec(this)
                 }
             }
 
-            exec {
-                EventsChain(
-                    eventsRepository = eventsRepository,
-                    wsManager = wsManager,
-                    metalRateCriticalPoint = metalRateCriticalPoint,
-                    metalRateWarningPoint = metalRateWarningPoint,
-                    currentMeltInfo = currentMeltInfo,
-                    converterId = converterId
-                ).exec(this)
-            }
+            +FinishHandler
         }
     }
 }

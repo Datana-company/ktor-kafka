@@ -41,7 +41,7 @@ export class BarChartComponent {
       },
       {
         'name': 'Допустимая доля металла',
-        'value': 20
+        'value': (dat?.warningPoint || 0) * 100
       },
       {
         'name': 'Металл',

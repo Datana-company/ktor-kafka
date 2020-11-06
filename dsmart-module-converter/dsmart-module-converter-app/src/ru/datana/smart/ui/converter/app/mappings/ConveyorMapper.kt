@@ -187,12 +187,14 @@ fun toModelFrame(converterTransportMlUi: ConverterTransportMlUi) =
 
 fun toModelSlagRate(converterTransportMlUi: ConverterTransportMlUi) =
     ModelSlagRate(
+        slagRateTime = converterTransportMlUi.frameTime,
         steelRate = converterTransportMlUi.steelRate,
         slagRate = converterTransportMlUi.slagRate
     )
 
 fun toModelAngles(converterTransportAngle: ConverterTransportAngle) =
     ModelAngles(
+        angleTime = converterTransportAngle.angleTime,
         angle = converterTransportAngle.angle,
         source = converterTransportAngle.source
     )

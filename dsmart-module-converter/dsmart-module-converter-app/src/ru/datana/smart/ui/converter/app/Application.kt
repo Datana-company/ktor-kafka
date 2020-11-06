@@ -77,6 +77,8 @@ fun Application.module(testing: Boolean = false) {
 //    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
     val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
     val metalRateWarningPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble() }
+    val timeReaction: Long by lazy { environment.config.property("ktor.conveyor.metalRatePoint.timeReaction").getString().trim().toLong() }
+    val timeLimitSiren: Long by lazy { environment.config.property("ktor.conveyor.metalRatePoint.timeLimitSiren").getString().trim().toLong() }
 
     // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
