@@ -1,21 +1,20 @@
 .topLinePath77 {
-    position: absolute;
+    /*position: absolute;*/
     width: 100%;
     height: 8px;
-    left: 0px;
     top: 0px;
 
     background: linear-gradient(90deg, #CCDBEB 16.55%, #22588F 82.04%);
 }
 
-.rectangleTop {
-    /*position: absolute;*/
-    width: max-content;
-    height: 54px;
-    left: 0px;
-    top: 0px;
-    background: #22588F;
-}
+/*.rectangleTop {*/
+/*    !*position: absolute;*!*/
+/*    width: max-content;*/
+/*    height: 54px;*/
+/*    left: 0px;*/
+/*    top: 0px;*/
+/*    background: #22588F;*/
+/*}*/
 
 .lineTop {
     position: absolute;
