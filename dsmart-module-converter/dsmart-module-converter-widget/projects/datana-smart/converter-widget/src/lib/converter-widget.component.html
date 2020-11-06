@@ -1,44 +1,108 @@
 <div>
-  <div class="widget-header">
-<!--    <div class="topLinePath77"></div>-->
-    <div class="rectangleTop">
-      <div class="logo">
-        <img src="/assets/image/VectorSmartObject1.png">
-      </div>
-      <div class="title">
-        Мониторинг и контроль скачивания шлака
+  <div class="content">
+    <div class="topLinePath77"></div>
+    <div class="widget-header">
+      <div class="row">
+        <div class="col-4">
+          <div class="rectangleTop">
+            <div class="logo">
+              <img src="/assets/image/VectorSmartObject1.png">
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="title">
+            Мониторинг и контроль скачивания шлака
+          </div>
+        </div>
+        <div class="col-3"></div>
+        <div class="col-1">
+          <div class="exit"><img src="/assets/image/Exit1.png"></div>
+        </div>
       </div>
     </div>
   </div>
+
   <div class="widget-container-main-top">
     <div class="titlesTop1">
-      Плавка:{{converterMeltInfoData?.meltNumber}}
-      Марка: {{converterMeltInfoData?.steelGrade}}
-      Бригада: {{converterMeltInfoData?.crewNumber}}
-    </div>
-  </div>
-  <div class="lineTop"></div>
-  <div class="widget-container-main widget-container">
-    <div class="widget-info widget-col-65">
-      <div class="widget-info-container widget-container">
-        <video-player-component class="widget-col-65 "
-                                [playlist]="playlist">
-        </video-player-component>
-        <tilt-angle-component class="widget-boiling widget-col"
-                              [angleData]="converterAnglesData">
-        </tilt-angle-component>
+      <div class="row">
+        <div class="col-1" style="text-align: left">
+          Плавка:{{converterMeltInfoData?.meltNumber}}
+        </div>
+        <div class="col-7">
+          <!--          Плавка:{{converterMeltInfoData?.meltNumber}}-->
+          Марка: {{converterMeltInfoData?.steelGrade}}
+        </div>
+        <div class="col-4" style="text-align: right; padding-right: 6.5%">
+          Бригада: {{converterMeltInfoData?.crewNumber}}
+        </div>
       </div>
-      <div class="widget-bar-chart widget-info-container widget-info widget-container">
-        <bar-chart-component
-          [slagRateModel]="converterSlagRateData">
-        </bar-chart-component>
+      <div class="lineTop"></div>
+      <div class="row" style="padding-top:1.5rem">
+        <div class="col-8" style="text-align: left"><h5> >>Конвертер 2</h5></div>
+        <div class="col-2" style="text-align: left;padding-right: 3rem"><h5> >>История рекомендаций</h5></div>
+        <div class="col-2 alarm" style="text-align: center; padding-bottom: 1%"><img src="/assets/image/alarm1.png">
+        </div>
       </div>
     </div>
-    <div class="widget-events widget-col">
-      <event-recommendation-component [events]="converterEvents"></event-recommendation-component>
-    </div>
   </div>
+
+  <div class="widget-container-main ">
+    <div class="row">
+      <div class="col-7">
+        <div class="row widget-container-row">
+          <div class="col-8">
+            <video-player-component [playlist]="playlist"></video-player-component>
+          </div>
+          <div class="col-4">
+            <tilt-angle-component [angleData]="converterAnglesData"></tilt-angle-component>
+          </div>
+        </div>
+        <div class="row  widget-container-row widget-bar-chart">
+          <div class="col-12">
+            <bar-chart-component
+              [slagRateModel]="converterSlagRateData">
+            </bar-chart-component>
+          </div>
+        </div>
+      </div>
+      <div class="col-5">
+        <div class="row">
+          <div class="widget-events">
+            <event-recommendation-component
+              [events]="converterEvents">
+            </event-recommendation-component>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!--    </div>-->
+  </div>
+  <!--      <div class="widget-info widget-col-65">-->
+  <!--        <div class="widget-info-container widget-container">-->
+  <!--          <video-player-component class="widget-col-65 "-->
+  <!--                                  [playlist]="playlist">-->
+  <!--          </video-player-component>-->
+  <!--          <tilt-angle-component class="widget-boiling widget-col" style="padding-right:1rem"-->
+  <!--                                [angleData]="converterAnglesData">-->
+  <!--          </tilt-angle-component>-->
+  <!--        </div>-->
+  <!--        <div class="widget-bar-chart widget-info-container widget-info widget-container">-->
+  <!--          <bar-chart-component-->
+  <!--            [slagRateModel]="converterSlagRateData">-->
+  <!--          </bar-chart-component>-->
+  <!--        </div>-->
+  <!--      </div>-->
+
+  <!--      <div class="widget-events widget-col">-->
+  <!--        <event-recommendation-component [events]="converterEvents"></event-recommendation-component>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <!--</div>-->
 </div>
+
 <ng-template #noData>
   <div class="temperature">
     No Data
