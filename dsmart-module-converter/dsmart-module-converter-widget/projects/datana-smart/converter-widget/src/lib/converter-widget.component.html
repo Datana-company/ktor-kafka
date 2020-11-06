@@ -23,8 +23,8 @@
       <div class="widget-info-container widget-container">
         <video-player-component class="widget-col-65 "
                                 [playlist]="playlist"
-                                [encodedFrameCamera]="converterFrameData?.encodedFrame"
-                                [encodedFrameMath]="converterSlagRateData?.encodedFrame">
+                                [imageCamera]="converterFrameCameraData?.image"
+                                [imageMath]="converterFrameMathData?.image">
         </video-player-component>
         <tilt-angle-component class="widget-boiling widget-col"
                               [angleData]="converterAnglesData">

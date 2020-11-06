@@ -41,8 +41,6 @@ class EventsChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            timeout { 1000 }
-
             konveyor {
                 on { slagRate.steelRate?.let { it >= metalRateCriticalPoint  } ?: false }
                 +UpdateWarningEventHandler

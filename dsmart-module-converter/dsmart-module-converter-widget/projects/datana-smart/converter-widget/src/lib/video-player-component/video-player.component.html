@@ -3,11 +3,19 @@
 </div>
 <div class="video-context-box">
   <!--  <video #target class="video-js" controls playsinline preload="none"></video>-->
-  <img alt="melting" [src]="getImgSrc()">
+  <img width="450" height="300" alt="melting" [src]="safeResourceUrl">
 </div>
 <div class="video-source-radio-group">
-  <!--  <label><input name="visual-source" type="radio" value="video-raw" checked>Видео с камеры </label>-->
-  <label><input name="visual-source" type="radio" value="frames-camera" (select)="setSource($event)" checked>Кадры с
-    камеры </label>
-  <label><input name="visual-source" type="radio" value="frames-math" (select)="setSource($event)">Кадры от МЛ </label>
+<!--  <label>-->
+<!--    <input name="visual-source" type="radio" value="video-raw" checked>-->
+<!--    Видео с камеры-->
+<!--  </label>-->
+  <label>
+    <input name="visual-source" type="radio" value="camera" (change)="setSource($event)" checked>
+    Кадры с камеры
+  </label>
+  <label>
+    <input name="visual-source" type="radio" value="math" (change)="setSource($event)">
+    Кадры от МЛ
+  </label>
 </div>

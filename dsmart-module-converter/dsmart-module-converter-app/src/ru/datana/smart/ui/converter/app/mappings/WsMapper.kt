@@ -17,11 +17,13 @@ fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
         source = modelAngles.source
     )
 
-fun toWsConverterFrameModel(modelFrame: ModelFrame) =
-    WsDsmartConverterFrame(
+fun toWsConverterFrameDataModel(modelFrame: ModelFrame) =
+    WsDsmartConverterFrameData(
         frameId = modelFrame.frameId,
         frameTime = modelFrame.frameTime,
-        framePath = modelFrame.framePath
+        framePath = modelFrame.framePath,
+        image = modelFrame.image,
+        channel = modelFrame.channel.toString()
     )
 
 fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =

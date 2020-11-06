@@ -9,9 +9,9 @@ import ru.datana.smart.ui.converter.common.Config
 @Serializable
 @SerialName("converter-frame-update")
 data class WsDsmartResponseConverterFrame(
-    override val data: WsDsmartConverterFrame? = null,
+    override val data: WsDsmartConverterFrameData? = null,
     override val errors: List<IWsDsmartResponseError>? = null,
     override val event: String? = "converter-frame-update"
-) : IWsDsmartResponse<WsDsmartConverterFrame> {
+) : IWsDsmartResponse<WsDsmartConverterFrameData> {
     override val module: String? = Config.moduleName
 }

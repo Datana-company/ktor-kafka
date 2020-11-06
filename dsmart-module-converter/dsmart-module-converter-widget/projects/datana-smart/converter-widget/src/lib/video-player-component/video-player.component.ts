@@ -2,15 +2,13 @@ import {
   Component,
   ElementRef,
   Input,
-  OnChanges,
   OnDestroy,
   OnInit,
-  SimpleChanges,
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
 import videojs from 'video.js';
-import { DomSanitizer } from '@angular/platform-browser';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 @Component({
   selector: 'video-player-component',
@@ -18,15 +16,24 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./video-player.component.sass'],
   encapsulation: ViewEncapsulation.None
 })
-export class VideoPlayerComponent implements OnInit, OnDestroy, OnChanges {
+export class VideoPlayerComponent implements OnInit, OnDestroy {
   @ViewChild('target', {static: true}) target: ElementRef;
   @Input() playlist: string;
-  @Input() encodedFrameCamera: string;
-  @Input() encodedFrameMath: string;
+  @Input() imageCamera: string;
+  @Input() imageMath: string;
 
   player: videojs.Player;
 
-  source: string = 'frames-camera';
+  channel: string = 'camera';
+
+  _safeResourceUrl: SafeResourceUrl
+
+  get safeResourceUrl(): SafeResourceUrl {
+    console.log('------- getting safeResourceUrl')
+    return this._sanitizer.bypassSecurityTrustResourceUrl(
+      'data:image/jpeg;base64, ' + this.getEncodedFrame()
+    );
+  }
 
   constructor(
     private elementRef: ElementRef,
@@ -40,10 +47,6 @@ export class VideoPlayerComponent implements OnInit, OnDestroy, OnChanges {
     // });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.getImgSrc();
-  }
-
   ngOnDestroy() {
     // if (this.player) {
     //   this.player.dispose();
@@ -51,19 +54,17 @@ export class VideoPlayerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   setSource = (evt) => {
-    this.source = evt.target.value;
-  }
-
-  getImgSrc = () => {
-    return this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpeg;base64, iVBORw0KGgoAAAANSUhEUgAAAcIAAAEsCAQAAAD6X3s8AAACeElEQVR42u3TsQ0AAAjDsPb/o+EGJhb7hEhpJsCjmhBMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBBOaEEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYEE4oAJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCcGEJgQTggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJAROCCQETggkBE4IJgZsFAWMsEO+on40AAAAASUVORK5CYII=');
+    console.log('------- changing source')
+    this.channel = evt.target.value;
   }
 
   getEncodedFrame = () => {
-    switch (this.source) {
-      case 'frames-camera':
-        return this.encodedFrameCamera;
-      case 'frames-math':
-        return this.encodedFrameMath;
+    console.log('------- getting encodedFrame')
+    switch (this.channel) {
+      case 'camera':
+        return this.imageCamera;
+      case 'math':
+        return this.imageMath;
       default:
         return null;
     }

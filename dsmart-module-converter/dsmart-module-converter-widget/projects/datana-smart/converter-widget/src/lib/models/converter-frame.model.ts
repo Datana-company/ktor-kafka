@@ -5,7 +5,8 @@ export class ConverterFrameModel {
     public frameId: string,
     public frameTime: number,
     public framePath: string,
-    public encodedFrame: string
+    public image: string,
+    public channel: string
   ) {
   }
 }
