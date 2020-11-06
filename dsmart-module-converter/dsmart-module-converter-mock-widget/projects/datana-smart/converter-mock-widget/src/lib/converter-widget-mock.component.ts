@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MockListItemModel} from "./models/mock-list-item-model";
 import {Subject} from "rxjs";
-import {ConverterWidgetMockService} from "./converter-widget-mock.service";
 import {takeUntil} from "rxjs/operators";
 import {CaseEditorComponent} from "./case-editor/case-editor.component";
+import {HostService} from "./services/host.service";
 
 @Component({
     selector: 'datana-converter-mock-widget',
@@ -14,15 +14,15 @@ export class ConverterWidgetMockComponent implements OnInit, OnDestroy {
 
     @ViewChild(CaseEditorComponent) caseEditor: CaseEditorComponent;
 
-    _unsubscribe = new Subject<void>();
+    private unsubscribe = new Subject<void>();
 
-    selectedCaseName: String;
-    startedCaseName: String;
-    editorVisible: boolean = false;
+    selectedCaseName: string;
+    startedCaseName: string;
+    editorVisible = false;
 
     mockList: Array<MockListItemModel> = new Array<MockListItemModel>();
 
-    constructor(private service: ConverterWidgetMockService) {
+    constructor(private service: HostService) {
     }
 
     ngOnInit(): void {
@@ -30,34 +30,34 @@ export class ConverterWidgetMockComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this._unsubscribe.next();
-        this._unsubscribe.complete();
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
     }
 
-    setSelectedCase(selectedCaseName) {
+    setSelectedCase(selectedCaseName): void {
         this.selectedCaseName = selectedCaseName;
         if (this.editorVisible) {
-            this.caseEditor.caseSelected(selectedCaseName)
+            this.caseEditor.caseSelected(selectedCaseName);
         }
     }
 
-    setStartedCase(startedCaseName) {
+    setStartedCase(startedCaseName): void {
         this.startedCaseName = startedCaseName;
     }
 
-    newCase(newCaseName) {
+    newCase(newCaseName): void {
       this.getCaseList();
     }
 
-    getCaseList() {
+    getCaseList(): void {
       this.service.getList().pipe(
-        takeUntil(this._unsubscribe)
+        takeUntil(this.unsubscribe)
       ).subscribe(data => {
         this.mockList = data?.cases;
       });
     }
 
-    addCase() {
+    addCase(): void {
         this.editorVisible = true;
     }
 }

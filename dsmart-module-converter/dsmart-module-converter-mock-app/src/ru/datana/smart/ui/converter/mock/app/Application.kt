@@ -2,12 +2,13 @@ package ru.datana.smart.ui.converter.mock.app
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import io.ktor.jackson.*
 import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -16,17 +17,10 @@ import io.ktor.util.*
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.converter.mock.app.models.UploadDataModel
-import ru.datana.smart.ui.meta.models.ConverterMeltInfo
+import ru.datana.smart.ui.converter.mock.app.models.ConverterCaseSaveRequest
 import java.io.File
 import java.io.IOException
 import java.util.*
-
-/**
- * Location for uploading videos.
- */
-@Location("/upload")
-class Upload()
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -39,6 +33,8 @@ fun Application.module(testing: Boolean = false) {
     val pathToCatalog: String by lazy { environment.config.property("ktor.catalog.path").getString().trim() }
     val kafkaServers: String by lazy { environment.config.property("ktor.kafka.bootstrap.servers").getString().trim() }
     val kafkaTopic: String by lazy { environment.config.property("ktor.kafka.producer.topic.meta").getString().trim() }
+    val jacksonObjectMapper: ObjectMapper = jacksonObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
 
     val kafkaProducer: KafkaProducer<String, String> by lazy {
         val props = Properties().apply {
@@ -60,14 +56,23 @@ fun Application.module(testing: Boolean = false) {
 
     install(DefaultHeaders)
     install(CallLogging)
+    install(ContentNegotiation) {
+        jackson {
+            enable(SerializationFeature.INDENT_OUTPUT)
+        }
+    }
 
     install(CORS) {
         method(HttpMethod.Options)
         method(HttpMethod.Put)
+        method(HttpMethod.Post)
         method(HttpMethod.Delete)
         method(HttpMethod.Patch)
         header(HttpHeaders.Authorization)
-        header("MyCustomHeader")
+        header("Origin")
+        header("X-Requested-With")
+        header("Content-Type")
+        header("Accept")
         allowCredentials = true
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
@@ -77,20 +82,23 @@ fun Application.module(testing: Boolean = false) {
         throw IOException("Failed to create directory ${caseCatalogDir.absolutePath}")
     }
 
-    val listService by lazy { ConverterMockListService(
-        pathToCatalog = pathToCatalog
-    ) }
-    val startService by lazy { ConverterMockStartService(
-        pathToCatalog = pathToCatalog,
-        kafkaProducer = kafkaProducer,
-        kafkaTopic = kafkaTopic
-    ) }
-    val createService by lazy { ConverterMockCreateService(
-        pathToCatalog = pathToCatalog
-    ) }
-    val uploadService by lazy { ConverterMockUploadService(
-        pathToCatalog = pathToCatalog
-    ) }
+    val listService by lazy {
+        ConverterMockListService(
+            pathToCatalog = pathToCatalog
+        )
+    }
+    val startService by lazy {
+        ConverterMockStartService(
+            pathToCatalog = pathToCatalog,
+            kafkaProducer = kafkaProducer,
+            kafkaTopic = kafkaTopic
+        )
+    }
+    val createService by lazy {
+        ConverterMockCreateService(
+            pathToCatalog = pathToCatalog
+        )
+    }
 
     routing {
         static("/") {
@@ -101,9 +109,10 @@ fun Application.module(testing: Boolean = false) {
         get("/list") {
             val context = ConverterMockContext()
             listService.exec(context)
-            when(context.status) {
+            when (context.status) {
                 ConverterMockContext.Statuses.OK -> call.respondText(
-                    jacksonObjectMapper().writeValueAsString(context.responseData))
+                    jacksonObjectMapper().writeValueAsString(context.responseData)
+                )
                 else -> call.respond(HttpStatusCode.InternalServerError)
             }
         }
@@ -121,71 +130,61 @@ fun Application.module(testing: Boolean = false) {
             call.respondText(metaText, status = HttpStatusCode.OK)
         }
 
-        get("/front-config") {
-            call.respondText(
-                """
-                {
-                    "settings": [
-                        {"variable": "variable1"},
-                        {"variable": "variable2"},
-                        {"variable": "variable3"}
-                    ]
-                }
-                """.trimIndent()
-            )
-        }
-
         get("/send") {
             val case = call.parameters["case"] ?: throw BadRequestException("No case is specified")
             val context = ConverterMockContext(
                 startCase = case
             )
             startService.exec(context)
-            when(context.status) {
+            when (context.status) {
                 ConverterMockContext.Statuses.OK -> call.respond(HttpStatusCode.OK)
                 else -> call.respond(HttpStatusCode.InternalServerError)
             }
         }
 
         post("/add_case") {
-            logger.info(" +++ POST /add_case")
-            val jacksonObjectMapper: ObjectMapper = jacksonObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
-            val request: ConverterCaseSaveRequest = try {
-                jacksonObjectMapper.readValue(call.receiveText())
+
+            val context = try {
+                log.info("Data received: {}", call.receiveText())
+                val case = call.receive<ConverterCaseSaveRequest>()
+//                val multipart = call.receiveMultipart()
+//                val parts = multipart.readAllParts()
+//                val case = ConverterCaseSaveRequest(
+//                    caseId = (parts.find { it.name == "caseId" } as? PartData.FormItem)?.value,
+//                    caseName = (parts.find { it.name == "caseName" } as? PartData.FormItem)?.value,
+//                    meltNumber = (parts.find { it.name == "meltNumber" } as? PartData.FormItem)?.value,
+//                    steelGrade = (parts.find { it.name == "steelGrade" } as? PartData.FormItem)?.value,
+//                    crewNumber = (parts.find { it.name == "crewNumber" } as? PartData.FormItem)?.value,
+//                    shiftNumber = (parts.find { it.name == "shiftNumber" } as? PartData.FormItem)?.value,
+//                    converterId = (parts.find { it.name == "converterId" } as? PartData.FormItem)?.value,
+//                    converterName = (parts.find { it.name == "converterName" } as? PartData.FormItem)?.value,
+//                    irCameraId = (parts.find { it.name == "irCameraId" } as? PartData.FormItem)?.value,
+//                    irCameraName = (parts.find { it.name == "irCameraName" } as? PartData.FormItem)?.value,
+//                    fileVideo = parts.find { it.name == "fileVideo" } as? PartData.FileItem,
+//                    slagRateDeviceId = (parts.find { it.name == "slagRateDeviceId" } as? PartData.FormItem)?.value,
+//                    slagRateDeviceName = (parts.find { it.name == "slagRateDeviceName" } as? PartData.FormItem)?.value,
+//                    slagRateJson = parts.find { it.name == "slagRateJson" } as? PartData.FileItem,
+//                    selsynId = (parts.find { it.name == "selsynId" } as? PartData.FormItem)?.value,
+//                    selsynName = (parts.find { it.name == "selsynName" } as? PartData.FormItem)?.value,
+//                    selsynJson = parts.find { it.name == "selsynJson" } as? PartData.FileItem
+//                )
+
+                logger.info(" +++ POST /add_case {}", objs = arrayOf(case))
+                ConverterMockContext(
+                    requestToSave = case
+                )
             } catch (e: Throwable) {
-                logger.error("Error parsing meltInfo body from frontend: {}", e)//call.receiveText())
-                return@post
+                log.error("Error: {}", e)
+                ConverterMockContext(
+                    errors = mutableListOf(e),
+                    status = ConverterMockContext.Statuses.ERROR
+                )
             }
-            logger.debug("request body: {}", objs = arrayOf(request))
-            val context = ConverterMockContext(
-                requestToSave = request
-            )
             createService.exec(context)
-            when(context.status) {
+            when (context.status) {
                 ConverterMockContext.Statuses.OK -> {
-                    call.respondText(
-                        jacksonObjectMapper.writeValueAsString(context.responseToSave.caseName), status = HttpStatusCode.OK )
+                    call.respond(HttpStatusCode.OK, context.responseToSave)
                 }
-                else -> call.respond(HttpStatusCode.InternalServerError)
-            }
-        }
-
-        post<Upload> {
-            logger.info(" +++ POST /upload")
-
-            val multipart = call.receiveMultipart().readAllParts()
-            val multiMap = multipart.associateBy { it.name }.toMap()
-            val uploadDataModel = UploadDataModel(multiMap)
-            logger.debug("uploadDataModel: {}", objs = arrayOf(uploadDataModel))
-            println(" --- uploadDataModel: " + uploadDataModel)
-
-            val context = ConverterMockContext(
-                uploadDataModel = uploadDataModel
-            )
-            uploadService.exec(context)
-            when(context.status) {
-                ConverterMockContext.Statuses.OK -> call.respond(HttpStatusCode.OK)
                 else -> call.respond(HttpStatusCode.InternalServerError)
             }
         }

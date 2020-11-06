@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MockListItemModel} from "../models/mock-list-item-model";
-import {ConverterWidgetMockService} from "../converter-widget-mock.service";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
+import {HostService} from "../services/host.service";
 
 @Component({
     selector: 'mock-list-item-component',
@@ -11,47 +11,47 @@ import {takeUntil} from "rxjs/operators";
 })
 export class MockListItemComponent implements OnInit, OnDestroy {
 
-    _unsubscribe = new Subject<void>();
+    private unsubscribe = new Subject<void>();
 
     @Input() mockListItem: MockListItemModel;
 
-    @Output() selectedCase = new EventEmitter<String>();
-    @Output() startedCase = new EventEmitter<String>();
+    @Output() selectedCase = new EventEmitter<string>();
+    @Output() startedCase = new EventEmitter<string>();
 
-    selectedItemCssClassName = "widget-mock-list-item-selected"
-    itemCssSelectionClass = ""
+    selectedItemCssClassName = "widget-mock-list-item-selected";
+    itemCssSelectionClass = "";
 
-    constructor(private service: ConverterWidgetMockService) {
+    constructor(private service: HostService) {
     }
 
     ngOnInit(): void {
     }
 
-    startCase() {
-        console.log(" --- MockListItemComponent::startCase()")
+    startCase(): void {
+        console.log(" --- MockListItemComponent::startCase()");
         this.service.startCase(this.mockListItem.name).pipe(
-            takeUntil(this._unsubscribe)
+            takeUntil(this.unsubscribe)
         ).subscribe(data => {
             console.log(data);
             this.startedCase.emit(this.mockListItem.name);
         });
     }
 
-    selectCase() {
-        console.log(" --- MockListItemComponent::selectCase()")
+    selectCase(): void {
+        console.log(" --- MockListItemComponent::selectCase()");
         this.itemCssSelectionClass = this.selectedItemCssClassName;
         this.selectedCase.emit(this.mockListItem.name);
     }
 
-    unselectCase(newCaseName) {
-        console.log(" --- MockListItemComponent::unselectCase() --- newCaseName: " + newCaseName)
-        if (newCaseName != this.mockListItem.name) {
+    unselectCase(newCaseName): void {
+        console.log(" --- MockListItemComponent::unselectCase() --- newCaseName: " + newCaseName);
+        if (newCaseName !== this.mockListItem.name) {
             this.itemCssSelectionClass = "";
         }
     }
 
     ngOnDestroy(): void {
-        this._unsubscribe.next();
-        this._unsubscribe.complete();
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
     }
 }

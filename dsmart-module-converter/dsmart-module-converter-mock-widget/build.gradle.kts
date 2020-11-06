@@ -60,6 +60,7 @@ tasks {
     }
 
     val ngStart by ngLibBuild("converter-mock-app") {
+        dependsOn(ngBuildWidget)
         setArgs(
             listOf(
                 "serve",

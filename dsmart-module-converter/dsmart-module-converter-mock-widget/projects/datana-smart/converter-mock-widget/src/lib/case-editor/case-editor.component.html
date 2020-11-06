@@ -3,11 +3,11 @@
   <h1>Редактор кейсов</h1>
   <form [formGroup]="caseEditorForm" (ngSubmit)="onSubmit()">
     <label>
-      Название кейса:
+      CaseId:
       <br>
-      <input type="text" formControlName="caseName" required>
+      <input type="text" formControlName="caseId" required>
     </label>
-    <div formGroupName="meltInfo">
+    <div>
       <div class="widget-container">
         <div class="widget-col-50">
           <label>
@@ -30,46 +30,78 @@
             <br>
             <input type="text" formControlName="shiftNumber">
           </label>
-          <label>
-            Режим: боевой, эмуляция, тестовый:
-            <br>
-            <!--<input type="text" formControlName="mode">-->
-            <select formControlName="mode">
-              <option value="prod">Боевой</option>
-              <option value="emulation">Эмуляция</option>
-              <option value="test">Тестовый</option>
-            </select>
-          </label>
         </div>
         <div class="widget-col-50">
-          <div formGroupName="devices">
+          <div>
             <h3>Оборудование для мониторинга</h3>
-            <div class="group-container" formGroupName="irCamera">
+            <div class="group-container">
+              <h4>Конвертер</h4>
+              <label>
+                Уникальный идентификатор или серийный номер:
+                <br>
+                <input type="text" formControlName="converterId">
+              </label>
+              <label>
+                Название:
+                <br>
+                <input type="text" formControlName="converterName">
+              </label>
+            </div>
+
+            <div class="group-container">
               <h4>Инфракрасная камера</h4>
               <label>
                 Уникальный идентификатор или серийный номер камеры:
                 <br>
-                <input type="text" formControlName="id">
+                <input type="text" formControlName="irCameraId">
               </label>
               <label>
                 Название камеры:
                 <br>
-                <input type="text" formControlName="name">
+                <input type="text" formControlName="irCameraName">
               </label>
               <label>
-                Адрес файла или устройства, с которого снимать изображение:
+                Видеофайл:
                 <br>
-                <input type="text" formControlName="uri">
+                <input type="file" name="fileVideo" (change)="onVideoFileSelect($event)">
+              </label>
+            </div>
+
+            <div class="group-container">
+              <h4>Углы наклона конвертера</h4>
+              <label>
+                Уникальный идентификатор или серийный номер:
+                <br>
+                <input type="text" formControlName="selsynId">
               </label>
               <label>
-                Тип устройства: настоящая камера или файл:
+                Название:
                 <br>
-                <!--<input type="text" formControlName="type">-->
-                <select formControlName="type">
-                  <option value="device">Камера</option>
-                  <option value="file">Файл</option>
-                  <option value="computation">Вычисление</option>
-                </select>
+                <input type="text" formControlName="selsynName">
+              </label>
+              <label>
+                Файл с эмуляцией:
+                <br>
+                <input type="file" name="selsynJson" (change)="onSelsynFileSelect($event)">
+              </label>
+            </div>
+
+            <div class="group-container">
+              <h4>Оценка доли металла в шлаке</h4>
+              <label>
+                Уникальный идентификатор или серийный номер:
+                <br>
+                <input type="text" formControlName="slagRateId">
+              </label>
+              <label>
+                Название:
+                <br>
+                <input type="text" formControlName="slagRateName">
+              </label>
+              <label>
+                Файл с эмуляцией:
+                <br>
+                <input type="file" name="slagRateJson" (change)="onSlagRateFileSelect($event)">
               </label>
             </div>
           </div>
@@ -79,7 +111,7 @@
     </div>
     <div class="button-conteiner">
       <button type="submit" [disabled]="!caseEditorForm.valid">Добавить</button>
-      <button type="button" (click)="loadTestData()">Загрузить тестовые данные</button>
+<!--      <button type="button" (click)="loadTestData()">Загрузить тестовые данные</button>-->
     </div>
   </form>
 
@@ -90,5 +122,4 @@
     {{ caseEditorForm.value | json }}
   </p>
 
-  <file-upload-component></file-upload-component>
 </div>

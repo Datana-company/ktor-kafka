@@ -71,6 +71,8 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
+//    implementation("io.ktor:ktor-client-serialization-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-jackson:$ktorVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
     implementation( "io.ktor:ktor-locations:$ktorVersion")
 }

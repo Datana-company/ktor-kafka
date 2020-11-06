@@ -1,127 +1,169 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {takeUntil} from "rxjs/operators";
-import {CaseEditorService} from "./case-editor.service";
 import {Subject} from "rxjs";
-import {FileUploadComponent} from "../file-upload/file-upload.component";
+import {HttpClient} from "@angular/common/http";
+import {HostService} from "../services/host.service";
 
 @Component({
-    selector: 'case-editor-component',
-    templateUrl: './case-editor.component.html',
-    styleUrls: ['./case-editor.component.css']
+  selector: 'case-editor-component',
+  templateUrl: './case-editor.component.html',
+  styleUrls: ['./case-editor.component.css']
 })
-export class CaseEditorComponent implements OnInit {
+export class CaseEditorComponent implements OnInit, OnDestroy {
 
-    @Output() newCase = new EventEmitter<String>();
+  @Output() newCase = new EventEmitter<string>();
 
-    @ViewChild(FileUploadComponent) fileUpload: FileUploadComponent;
+  selectedCaseId = "";
 
-    selectedCaseName: String ="";
+  private unsubscribe = new Subject<void>();
 
-    _unsubscribe = new Subject<void>();
+  caseEditorForm;
 
-    caseEditorForm = this.formBuilder.group({
-        caseName: ['', Validators.required],
-        meltInfo: this.formBuilder.group({
-            meltNumber: ['', Validators.required],
-            steelGrade: [''],
-            crewNumber: [''],
-            shiftNumber: [''],
-            mode: ['emulation'],
-            devices: this.formBuilder.group({
-                irCamera: this.formBuilder.group({
-                    id: [''],
-                    name: [''],
-                    uri: [''],
-                    type: ['file'],
-                    deviceType: ['ConverterDevicesIrCamera']
-                })
-            })
-        })
+  constructor(
+    private formBuilder: FormBuilder,
+    private service: HostService,
+  ) {
+  }
+
+  ngOnInit(): void {
+    this.caseEditorForm = this.formBuilder.group({
+      caseId: ['case123', Validators.required],
+      meltNumber: ['123456', Validators.required],
+      steelGrade: ['XDF-234', Validators.required],
+      crewNumber: ['2', Validators.required],
+      shiftNumber: ['1', Validators.required],
+
+      converterId: ['converter1', Validators.required],
+      converterName: ['Конвертер им. Иванова'],
+
+      irCameraId: ['cam1', Validators.required],
+      irCameraName: [''],
+      fileVideo: [''],
+
+      selsynId: ['selsyn1', Validators.required],
+      selsynName: [''],
+      selsynJson: [''],
+
+      slagRateId: ['slagrate1', Validators.required],
+      slagRateName: [''],
+      slagRateJson: [''],
     });
+  }
 
-    constructor(private formBuilder: FormBuilder, private service: CaseEditorService) {
-    }
+  // loadTestData(): void {
+  //     this.caseEditorForm.patchValue({
+  //         caseName: 'case-SuperPuper-' + (new Date()).getTime(),
+  //         meltInfo: {
+  //             meltNumber: '12_плавка',
+  //             steelGrade: '12Х18Н10Т',
+  //             crewNumber: 'Бр.№7',
+  //             shiftNumber: '2-ая смена',
+  //             mode: 'emulation',
+  //             devices: {
+  //                 irCamera: {
+  //                     id: 'Cam#55',
+  //                     name: 'CameraName',
+  //                     uri: 'URI',
+  //                     type: 'file',
+  //                     deviceType: 'ConverterDevicesIrCamera'
+  //                 }
+  //             }
+  //         }
+  //     });
+  // }
 
-    loadTestData() {
-        this.caseEditorForm.patchValue({
-            caseName: 'case-SuperPuper-' + (new Date()).getTime(),
-            meltInfo: {
-                meltNumber: '12_плавка',
-                steelGrade: '12Х18Н10Т',
-                crewNumber: 'Бр.№7',
-                shiftNumber: '2-ая смена',
-                mode: 'emulation',
-                devices: {
-                    irCamera: {
-                        id: 'Cam#55',
-                        name: 'CameraName',
-                        uri: 'URI',
-                        type: 'file',
-                        deviceType: 'ConverterDevicesIrCamera'
-                    }
-                }
-            }
-        });
-    }
+  onSubmit(): void {
+    console.log(this.caseEditorForm.value);
+    this.service.addCase(this.caseEditorForm.value).pipe(
+      takeUntil(this.unsubscribe)
+    ).subscribe(data => {
+      console.log(data);
+      this.newCase.emit("newCase");
 
-    onSubmit() {
-        console.log(this.caseEditorForm.value);
-        this.service.addCase(this.caseEditorForm.value).pipe(
-            takeUntil(this._unsubscribe)
-        ).subscribe(data => {
-            console.log(data);
-            this.newCase.emit("newCase");
-            // this.fileUpload.upload(data, this.caseEditorForm.value.meltInfo.devices.irCamera.id);
-            this.fileUpload.setNewCaseFolderName(data);
-            this.fileUpload.setFileName(this.caseEditorForm.value.meltInfo.devices.irCamera.id);
-            this.fileUpload.onFormSubmit();
-        });
-    }
+      const formData = new FormData();
+      Object.assign(formData, this.caseEditorForm);
+      // console.log("Sending FormData", formData);
+      formData.append('fileVideo', this.caseEditorForm.get('fileVideo').value);
+      formData.append('selsynJson', this.caseEditorForm.get('selsynJson').value);
+      formData.append('slagRateJson', this.caseEditorForm.get('slagRateJson').value);
 
-    caseSelected(selectedCaseName) {
-        console.log(" --- CaseEditorComponent::caseSelected() --- selectedCaseName: " + selectedCaseName );
-        // this.selectedCaseName = " (" + selectedCaseName + ")";
-        this.selectedCaseName = selectedCaseName;
-        this.service.getSelectedCaseData(selectedCaseName).pipe(
-            takeUntil(this._unsubscribe)
-        ).subscribe(caseData => {
-            console.log(caseData);
-            if (caseData == null) {
-                this.caseEditorForm.reset();
-            } else {
-                this.loadCaseToForm(caseData);
-            }
-        });
-    }
+      this.service.addCase(formData).subscribe(
+        (res) => console.log('Response form addCase in onSubmit', res),
+        (err) => console.log('Error response form addCase in onSubmit', err)
+      );
 
-    loadCaseToForm(caseData) {
-        this.caseEditorForm.patchValue({
-            caseName: this.selectedCaseName,
-            meltInfo: {
-                meltNumber: caseData.meltNumber,
-                steelGrade: caseData.steelGrade,
-                crewNumber: caseData.crewNumber,
-                shiftNumber: caseData.shiftNumber,
-                mode: caseData.mode,
-                devices: {
-                    irCamera: {
-                        id: caseData.devices.irCamera.id,
-                        name: caseData.devices.irCamera.name,
-                        uri: caseData.devices.irCamera.uri,
-                        type: caseData.devices.irCamera.type,
-                        deviceType: caseData.devices.irCamera.deviceType
-                    }
-                }
-            }
-        });
-    }
+      // this.fileUpload.upload(data, this.caseEditorForm.value.meltInfo.devices.irCamera.id);
+      // this.fileUpload.setNewCaseFolderName(data);
+      // this.fileUpload.setFileName(this.caseEditorForm.value.meltInfo.devices.irCamera.id);
+      // this.fileUpload.onFormSubmit();
+    });
+  }
 
-    ngOnInit(): void {
-    }
+  caseSelected(selectedCaseId): void {
+    console.log(" --- CaseEditorComponent::caseSelected() --- selectedCaseId: " + selectedCaseId);
+    // this.selectedCaseName = " (" + selectedCaseName + ")";
+    this.selectedCaseId = selectedCaseId;
+    this.service.getSelectedCaseData(selectedCaseId).pipe(
+      takeUntil(this.unsubscribe)
+    ).subscribe(caseData => {
+      console.log(caseData);
+      if (caseData == null) {
+        this.caseEditorForm.reset();
+      } else {
+        this.loadCaseToForm(caseData);
+      }
+    });
+  }
 
-    ngOnDestroy(): void {
-        this._unsubscribe.next();
-        this._unsubscribe.complete();
+  loadCaseToForm(caseData): void {
+    this.caseEditorForm.patchValue({
+      caseId: this.selectedCaseId,
+      meltNumber: caseData.meltNumber,
+      steelGrade: caseData.steelGrade,
+      crewNumber: caseData.crewNumber,
+      shiftNumber: caseData.shiftNumber,
+
+      converterId: caseData.devices.converter.id,
+      converterName: caseData.devices.converter.name,
+
+      irCameraId: caseData.devices.irCamera.id,
+      irCameraName: caseData.devices.irCamera.name,
+      fileVideo: null,
+
+      selsynId: caseData.devices.selsyn.id,
+      selsynName: caseData.devices.selsyn.name,
+      selsynJson: null,
+
+      slagRateId: caseData.devices.slagRate.id,
+      slagRateName: caseData.devices.slagRate.name,
+      slagRateJson: null,
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+  }
+
+  onVideoFileSelect(event): void {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.caseEditorForm.get('fileVideo').setValue(file);
     }
+  }
+
+  onSelsynFileSelect(event): void {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.caseEditorForm.get('selsynJson').setValue(file);
+    }
+  }
+
+  onSlagRateFileSelect(event): void {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.caseEditorForm.get('slagRateJson').setValue(file);
+    }
+  }
 }

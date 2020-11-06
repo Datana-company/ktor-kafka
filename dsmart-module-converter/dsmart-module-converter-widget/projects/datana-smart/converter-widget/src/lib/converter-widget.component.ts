@@ -1,16 +1,17 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {Subject} from "rxjs";
+// tslint:disable-next-line:import-blacklist
+import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
-import {EventModel} from "./models/event-model";
-import {SlagRateModel} from "./models/slag-rate.model";
-import {ConverterFrameModel} from "./models/converter-frame.model";
-import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
-import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
-import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
-import {EventCategoryModel} from "./models/event-category.model";
-import {ExecutionStatusModel} from "./models/event-execution-status.model";
-import {ConverterAnglesModel} from "./models/converter-angles-model";
+import {EventModel} from './models/event-model';
+import {SlagRateModel} from './models/slag-rate.model';
+import {ConverterFrameModel} from './models/converter-frame.model';
+import {ConverterMeltInfoModel} from './models/converter-melt-info.model';
+import {ConverterMeltModeModel} from './models/converter-melt-mode.model';
+import {ConverterMeltDevicesModel} from './models/converter-melt-devices.model';
+import {EventCategoryModel} from './models/event-category.model';
+import {ExecutionStatusModel} from './models/event-execution-status.model';
+import {ConverterAnglesModel} from './models/converter-angles-model';
 
 @Component({
   selector: 'datana-converter-widget',
