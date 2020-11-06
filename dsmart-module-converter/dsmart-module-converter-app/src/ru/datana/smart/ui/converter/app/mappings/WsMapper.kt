@@ -6,10 +6,13 @@ import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.ws.models.*
 import kotlin.streams.toList
 
-fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
+// TODO: нужно посылать warningPoint в эвенте init (временное решение)
+fun toWsConverterSlagRateModel(context: ConverterBeContext) =
     WsDsmartConverterSlagRate(
-        steelRate = modelSlagRate.steelRate,
-        slagRate = modelSlagRate.slagRate
+        slagRateTime = context.slagRate.slagRateTime,
+        steelRate = context.slagRate.steelRate,
+        slagRate = context.slagRate.slagRate,
+        warningPoint = context.metalRateWarningPoint
     )
 
 fun toWsConverterAnglesModel(modelAngles: ModelAngles) =

@@ -74,7 +74,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
         return new SlagRateModel(
           data.slagRateTime as number,
           data?.steelRate as number,
-          data?.slagRate as number
+          data?.slagRate as number,
+          data?.warningPoint as number
         );
       })
     ).subscribe(data => {

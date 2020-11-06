@@ -51,7 +51,7 @@ class WsManager : IWsManager {
 
     override suspend fun sendSlagRate(context: ConverterBeContext) {
         val wsSlagRate = WsDsmartResponseConverterSlagRate(
-            data = toWsConverterSlagRateModel(context.slagRate)
+            data = toWsConverterSlagRateModel(context)
         )
         val slagRateSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterSlagRate.serializer(), wsSlagRate)
         send(slagRateSerializedString)
