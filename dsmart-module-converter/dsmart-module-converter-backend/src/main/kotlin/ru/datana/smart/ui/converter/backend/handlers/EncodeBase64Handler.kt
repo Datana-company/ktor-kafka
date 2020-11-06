@@ -15,12 +15,12 @@ object EncodeBase64Handler : IKonveyorHandler<ConverterBeContext> {
 
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         try {
-//            val bytes = File("${context.framesBasePath}/${context.frame.framePath}").readBytes()
+            val bytes = File("${context.framesBasePath}/${context.frame.framePath}").readBytes()
 
-            // Для тестов
-            val folder = if (context.frame.channel == ModelFrame.Channels.CAMERA) "camera" else "math"
-            val bytes = File("resources/images/$folder/${Random.nextInt(0, 12)}.png").readBytes()
-            /////////////////
+//            Для тестов
+//            val folder = if (context.frame.channel == ModelFrame.Channels.CAMERA) "camera" else "math"
+//            val bytes = File("resources/images/$folder/${Random.nextInt(0, 12)}.png").readBytes()
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
             context.frame.image = Base64.getEncoder().encodeToString(bytes)
         } catch (e: Throwable) {
