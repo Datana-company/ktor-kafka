@@ -14,7 +14,7 @@ export class BarChartComponent {
   // public xAxisTickFormattingFn = (value) => `${value.toString()+"%"}`;
  // public xAxisTickFormattingFn = value => `X ${value.toLocaleString()}`;
  //    @Input() slagRateModel: SlagRateModel;
-  view: any[] = [800, 200];
+  view: any[] = [950, 200];
 
   // options
   showXAxis = false;

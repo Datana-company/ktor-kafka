@@ -133,9 +133,8 @@
 .widget-bar-chart {
     height: 35%;
     margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2.5rem;
     /*margin-left:4.9%;*/
-    width: 86%;
     background: #ffffff;
 }
 
