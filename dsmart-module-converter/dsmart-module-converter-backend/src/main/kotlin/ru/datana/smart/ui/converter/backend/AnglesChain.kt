@@ -47,7 +47,7 @@ class AnglesChain(
 
             +DevicesFilterHandler
             +MeltFilterHandler
-            +FrameTimeFilterHandler
+//            +FrameTimeFilterHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }

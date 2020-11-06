@@ -144,6 +144,7 @@ fun Application.module(testing: Boolean = false) {
                             frame = conveyorModelFrame,
                             meltInfo = conveyorModelMeltInfo
                         )
+                        println("topic = math, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleMath(context)
                     }
                     topicVideo -> {
@@ -154,6 +155,7 @@ fun Application.module(testing: Boolean = false) {
                             frame = conveyorModelFrame,
                             meltInfo = conveyorModelMeltInfo
                         )
+                        println("topic = video, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleFrame(context)
                     }
                     topicMeta -> {
@@ -162,6 +164,7 @@ fun Application.module(testing: Boolean = false) {
                         val context = ConverterBeContext(
                             meltInfo = conveyorModel
                         )
+                        println("topic = meta, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleMeltInfo(context)
                     }
                     topicAngles -> {
@@ -172,6 +175,7 @@ fun Application.module(testing: Boolean = false) {
                             angles = conveyorModelAngles,
                             meltInfo = conveyorModelMeltInfo
                         )
+                        println("topic = angles, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleAngles(context)
                     }
                 }
