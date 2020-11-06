@@ -46,8 +46,6 @@ class EventsChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            timeout { 1000 }
-
             konveyor {
                 on { slagRate.steelRate?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
                 +UpdateWarningEventHandler
@@ -90,7 +88,6 @@ class EventsChain(
                     events = ModelEvents(events = eventsRepository.getAllByMeltId(meltId))
                 }
             }
-
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {

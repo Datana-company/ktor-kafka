@@ -45,8 +45,6 @@ class AnglesChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            timeout { 1000 }
-
             +DevicesFilterHandler
             +MeltFilterHandler
             +FrameTimeFilterHandler

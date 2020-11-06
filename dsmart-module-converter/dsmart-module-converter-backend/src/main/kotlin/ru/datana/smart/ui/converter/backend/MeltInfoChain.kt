@@ -44,8 +44,6 @@ class MeltInfoChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            timeout { 1000 }
-
             +DevicesFilterHandler
             +CurrentMeltInfoHandler
 

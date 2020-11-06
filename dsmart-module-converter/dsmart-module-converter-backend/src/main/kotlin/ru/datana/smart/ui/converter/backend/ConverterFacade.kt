@@ -14,7 +14,8 @@ class ConverterFacade(
     timeReaction: Long = Long.MIN_VALUE,
     timeLimitSiren: Long = Long.MIN_VALUE,
     currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference(),
-    converterId: String = ""
+    converterId: String = "",
+    framesBasePath: String = ""
 ) {
     private val mathChain = MathChain(
         eventsRepository = converterRepository,
@@ -24,7 +25,8 @@ class ConverterFacade(
         currentMeltInfo = currentMeltInfo,
         timeReaction = timeReaction,
         timeLimitSiren = timeLimitSiren,
-        converterId = converterId
+        converterId = converterId,
+        framesBasePath = framesBasePath
     )
     private val anglesChain = AnglesChain(
         eventsRepository = converterRepository,
@@ -44,7 +46,8 @@ class ConverterFacade(
         currentMeltInfo = currentMeltInfo,
         timeReaction = timeReaction,
         timeLimitSiren = timeLimitSiren,
-        converterId = converterId
+        converterId = converterId,
+        framesBasePath = framesBasePath
     )
     private val meltInfoChain = MeltInfoChain(
         eventsRepository = converterRepository,
