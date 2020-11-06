@@ -44,21 +44,14 @@ class EventsChain(
             timeout { 1000 }
 
             konveyor {
-                on { currentMeltInfo.get()?.let { currentId -> currentId.id?.let { id -> meltInfo.id?.let { it != id } ?: false } ?: false } ?: true }
-                +AddHistoryEventsHandler
-                +CreateStartMeltEventHandler
-            }
-            konveyor {
                 on { slagRate.steelRate?.let { it >= metalRateCriticalPoint  } ?: false }
-                on { currentMeltInfo.get()?.let { it.id != null } ?: false }
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
                 +UpdateEndEventHandler
                 +CreateCriticalEventHandler
             }
             konveyor {
-                on { slagRate.steelRate?.let { it > metalRateWarningPoint && it < metalRateCriticalPoint  } ?: false }
-                on { currentMeltInfo.get()?.let { it.id != null } ?: false }
+                on { slagRate.steelRate?.let { it > metalRateWarningPoint && it < metalRateCriticalPoint } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateInfoEventHandler
                 +UpdateEndEventHandler
@@ -66,7 +59,6 @@ class EventsChain(
             }
             konveyor {
                 on { slagRate.steelRate?.let { it <= metalRateWarningPoint && it > 0.0 } ?: false }
-                on { currentMeltInfo.get()?.let { it.id != null } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
                 +UpdateEndEventHandler
@@ -74,22 +66,20 @@ class EventsChain(
             }
             konveyor {
                 on { slagRate.steelRate?.let { it == 0.0 } ?: false && slagRate.slagRate?.let { it == 0.0 } ?: false }
-                on { currentMeltInfo.get()?.let { it.id != null } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
+                +CreateSuccessMeltEventHandler
                 +CreateEndEventHandler
             }
             konveyor {
                 on { angles.angle != null }
-                on { currentMeltInfo.get()?.let { it.id != null } ?: false }
                 +UpdateAngleCriticalEventHandler
                 +UpdateAngleWarningEventHandler
                 +UpdateAngleInfoEventHandler
             }
             handler {
-                onEnv { status == CorStatus.STARTED }
-                onEnv { currentMeltInfo.get()?.let { it.id != null } ?: false }
+                onEnv { status == CorStatus.STARTED && currentMeltInfo.get()?.let { it.id != null } ?: false }
                 exec {
                     val meltId: String = currentMeltInfo.get()!!.id!!
                     events = ModelEvents(events = eventsRepository.getAllByMeltId(meltId))

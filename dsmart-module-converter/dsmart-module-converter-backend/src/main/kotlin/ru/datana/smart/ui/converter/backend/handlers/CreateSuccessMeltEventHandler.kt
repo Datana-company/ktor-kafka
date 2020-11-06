@@ -5,19 +5,27 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.EndMeltEvent
+import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
+import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.events.SuccessMeltEvent
 import java.time.Instant
 import java.util.*
 
-object CreateEndEventHandler: IKonveyorHandler<ConverterBeContext> {
+object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val meltId: String = context.currentMeltInfo.get()?.id ?: return
-        context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? EndMeltEvent ?: context.eventsRepository.put(
+        val meltId: String = context.meltInfo.id!!
+        context.eventsRepository.getAllByMeltId(meltId).map {
+            if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent || it is EndMeltEvent) {
+                return
+            }
+        }
+        context.eventsRepository.put(
             meltId,
-            EndMeltEvent(
+            SuccessMeltEvent(
                 id = UUID.randomUUID().toString(),
                 timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),
                 timeFinish = context.frame.frameTime ?: Instant.now().toEpochMilli(),
-                metalRate = context.slagRate.steelRate!!
+                isActive = false
             )
         )
     }

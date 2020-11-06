@@ -11,7 +11,7 @@ import ru.datana.smart.ui.converter.common.Config
 data class WsDsmartResponseConverterInit(
     override val data: WsDsmartConverterInit? = null,
     override val errors: List<IWsDsmartResponseError>? = null,
-    override val event: String? = "converter-slag-rate-update"
+    override val event: String? = "converter-init-update"
 ) : IWsDsmartResponse<WsDsmartConverterInit> {
     override val module: String? = Config.moduleName
 }

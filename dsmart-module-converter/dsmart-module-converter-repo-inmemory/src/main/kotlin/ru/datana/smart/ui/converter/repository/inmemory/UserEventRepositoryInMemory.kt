@@ -30,7 +30,7 @@ class UserEventRepositoryInMemory: IUserEventsRepository {
             .sorted(Comparator.comparing(IBizEvent::isActive).reversed())
             .limit(10)
             .toList()
-        } ?: listOf()
+        } ?: mutableListOf()
     }
 
     override fun getActiveByMeltId(meltId: String): List<IBizEvent> {

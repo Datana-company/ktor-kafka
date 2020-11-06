@@ -46,8 +46,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
         );
       })
     ).subscribe(data => {
-      this.converterMeltInfoData = data.meltInfo;
-      this.converterEvents = data.events;
+      this.converterMeltInfoData = data?.meltInfo;
+      this.converterEvents.concat(data?.events);
     });
 
     this.wsService.on('converter-melt-info-update').pipe(

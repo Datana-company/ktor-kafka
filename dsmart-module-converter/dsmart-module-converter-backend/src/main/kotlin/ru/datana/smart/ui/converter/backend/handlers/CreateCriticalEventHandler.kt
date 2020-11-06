@@ -10,7 +10,7 @@ import java.util.*
 
 object CreateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val meltId: String = context.currentMeltInfo.get()!!.id!!
+        val meltId: String = context.currentMeltInfo.get()?.id ?: return
         val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
         val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
         activeEvent?.let {
