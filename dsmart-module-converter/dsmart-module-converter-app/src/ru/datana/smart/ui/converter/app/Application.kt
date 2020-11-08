@@ -21,7 +21,6 @@ import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.websocket.WsManager
@@ -72,12 +71,15 @@ fun Application.module(testing: Boolean = false) {
     val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
     val topicEvents by lazy { environment.config.property("ktor.kafka.consumer.topic.events").getString().trim() }
     val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
+    val framesBasePath by lazy { environment.config.property("paths.base.frames").getString().trim() }
 //    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
 //    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
 //    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
 //    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
     val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
     val metalRateWarningPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble() }
+    val timeReaction: Long by lazy { environment.config.property("ktor.conveyor.metalRatePoint.timeReaction").getString().trim().toLong() }
+    val timeLimitSiren: Long by lazy { environment.config.property("ktor.conveyor.metalRatePoint.timeLimitSiren").getString().trim().toLong() }
 
     // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
@@ -103,7 +105,8 @@ fun Application.module(testing: Boolean = false) {
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentMeltInfo = currentMeltInfo,
-        converterId = converterId
+        converterId = converterId,
+        framesBasePath = framesBasePath,
     )
 
     routing {
@@ -143,6 +146,7 @@ fun Application.module(testing: Boolean = false) {
                             frame = conveyorModelFrame,
                             meltInfo = conveyorModelMeltInfo
                         )
+                        println("topic = math, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleMath(context)
                     }
                     topicVideo -> {
@@ -153,6 +157,7 @@ fun Application.module(testing: Boolean = false) {
                             frame = conveyorModelFrame,
                             meltInfo = conveyorModelMeltInfo
                         )
+                        println("topic = video, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleFrame(context)
                     }
                     topicMeta -> {
@@ -161,6 +166,7 @@ fun Application.module(testing: Boolean = false) {
                         val context = ConverterBeContext(
                             meltInfo = conveyorModel
                         )
+                        println("topic = meta, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleMeltInfo(context)
                     }
                     topicAngles -> {
@@ -171,6 +177,7 @@ fun Application.module(testing: Boolean = false) {
                             angles = conveyorModelAngles,
                             meltInfo = conveyorModelMeltInfo
                         )
+                        println("topic = angles, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleAngles(context)
                     }
                     // 1) Получаем данные из Кафки

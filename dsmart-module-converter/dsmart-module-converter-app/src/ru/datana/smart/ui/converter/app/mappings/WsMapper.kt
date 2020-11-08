@@ -1,14 +1,18 @@
 package ru.datana.smart.ui.converter.app.mappings
 
+import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.ws.models.*
 import kotlin.streams.toList
 
-fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
+// TODO: нужно посылать warningPoint в эвенте init (временное решение)
+fun toWsConverterSlagRateModel(context: ConverterBeContext) =
     WsDsmartConverterSlagRate(
-        steelRate = modelSlagRate.steelRate,
-        slagRate = modelSlagRate.slagRate
+        slagRateTime = context.slagRate.slagRateTime,
+        steelRate = context.slagRate.steelRate,
+        slagRate = context.slagRate.slagRate,
+        warningPoint = context.metalRateWarningPoint
     )
 
 fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
@@ -17,11 +21,13 @@ fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
         source = modelAngles.source
     )
 
-fun toWsConverterFrameModel(modelFrame: ModelFrame) =
-    WsDsmartConverterFrame(
+fun toWsConverterFrameDataModel(modelFrame: ModelFrame) =
+    WsDsmartConverterFrameData(
         frameId = modelFrame.frameId,
         frameTime = modelFrame.frameTime,
-        framePath = modelFrame.framePath
+        framePath = modelFrame.framePath,
+        image = modelFrame.image,
+        channel = modelFrame.channel.toString()
     )
 
 fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =
@@ -77,8 +83,14 @@ fun toWsEventModel(event: IBizEvent) =
         executionStatus = WsDsmartEvent.ExecutionStatus.valueOf(event.executionStatus.name)
     )
 
-fun toWsEventListModel(events: List<IBizEvent>) = events.stream().map { event -> toWsEventModel(event) }.toList()
+fun toWsEventListModel(modelEvents: ModelEvents) = WsDsmartEventList(
+    list = modelEvents.events?.stream()?.map { event -> toWsEventModel(event) }
+        ?.toList()
+        ?: mutableListOf()
+)
 
-fun toWsEventListModel(modelEvents: ModelEvents) = modelEvents.events?.stream()?.map { event -> toWsEventModel(event) }
-    ?.toList()
-    ?: mutableListOf()
+fun toWsConverterInitModel(context: ConverterBeContext) =
+    WsDsmartConverterInit(
+        meltInfo = context.currentMeltInfo.get()?.let { toWsConverterMeltInfoModel(it) },
+        events = toWsEventListModel(context.events)
+    )

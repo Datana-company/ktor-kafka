@@ -3,6 +3,7 @@ package ru.datana.smart.ui.converter.common.context
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.time.Instant
+import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 
@@ -15,7 +16,9 @@ class ConverterBeContext (
     var events: ModelEvents = ModelEvents.NONE,
     // внутренняя модель (dsmart-module-converter-common.models)
     var extEvents: ModelExtEvents = ModelExtEvents.NONE,
-    var lastTimeProc: AtomicLong = AtomicLong(0),
+    var lastTimeAngles: AtomicLong = AtomicLong(0),
+    var lastTimeFrame: AtomicLong = AtomicLong(0),
+    var lastTimeSlagRate: AtomicLong = AtomicLong(0),
     var status: CorStatus = CorStatus.STARTED,
     var errors: MutableList<CorError> = mutableListOf(),
     var timeStart: Instant = Instant.now(),
@@ -23,7 +26,10 @@ class ConverterBeContext (
     var wsManager: IWsManager = IWsManager.NONE,
     var metalRateCriticalPoint: Double = Double.MIN_VALUE,
     var metalRateWarningPoint: Double = Double.MIN_VALUE,
+    var timeReaction: Long = Long.MIN_VALUE,
+    var timeLimitSiren: Long = Long.MIN_VALUE,
     var eventsRepository: IUserEventsRepository = IUserEventsRepository.NONE,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference(),
-    var converterId: String = ""
+    var converterId: String = "",
+    var framesBasePath: String = ""
 )

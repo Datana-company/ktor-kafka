@@ -10,6 +10,7 @@ import ru.datana.smart.ui.converter.common.models.IWsManager
 import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
+import ru.datana.smart.ui.converter.common.utils.toPercent
 import java.util.concurrent.atomic.AtomicReference
 
 class EventsChain(
@@ -17,6 +18,8 @@ class EventsChain(
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
+    var timeReaction: Long,
+    var timeLimitSiren: Long,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
     var converterId: String
 ) {
@@ -31,6 +34,8 @@ class EventsChain(
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
+                it.timeReaction = timeReaction
+                it.timeLimitSiren = timeLimitSiren
                 it.currentMeltInfo = currentMeltInfo
                 it.converterId = converterId
             },
@@ -41,25 +46,34 @@ class EventsChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            timeout { 1000 }
-
             konveyor {
-                on { slagRate.steelRate?.let { it >= metalRateCriticalPoint  } ?: false }
+                on { slagRate.steelRate?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
+                +UpdateEndEventHandler
                 +CreateCriticalEventHandler
             }
             konveyor {
-                on { slagRate.steelRate?.let { it > metalRateWarningPoint && it < metalRateCriticalPoint  } ?: false }
+                on { slagRate.steelRate?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateInfoEventHandler
+                +UpdateEndEventHandler
                 +CreateWarningEventHandler
             }
             konveyor {
-                on { slagRate.steelRate?.let { it <= metalRateWarningPoint  } ?: false }
+                on { slagRate.steelRate?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
+                +UpdateEndEventHandler
                 +CreateInfoEventHandler
+            }
+            konveyor {
+                on { slagRate.steelRate?.let { toPercent(it) == 0 } ?: false && slagRate.slagRate?.let { toPercent(it) == 0 } ?: false }
+                +UpdateCriticalEventHandler
+                +UpdateWarningEventHandler
+                +UpdateInfoEventHandler
+                +CreateSuccessMeltEventHandler
+                +CreateEndEventHandler
             }
             konveyor {
                 on { angles.angle != null }
@@ -68,20 +82,18 @@ class EventsChain(
                 +UpdateAngleInfoEventHandler
             }
             handler {
-                onEnv { status == CorStatus.STARTED }
+                onEnv { status == CorStatus.STARTED && currentMeltInfo.get()?.let { it.id != null } ?: false }
                 exec {
-                    events = ModelEvents(events = eventsRepository.getAll())
+                    val meltId: String = currentMeltInfo.get()!!.id!!
+                    events = ModelEvents(events = eventsRepository.getAllByMeltId(meltId))
                 }
             }
-
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
                     wsManager.sendEvents(this)
                 }
             }
-
-            +FinishHandler
         }
     }
 }

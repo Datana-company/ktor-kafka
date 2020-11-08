@@ -178,6 +178,7 @@ fun toModelFrame(converterTransportViMl: ConverterTransportViMl) =
     )
 
 fun toModelFrame(converterTransportMlUi: ConverterTransportMlUi) =
+    // будут браться другие поля, когда они появятся
     ModelFrame(
         frameId = converterTransportMlUi.frameId,
         frameTime = converterTransportMlUi.frameTime,
@@ -186,12 +187,14 @@ fun toModelFrame(converterTransportMlUi: ConverterTransportMlUi) =
 
 fun toModelSlagRate(converterTransportMlUi: ConverterTransportMlUi) =
     ModelSlagRate(
+        slagRateTime = converterTransportMlUi.frameTime,
         steelRate = converterTransportMlUi.steelRate,
         slagRate = converterTransportMlUi.slagRate
     )
 
 fun toModelAngles(converterTransportAngle: ConverterTransportAngle) =
     ModelAngles(
+        angleTime = converterTransportAngle.angleTime,
         angle = converterTransportAngle.angle,
         source = converterTransportAngle.source
     )

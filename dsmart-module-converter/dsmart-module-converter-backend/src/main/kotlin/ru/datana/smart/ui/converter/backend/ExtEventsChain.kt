@@ -16,6 +16,8 @@ class ExtEventsChain(
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
+    var timeReaction: Long,
+    var timeLimitSiren: Long,
     var converterId: String
 ) {
 
@@ -31,6 +33,8 @@ class ExtEventsChain(
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
                 it.currentMeltInfo = currentMeltInfo
+                it.timeReaction = timeReaction
+                it.timeLimitSiren = timeLimitSiren
                 it.converterId = converterId
             },
             env
@@ -59,6 +63,8 @@ class ExtEventsChain(
                     metalRateCriticalPoint = metalRateCriticalPoint,
                     metalRateWarningPoint = metalRateWarningPoint,
                     currentMeltInfo = currentMeltInfo,
+                    timeReaction = timeReaction,
+                    timeLimitSiren = timeLimitSiren,
                     converterId = converterId
                 ).exec(this)
             }

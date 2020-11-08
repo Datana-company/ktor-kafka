@@ -11,8 +11,11 @@ class ConverterFacade(
     wsManager: IWsManager = IWsManager.NONE,
     metalRateCriticalPoint: Double = Double.MIN_VALUE,
     metalRateWarningPoint: Double = Double.MIN_VALUE,
+    timeReaction: Long = Long.MIN_VALUE,
+    timeLimitSiren: Long = Long.MIN_VALUE,
     currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference(),
-    converterId: String = ""
+    converterId: String = "",
+    framesBasePath: String = ""
 ) {
     private val mathChain = MathChain(
         eventsRepository = converterRepository,
@@ -20,7 +23,10 @@ class ConverterFacade(
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentMeltInfo = currentMeltInfo,
-        converterId = converterId
+        timeReaction = timeReaction,
+        timeLimitSiren = timeLimitSiren,
+        converterId = converterId,
+        framesBasePath = framesBasePath
     )
     private val anglesChain = AnglesChain(
         eventsRepository = converterRepository,
@@ -28,6 +34,8 @@ class ConverterFacade(
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentMeltInfo = currentMeltInfo,
+        timeReaction = timeReaction,
+        timeLimitSiren = timeLimitSiren,
         converterId = converterId
     )
     private val frameChain = FrameChain(
@@ -36,7 +44,10 @@ class ConverterFacade(
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentMeltInfo = currentMeltInfo,
-        converterId = converterId
+        timeReaction = timeReaction,
+        timeLimitSiren = timeLimitSiren,
+        converterId = converterId,
+        framesBasePath = framesBasePath
     )
     private val meltInfoChain = MeltInfoChain(
         eventsRepository = converterRepository,
@@ -44,6 +55,8 @@ class ConverterFacade(
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentMeltInfo = currentMeltInfo,
+        timeReaction = timeReaction,
+        timeLimitSiren = timeLimitSiren,
         converterId = converterId
     )
     private val extEventsChain = ExtEventsChain(
@@ -52,6 +65,8 @@ class ConverterFacade(
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentMeltInfo = currentMeltInfo,
+        timeReaction = timeReaction,
+        timeLimitSiren = timeLimitSiren,
         converterId = converterId
     )
 

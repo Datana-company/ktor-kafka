@@ -16,6 +16,8 @@ class AnglesChain(
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
+    var timeReaction: Long,
+    var timeLimitSiren: Long,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
     var converterId: String
 ) {
@@ -31,6 +33,8 @@ class AnglesChain(
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
+                it.timeReaction = timeReaction
+                it.timeLimitSiren = timeLimitSiren
                 it.currentMeltInfo = currentMeltInfo
                 it.converterId = converterId
             },
@@ -41,10 +45,9 @@ class AnglesChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            timeout { 1000 }
-
             +DevicesFilterHandler
             +MeltFilterHandler
+//            +FrameTimeFilterHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }
@@ -53,16 +56,23 @@ class AnglesChain(
                 }
             }
 
-            exec {
-                EventsChain(
-                    eventsRepository = eventsRepository,
-                    wsManager = wsManager,
-                    metalRateCriticalPoint = metalRateCriticalPoint,
-                    metalRateWarningPoint = metalRateWarningPoint,
-                    currentMeltInfo = currentMeltInfo,
-                    converterId = converterId
-                ).exec(this)
+            handler {
+                onEnv { status == CorStatus.STARTED }
+                exec {
+                    EventsChain(
+                        eventsRepository = eventsRepository,
+                        wsManager = wsManager,
+                        metalRateCriticalPoint = metalRateCriticalPoint,
+                        metalRateWarningPoint = metalRateWarningPoint,
+                        currentMeltInfo = currentMeltInfo,
+                        timeReaction = timeReaction,
+                        timeLimitSiren = timeLimitSiren,
+                        converterId = converterId
+                    ).exec(this)
+                }
             }
+
+            +FinishHandler
         }
     }
 }

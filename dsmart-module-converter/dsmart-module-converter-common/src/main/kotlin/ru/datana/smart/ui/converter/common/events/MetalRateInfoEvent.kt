@@ -11,9 +11,9 @@ data class MetalRateInfoEvent(
     override val angleStart: Double? = null,
     override val angleFinish: Double? = null,
     override val angleMax: Double? = null,
-    override val title: String = "Информационное сообщение",
+    override val title: String = "Информация",
     override val textMessage: String = """
-                                        В потоке детектирован ${toPercent(metalRate)}% металла.
+                                        Достигнут предел потерь металла в потоке – ${toPercent(metalRate)}%.
                                         """.trimIndent(),
     override val category: IBizEvent.Category = IBizEvent.Category.INFO,
     override val isActive: Boolean = true,
