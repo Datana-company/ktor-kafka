@@ -4,29 +4,28 @@ import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.IMetalRateEvent
 
 interface IUserEventsRepository {
-    fun put(event: IBizEvent)
-    fun getActive(): List<IBizEvent>
-    fun getAll(): List<IBizEvent>
-    fun getActiveMetalRateEvent(): IMetalRateEvent?
+    fun put(meltId: String, event: IBizEvent)
+    fun getActiveByMeltId(meltId: String): List<IBizEvent>
+    fun getAllByMeltId(meltId: String): List<IBizEvent>
+    fun getActiveMetalRateEventByMeltId(meltId: String): IMetalRateEvent?
 
     companion object {
         val NONE = object: IUserEventsRepository {
-            override fun put(event: IBizEvent) {
+            override fun put(meltId: String, event: IBizEvent) {
                 TODO("Not yet implemented")
             }
 
-            override fun getActive(): List<IBizEvent> {
+            override fun getActiveByMeltId(meltId: String): List<IBizEvent> {
                 TODO("Not yet implemented")
             }
 
-            override fun getAll(): List<IBizEvent> {
+            override fun getAllByMeltId(meltId: String): List<IBizEvent> {
                 TODO("Not yet implemented")
             }
 
-            override fun getActiveMetalRateEvent(): IMetalRateEvent? {
+            override fun getActiveMetalRateEventByMeltId(meltId: String): IMetalRateEvent? {
                 TODO("Not yet implemented")
             }
-
         }
     }
 }

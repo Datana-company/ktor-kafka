@@ -11,6 +11,8 @@ class ConverterFacade(
     wsManager: IWsManager = IWsManager.NONE,
     metalRateCriticalPoint: Double = Double.MIN_VALUE,
     metalRateWarningPoint: Double = Double.MIN_VALUE,
+    timeReaction: Long = Long.MIN_VALUE,
+    timeLimitSiren: Long = Long.MIN_VALUE,
     currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference(),
     converterId: String = "",
     framesBasePath: String = ""
@@ -21,6 +23,8 @@ class ConverterFacade(
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentMeltInfo = currentMeltInfo,
+        timeReaction = timeReaction,
+        timeLimitSiren = timeLimitSiren,
         converterId = converterId,
         framesBasePath = framesBasePath
     )
@@ -30,6 +34,8 @@ class ConverterFacade(
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentMeltInfo = currentMeltInfo,
+        timeReaction = timeReaction,
+        timeLimitSiren = timeLimitSiren,
         converterId = converterId
     )
     private val frameChain = FrameChain(
@@ -38,6 +44,8 @@ class ConverterFacade(
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentMeltInfo = currentMeltInfo,
+        timeReaction = timeReaction,
+        timeLimitSiren = timeLimitSiren,
         converterId = converterId,
         framesBasePath = framesBasePath
     )
@@ -47,6 +55,8 @@ class ConverterFacade(
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentMeltInfo = currentMeltInfo,
+        timeReaction = timeReaction,
+        timeLimitSiren = timeLimitSiren,
         converterId = converterId
     )
 

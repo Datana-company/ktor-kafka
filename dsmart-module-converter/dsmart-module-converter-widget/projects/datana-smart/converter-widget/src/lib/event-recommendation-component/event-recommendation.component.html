@@ -1,7 +1,7 @@
 <div class="widget-event-item" *ngFor="let event of events">
   <div *ngIf="isWarning(event?.category)">
     <div [class.widget-event-item-warning-active]="event?.isActive" class="widget-event-item-warning">
-      {{ event?.dateStart | date: 'HH:mm:ss' }}
+      {{ event?.dateFinish | date: 'HH:mm:ss' }}
     </div>
     <div [class.widget-event-item-instruction-active]="event?.isActive" class="widget-event-item-instruction">
       <!--                    Время начала плавки:{{ timeStartMeltStream$ | async }}-->
@@ -11,7 +11,7 @@
   </div>
   <div *ngIf="isInfo(event?.category)">
     <div [class.widget-event-item-info-warning-active]="event?.isActive" class="widget-event-item-info-warning">
-      {{ event?.dateStart | date: 'HH:mm:ss' }}
+      {{ event?.dateFinish | date: 'HH:mm:ss' }}
     </div>
     <div [class.widget-event-item-info-instruction-active]="event?.isActive" class="widget-event-item-info-instruction">
       <!--                    Время начала плавки:{{ timeStartMeltStream$ | async }}-->

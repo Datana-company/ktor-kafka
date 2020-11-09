@@ -77,6 +77,8 @@ fun Application.module(testing: Boolean = false) {
 //    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
     val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
     val metalRateWarningPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble() }
+    val timeReaction: Long by lazy { environment.config.property("ktor.conveyor.metalRatePoint.timeReaction").getString().trim().toLong() }
+    val timeLimitSiren: Long by lazy { environment.config.property("ktor.conveyor.metalRatePoint.timeLimitSiren").getString().trim().toLong() }
 
     // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
@@ -142,6 +144,7 @@ fun Application.module(testing: Boolean = false) {
                             frame = conveyorModelFrame,
                             meltInfo = conveyorModelMeltInfo
                         )
+                        println("topic = math, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleMath(context)
                     }
                     topicVideo -> {
@@ -152,6 +155,7 @@ fun Application.module(testing: Boolean = false) {
                             frame = conveyorModelFrame,
                             meltInfo = conveyorModelMeltInfo
                         )
+                        println("topic = video, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleFrame(context)
                     }
                     topicMeta -> {
@@ -160,6 +164,7 @@ fun Application.module(testing: Boolean = false) {
                         val context = ConverterBeContext(
                             meltInfo = conveyorModel
                         )
+                        println("topic = meta, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleMeltInfo(context)
                     }
                     topicAngles -> {
@@ -170,6 +175,7 @@ fun Application.module(testing: Boolean = false) {
                             angles = conveyorModelAngles,
                             meltInfo = conveyorModelMeltInfo
                         )
+                        println("topic = angles, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleAngles(context)
                     }
                 }

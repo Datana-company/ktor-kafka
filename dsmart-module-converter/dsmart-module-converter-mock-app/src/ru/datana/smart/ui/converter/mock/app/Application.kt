@@ -1,5 +1,6 @@
 package ru.datana.smart.ui.converter.mock.app
 
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.application.*
@@ -28,7 +29,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
     val logger = datanaLogger(::main::class.java)
-    val objectMapper = jacksonObjectMapper()
+    val objectMapper = jacksonObjectMapper().configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true)
     val pathToCatalog: String by lazy {
         environment.config.property("ktor.catalog.path").getString().trim()
     }

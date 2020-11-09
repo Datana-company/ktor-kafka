@@ -17,6 +17,8 @@ class FrameChain(
     var wsManager: IWsManager,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
+    var timeReaction: Long,
+    var timeLimitSiren: Long,
     var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
     var converterId: String,
     var framesBasePath: String
@@ -33,6 +35,8 @@ class FrameChain(
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
+                it.timeReaction = timeReaction
+                it.timeLimitSiren = timeLimitSiren
                 it.currentMeltInfo = currentMeltInfo
                 it.converterId = converterId
                 it.framesBasePath = framesBasePath
@@ -46,6 +50,7 @@ class FrameChain(
 
             +DevicesFilterHandler
             +MeltFilterHandler
+//            +FrameTimeFilterHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }

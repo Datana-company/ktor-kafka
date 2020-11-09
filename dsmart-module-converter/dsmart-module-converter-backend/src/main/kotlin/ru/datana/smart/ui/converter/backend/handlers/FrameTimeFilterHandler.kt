@@ -4,12 +4,19 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import kotlin.math.max
 
-object CurrentMeltInfoHandler: IKonveyorHandler<ConverterBeContext> {
+object FrameTimeFilterHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        context.currentMeltInfo.set(context.meltInfo)
-        println("added topic = meta, meltId = ${context.meltInfo.id}")
-        println("added topic = meta, currentMeltId = ${context.currentMeltInfo.get()?.id}")
+        val frameTime = context.frame.frameTime ?: 0L
+        val newFrameTime = context.lastTimeFrame.updateAndGet {
+            max(frameTime, it)
+        }
+
+        if (newFrameTime != frameTime) {
+            context.status = CorStatus.FINISHED
+        }
+
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

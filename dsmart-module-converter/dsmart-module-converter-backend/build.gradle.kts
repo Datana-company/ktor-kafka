@@ -1,4 +1,5 @@
 val konveyorVersion: String by project
+val dsmartLoggingVersion: String by project
 
 plugins {
     kotlin("jvm")

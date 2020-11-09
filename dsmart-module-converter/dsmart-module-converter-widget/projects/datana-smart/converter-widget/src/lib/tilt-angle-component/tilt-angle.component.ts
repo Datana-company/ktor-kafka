@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {ConverterAnglesModel} from '../models/converter-angles-model'
+import {ConverterAnglesModel} from '../models/converter-angles.model'
 
 
 @Component({
