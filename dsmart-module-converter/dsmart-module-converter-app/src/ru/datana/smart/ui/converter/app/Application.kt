@@ -21,17 +21,14 @@ import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
+//import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.backend.ConverterFacade
-import ru.datana.smart.ui.converter.common.models.ModelFrame
 import java.time.Duration
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
-import ru.datana.smart.ui.converter.common.models.ModelSlagRate
 import ru.datana.smart.ui.converter.repository.inmemory.UserEventRepositoryInMemory
-import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -75,23 +72,23 @@ fun Application.module(testing: Boolean = false) {
     val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
     val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
     val framesBasePath by lazy { environment.config.property("paths.base.frames").getString().trim() }
-    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
-    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
-    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
-    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
+//    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
+//    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
+//    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
+//    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
     val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
     val metalRateWarningPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble() }
     val timeReaction: Long by lazy { environment.config.property("ktor.conveyor.metalRatePoint.timeReaction").getString().trim().toLong() }
     val timeLimitSiren: Long by lazy { environment.config.property("ktor.conveyor.metalRatePoint.timeLimitSiren").getString().trim().toLong() }
 
     // TODO: в будущем найти место, куда пристроить генератор
-    val metalRateEventGenerator = MetalRateEventGenerator(
-        timeout = metalRateEventGenTimeout,
-        maxValue = metalRateEventGenMax,
-        minValue = metalRateEventGenMin,
-        changeValue = metalRateEventGenChange
-    )
-    metalRateEventGenerator.start()
+//    val metalRateEventGenerator = MetalRateEventGenerator(
+//        timeout = metalRateEventGenTimeout,
+//        maxValue = metalRateEventGenMax,
+//        minValue = metalRateEventGenMin,
+//        changeValue = metalRateEventGenChange
+//    )
+//    metalRateEventGenerator.start()
 
     val userEventsRepository = UserEventRepositoryInMemory()
 
@@ -156,17 +153,11 @@ fun Application.module(testing: Boolean = false) {
                         val kafkaModel = toConverterTransportViMl(record)
                         val conveyorModelFrame = toModelFrame(kafkaModel)
                         val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
-                        val generateSleelRate = metalRateEventGenerator.generateValue
                         val context = ConverterBeContext(
                             frame = conveyorModelFrame,
                             meltInfo = conveyorModelMeltInfo,
-                            slagRate = ModelSlagRate(
-                                slagRate = 1 - generateSleelRate,
-                                steelRate = generateSleelRate
-                            )
                         )
                         println("topic = video, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
-                        converterFacade.handleMath(context)
                         converterFacade.handleFrame(context)
                     }
                     topicMeta -> {
