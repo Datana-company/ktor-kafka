@@ -81,6 +81,10 @@ class EventsChain(
                 +UpdateAngleWarningEventHandler
                 +UpdateAngleInfoEventHandler
             }
+            konveyor {
+                on { extEvents.alertRuleId != null }
+                +CreateExtEventHandler
+            }
             handler {
                 onEnv { status == CorStatus.STARTED && currentMeltInfo.get()?.let { it.id != null } ?: false }
                 exec {

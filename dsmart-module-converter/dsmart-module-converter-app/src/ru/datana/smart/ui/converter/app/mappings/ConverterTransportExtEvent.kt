@@ -2,6 +2,7 @@ package ru.datana.smart.ui.converter.app.mappings
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
+// TODO Генерировать в отдельном модуле (dsmart-module-converter-models-extevent) с помощью openApiGenerate
 /**
  * Транспортная модель для передачи событий из внешних источников
  */
@@ -17,7 +18,7 @@ data class ConverterTransportExtEvent (
     val component: kotlin.String? = null,
 
     @JsonProperty("@timestamp")
-    val timestamp: kotlin.Long? = null,
+    val timestamp: kotlin.String? = null,
 
     @JsonProperty("logger_name")
     val loggerName: kotlin.String? = null,

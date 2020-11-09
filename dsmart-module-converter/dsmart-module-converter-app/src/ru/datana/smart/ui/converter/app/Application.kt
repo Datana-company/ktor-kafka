@@ -131,7 +131,6 @@ fun Application.module(testing: Boolean = false) {
         }
 
         kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles, topicEvents)) {
-            println("connectedToKafka")
             try {
                 val innerModel = records.map { it.toInnerModel() }
                 val record = innerModel.firstOrNull()

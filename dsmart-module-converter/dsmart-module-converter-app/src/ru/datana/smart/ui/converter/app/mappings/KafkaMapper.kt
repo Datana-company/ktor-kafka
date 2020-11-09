@@ -18,7 +18,12 @@ fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     value = value()
 )
 
-val jacksonSerializer: ObjectMapper = ObjectMapper().configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
+val jacksonSerializer: ObjectMapper = ObjectMapper()
+    .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
+    // Если в десериализуемом JSON-е встретится поле, которого нет в классе,
+    // то не будет выброшено исключение UnrecognizedPropertyException,
+    // т.е. мы отменяем проверку строгого соответствия JSON и класса
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
 fun toConverterMeltInfo(record: InnerRecord<String, String>): ConverterMeltInfo {
     try {

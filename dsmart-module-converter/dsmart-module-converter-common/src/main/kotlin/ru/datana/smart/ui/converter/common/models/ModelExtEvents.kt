@@ -4,7 +4,7 @@ class ModelExtEvents(
     val alertRuleId: String? = null,
     val containerId: String? = null,
     val component: String? = null,
-    val timestamp: Long? = null,
+    val timestamp: String? = null,
     val loggerName: String? = null,
     val message: String? = null
 ) {
