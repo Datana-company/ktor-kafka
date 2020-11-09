@@ -26,7 +26,7 @@ export class BarChartComponent {
   showYAxisLabel = false;
   xAxisLabel = '';
   showDataLabel = true;
-  barPadding='0px';
+  barPadding='1';
   barChartData: any;
 
   colorScheme = {

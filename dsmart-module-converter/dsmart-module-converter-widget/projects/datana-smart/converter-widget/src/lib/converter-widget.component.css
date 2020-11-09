@@ -69,16 +69,9 @@
     /*background: url(Vector Smart Object.png);*/
 }
 .logo_mmk {
-    position: relative;
-    /* right: 1%; */
-    left: 38%;
-    top: 85%;
-    /*position: ;*/
-    /*width: 295px;*/
-    /*height: 30px;*/
-    /*left: 10%;*/
-    /*top: 17px;*/
-    /*background: url(Vector Smart Object.png);*/
+    top: calc(0.5rem + 6 * (7.2rem + 1px));
+    left: 40%;
+    position: absolute;
 }
 .exit{
     position: absolute;
@@ -141,9 +134,9 @@
 /*}*/
 
 .widget-bar-chart {
-    height: 35%;
+    height: 27%;
     margin-top: 1rem;
-    margin-bottom: 2.5rem;
+    margin-bottom: 3.0rem;
     /*margin-left:4.9%;*/
     background: #ffffff;
 }
