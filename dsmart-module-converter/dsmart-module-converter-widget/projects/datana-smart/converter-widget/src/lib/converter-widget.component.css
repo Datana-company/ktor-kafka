@@ -68,7 +68,18 @@
     top: 17px;
     /*background: url(Vector Smart Object.png);*/
 }
-
+.logo_mmk {
+    position: relative;
+    /* right: 1%; */
+    left: 38%;
+    top: 85%;
+    /*position: ;*/
+    /*width: 295px;*/
+    /*height: 30px;*/
+    /*left: 10%;*/
+    /*top: 17px;*/
+    /*background: url(Vector Smart Object.png);*/
+}
 .exit{
     position: absolute;
     top: 17px;
