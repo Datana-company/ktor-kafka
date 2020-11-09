@@ -4,7 +4,8 @@ import {EventModel} from "./event.model";
 export class ConverterInitModel {
   constructor(
     public meltInfo: ConverterMeltInfoModel,
-    public events: Array<EventModel>
+    public events: Array<EventModel>,
+    public warningPoint: number
   ) {
   }
 }

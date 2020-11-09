@@ -187,7 +187,6 @@ fun toModelFrame(converterTransportMlUi: ConverterTransportMlUi) =
 
 fun toModelSlagRate(converterTransportMlUi: ConverterTransportMlUi) =
     ModelSlagRate(
-        slagRateTime = converterTransportMlUi.frameTime,
         steelRate = converterTransportMlUi.steelRate,
         slagRate = converterTransportMlUi.slagRate
     )
