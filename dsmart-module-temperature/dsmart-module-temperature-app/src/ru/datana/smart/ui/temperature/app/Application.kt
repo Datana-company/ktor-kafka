@@ -1,5 +1,6 @@
 package ru.datana.smart.ui.temperature.app
 
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.application.*
 import io.ktor.features.*
@@ -87,7 +88,7 @@ fun Application.module(testing: Boolean = false) {
             )
             ForwardServiceKafkaUi(
                 logger = logger,
-                jacksonSerializer = ObjectMapper(),
+                jacksonSerializer = ObjectMapper().configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true),
                 kotlinxSerializer = Json { encodeDefaults = true },
                 wsManager = wsManager,
                 topicRaw = topicRaw,
