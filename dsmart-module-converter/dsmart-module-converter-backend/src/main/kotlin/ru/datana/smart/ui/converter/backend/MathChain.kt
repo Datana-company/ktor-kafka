@@ -50,7 +50,7 @@ class MathChain(
 
             +DevicesFilterHandler
             +MeltFilterHandler
-//            +SlagRateTimeFilterHandler
+            +SlagRateTimeFilterHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }
