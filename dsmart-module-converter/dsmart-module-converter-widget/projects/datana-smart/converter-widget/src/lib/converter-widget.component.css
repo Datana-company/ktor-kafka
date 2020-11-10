@@ -1,21 +1,20 @@
 .topLinePath77 {
-    position: absolute;
+    /*position: absolute;*/
     width: 100%;
     height: 8px;
-    left: 0px;
     top: 0px;
 
     background: linear-gradient(90deg, #CCDBEB 16.55%, #22588F 82.04%);
 }
 
-.rectangleTop {
-    /*position: absolute;*/
-    width: max-content;
-    height: 54px;
-    left: 0px;
-    top: 0px;
-    background: #22588F;
-}
+/*.rectangleTop {*/
+/*    !*position: absolute;*!*/
+/*    width: max-content;*/
+/*    height: 54px;*/
+/*    left: 0px;*/
+/*    top: 0px;*/
+/*    background: #22588F;*/
+/*}*/
 
 .lineTop {
     position: absolute;
@@ -69,7 +68,11 @@
     top: 17px;
     /*background: url(Vector Smart Object.png);*/
 }
-
+.logo_mmk {
+    top: calc(0.5rem + 6 * (7.2rem + 1px));
+    left: 40%;
+    position: absolute;
+}
 .exit{
     position: absolute;
     top: 17px;
@@ -131,9 +134,9 @@
 /*}*/
 
 .widget-bar-chart {
-    height: 35%;
+    height: 29%;
     margin-top: 1rem;
-    margin-bottom: 2.5rem;
+    margin-bottom: 3.0rem;
     /*margin-left:4.9%;*/
     background: #ffffff;
 }

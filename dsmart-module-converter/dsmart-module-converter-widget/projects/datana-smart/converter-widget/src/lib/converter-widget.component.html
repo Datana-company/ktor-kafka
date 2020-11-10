@@ -1,5 +1,5 @@
-<div>
-  <div class="content">
+<div class="container-fluid">
+  <header>
     <div class="topLinePath77"></div>
     <div class="widget-header">
       <div class="row">
@@ -21,7 +21,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </header>
 
   <div class="widget-container-main-top">
     <div class="titlesTop1">
@@ -29,8 +29,8 @@
         <div class="col-1" style="text-align: left">
           Плавка:{{converterMeltInfoData?.meltNumber}}
         </div>
-        <div class="col-7">
-          <!--          Плавка:{{converterMeltInfoData?.meltNumber}}-->
+        <div class="col-1"></div>
+        <div class="col-6">
           Марка: {{converterMeltInfoData?.steelGrade}}
         </div>
         <div class="col-4" style="text-align: right; padding-right: 6.5%">
@@ -56,7 +56,6 @@
               [playlist]="playlist"
               [imageCamera]="converterFrameCameraData?.image"
               [imageMath]="converterFrameMathData?.image">
-            >
             </video-player-component>
           </div>
           <div class="col-4">
@@ -74,42 +73,27 @@
       <div class="col-5">
         <div class="row">
           <div class="widget-events">
-            <event-recommendation-component
-              [events]="converterEvents">
-            </event-recommendation-component>
+            <div class="container">
+              <div class="panel panel-default">
+                <event-recommendation-component
+                  [events]="converterEvents">
+                </event-recommendation-component>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="logo_mmk">
+            <img src="/assets/image/mmk.png">
           </div>
         </div>
       </div>
-
     </div>
-    <!--    </div>-->
   </div>
-  <!--      <div class="widget-info widget-col-65">-->
-  <!--        <div class="widget-info-container widget-container">-->
-  <!--          <video-player-component class="widget-col-65 "-->
-  <!--                                  [playlist]="playlist">-->
-  <!--          </video-player-component>-->
-  <!--          <tilt-angle-component class="widget-boiling widget-col" style="padding-right:1rem"-->
-  <!--                                [angleData]="converterAnglesData">-->
-  <!--          </tilt-angle-component>-->
-  <!--        </div>-->
-  <!--        <div class="widget-bar-chart widget-info-container widget-info widget-container">-->
-  <!--          <bar-chart-component-->
-  <!--            [slagRateModel]="converterSlagRateData">-->
-  <!--          </bar-chart-component>-->
-  <!--        </div>-->
-  <!--      </div>-->
-
-  <!--      <div class="widget-events widget-col">-->
-  <!--        <event-recommendation-component [events]="converterEvents"></event-recommendation-component>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--  </div>-->
-  <!--</div>-->
 </div>
 
-<ng-template #noData>
-  <div class="temperature">
-    No Data
-  </div>
-</ng-template>
+<!--<ng-template #noData>-->
+<!--  <div class="temperature">-->
+<!--    No Data-->
+<!--  </div>-->
+<!--</ng-template>-->
