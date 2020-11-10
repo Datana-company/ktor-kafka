@@ -1,20 +1,21 @@
 package ru.datana.smart.ui.converter.common.models
 
 data class ModelMeltInfo(
-    val id: String? = null,
-    val timeStart: Long? = null,
-    val meltNumber: String? = null,
-    val steelGrade: String? = null,
-    val crewNumber: String? = null,
-    val shiftNumber: String? = null,
-    val mode: Mode? = null,
-    val devices: ModelMeltDevices? = null
+    val id: String = "",
+    val timeStart: Long = Long.MIN_VALUE,
+    val meltNumber: String = "",
+    val steelGrade: String = "",
+    val crewNumber: String = "",
+    val shiftNumber: String = "",
+    val mode: Mode = Mode.NONE,
+    val devices: ModelMeltDevices = ModelMeltDevices.NONE
 ) {
 
     enum class Mode(val value: String) {
         PROD("prod"),
         EMULATION("emulation"),
-        TEST("test");
+        TEST("test"),
+        NONE("none")
     }
 
     companion object {

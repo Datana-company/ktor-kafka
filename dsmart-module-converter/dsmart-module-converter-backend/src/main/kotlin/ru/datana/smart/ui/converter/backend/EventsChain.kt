@@ -47,28 +47,29 @@ class EventsChain(
         val konveyor = konveyor<ConverterBeContext> {
 
             konveyor {
-                on { slagRate.steelRate?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
+                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
                 +UpdateEndEventHandler
                 +CreateCriticalEventHandler
             }
             konveyor {
-                on { slagRate.steelRate?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
+                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateInfoEventHandler
                 +UpdateEndEventHandler
                 +CreateWarningEventHandler
             }
             konveyor {
-                on { slagRate.steelRate?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
+                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
                 +UpdateEndEventHandler
                 +CreateInfoEventHandler
             }
             konveyor {
-                on { slagRate.steelRate?.let { toPercent(it) == 0 } ?: false && slagRate.slagRate?.let { toPercent(it) == 0 } ?: false }
+                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == 0 } ?: false
+                    && slagRate.slagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == 0 } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
@@ -76,15 +77,15 @@ class EventsChain(
                 +CreateEndEventHandler
             }
             konveyor {
-                on { angles.angle != null }
+                on { angles.angle.takeIf { it != Double.MIN_VALUE } != null }
                 +UpdateAngleCriticalEventHandler
                 +UpdateAngleWarningEventHandler
                 +UpdateAngleInfoEventHandler
             }
             handler {
-                onEnv { status == CorStatus.STARTED && currentMeltInfo.get()?.let { it.id != null } ?: false }
+                onEnv { status == CorStatus.STARTED && currentMeltInfo.get() != null }
                 exec {
-                    val meltId: String = currentMeltInfo.get()!!.id!!
+                    val meltId: String = currentMeltInfo.get()!!.id
                     events = ModelEvents(events = eventsRepository.getAllByMeltId(meltId))
                 }
             }

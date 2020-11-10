@@ -1,7 +1,7 @@
 import {Component, Input, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {SlagRateModel} from "../models/slag-rate.model";
+import {SlagRateChartModel} from "../models/slag-rate-chart.model";
 
 @Component({
     selector: 'bar-chart-component',
@@ -33,7 +33,7 @@ export class BarChartComponent {
     domain: ['#4E80B2', '#BDE9E3', '#C23557']
   };
 
-  @Input() set slagRateModel(dat: SlagRateModel) {
+  @Input() set slagRateChartModel(dat: SlagRateChartModel) {
     this.barChartData = [
       {
         'name': 'Шлак',
