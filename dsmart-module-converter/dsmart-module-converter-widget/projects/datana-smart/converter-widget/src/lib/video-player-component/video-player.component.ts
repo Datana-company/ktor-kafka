@@ -27,10 +27,8 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
   channel: string = 'camera';
 
   _safeResourceUrl: SafeResourceUrl
-  // _defaultImage = 'iVBORw0KGgoAAAANSUhEUgAAAcIAAAEsCAQAAAD6X3s8AAACeElEQVR42u3TsQ0AAAjDMPr/0fQGJhb7hEhJdoBHMSGYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCCY0IZgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwIJhQBTAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgRMCCYETAgmBEwIJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEE4IJTQgmBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAiYEEwImBBMCJgQTAjcF32EtPOcUf28AAAAASUVORK5CYII=';
 
   get safeResourceUrl(): SafeResourceUrl {
-    console.log('------- getting safeResourceUrl')
     return this._sanitizer.bypassSecurityTrustResourceUrl(
       'data:image/jpeg;base64, ' + this.getEncodedFrame()
     );
@@ -43,24 +41,33 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.player = videojs(this.target.nativeElement, { autoplay: false, controls: true, preload: 'auto', liveui: true, html5: { vhs: { overrideNative: true }, nativeAudioTracks: false, nativeVideoTracks: false}, sources: [{ src: this.playlist, type: 'application/x-mpegURL', }]}, function onPlayerReady() {
-    //   console.log('onPlayerReady', this);
-    // });
+    this.player = videojs(this.target.nativeElement, { autoplay: false, controls: true, preload: 'auto', liveui: true, html5: { vhs: { overrideNative: true }, nativeAudioTracks: false, nativeVideoTracks: false}, sources: [{ src: this.playlist, type: 'application/x-mpegURL', }]}, function onPlayerReady() {
+      console.log('onPlayerReady', this);
+    });
   }
 
   ngOnDestroy() {
-    // if (this.player) {
-    //   this.player.dispose();
-    // }
+    if (this.player) {
+      this.player.dispose();
+    }
   }
 
   setSource = (evt) => {
-    console.log('------- changing source')
     this.channel = evt.target.value;
+
+    const player = document.querySelector('.video-js');
+    const imageContainer = document.querySelector('.image-container');
+
+    if (this.channel === 'video') {
+      player.classList.remove('hidden')
+      imageContainer.classList.add('hidden')
+    } else {
+      player.classList.add('hidden')
+      imageContainer.classList.remove('hidden')
+    }
   }
 
   getEncodedFrame = () => {
-    console.log('------- getting encodedFrame')
     switch (this.channel) {
       case 'camera':
         return this.imageCamera;

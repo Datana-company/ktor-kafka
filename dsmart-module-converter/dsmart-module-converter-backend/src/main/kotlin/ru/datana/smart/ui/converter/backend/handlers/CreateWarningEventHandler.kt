@@ -11,7 +11,7 @@ import java.util.*
 object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.currentMeltInfo.get()?.id ?: return
-        val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
+        val frameTime = context.slagRate.slagRateTime ?: Instant.now().toEpochMilli()
         val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
         activeEvent?.let {
             val updateEvent = MetalRateWarningEvent(
