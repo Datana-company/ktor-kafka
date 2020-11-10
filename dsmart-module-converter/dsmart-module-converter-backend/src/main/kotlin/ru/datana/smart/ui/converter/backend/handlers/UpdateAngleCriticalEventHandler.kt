@@ -11,7 +11,7 @@ object UpdateAngleCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.currentMeltInfo.get()?.id ?: return
         val activeEvent = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
-        val currentAngle = context.angles.angle!!
+        val currentAngle = context.angles.angle
         activeEvent?.let {
             val angleStart = it.angleStart ?: currentAngle
             val angleMax = if (it.angleMax?.let { it.compareTo(currentAngle) > 0 } == true) it.angleMax else currentAngle

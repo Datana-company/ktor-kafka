@@ -12,8 +12,8 @@ import java.util.*
 
 object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val meltId: String = context.meltInfo.id!!
-        val slagRateTime = context.frame.frameTime!!
+        val meltId: String = context.meltInfo.id
+        val slagRateTime = context.frame.frameTime
         context.eventsRepository.getAllByMeltId(meltId).map {
             if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent || it is EndMeltEvent) {
                 return

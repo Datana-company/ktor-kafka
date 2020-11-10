@@ -10,7 +10,7 @@ import java.util.*
 object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.currentMeltInfo.get()?.id ?: return
-        val slagRateTime = context.frame.frameTime!!
+        val slagRateTime = context.frame.frameTime
         val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
         activeEvent?.let {
             val updateEvent = MetalRateInfoEvent(
@@ -31,7 +31,7 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 id = UUID.randomUUID().toString(),
                 timeStart = slagRateTime,
                 timeFinish = slagRateTime,
-                metalRate = context.slagRate.steelRate!!
+                metalRate = context.slagRate.steelRate
             )
         )
     }
