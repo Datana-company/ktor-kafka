@@ -1,9 +1,8 @@
 package ru.datana.smart.ui.converter.common.models
 
 data class ModelSlagRate(
-    val slagRateTime: Long? = null,
-    val steelRate: Double? = null,
-    val slagRate: Double? = null
+    val steelRate: Double = Double.MIN_VALUE,
+    val slagRate: Double = Double.MIN_VALUE
 ) {
 
     companion object {

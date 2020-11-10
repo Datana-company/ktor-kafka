@@ -8,12 +8,12 @@ import ru.datana.smart.ui.converter.common.events.EndMeltEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 import ru.datana.smart.ui.converter.common.events.SuccessMeltEvent
-import java.time.Instant
 import java.util.*
 
 object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val meltId: String = context.meltInfo.id!!
+        val meltId: String = context.meltInfo.id
+        val slagRateTime = context.frame.frameTime
         context.eventsRepository.getAllByMeltId(meltId).map {
             if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent || it is EndMeltEvent) {
                 return
@@ -23,8 +23,8 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
             meltId,
             SuccessMeltEvent(
                 id = UUID.randomUUID().toString(),
-                timeStart = context.frame.frameTime ?: Instant.now().toEpochMilli(),
-                timeFinish = context.frame.frameTime ?: Instant.now().toEpochMilli(),
+                timeStart = slagRateTime,
+                timeFinish = slagRateTime,
                 warningPoint = context.metalRateWarningPoint,
                 isActive = false
             )

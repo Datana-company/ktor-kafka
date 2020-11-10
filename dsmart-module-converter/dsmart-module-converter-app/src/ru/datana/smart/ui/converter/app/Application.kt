@@ -21,6 +21,7 @@ import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
+//import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.websocket.WsManager
@@ -95,7 +96,8 @@ fun Application.module(testing: Boolean = false) {
 
     val websocketContext = ConverterBeContext(
         currentMeltInfo = currentMeltInfo,
-        eventsRepository = userEventsRepository
+        eventsRepository = userEventsRepository,
+        metalRateWarningPoint = metalRateWarningPoint
     )
 
     val converterFacade = ConverterFacade(
@@ -153,7 +155,7 @@ fun Application.module(testing: Boolean = false) {
                         val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
                         val context = ConverterBeContext(
                             frame = conveyorModelFrame,
-                            meltInfo = conveyorModelMeltInfo
+                            meltInfo = conveyorModelMeltInfo,
                         )
                         println("topic = video, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleFrame(context)

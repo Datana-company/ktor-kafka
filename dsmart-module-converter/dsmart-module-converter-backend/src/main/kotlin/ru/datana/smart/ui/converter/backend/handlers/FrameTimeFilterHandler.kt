@@ -8,7 +8,7 @@ import kotlin.math.max
 
 object FrameTimeFilterHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val frameTime = context.frame.frameTime ?: 0L
+        val frameTime = context.frame.frameTime
         val newFrameTime = context.lastTimeFrame.updateAndGet {
             max(frameTime, it)
         }

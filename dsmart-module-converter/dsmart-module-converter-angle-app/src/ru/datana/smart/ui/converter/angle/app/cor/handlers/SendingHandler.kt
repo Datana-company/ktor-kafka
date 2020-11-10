@@ -39,6 +39,7 @@ object SendingHandler : IKonveyorHandler<ConverterAngleContext<String, String>> 
                 val json = context.jacksonSerializer.writeValueAsString(converterTransportAngle)
                 val record = ProducerRecord(context.topicAngles, key, json)
 
+                val metaInfoId = context.metaInfo;
                 Timer().schedule(Date(startTimeLong)) {
                     context.kafkaProducer.send(record)
                     logger.trace(
@@ -47,6 +48,12 @@ object SendingHandler : IKonveyorHandler<ConverterAngleContext<String, String>> 
                             context.topicAngles,
                             record
                         )
+                    )
+
+                    // для логгирования углов наклона. NKR-928: Добавить логи по изменении угла чаши при сливе шлака
+                    logger.biz(
+                        "[Угол наклона] Отправка информации в кафку для metaInfoId = $metaInfoId, key = $key",
+                        converterTransportAngle
                     )
                 }
             }
