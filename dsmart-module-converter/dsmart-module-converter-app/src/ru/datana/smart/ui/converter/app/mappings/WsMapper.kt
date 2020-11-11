@@ -14,6 +14,7 @@ fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
 
 fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
     WsDsmartConverterAngles(
+        angleTime = modelAngles.angleTime.takeIf { it != Long.MIN_VALUE },
         angle = modelAngles.angle.takeIf { it != Double.MIN_VALUE },
         source = modelAngles.source.takeIf { it != Double.MIN_VALUE }
     )
@@ -29,7 +30,7 @@ fun toWsConverterFrameDataModel(modelFrame: ModelFrame) =
 
 fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =
     WsDsmartConverterMeltInfo(
-        id = modelMeltInfo.id,
+        id = modelMeltInfo.id.takeIf { it.isNotBlank() },
         timeStart = modelMeltInfo.timeStart.takeIf { it != Long.MIN_VALUE },
         meltNumber = modelMeltInfo.meltNumber.takeIf { it.isNotBlank() },
         steelGrade = modelMeltInfo.steelGrade.takeIf { it.isNotBlank() },
@@ -88,7 +89,7 @@ fun toWsEventListModel(modelEvents: ModelEvents) = WsDsmartEventList(
 
 fun toWsConverterInitModel(context: ConverterBeContext) =
     WsDsmartConverterInit(
-        meltInfo = context.currentMeltInfo.get()?.let { toWsConverterMeltInfoModel(it) },
+        meltInfo = context.currentState.get()?.currentMeltInfo?.let { toWsConverterMeltInfoModel(it) },
         events = toWsEventListModel(context.events),
         warningPoint = context.metalRateWarningPoint
     )
