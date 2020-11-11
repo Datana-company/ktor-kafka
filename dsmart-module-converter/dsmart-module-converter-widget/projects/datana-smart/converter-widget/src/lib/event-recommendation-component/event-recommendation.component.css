@@ -1,6 +1,6 @@
 .widget-event-item {
-    /*width: calc(100% - 0.5rem);*/
-    height: calc(7rem + 8px);
+    width: calc(100% - 1.5rem);
+    /*height: calc(7rem + 8px);*/
     padding-bottom: 40px;
 }
 
@@ -22,7 +22,7 @@
 }
 
 .widget-event-item-instruction {
-    height: 5.5rem;
+    /*height: 5.5rem;*/
     padding: 0.25rem;
     border: 2px solid #E6A5B8;
     border-radius: 0 4px 4px 4px;
@@ -38,7 +38,7 @@
 .widget-event-item-info-warning {
     width: fit-content;
     padding: 0.25rem;
-    height: 1.5rem;
+    height: 2rem;
     background-color: #C1D0E0;
     border: 2px solid #C1D0E0;
     border-radius: 4px 4px 0 0;
@@ -54,7 +54,7 @@
 }
 
 .widget-event-item-info-instruction {
-    height: 5.5rem;
+    /*height: 5.5rem;*/
     padding: 0.25rem;
     border: 2px solid #C1D0E0;
     border-radius: 0 4px 4px 4px;
