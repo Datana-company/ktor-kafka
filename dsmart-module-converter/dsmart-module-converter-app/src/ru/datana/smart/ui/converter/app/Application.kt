@@ -149,7 +149,7 @@ fun Application.module(testing: Boolean = false) {
         kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles)) {
             try {
                 records.sortedByDescending { it.offset() }
-                    // на самом деле уже они отсортированы сначала по топику, затем по offset по убыванию
+//                на самом деле уже они отсортированы сначала по топику, затем по offset по убыванию
                     .distinctBy { it.topic() }
                     .map { it.toInnerModel() }
                     .forEach { record ->
