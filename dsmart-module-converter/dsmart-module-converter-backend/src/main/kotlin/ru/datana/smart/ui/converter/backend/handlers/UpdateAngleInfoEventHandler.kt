@@ -5,11 +5,10 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
-import java.time.Instant
 
 object UpdateAngleInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val meltId: String = context.currentMeltInfo.get()?.id ?: return
+        val meltId: String = context.currentState.get()?.currentMeltInfo?.id ?: return
         val activeEvent = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
         val currentAngle = context.angles.angle
         activeEvent?.let {

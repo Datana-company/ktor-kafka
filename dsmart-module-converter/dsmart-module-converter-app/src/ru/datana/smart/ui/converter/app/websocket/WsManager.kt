@@ -16,8 +16,8 @@ class WsManager : IWsManager {
 
     suspend fun addSession(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
-        context.currentMeltInfo.get()?.let {
-            val events = it.id?.let { id -> context.eventsRepository.getAllByMeltId(id) }
+        context.currentState.get()?.currentMeltInfo?.let {
+            val events = context.eventsRepository.getAllByMeltId(it.id)
             context.also {
                     context -> context.events = ModelEvents(events = events)
             }

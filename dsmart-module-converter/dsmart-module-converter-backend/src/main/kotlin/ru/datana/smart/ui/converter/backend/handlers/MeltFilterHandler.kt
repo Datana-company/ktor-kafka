@@ -7,7 +7,7 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 
 object MeltFilterHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        context.currentMeltInfo.get()?.let {
+        context.currentState.get()?.currentMeltInfo?.let {
             if (it.id != context.meltInfo.id) {
                 context.status = CorStatus.FINISHED
             }

@@ -13,11 +13,13 @@ import java.util.concurrent.atomic.AtomicReference
 class MeltInfoChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
+    var dataTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
     var timeReaction: Long,
     var timeLimitSiren: Long,
-    var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
+    var currentState: AtomicReference<CurrentState?>,
+    var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
     var converterId: String
 ) {
 
@@ -29,12 +31,14 @@ class MeltInfoChain(
         konveyor.exec(
             context.also {
                 it.eventsRepository = eventsRepository
+                it.dataTimeout = dataTimeout
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
                 it.timeReaction = timeReaction
                 it.timeLimitSiren = timeLimitSiren
-                it.currentMeltInfo = currentMeltInfo
+                it.currentState = currentState
+                it.scheduleCleaner = scheduleCleaner
                 it.converterId = converterId
             },
             env
