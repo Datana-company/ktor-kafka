@@ -154,6 +154,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       ) as Array<EventModel>)
     ).subscribe(data => {
       this.converterEvents = data;
+      console.log('this.converterEvents', this.converterEvents);
     });
   }
 
