@@ -112,8 +112,9 @@
 
 .widget-events {
     margin-left: 1%;
-    margin-right: 13%;
+    /*margin-right: 13%;*/
     height: 100%;
+    width: 88%;
 }
 
 .widget-boiling-label {
