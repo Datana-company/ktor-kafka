@@ -31,6 +31,20 @@ class WsManager : IWsManager {
 //        session.send()
     }
 
+    override suspend fun sendInit(context: ConverterBeContext) {
+        context.currentState.get()?.currentMeltInfo?.let {
+            val events = context.eventsRepository.getAllByMeltId(it.id)
+            context.also {
+                    context -> context.events = ModelEvents(events = events)
+            }
+        }
+        val wsConverterInit = WsDsmartResponseConverterInit(
+            data = toWsConverterInitModel(context)
+        )
+        val converterInitSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterInit.serializer(), wsConverterInit)
+        send(converterInitSerializedString)
+    }
+
     override suspend fun sendAngles(context: ConverterBeContext) {
         val wsAngles = WsDsmartResponseConverterAngles(
             data = toWsConverterAnglesModel(context.angles)

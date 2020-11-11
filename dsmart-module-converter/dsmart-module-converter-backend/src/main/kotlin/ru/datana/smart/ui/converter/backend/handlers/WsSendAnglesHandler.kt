@@ -7,10 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.CurrentState
-import ru.datana.smart.ui.converter.common.models.ModelAngles
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
-import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
+import ru.datana.smart.ui.converter.common.models.*
 
 object WsSendAnglesHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
@@ -26,13 +23,21 @@ object WsSendAnglesHandler: IKonveyorHandler<ConverterBeContext> {
             }
             jobAngles = GlobalScope.launch {
                 delay(context.dataTimeout)
-                context.wsManager.sendAngles(ConverterBeContext())
+                context.angles = ModelAngles.NONE
+                context.wsManager.sendAngles(context)
 
                 val curState = context.currentState.get() ?: CurrentState()
                 with(curState.lastSlagRate) {
                     if ((slagRate == Double.MIN_VALUE || slagRate == 0.0) &&
-                        (steelRate == Double.MIN_VALUE || steelRate == 0.0)) {
+                        (steelRate == Double.MIN_VALUE || steelRate == 0.0) &&
+                        context.meltInfo.id == curState.currentMeltInfo.id) {
                         curState.currentMeltInfo = ModelMeltInfo.NONE
+                        context.meltInfo = ModelMeltInfo.NONE
+                        context.wsManager.sendInit(context)
+                        context.frame = ModelFrame(channel = ModelFrame.Channels.CAMERA)
+                        context.wsManager.sendFrames(context)
+                        context.frame = ModelFrame(channel = ModelFrame.Channels.MATH)
+                        context.wsManager.sendFrames(context)
                         println("meltInfo cleared in jobAngles")
                     }
                 }
