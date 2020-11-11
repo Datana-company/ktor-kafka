@@ -1,9 +1,9 @@
 package ru.datana.smart.ui.converter.common.context
 
+import ru.datana.smart.ui.converter.common.models.EventModel
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.time.Instant
-import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 
@@ -13,7 +13,7 @@ class ConverterBeContext (
     var meltInfo: ModelMeltInfo = ModelMeltInfo.NONE,
     var frame: ModelFrame = ModelFrame.NONE,
     var slagRate: ModelSlagRate = ModelSlagRate.NONE,
-    var events: ModelEvents = ModelEvents.NONE,
+    var events: MutableList<EventModel> = mutableListOf(),
     // внутренняя модель (dsmart-module-converter-common.models)
     var extEvents: ModelExtEvents = ModelExtEvents.NONE,
     var lastTimeAngles: AtomicLong = AtomicLong(0),

@@ -4,7 +4,7 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.ExtEvent
+import ru.datana.smart.ui.converter.common.models.EventModel
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import java.time.Instant
 import java.util.*
@@ -17,11 +17,25 @@ object CreateExtEventHandler: IKonveyorHandler<ConverterBeContext> {
         println(" --- message: " + context.extEvents.message + " --- meltId: " + meltId)
         context.eventsRepository.put(
             meltId,
-            ExtEvent(
+            EventModel(
                 id = UUID.randomUUID().toString(),
                 timeStart = Instant.now().toEpochMilli(),
                 timeFinish = Instant.now().toEpochMilli() + 60000,
-                textMessage = context.extEvents.message ?: ""
+                textMessage = context.extEvents.message ?: "",
+                category = when (context.extEvents.level) {
+                    "INFO" -> {
+                        EventModel.Category.INFO
+                    }
+                    "WARNING" -> {
+                        EventModel.Category.WARNING
+                    }
+                    "CRITICAL" -> {
+                        EventModel.Category.CRITICAL
+                    }
+                    else -> {
+                        EventModel.Category.INFO
+                    }
+                }
             )
         )
     }

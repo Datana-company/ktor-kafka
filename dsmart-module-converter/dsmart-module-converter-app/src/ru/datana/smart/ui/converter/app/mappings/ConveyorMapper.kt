@@ -205,6 +205,7 @@ fun toModelExtEvents(converterTransportExtEvent: ConverterTransportExtEvent) =
         containerId = converterTransportExtEvent.containerId,
         component = converterTransportExtEvent.component,
         timestamp = converterTransportExtEvent.timestamp,
+        level = converterTransportExtEvent.level,
         loggerName = converterTransportExtEvent.loggerName,
         message = converterTransportExtEvent.message
     )

@@ -48,14 +48,6 @@ class ExtEventsChain(
 
             // Тут какие-то хэндлеры для обработки внешнего эвента (Какие, пока не понятно)
 
-//            handler {
-//                onEnv { status == CorStatus.STARTED }
-//                exec {
-//                    // Передаём данные в мэнеджер вэб сокетов для последующей отправки
-//                    wsManager.sendExtEvents(this)
-//                }
-//            }
-
             exec {
                 EventsChain(
                     eventsRepository = eventsRepository,

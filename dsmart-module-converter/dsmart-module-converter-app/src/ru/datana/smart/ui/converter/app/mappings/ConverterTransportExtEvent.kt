@@ -20,6 +20,9 @@ data class ConverterTransportExtEvent (
     @JsonProperty("@timestamp")
     val timestamp: kotlin.String? = null,
 
+    @JsonProperty("level")
+    val level: kotlin.String? = null,
+
     @JsonProperty("logger_name")
     val loggerName: kotlin.String? = null,
 
@@ -31,6 +34,7 @@ data class ConverterTransportExtEvent (
 //    "container-id": "worker1.datana.ru",
 //    "component": "adapter-socket",
 //    "@timestamp": "2020-11-06T00:36:31.055Z",
+//    "level": "INFO",
 //    "logger_name": "ru.datana.integrationadapter.socket.integration.processors.SendInTransportProcessorImpl",
 //    "message": "[Версия 6: Для Кафки] Температура в диапазоне 20..30 градусов ",
 //}

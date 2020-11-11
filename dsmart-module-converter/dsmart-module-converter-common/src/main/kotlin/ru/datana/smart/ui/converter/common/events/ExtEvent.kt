@@ -8,7 +8,7 @@ data class ExtEvent(
     override val timeFinish: Long = Instant.now().toEpochMilli(),
     override val title: String = "Информация",
     override val textMessage: String = "",
-    override val category: IBizEvent.Category = IBizEvent.Category.INFO, // TODO Где и как определать Категорию?
+    override val category: IBizEvent.Category = IBizEvent.Category.INFO,
     override val isActive: Boolean = true,
     override val executionStatus: IBizEvent.ExecutionStatus = IBizEvent.ExecutionStatus.NONE
 ): IBizEvent
