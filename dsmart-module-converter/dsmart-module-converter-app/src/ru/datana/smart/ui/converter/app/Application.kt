@@ -149,56 +149,57 @@ fun Application.module(testing: Boolean = false) {
         kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles)) {
             try {
                 records.sortedByDescending { it.offset() }
+                    // на самом деле уже они отсортированы сначала по топику, затем по offset по убыванию
                     .distinctBy { it.topic() }
                     .map { it.toInnerModel() }
                     .forEach { record ->
-                    when (record.topic) {
-                        topicMath -> {
-                            val kafkaModel = toConverterTransportMlUi(record)
-                            val conveyorModelSlagRate = toModelSlagRate(kafkaModel)
-                            val conveyorModelFrame = toModelFrame(kafkaModel)
-                            val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
-                            val context = ConverterBeContext(
-                                slagRate = conveyorModelSlagRate,
-                                frame = conveyorModelFrame,
-                                meltInfo = conveyorModelMeltInfo
-                            )
-                            println("topic = math, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
-                            converterFacade.handleMath(context)
-                        }
-                        topicVideo -> {
-                            val kafkaModel = toConverterTransportViMl(record)
-                            val conveyorModelFrame = toModelFrame(kafkaModel)
-                            val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
-                            val context = ConverterBeContext(
-                                frame = conveyorModelFrame,
-                                meltInfo = conveyorModelMeltInfo,
-                            )
-                            println("topic = video, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
-                            converterFacade.handleFrame(context)
-                        }
-                        topicMeta -> {
-                            val kafkaModel = toConverterMeltInfo(record)
-                            val conveyorModel = toModelMeltInfo(kafkaModel)
-                            val context = ConverterBeContext(
-                                meltInfo = conveyorModel
-                            )
-                            println("topic = meta, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
-                            converterFacade.handleMeltInfo(context)
-                        }
-                        topicAngles -> {
-                            val kafkaModel = toConverterTransportAngle(record)
-                            val conveyorModelAngles = toModelAngles(kafkaModel)
-                            val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
-                            val context = ConverterBeContext(
-                                angles = conveyorModelAngles,
-                                meltInfo = conveyorModelMeltInfo
-                            )
-                            println("topic = angles, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
-                            converterFacade.handleAngles(context)
+                        when (record.topic) {
+                            topicMath -> {
+                                val kafkaModel = toConverterTransportMlUi(record)
+                                val conveyorModelSlagRate = toModelSlagRate(kafkaModel)
+                                val conveyorModelFrame = toModelFrame(kafkaModel)
+                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
+                                val context = ConverterBeContext(
+                                    slagRate = conveyorModelSlagRate,
+                                    frame = conveyorModelFrame,
+                                    meltInfo = conveyorModelMeltInfo
+                                )
+                                println("topic = math, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
+                                converterFacade.handleMath(context)
+                            }
+                            topicVideo -> {
+                                val kafkaModel = toConverterTransportViMl(record)
+                                val conveyorModelFrame = toModelFrame(kafkaModel)
+                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
+                                val context = ConverterBeContext(
+                                    frame = conveyorModelFrame,
+                                    meltInfo = conveyorModelMeltInfo,
+                                )
+                                println("topic = video, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
+                                converterFacade.handleFrame(context)
+                            }
+                            topicMeta -> {
+                                val kafkaModel = toConverterMeltInfo(record)
+                                val conveyorModel = toModelMeltInfo(kafkaModel)
+                                val context = ConverterBeContext(
+                                    meltInfo = conveyorModel
+                                )
+                                println("topic = meta, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
+                                converterFacade.handleMeltInfo(context)
+                            }
+                            topicAngles -> {
+                                val kafkaModel = toConverterTransportAngle(record)
+                                val conveyorModelAngles = toModelAngles(kafkaModel)
+                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
+                                val context = ConverterBeContext(
+                                    angles = conveyorModelAngles,
+                                    meltInfo = conveyorModelMeltInfo
+                                )
+                                println("topic = angles, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
+                                converterFacade.handleAngles(context)
+                            }
                         }
                     }
-                }
             } catch (e: Throwable) {
                 val msg = e.message ?: ""
                 logger.error(msg)
