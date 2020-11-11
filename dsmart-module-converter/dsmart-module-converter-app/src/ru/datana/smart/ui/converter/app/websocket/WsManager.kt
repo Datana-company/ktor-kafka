@@ -14,21 +14,19 @@ class WsManager : IWsManager {
     val wsSessions: MutableCollection<DefaultWebSocketSession> = ConcurrentHashMap.newKeySet()
     val kotlinxSerializer: Json = Json { encodeDefaults = true }
 
-    // TODO: Переписать метод
     suspend fun addSession(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
-        context.currentMeltInfo.get()?.let {
-            val events = it.id?.let { id -> context.eventsRepository.getAllByMeltId(id) }
+        context.currentState.get()?.currentMeltInfo?.let {
+            val events = context.eventsRepository.getAllByMeltId(it.id)
             context.also {
                     context -> context.events = ModelEvents(events = events)
             }
-            val wsConverterInit = WsDsmartResponseConverterInit(
-                data = toWsConverterInitModel(context)
-            )
-            val converterInitSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterInit.serializer(), wsConverterInit)
-            session.send(converterInitSerializedString)
         }
-
+        val wsConverterInit = WsDsmartResponseConverterInit(
+            data = toWsConverterInitModel(context)
+        )
+        val converterInitSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterInit.serializer(), wsConverterInit)
+        session.send(converterInitSerializedString)
 //        val outObj = context.toWsInit()
 //        session.send()
     }
@@ -51,7 +49,7 @@ class WsManager : IWsManager {
 
     override suspend fun sendSlagRate(context: ConverterBeContext) {
         val wsSlagRate = WsDsmartResponseConverterSlagRate(
-            data = toWsConverterSlagRateModel(context)
+            data = toWsConverterSlagRateModel(context.slagRate)
         )
         val slagRateSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterSlagRate.serializer(), wsSlagRate)
         send(slagRateSerializedString)

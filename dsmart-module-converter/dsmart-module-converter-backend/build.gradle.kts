@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     implementation(project(":dsmart-module-converter:dsmart-module-converter-common"))
-
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
     implementation(kotlin("stdlib-jdk8"))
     implementation("codes.spectrum:konveyor:$konveyorVersion")
     testImplementation(kotlin("test"))

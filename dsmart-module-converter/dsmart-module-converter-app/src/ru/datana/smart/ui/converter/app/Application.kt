@@ -21,12 +21,14 @@ import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
+//import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.backend.ConverterFacade
+import ru.datana.smart.ui.converter.common.models.CurrentState
 import java.time.Duration
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
+import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 import ru.datana.smart.ui.converter.repository.inmemory.UserEventRepositoryInMemory
 import java.util.concurrent.atomic.AtomicReference
 
@@ -76,10 +78,11 @@ fun Application.module(testing: Boolean = false) {
 //    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
 //    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
 //    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
+    val dataTimeout: Long by lazy { environment.config.property("ktor.conveyor.dataTimeout").getString().trim().toLong() }
     val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
     val metalRateWarningPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble() }
-    val timeReaction: Long by lazy { environment.config.property("ktor.conveyor.metalRatePoint.timeReaction").getString().trim().toLong() }
-    val timeLimitSiren: Long by lazy { environment.config.property("ktor.conveyor.metalRatePoint.timeLimitSiren").getString().trim().toLong() }
+    val timeReaction: Long by lazy { environment.config.property("ktor.conveyor.timeReaction").getString().trim().toLong() }
+    val timeLimitSiren: Long by lazy { environment.config.property("ktor.conveyor.timeLimitSiren").getString().trim().toLong() }
 
     // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
@@ -92,21 +95,25 @@ fun Application.module(testing: Boolean = false) {
 
     val userEventsRepository = UserEventRepositoryInMemory()
 
-    val currentMeltInfo: AtomicReference<ModelMeltInfo?> = AtomicReference()
+    val currentState: AtomicReference<CurrentState?> = AtomicReference()
+    val scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference()
 
     val websocketContext = ConverterBeContext(
-        currentMeltInfo = currentMeltInfo,
-        eventsRepository = userEventsRepository
+        currentState = currentState,
+        eventsRepository = userEventsRepository,
+        metalRateWarningPoint = metalRateWarningPoint
     )
 
     val converterFacade = ConverterFacade(
         converterRepository = userEventsRepository,
         wsManager = wsManager,
+        dataTimeout = dataTimeout,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        currentMeltInfo = currentMeltInfo,
+        currentState = currentState,
         converterId = converterId,
         framesBasePath = framesBasePath,
+        scheduleCleaner = scheduleCleaner
     )
 
     routing {
@@ -145,7 +152,7 @@ fun Application.module(testing: Boolean = false) {
                             frame = conveyorModelFrame,
                             meltInfo = conveyorModelMeltInfo
                         )
-                        println("topic = math, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
+                        println("topic = math, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleMath(context)
                     }
                     topicVideo -> {
@@ -154,9 +161,9 @@ fun Application.module(testing: Boolean = false) {
                         val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
                         val context = ConverterBeContext(
                             frame = conveyorModelFrame,
-                            meltInfo = conveyorModelMeltInfo
+                            meltInfo = conveyorModelMeltInfo,
                         )
-                        println("topic = video, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
+                        println("topic = video, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleFrame(context)
                     }
                     topicMeta -> {
@@ -165,7 +172,7 @@ fun Application.module(testing: Boolean = false) {
                         val context = ConverterBeContext(
                             meltInfo = conveyorModel
                         )
-                        println("topic = meta, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
+                        println("topic = meta, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleMeltInfo(context)
                     }
                     topicAngles -> {
@@ -176,7 +183,7 @@ fun Application.module(testing: Boolean = false) {
                             angles = conveyorModelAngles,
                             meltInfo = conveyorModelMeltInfo
                         )
-                        println("topic = angles, currentMeltId = ${currentMeltInfo.get()?.id}, meltId = ${context.meltInfo.id}")
+                        println("topic = angles, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
                         converterFacade.handleAngles(context)
                     }
                     // 1) Получаем данные из Кафки

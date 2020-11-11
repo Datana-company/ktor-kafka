@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {Subject} from "rxjs";
+import {Subject, combineLatest} from "rxjs";
 import {filter, map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
 import {EventModel} from "./models/event.model";
@@ -12,6 +12,7 @@ import {EventCategoryModel} from "./models/event-category.model";
 import {ExecutionStatusModel} from "./models/event-execution-status.model";
 import {ConverterAnglesModel} from "./models/converter-angles.model";
 import {ConverterInitModel} from "./models/converter-init.model";
+import {SlagRateChartModel} from "./models/slag-rate-chart.model";
 
 @Component({
   selector: 'datana-converter-widget',
@@ -28,7 +29,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   public converterFrameMathData: ConverterFrameModel;
   public converterAnglesData: ConverterAnglesModel;
   public converterEvents: Array<EventModel> = new Array<EventModel>();
-
+  public converterSlagRateChart: SlagRateChartModel;
   playlist: string;
 
   constructor(
@@ -38,17 +39,20 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.playlist = 'http://camera.d.datana.ru/playlist.m3u8'
 
-    this.wsService.on('converter-init-update').pipe(
+    const rawInit = this.wsService.on('converter-init-update').pipe(
       takeUntil(this._unsubscribe),
       map((data: any) => {
         return new ConverterInitModel(
           data?.meltInfo as ConverterMeltInfoModel,
-          data?.events as Array<EventModel>
+          data?.events as Array<EventModel>,
+          data?.warningPoint as number
         );
       })
-    ).subscribe(data => {
+    );
+
+    rawInit.subscribe(data => {
       this.converterMeltInfoData = data?.meltInfo;
-      this.converterEvents.concat(data?.events);
+      this.converterEvents = Object.assign([], data?.events);
     });
 
     this.wsService.on('converter-melt-info-update').pipe(
@@ -69,18 +73,31 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.converterMeltInfoData = data;
     });
 
-    this.wsService.on('converter-slag-rate-update').pipe(
+    const rawSlagRate = this.wsService.on('converter-slag-rate-update').pipe(
       takeUntil(this._unsubscribe),
       map((data: any) => {
         return new SlagRateModel(
-          data.slagRateTime as number,
           data?.steelRate as number,
-          data?.slagRate as number,
-          data?.warningPoint as number
+          data?.slagRate as number
         );
       })
+    )
+
+    rawSlagRate.subscribe(data => {
+        this.converterSlagRateData = data;
+      }
+    )
+
+    combineLatest([rawInit, rawSlagRate]).pipe(
+      map((data: any) => {
+        return new SlagRateChartModel(
+          data[1]?.steelRate as number,
+          data[1]?.slagRate as number,
+          data[0]?.warningPoint as number
+        )
+      })
     ).subscribe(data => {
-      this.converterSlagRateData = data;
+      this.converterSlagRateChart = data;
     });
 
     const rawFrames = this.wsService.on('converter-frame-update').pipe(
@@ -137,6 +154,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       ) as Array<EventModel>)
     ).subscribe(data => {
       this.converterEvents = data;
+      console.log('this.converterEvents', this.converterEvents);
     });
   }
 

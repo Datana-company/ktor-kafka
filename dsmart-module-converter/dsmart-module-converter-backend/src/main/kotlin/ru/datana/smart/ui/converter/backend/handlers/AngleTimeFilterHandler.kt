@@ -8,7 +8,7 @@ import kotlin.math.max
 
 object AngleTimeFilterHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val angleTime = context.angles.angleTime ?: 0L
+        val angleTime = context.angles.angleTime
         val newAngleTime = context.lastTimeAngles.updateAndGet {
             max(angleTime, it)
         }

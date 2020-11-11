@@ -1,7 +1,7 @@
 import {Component, Input, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {SlagRateModel} from "../models/slag-rate.model";
+import {SlagRateChartModel} from "../models/slag-rate-chart.model";
 
 @Component({
     selector: 'bar-chart-component',
@@ -14,7 +14,7 @@ export class BarChartComponent {
   // public xAxisTickFormattingFn = (value) => `${value.toString()+"%"}`;
  // public xAxisTickFormattingFn = value => `X ${value.toLocaleString()}`;
  //    @Input() slagRateModel: SlagRateModel;
-  view: any[] = [950, 200];
+  view: any[] = [950, 160];
 
   // options
   showXAxis = false;
@@ -26,14 +26,13 @@ export class BarChartComponent {
   showYAxisLabel = false;
   xAxisLabel = '';
   showDataLabel = true;
-  barPadding='0px';
+  barPadding='1';
   barChartData: any;
-
   colorScheme = {
     domain: ['#4E80B2', '#BDE9E3', '#C23557']
   };
 
-  @Input() set slagRateModel(dat: SlagRateModel) {
+  @Input() set slagRateChartModel(dat: SlagRateChartModel) {
     this.barChartData = [
       {
         'name': 'Шлак',

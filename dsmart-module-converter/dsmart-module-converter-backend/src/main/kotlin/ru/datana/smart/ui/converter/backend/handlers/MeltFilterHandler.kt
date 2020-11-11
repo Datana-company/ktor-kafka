@@ -7,12 +7,16 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 
 object MeltFilterHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        if (context.currentMeltInfo.get()!!.id != context.meltInfo.id) {
+        context.currentState.get()?.currentMeltInfo?.let {
+            if (it.id != context.meltInfo.id) {
+                context.status = CorStatus.FINISHED
+            }
+        } ?: run {
             context.status = CorStatus.FINISHED
         }
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {
-        return context.status == CorStatus.STARTED && context.currentMeltInfo.get() != null
+        return context.status == CorStatus.STARTED
     }
 }

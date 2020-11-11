@@ -7,7 +7,7 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 
 object DevicesFilterHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        if (context.converterId != context.meltInfo.devices?.converter?.id) {
+        if (context.converterId != context.meltInfo.devices.converter.id) {
             context.status = CorStatus.FINISHED
         }
     }
