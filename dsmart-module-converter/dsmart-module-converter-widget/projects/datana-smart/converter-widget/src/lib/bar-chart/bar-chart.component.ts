@@ -14,7 +14,7 @@ export class BarChartComponent {
   // public xAxisTickFormattingFn = (value) => `${value.toString()+"%"}`;
  // public xAxisTickFormattingFn = value => `X ${value.toLocaleString()}`;
  //    @Input() slagRateModel: SlagRateModel;
-  view: any[] = [950, 200];
+  view: any[] = [950, 160];
 
   // options
   showXAxis = false;
@@ -28,7 +28,6 @@ export class BarChartComponent {
   showDataLabel = true;
   barPadding='1';
   barChartData: any;
-
   colorScheme = {
     domain: ['#4E80B2', '#BDE9E3', '#C23557']
   };

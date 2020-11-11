@@ -1,10 +1,16 @@
-  <div class="widget-boiling-label">
-    Угол наклона конвертера
-  </div>
-  <div class="widget-boiling-time">
-    <div class="widget-boiling-time-value"><!-- {{ durationToBoil }}-->
+<div class="widget-boiling-label">
+  Угол наклона конвертера
+</div>
+<div class="widget-boiling-time">
+  <div class="widget-boiling-time-value">
+    <div *ngIf="angleData?.angle && angleData?.angle !== null">
       {{ angleData?.angle}}
+      <div class="text">градусов</div>
     </div>
-    <div class="text">градусов</div>
+    <div *ngIf="!angleData?.angle || angleData?.angle === null">
+      <div class="text">нет сигнала</div>
+    </div>
   </div>
+
+</div>
 
