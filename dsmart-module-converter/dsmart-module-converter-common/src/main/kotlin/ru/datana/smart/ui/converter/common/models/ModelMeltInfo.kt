@@ -1,14 +1,14 @@
 package ru.datana.smart.ui.converter.common.models
 
 data class ModelMeltInfo(
-    val id: String = "",
-    val timeStart: Long = Long.MIN_VALUE,
-    val meltNumber: String = "",
-    val steelGrade: String = "",
-    val crewNumber: String = "",
-    val shiftNumber: String = "",
-    val mode: Mode = Mode.NONE,
-    val devices: ModelMeltDevices = ModelMeltDevices.NONE
+    var id: String = "",
+    var timeStart: Long = Long.MIN_VALUE,
+    var meltNumber: String = "",
+    var steelGrade: String = "",
+    var crewNumber: String = "",
+    var shiftNumber: String = "",
+    var mode: Mode = Mode.NONE,
+    var devices: ModelMeltDevices = ModelMeltDevices.NONE
 ) {
 
     enum class Mode(val value: String) {
