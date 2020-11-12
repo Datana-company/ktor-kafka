@@ -1,12 +1,10 @@
 .topLinePath77 {
-    /*position: absolute;*/
     width: 100%;
     height: 8px;
     top: 0px;
 
     background: linear-gradient(90deg, #CCDBEB 16.55%, #22588F 82.04%);
 }
-
 .lineTop {
     position: absolute;
     width: 91%;
@@ -46,7 +44,6 @@
     text-align: center;
     color: #FFFFFF;
 }
-
 .logo {
     position: absolute;
     width: 295px;
@@ -69,9 +66,8 @@
 .alarm{
     width: 6px;
     height: 6px;
-    padding-bottom: 1%;
+    margin-top: -6px;
 }
-
 .widget-header {
     width: 100%;
     height: 4rem;
@@ -82,11 +78,9 @@
 }
 
 .widget-container-main {
-    /*height: calc(0.5rem + 6 * (6.5rem + 8px));*/
     min-width: 1360px;
     background: #EAEEF0;
 }
-
 .widget-container-row {
     margin-left:3.4%;
     margin-right: 3.4%;
@@ -94,29 +88,23 @@
     /*padding-bottom: 1%;*/
     background: #ffffff;
 }
-
 .widget-bar-chart {
     height: 25%;
     margin-top: 1rem;
     margin-bottom: 2.0rem;
     padding-bottom: 2.2%;
-    /*margin-left:4.9%;*/
     background: #ffffff;
 }
-
 .widget-info-container {
     height: 65%;
     background: #FFFFFF;
     margin: 50px;
 }
-
 .widget-events {
     margin-left: 1%;
-    /*margin-right: 13%;*/
     height: 100%;
     width: 88%;
 }
-
 .widget-boiling-label {
     display: flex;
     align-items: center;
@@ -125,7 +113,6 @@
     width: calc(100% - 2rem - 4px); /*- 2rem - 4px*/
     height: 4rem;
     padding: 1rem;
-    /*border: 2px solid #22588F;*/
     border-radius: 4px 4px 0 0;
     background-color: white;
     color: black;
@@ -135,10 +122,8 @@
     font-size: 18px;
     line-height: 20px;
     /* or 111% */
-
     text-align: center;
 }
-
 .widget-boiling-time {
     display: flex;
     flex-direction: column;
@@ -153,7 +138,6 @@
     font-weight: 500;
     background: #CCDBEB;
 }
-
 .widget-boiling-time-value {
     height: calc(30% - 16rem - 4px);
     width: 100%;
