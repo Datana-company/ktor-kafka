@@ -19,7 +19,8 @@ object UpdateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 title = it.title,
                 isActive = false,
                 angleStart = it.angleStart,
-                angleFinish = it.angleFinish
+                angleFinish = it.angleFinish,
+                warningPoint = it.warningPoint
             )
             context.eventsRepository.put(meltId, historicalEvent)
         } ?: return

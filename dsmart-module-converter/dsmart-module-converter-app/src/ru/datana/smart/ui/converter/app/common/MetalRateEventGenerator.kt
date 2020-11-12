@@ -66,6 +66,7 @@ class MetalRateEventGenerator(
             }
             isIncrease = true
         }
+        println("generateValue = $generateValue")
         return generateValue
     }
 }

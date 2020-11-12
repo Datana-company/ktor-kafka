@@ -23,7 +23,8 @@ object UpdateAngleInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 isActive = it.isActive,
                 angleStart = angleStart,
                 angleFinish = currentAngle,
-                angleMax = angleMax
+                angleMax = angleMax,
+                warningPoint = it.warningPoint
             )
             context.eventsRepository.put(meltId, historicalEvent)
         } ?: return
