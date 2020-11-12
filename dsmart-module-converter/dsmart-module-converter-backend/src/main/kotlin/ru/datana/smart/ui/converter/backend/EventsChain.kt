@@ -92,7 +92,7 @@ class EventsChain(
                 onEnv { status == CorStatus.STARTED && currentState.get() != null }
                 exec {
                     val currentMeltInfoId = currentState.get()!!.currentMeltInfo.id
-                    events = eventsRepository.getAll()
+                    events = eventsRepository.getAllByMeltId(currentMeltInfoId)
                 }
             }
             handler {

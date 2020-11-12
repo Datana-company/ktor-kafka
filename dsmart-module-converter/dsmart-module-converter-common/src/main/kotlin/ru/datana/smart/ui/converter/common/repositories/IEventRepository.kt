@@ -35,6 +35,12 @@ interface IEventRepository {
             override fun getActiveByMeltIdAndEventType(meltId: String, eventType: ModelEvent.EventType): ModelEvent? {
                 TODO("Not yet implemented")
             }
+
+            override fun getAllByMeltId(meltId: String): MutableList<ModelEvent> {
+                TODO("Not yet implemented")
+            }
         }
     }
+
+    fun getAllByMeltId(meltId: String): MutableList<ModelEvent>
 }

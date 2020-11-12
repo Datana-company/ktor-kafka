@@ -12,8 +12,7 @@ object CreateSuccessMeltEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
         val slagRateTime = context.frame.frameTime
-        context.eventsRepository.getAll()
-            .filter { event -> event.meltId == meltId }
+        context.eventsRepository.getAllByMeltId(meltId)
             .map {
                 if (it.type == ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT ||
                     it.type == ModelEvent.EventType.METAL_RATE_WARNING_EVENT ||

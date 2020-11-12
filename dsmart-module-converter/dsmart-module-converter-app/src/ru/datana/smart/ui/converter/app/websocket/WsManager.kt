@@ -17,11 +17,7 @@ class WsManager : IWsManager {
     suspend fun addSession(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
         context.currentState.get()?.currentMeltInfo?.let {
-            val events = context.eventsRepository.getAll()
-                .filter { event -> event.meltId == it.id }
-            context.also {
-                    context -> context.events = events.toMutableList()
-            }
+            context.events = context.eventsRepository.getAllByMeltId(it.id)
         }
         val wsConverterInit = WsDsmartResponseConverterInit(
             data = toWsConverterInitModel(context)

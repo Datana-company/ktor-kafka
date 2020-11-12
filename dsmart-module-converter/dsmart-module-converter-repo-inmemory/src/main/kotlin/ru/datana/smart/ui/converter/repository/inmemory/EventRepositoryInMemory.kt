@@ -42,6 +42,16 @@ class EventRepositoryInMemory : IEventRepository {
             .toList().toMutableList()
     }
 
+    override fun getAllByMeltId(meltId: String): MutableList<ModelEvent> {
+        return cache.asMap().values.stream()
+            .filter { event -> event.meltId == meltId }
+            .sorted(Comparator.comparing(EventInMemoryDto::timeStart).reversed())
+            .sorted(Comparator.comparing(EventInMemoryDto::isActive).reversed())
+            .limit(10)
+            .map(EventInMemoryDto::toModel)
+            .toList().toMutableList()
+    }
+
 
     override fun getAllActiveByMeltId(meltId: String): MutableList<ModelEvent> {
         return cache.asMap().values.stream()
