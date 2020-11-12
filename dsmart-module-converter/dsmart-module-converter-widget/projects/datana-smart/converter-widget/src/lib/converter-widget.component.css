@@ -5,6 +5,7 @@
 
     background: linear-gradient(90deg, #CCDBEB 16.55%, #22588F 82.04%);
 }
+
 .lineTop {
     position: absolute;
     width: 91%;
@@ -14,10 +15,12 @@
     background: #B7B7B7;
     padding: 0.1px;
 }
+
 .widget-container-main-top{
     background: #EAEEF0;
     min-width: 1360px;
 }
+
 .titlesTop1 {
     padding: 0.4%;
     padding-left: 3.5rem;
@@ -29,6 +32,7 @@
     /* identical to box height */
     color: #222220;
 }
+
 .title {
     position: absolute;
     width: 751px;
@@ -44,6 +48,7 @@
     text-align: center;
     color: #FFFFFF;
 }
+
 .logo {
     position: absolute;
     width: 295px;
@@ -52,22 +57,20 @@
     top: 17px;
     /*background: url(Vector Smart Object.png);*/
 }
+
 .logo_mmk {
     top: calc(0.5rem + 6 * (6.8rem + 1px));
     left: 40%;
     position: absolute;
 }
+
 .exit{
     position: absolute;
     top: 17px;
     width: 19.61px;
     height: 26.15px;
 }
-.alarm{
-    width: 6px;
-    height: 6px;
-    margin-top: -6px;
-}
+
 .widget-header {
     width: 100%;
     height: 4rem;
@@ -81,6 +84,7 @@
     min-width: 1360px;
     background: #EAEEF0;
 }
+
 .widget-container-row {
     margin-left:3.4%;
     margin-right: 3.4%;
@@ -88,6 +92,7 @@
     /*padding-bottom: 1%;*/
     background: #ffffff;
 }
+
 .widget-bar-chart {
     height: 25%;
     margin-top: 1rem;
@@ -95,16 +100,19 @@
     padding-bottom: 2.2%;
     background: #ffffff;
 }
+
 .widget-info-container {
     height: 65%;
     background: #FFFFFF;
     margin: 50px;
 }
+
 .widget-events {
     margin-left: 1%;
     height: 100%;
     width: 88%;
 }
+
 .widget-boiling-label {
     display: flex;
     align-items: center;
@@ -122,8 +130,10 @@
     font-size: 18px;
     line-height: 20px;
     /* or 111% */
+
     text-align: center;
 }
+
 .widget-boiling-time {
     display: flex;
     flex-direction: column;
@@ -138,6 +148,7 @@
     font-weight: 500;
     background: #CCDBEB;
 }
+
 .widget-boiling-time-value {
     height: calc(30% - 16rem - 4px);
     width: 100%;
