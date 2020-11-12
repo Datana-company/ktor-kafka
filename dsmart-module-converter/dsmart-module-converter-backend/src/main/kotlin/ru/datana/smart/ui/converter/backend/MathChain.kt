@@ -29,17 +29,14 @@ class MathChain(
             +DevicesFilterHandler
             +MeltFilterHandler
             +FrameTimeFilterHandler
-
-            handler {
-                onEnv { status == CorStatus.STARTED }
-                exec {
-                    frame.channel = ModelFrame.Channels.MATH
-                }
-            }
-
             +EncodeBase64Handler
-            +WsSendMathHandler
-//            +WsSendMeltFinishHandler
+            +WsSendMathFrameHandler
+            konveyor {
+                // Временный фильтр на выбросы матмодели по содержанию металла из-за капель металла
+                // в начале и в конце слива
+                on { slagRate.steelRate <= 0.35 }
+
+                +WsSendMathSlagRateHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }
@@ -47,6 +44,7 @@ class MathChain(
                     EventsChain().exec(this)
                 }
             }
+//            +WsSendMeltFinishHandler
 
             +FinishHandler
         }
