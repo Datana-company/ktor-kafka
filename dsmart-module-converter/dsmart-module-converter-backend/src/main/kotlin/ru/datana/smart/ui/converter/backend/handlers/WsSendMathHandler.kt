@@ -7,10 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.CurrentState
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
-import ru.datana.smart.ui.converter.common.models.ModelSlagRate
-import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
+import ru.datana.smart.ui.converter.common.models.*
 
 object WsSendMathHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
@@ -27,17 +24,8 @@ object WsSendMathHandler: IKonveyorHandler<ConverterBeContext> {
             }
             jobSlagRate = GlobalScope.launch {
                 delay(context.dataTimeout)
-                context.wsManager.sendSlagRate(ConverterBeContext())
-
-                val curState = context.currentState.get() ?: CurrentState()
-                with(curState.lastAngles) {
-                    if (angle == Double.MIN_VALUE || angle == 0.0) {
-                        curState.currentMeltInfo = ModelMeltInfo.NONE
-                        println("meltInfo cleared in jobMath")
-                    }
-                }
-                curState.lastSlagRate = ModelSlagRate.NONE
-                context.currentState.set(curState)
+                context.slagRate = ModelSlagRate.NONE
+                context.wsManager.sendSlagRate(context)
                 println("jobMath done")
             }
             jobFrameMath?.let {
@@ -48,7 +36,8 @@ object WsSendMathHandler: IKonveyorHandler<ConverterBeContext> {
             }
             jobFrameMath = GlobalScope.launch {
                 delay(context.dataTimeout)
-                context.wsManager.sendFrames(ConverterBeContext())
+                context.frame = ModelFrame(channel = ModelFrame.Channels.MATH)
+                context.wsManager.sendFrames(context)
                 println("jobFrameMath done")
             }
         }

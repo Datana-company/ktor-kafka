@@ -7,6 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.models.ModelFrame
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 
 object WsSendFrameHandler: IKonveyorHandler<ConverterBeContext> {
@@ -23,7 +24,8 @@ object WsSendFrameHandler: IKonveyorHandler<ConverterBeContext> {
             }
             jobFrameCamera = GlobalScope.launch {
                 delay(context.dataTimeout)
-                context.wsManager.sendFrames(ConverterBeContext())
+                context.frame = ModelFrame(channel = ModelFrame.Channels.CAMERA)
+                context.wsManager.sendFrames(context)
                 println("jobFrameCamera done")
             }
         }
