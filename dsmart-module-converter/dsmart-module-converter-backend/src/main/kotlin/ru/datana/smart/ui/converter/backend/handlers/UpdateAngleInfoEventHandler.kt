@@ -30,7 +30,6 @@ object UpdateAngleInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
             it.angleStart = angleStart
             it.angleFinish = currentAngle
             it.angleMax = angleMax
-            it.isActive = false
             context.eventsRepository.update(it)
         } ?: return
     }

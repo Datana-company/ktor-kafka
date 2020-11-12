@@ -12,7 +12,7 @@ object UpdateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
         val meltId: String = context.currentState.get()?.currentMeltInfo?.id ?: return
         val activeEvent: ModelEvent? = context.eventsRepository.getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.METAL_RATE_WARNING_EVENT)
         activeEvent?.let {
-            val isCompletedEvent = it.angleFinish?.let { angleFinish -> it.angleMax?.compareTo(angleFinish)?.let { it > 0 } } ?: false
+            val isCompletedEvent = it.angleMax > it.angleFinish
 //            val historicalEvent = BizEvent(
 //                id = it.id,
 //                type = it.type,

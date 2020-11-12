@@ -24,6 +24,7 @@ data class EventInMemoryDto(
     fun toModel(): ModelEvent = ModelEvent(
         id = id,
         type = type,
+        meltId = meltId,
         timeStart = timeStart,
         timeFinish = timeFinish,
         title = title,
@@ -44,6 +45,7 @@ data class EventInMemoryDto(
 
         fun of(event: ModelEvent, id: String) = EventInMemoryDto(
             id = id,
+            meltId = event.meltId,
             type = event.type,
             timeStart = event.timeStart,
             timeFinish = event.timeFinish,

@@ -12,7 +12,7 @@ import java.util.*
 object CreateExtEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         // TODO Нужно ли делать неактивными все другие сообщения?
-        context.currentState.get()?.currentMeltInfo = ModelMeltInfo(id = UUID.randomUUID().toString()) //TODO для тестирования
+//        context.currentState.get()?.currentMeltInfo = ModelMeltInfo(id = UUID.randomUUID().toString()) //TODO для тестирования
         val meltId: String = context.currentState.get()?.currentMeltInfo?.id ?: return
         println(" --- message: " + context.extEvents.message + " --- meltId: " + meltId)
         context.eventsRepository.create(

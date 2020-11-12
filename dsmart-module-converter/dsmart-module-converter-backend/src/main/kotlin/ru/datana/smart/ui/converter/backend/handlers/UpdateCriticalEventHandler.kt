@@ -14,7 +14,7 @@ object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT)
         activeEvent?.let {
-            val isCompletedEvent = it.angleFinish?.let { angleFinish -> it.angleMax?.compareTo(angleFinish)?.let { it > 0 } } ?: false
+            val isCompletedEvent = it.angleMax > it.angleFinish
 //            val historicalEvent = MetalRateCriticalEvent(
 //                id = it.id,
 //                timeStart = it.timeStart,
