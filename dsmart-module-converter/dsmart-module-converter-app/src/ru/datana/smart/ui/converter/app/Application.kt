@@ -72,6 +72,7 @@ fun Application.module(testing: Boolean = false) {
     val topicAngles by lazy { environment.config.property("ktor.kafka.consumer.topic.angles").getString().trim() }
     val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
     val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
+    val converterPlaylistUrl by lazy { environment.config.property("ktor.datana.converter.playlist").getString().trim() }
     val framesBasePath by lazy { environment.config.property("paths.base.frames").getString().trim() }
 //    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
 //    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
@@ -110,7 +111,8 @@ fun Application.module(testing: Boolean = false) {
     val websocketContext = ConverterBeContext(
         currentState = currentState,
         eventsRepository = userEventsRepository,
-        metalRateWarningPoint = metalRateWarningPoint
+        metalRateWarningPoint = metalRateWarningPoint,
+        converterPlaylistUrl = converterPlaylistUrl
     )
 
     val converterFacade = ConverterFacade(
@@ -122,7 +124,8 @@ fun Application.module(testing: Boolean = false) {
         currentState = currentState,
         converterId = converterId,
         framesBasePath = framesBasePath,
-        scheduleCleaner = scheduleCleaner
+        scheduleCleaner = scheduleCleaner,
+        converterPlaylistUrl = converterPlaylistUrl
     )
 
     routing {

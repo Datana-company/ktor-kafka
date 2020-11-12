@@ -1,5 +1,6 @@
 package ru.datana.smart.ui.converter.backend
 
+import ru.datana.smart.ui.converter.backend.common.ConverterChainSettings
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import ru.datana.smart.ui.converter.common.models.IWsManager
@@ -19,9 +20,11 @@ class ConverterFacade(
     currentState: AtomicReference<CurrentState?> = AtomicReference(),
     scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
     converterId: String = "",
-    framesBasePath: String = ""
+    framesBasePath: String = "",
+    converterPlaylistUrl: String = ""
+
 ) {
-    private val mathChain = MathChain(
+    private val chainSettings = ConverterChainSettings(
         eventsRepository = converterRepository,
         wsManager = wsManager,
         dataTimeout = dataTimeout,
@@ -32,44 +35,21 @@ class ConverterFacade(
         timeReaction = timeReaction,
         timeLimitSiren = timeLimitSiren,
         converterId = converterId,
-        framesBasePath = framesBasePath
+        framesBasePath = framesBasePath,
+        converterPlaylistUrl = converterPlaylistUrl
+    )
+
+    private val mathChain = MathChain(
+        chainSettings = chainSettings
     )
     private val anglesChain = AnglesChain(
-        eventsRepository = converterRepository,
-        wsManager = wsManager,
-        dataTimeout = dataTimeout,
-        metalRateCriticalPoint = metalRateCriticalPoint,
-        metalRateWarningPoint = metalRateWarningPoint,
-        currentState = currentState,
-        scheduleCleaner = scheduleCleaner,
-        timeReaction = timeReaction,
-        timeLimitSiren = timeLimitSiren,
-        converterId = converterId
+        chainSettings = chainSettings
     )
     private val frameChain = FrameChain(
-        eventsRepository = converterRepository,
-        wsManager = wsManager,
-        dataTimeout = dataTimeout,
-        metalRateCriticalPoint = metalRateCriticalPoint,
-        metalRateWarningPoint = metalRateWarningPoint,
-        currentState = currentState,
-        scheduleCleaner = scheduleCleaner,
-        timeReaction = timeReaction,
-        timeLimitSiren = timeLimitSiren,
-        converterId = converterId,
-        framesBasePath = framesBasePath
+        chainSettings = chainSettings
     )
     private val meltInfoChain = MeltInfoChain(
-        eventsRepository = converterRepository,
-        wsManager = wsManager,
-        dataTimeout = dataTimeout,
-        metalRateCriticalPoint = metalRateCriticalPoint,
-        metalRateWarningPoint = metalRateWarningPoint,
-        currentState = currentState,
-        scheduleCleaner = scheduleCleaner,
-        timeReaction = timeReaction,
-        timeLimitSiren = timeLimitSiren,
-        converterId = converterId
+        chainSettings = chainSettings
     )
 
     suspend fun handleMath(context: ConverterBeContext) = mathChain.exec(context)

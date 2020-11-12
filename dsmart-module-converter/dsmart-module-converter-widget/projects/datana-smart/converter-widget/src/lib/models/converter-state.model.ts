@@ -5,7 +5,8 @@ export class ConverterStateModel {
   constructor(
     public meltInfo: ConverterMeltInfoModel,
     public events: Array<EventModel>,
-    public warningPoint: number
+    public warningPoint: number,
+    public playlistUrl: string
   ) {
   }
 }
