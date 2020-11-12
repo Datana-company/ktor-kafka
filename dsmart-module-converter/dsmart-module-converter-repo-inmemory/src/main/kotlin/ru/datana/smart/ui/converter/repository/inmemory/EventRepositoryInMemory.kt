@@ -62,4 +62,34 @@ class EventRepositoryInMemory : IEventRepository {
             .findFirst()
             .orElse(null)
     }
+
+    // TODO На будущее. Пока не заработало
+//    override fun getAll(): MutableList<ModelEvent> {
+//        return cache.asMap().values.asSequence()
+//            .sortedByDescending { it.timeStart }
+//            .sortedByDescending { it.isActive }
+//            .take(10)
+//            .map(EventInMemoryDto::toModel)
+//            .toMutableList()
+//    }
+//
+//    override fun getAllActiveByMeltId(meltId: String): MutableList<ModelEvent> {
+//        return cache.asMap().values.asSequence()
+//            .filter { event -> event.isActive ?: false }
+//            .filter { event -> event.meltId == meltId }
+//            .sortedByDescending { it.timeStart }
+//            .map(EventInMemoryDto::toModel)
+//            .toMutableList()
+//    }
+//
+//    override fun getActiveByMeltIdAndEventType(meltId: String, eventType: ModelEvent.EventType): ModelEvent? {
+//        return cache.asMap().values.asSequence()
+//            .filter { event -> event.isActive ?: false }
+//            .filter { event -> event.meltId == meltId }
+//            .filter { event -> event.type == eventType }
+//            .sortedByDescending { it.timeStart }
+//            .map(EventInMemoryDto::toModel)
+//            .first()
+//    }
+
 }

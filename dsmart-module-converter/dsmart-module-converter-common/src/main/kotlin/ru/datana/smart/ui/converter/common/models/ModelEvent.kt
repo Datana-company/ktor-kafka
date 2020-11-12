@@ -24,7 +24,8 @@ data class ModelEvent(
         CRITICAL("CRITICAL"),
         WARNING("WARNING"),
         INFO("INFO"),
-        HINT("HINT")
+        HINT("HINT"),
+        NONE("NONE")
     }
 
     enum class ExecutionStatus(val value: String) {
