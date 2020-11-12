@@ -42,12 +42,20 @@
             <div class="text">Марка: нет сигнала</div>
           </div>
         </div>
-        <div class="col-4" style="text-align: right; padding-right: 6.5%">
+        <div class="col-2" style="text-align: right; padding-right: 6.5%">
           <div *ngIf="converterMeltInfoData?.crewNumber && converterMeltInfoData?.crewNumber !== null">
             Бригада: {{converterMeltInfoData?.crewNumber}}
           </div>
           <div *ngIf="!converterMeltInfoData?.steelGrade || converterMeltInfoData?.steelGrade === null">
             <div class="text">Бригада: нет сигнала</div>
+          </div>
+        </div>
+        <div class="col-2" style="text-align: right; padding-right: 6.5%">
+          <div *ngIf="converterMeltInfoData?.shiftNumber && converterMeltInfoData?.shiftNumber !== null">
+            Смена: {{converterMeltInfoData?.shiftNumber}}
+          </div>
+          <div *ngIf="!converterMeltInfoData?.shiftNumber || converterMeltInfoData?.shiftNumber === null">
+            <div class="text">Смена: "_"</div>
           </div>
         </div>
       </div>
