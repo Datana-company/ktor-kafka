@@ -8,7 +8,6 @@ import ru.datana.smart.ui.converter.backend.common.setSettings
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.*
 
 class MathChain(
     var chainSettings: ConverterChainSettings
@@ -38,15 +37,16 @@ class MathChain(
 
                 +WsSendMathSlagRateHandler
 
-            handler {
-                onEnv { status == CorStatus.STARTED }
-                exec {
-                    EventsChain().exec(this)
+                handler {
+                    onEnv { status == CorStatus.STARTED }
+                    exec {
+                        EventsChain.konveyor.exec(this)
+                    }
                 }
-            }
 //            +WsSendMeltFinishHandler
 
-            +FinishHandler
+                +FinishHandler
+            }
         }
     }
 }

@@ -13,13 +13,16 @@ import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import ru.datana.smart.ui.converter.common.utils.toPercent
 import java.util.concurrent.atomic.AtomicReference
 
-class EventsChain {
+class EventsChain(
+    var chainSettings: ConverterChainSettings
+) {
 
     suspend fun exec(context: ConverterBeContext) {
         exec(context, DefaultKonveyorEnvironment)
     }
 
     suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
+        context.setSettings(chainSettings)
         konveyor.exec(context, env)
     }
 

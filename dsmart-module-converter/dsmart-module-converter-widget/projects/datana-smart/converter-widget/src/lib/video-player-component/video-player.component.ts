@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import videojs from 'video.js';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {SlagRateChartModel} from "../models/slag-rate-chart.model";
 
 @Component({
   selector: 'video-player-component',
