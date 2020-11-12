@@ -164,7 +164,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       console.log('this.converterEvents', this.converterEvents);
     });
 
-//////////////////////////////////////////////////////////////////////////////////////////
+/////// Для теста светофора /////////////////////////////////////////////////////////
 //     document.getElementById('info').addEventListener('click', () => {
 //       console.log('info');
 //       this.converterSignalerLevel = SignalerLevelModel.INFO

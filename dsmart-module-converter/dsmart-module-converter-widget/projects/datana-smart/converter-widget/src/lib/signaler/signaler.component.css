@@ -2,32 +2,23 @@
     height: 100%;
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-content: center;
-    border: 1px solid red;
 }
 
 .signaler-icon {
-    width: 4rem;
-    height: 4rem;
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    background-color: #b7d7e8;
-    mask-image: url("/assets/image/alarm-bl.svg");
+    width: 3rem;
+    height: 3rem;
 }
 
 .signaler-level-info {
-    background-color: #b7d7e8;
+    fill: #5DADE2;
 }
 
 .signaler-level-warning {
-    background-color: #ffef96;
+    fill: #FFC300;
 }
 
 .signaler-level-critical {
-    background-color: #c94c4c;
+    fill: #c94c4c;
 }
