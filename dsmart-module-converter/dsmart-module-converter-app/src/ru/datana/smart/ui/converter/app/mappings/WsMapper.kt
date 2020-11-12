@@ -69,7 +69,7 @@ fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =
         )
     )
 
-fun toWsEventModel(event: IBizEvent) =
+fun toWsEventModel(event: ModelEvent) =
     WsDsmartEvent(
         id = event.id,
         timeStart = event.timeStart,
@@ -81,11 +81,12 @@ fun toWsEventModel(event: IBizEvent) =
         executionStatus = WsDsmartEvent.ExecutionStatus.valueOf(event.executionStatus.name)
     )
 
-fun toWsEventListModel(modelEvents: ModelEvents) = WsDsmartEventList(
-    list = modelEvents.events.stream().map { event -> toWsEventModel(event) }
-        ?.toList()
-        ?: mutableListOf()
-)
+fun toWsEventListModel(modelEvents: MutableList<ModelEvent>) =
+    WsDsmartEventList(
+        list = modelEvents.stream().map { event -> toWsEventModel(event) }
+            ?.toList()
+            ?: mutableListOf()
+    )
 
 fun toWsConverterInitModel(context: ConverterBeContext) =
     WsDsmartConverterInit(
