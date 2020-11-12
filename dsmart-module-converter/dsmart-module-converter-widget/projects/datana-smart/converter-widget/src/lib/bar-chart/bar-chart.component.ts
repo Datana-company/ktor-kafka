@@ -34,10 +34,11 @@ export class BarChartComponent {
 
   @Input() set slagRateChartModel(dat: SlagRateChartModel) {
     const tempAlagRate = ((dat?.slagRate || 0) * 100);
+    const tempAlagRateAkt =((tempAlagRate%1)==0.5?Math.floor(tempAlagRate):Math.round(tempAlagRate))
     this.barChartData = [
       {
         'name': 'Шлак',
-        'value': ((tempAlagRate%1)==0.5?Math.floor(tempAlagRate):Math.round(tempAlagRate))
+        'value': tempAlagRateAkt
       },
       {
         'name': 'Допустимая доля металла',
