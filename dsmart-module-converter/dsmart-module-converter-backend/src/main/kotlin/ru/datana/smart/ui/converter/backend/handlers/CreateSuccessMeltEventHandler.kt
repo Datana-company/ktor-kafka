@@ -4,29 +4,37 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.EndMeltEvent
-import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
-import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
-import ru.datana.smart.ui.converter.common.events.SuccessMeltEvent
+import ru.datana.smart.ui.converter.common.models.ModelEvent
+import ru.datana.smart.ui.converter.common.utils.toPercent
 import java.util.*
 
-object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
+object CreateSuccessMeltEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
         val slagRateTime = context.frame.frameTime
-        context.eventsRepository.getAllByMeltId(meltId).map {
-            if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent || it is EndMeltEvent) {
-                return
+        context.eventsRepository.getAll()
+            .filter { event -> event.meltId == meltId }
+            .map {
+                if (it.type == ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT ||
+                    it.type == ModelEvent.EventType.METAL_RATE_WARNING_EVENT ||
+                    it.type == ModelEvent.EventType.END_MELT_EVENT) {
+                    return
+                }
             }
-        }
-        context.eventsRepository.put(
-            meltId,
-            SuccessMeltEvent(
+        context.eventsRepository.create(
+            ModelEvent(
                 id = UUID.randomUUID().toString(),
+                meltId = meltId,
+                type = ModelEvent.EventType.SUCCESS_MELT_EVENT,
                 timeStart = slagRateTime,
                 timeFinish = slagRateTime,
                 warningPoint = context.metalRateWarningPoint,
-                isActive = false
+                isActive = false,
+                title = "Информация",
+                textMessage = """
+                              Допустимая норма потерь металла ${toPercent(context.metalRateWarningPoint)} % не была превышена.
+                              """.trimIndent(),
+                category = ModelEvent.Category.INFO
             )
         )
     }

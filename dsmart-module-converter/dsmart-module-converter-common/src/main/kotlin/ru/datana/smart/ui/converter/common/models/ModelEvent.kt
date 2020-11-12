@@ -2,8 +2,9 @@ package ru.datana.smart.ui.converter.common.models
 
 import java.time.Instant
 
-data class EventModel(
+data class ModelEvent(
     var id: String = "",
+    var meltId: String = "",
     var type: EventType = EventType.NONE,
     var timeStart: Long = Instant.now().toEpochMilli(),
     var timeFinish: Long = Instant.now().toEpochMilli(),

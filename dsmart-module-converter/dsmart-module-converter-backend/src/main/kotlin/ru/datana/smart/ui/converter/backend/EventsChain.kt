@@ -7,12 +7,12 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
+import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import ru.datana.smart.ui.converter.common.utils.toPercent
 import java.util.concurrent.atomic.AtomicReference
 
 class EventsChain(
-    var eventsRepository: IUserEventsRepository,
+    var eventsRepository: IEventRepository,
     var wsManager: IWsManager,
     var dataTimeout: Long,
     var metalRateCriticalPoint: Double,
@@ -92,7 +92,7 @@ class EventsChain(
                 onEnv { status == CorStatus.STARTED && currentState.get() != null }
                 exec {
                     val currentMeltInfoId = currentState.get()!!.currentMeltInfo.id
-                    events = ModelEvents(events = eventsRepository.getAllByMeltId(currentMeltInfoId))
+                    events = eventsRepository.getAll()
                 }
             }
             handler {

@@ -7,11 +7,11 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
+import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import java.util.concurrent.atomic.AtomicReference
 
 class MeltInfoChain(
-    var eventsRepository: IUserEventsRepository,
+    var eventsRepository: IEventRepository,
     var wsManager: IWsManager,
     var dataTimeout: Long,
     var metalRateCriticalPoint: Double,

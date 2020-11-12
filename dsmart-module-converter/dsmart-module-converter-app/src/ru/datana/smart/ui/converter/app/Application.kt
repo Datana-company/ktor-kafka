@@ -29,7 +29,7 @@ import ru.datana.smart.ui.converter.backend.ConverterFacade
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import java.time.Duration
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
-import ru.datana.smart.ui.converter.repository.inmemory.UserEventRepositoryInMemory
+import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.util.concurrent.atomic.AtomicReference
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -93,7 +93,7 @@ fun Application.module(testing: Boolean = false) {
 //    )
 //    metalRateEventGenerator.start()
 
-    val userEventsRepository = UserEventRepositoryInMemory()
+    val userEventsRepository = EventRepositoryInMemory()
 
     val currentState: AtomicReference<CurrentState?> = AtomicReference()
     val scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference()

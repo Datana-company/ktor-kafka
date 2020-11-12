@@ -1,8 +1,8 @@
 package ru.datana.smart.ui.converter.common.context
 
-import ru.datana.smart.ui.converter.common.models.EventModel
+import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
+import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
@@ -13,7 +13,7 @@ class ConverterBeContext (
     var meltInfo: ModelMeltInfo = ModelMeltInfo.NONE,
     var frame: ModelFrame = ModelFrame.NONE,
     var slagRate: ModelSlagRate = ModelSlagRate.NONE,
-    var events: MutableList<EventModel> = mutableListOf(),
+    var events: MutableList<ModelEvent> = mutableListOf(),
     // внутренняя модель (dsmart-module-converter-common.models)
     var extEvents: ModelExtEvents = ModelExtEvents.NONE,
     var lastTimeAngles: AtomicLong = AtomicLong(0),
@@ -29,7 +29,7 @@ class ConverterBeContext (
     var timeReaction: Long = Long.MIN_VALUE,
     var timeLimitSiren: Long = Long.MIN_VALUE,
     var dataTimeout: Long = Long.MIN_VALUE,
-    var eventsRepository: IUserEventsRepository = IUserEventsRepository.NONE,
+    var eventsRepository: IEventRepository = IEventRepository.NONE,
     var currentState: AtomicReference<CurrentState?> = AtomicReference(),
     var scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
     var converterId: String = "",

@@ -3,13 +3,12 @@ package ru.datana.smart.ui.converter.backend
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import ru.datana.smart.ui.converter.common.models.IWsManager
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
-import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
+import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import java.util.concurrent.atomic.AtomicReference
 
 class ConverterFacade(
-    converterRepository: IUserEventsRepository = IUserEventsRepository.NONE,
+    converterRepository: IEventRepository = IEventRepository.NONE,
     wsManager: IWsManager = IWsManager.NONE,
     dataTimeout: Long = Long.MIN_VALUE,
     metalRateCriticalPoint: Double = Double.MIN_VALUE,
@@ -74,9 +73,11 @@ class ConverterFacade(
     private val extEventsChain = ExtEventsChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
+        dataTimeout = dataTimeout,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
-        currentMeltInfo = currentMeltInfo,
+        currentState = currentState,
+        scheduleCleaner = scheduleCleaner,
         timeReaction = timeReaction,
         timeLimitSiren = timeLimitSiren,
         converterId = converterId

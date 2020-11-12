@@ -4,21 +4,23 @@ import codes.spectrum.konveyor.DefaultKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.konveyor
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
-import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.models.CurrentState
 import ru.datana.smart.ui.converter.common.models.IWsManager
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
-import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
+import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
+import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import java.util.concurrent.atomic.AtomicReference
 
 class ExtEventsChain(
-    var eventsRepository: IUserEventsRepository,
+    var eventsRepository: IEventRepository,
     var wsManager: IWsManager,
+    var dataTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
-    var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
     var timeReaction: Long,
     var timeLimitSiren: Long,
-    var converterId: String
+    var currentState: AtomicReference<CurrentState?>,
+    var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
+    var converterId: String,
 ) {
 
     suspend fun exec(context: ConverterBeContext) {
@@ -30,11 +32,13 @@ class ExtEventsChain(
             context.also {
                 it.eventsRepository = eventsRepository
                 it.wsManager = wsManager
+                it.dataTimeout = dataTimeout
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
-                it.currentMeltInfo = currentMeltInfo
                 it.timeReaction = timeReaction
                 it.timeLimitSiren = timeLimitSiren
+                it.currentState = currentState
+                it.scheduleCleaner = scheduleCleaner
                 it.converterId = converterId
             },
             env
@@ -52,9 +56,11 @@ class ExtEventsChain(
                 EventsChain(
                     eventsRepository = eventsRepository,
                     wsManager = wsManager,
+                    dataTimeout = dataTimeout,
                     metalRateCriticalPoint = metalRateCriticalPoint,
                     metalRateWarningPoint = metalRateWarningPoint,
-                    currentMeltInfo = currentMeltInfo,
+                    currentState = currentState,
+                    scheduleCleaner = scheduleCleaner,
                     timeReaction = timeReaction,
                     timeLimitSiren = timeLimitSiren,
                     converterId = converterId
