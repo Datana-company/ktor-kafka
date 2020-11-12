@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicReference
 class EventsChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
+    var wsSignalerManager: IWsSignalerManager,
     var dataTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
@@ -32,6 +33,7 @@ class EventsChain(
             context.also {
                 it.eventsRepository = eventsRepository
                 it.wsManager = wsManager
+                it.wsSignalerManager= wsSignalerManager
                 it.dataTimeout = dataTimeout
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
@@ -95,6 +97,7 @@ class EventsChain(
                 onEnv { status == CorStatus.STARTED }
                 exec {
                     wsManager.sendEvents(this)
+                    wsSignalerManager.sendSignaler(this)
                 }
             }
         }

@@ -6,6 +6,8 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
@@ -27,6 +29,23 @@ object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 executionStatus = if (isCompletedEvent) IBizEvent.ExecutionStatus.COMPLETED else IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(meltId, historicalEvent)
+            if (isCompletedEvent) {
+                context.signaler = SignalerModel(
+                    level = SignalerModel.SignalerLevelModel.CRITICAL,
+                    sound = SignalerSoundModel(
+                        type = SignalerSoundModel.SignalerSoundTypeModel.NONE,
+                        interval = 1
+                    )
+                )
+            } else {
+                context.signaler = SignalerModel(
+                    level = SignalerModel.SignalerLevelModel.CRITICAL,
+                    sound = SignalerSoundModel(
+                        type = SignalerSoundModel.SignalerSoundTypeModel.SOUND_1,
+                        interval = 1
+                    )
+                )
+            }
         } ?: return
     }
 

@@ -21,6 +21,7 @@ class ConverterBeContext (
     var timeStart: Instant = Instant.now(),
     var timeStop: Instant = Instant.now(),
     var wsManager: IWsManager = IWsManager.NONE,
+    var wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     var metalRateCriticalPoint: Double = Double.MIN_VALUE,
     var metalRateWarningPoint: Double = Double.MIN_VALUE,
     var timeReaction: Long = Long.MIN_VALUE,
@@ -29,6 +30,7 @@ class ConverterBeContext (
     var eventsRepository: IUserEventsRepository = IUserEventsRepository.NONE,
     var currentState: AtomicReference<CurrentState?> = AtomicReference(),
     var scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
+    var signaler: SignalerModel = SignalerModel.NONE,
     var converterId: String = "",
     var framesBasePath: String = ""
 )
