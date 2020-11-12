@@ -31,7 +31,7 @@
             Плавка: {{converterMeltInfoData?.meltNumber}}
           </div>
           <div *ngIf="!converterMeltInfoData?.meltNumber || converterMeltInfoData?.meltNumber === null">
-            <div class="text">Плавка: нет сигнала</div>
+            <div class="text">Плавка: "-"</div>
           </div>
         </div>
         <div class="col-6">
@@ -39,7 +39,7 @@
             Марка: {{converterMeltInfoData?.steelGrade}}
           </div>
           <div *ngIf="!converterMeltInfoData?.steelGrade || converterMeltInfoData?.steelGrade === null">
-            <div class="text">Марка: нет сигнала</div>
+            <div class="text">Марка: "-"</div>
           </div>
         </div>
         <div class="col-2" style="text-align: right; padding-right: 6.5%">
@@ -47,7 +47,7 @@
             Бригада: {{converterMeltInfoData?.crewNumber}}
           </div>
           <div *ngIf="!converterMeltInfoData?.steelGrade || converterMeltInfoData?.steelGrade === null">
-            <div class="text">Бригада: нет сигнала</div>
+            <div class="text">Бригада: "-"</div>
           </div>
         </div>
         <div class="col-2" style="text-align: right; padding-right: 6.5%">
@@ -63,7 +63,7 @@
       <div class="row" style="padding-top:1.5rem">
         <div class="col-8" style="text-align: left"><h5> >>Конвертер 2</h5></div>
         <div class="col-2" style="text-align: left;padding-right: 3rem"><h5> >>История рекомендаций</h5></div>
-        <div class="col-2 alarm" style="text-align: center; padding-bottom: 1%"><img src="/assets/image/alarm-bl.svg">
+        <div class="col-2 alarm" style="text-align: center"><img src="/assets/image/alarm-bl.svg">
         </div>
       </div>
     </div>
@@ -96,7 +96,7 @@
         <div class="row">
           <div class="widget-events">
             <div class="container">
-              <div class="panel panel-default overflow-auto" style="max-height:33rem;height:80%">
+              <div class="panel panel-default overflow-auto" style="max-height:40rem">
                 <event-recommendation-component
                   [events]="converterEvents">
                 </event-recommendation-component>

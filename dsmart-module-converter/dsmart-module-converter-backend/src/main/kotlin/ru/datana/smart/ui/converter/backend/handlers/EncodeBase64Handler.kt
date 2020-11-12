@@ -17,8 +17,8 @@ object EncodeBase64Handler : IKonveyorHandler<ConverterBeContext> {
 //    val logger = datanaLogger(EncodeBase64Handler::class.java)
 
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-
         val imagePath = "${context.framesBasePath}/${context.frame.framePath}"
+
         try {
             val bytes = File(imagePath).readBytes()
 
