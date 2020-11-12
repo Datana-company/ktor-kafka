@@ -26,23 +26,6 @@ object WsSendMathHandler: IKonveyorHandler<ConverterBeContext> {
                 delay(context.dataTimeout)
                 context.slagRate = ModelSlagRate.NONE
                 context.wsManager.sendSlagRate(context)
-
-                val curState = context.currentState.get() ?: CurrentState()
-                with(curState.lastAngles) {
-                    if (angle == Double.MIN_VALUE || angle == 0.0 &&
-                        context.meltInfo.id == curState.currentMeltInfo.id) {
-                        curState.currentMeltInfo = ModelMeltInfo.NONE
-                        context.meltInfo = ModelMeltInfo.NONE
-                        context.wsManager.sendInit(context)
-                        context.frame = ModelFrame(channel = ModelFrame.Channels.CAMERA)
-                        context.wsManager.sendFrames(context)
-                        context.frame = ModelFrame(channel = ModelFrame.Channels.MATH)
-                        context.wsManager.sendFrames(context)
-                        println("meltInfo cleared in jobMath")
-                    }
-                }
-                curState.lastSlagRate = ModelSlagRate.NONE
-                context.currentState.set(curState)
                 println("jobMath done")
             }
             jobFrameMath?.let {

@@ -7,32 +7,31 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.*
+import ru.datana.smart.ui.converter.common.models.CurrentState
+import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
+import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 
-object WsSendAnglesHandler: IKonveyorHandler<ConverterBeContext> {
+object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        context.wsManager.sendAngles(context)
-
         val schedule = context.scheduleCleaner.get() ?: ScheduleCleaner()
         with(schedule) {
-            jobAngles?.let {
+            jobMeltFinish?.let {
                 if (it.isActive) {
                     it.cancel()
-                    println("cancel jobAngles")
+                    println("cancel jobMeltFinish")
                 }
             }
-            jobAngles = GlobalScope.launch {
-                delay(context.dataTimeout)
-                context.angles = ModelAngles.NONE
-                context.wsManager.sendAngles(context)
-                println("jobAngles done")
+            jobMeltFinish = GlobalScope.launch {
+                delay(10000L)
+                context.meltInfo = ModelMeltInfo.NONE
+                val curState = context.currentState.get() ?: CurrentState()
+                curState.currentMeltInfo = context.meltInfo
+                context.currentState.set(curState)
+                context.wsManager.sendFinish(context)
+                println("jobMeltFinish done")
             }
         }
         context.scheduleCleaner.set(schedule)
-
-        val curState = context.currentState.get() ?: CurrentState()
-        curState.lastAngles = context.angles
-        context.currentState.set(curState)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

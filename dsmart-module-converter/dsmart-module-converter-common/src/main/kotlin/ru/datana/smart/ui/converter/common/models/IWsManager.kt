@@ -4,7 +4,7 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 
 interface IWsManager {
 
-    suspend fun sendInit(context: ConverterBeContext)
+    suspend fun sendFinish(context: ConverterBeContext)
 
     suspend fun sendAngles(context: ConverterBeContext)
 
@@ -18,7 +18,7 @@ interface IWsManager {
 
     companion object {
         val NONE = object: IWsManager {
-            override suspend fun sendInit(context: ConverterBeContext) {
+            override suspend fun sendFinish(context: ConverterBeContext) {
                 TODO("Not yet implemented")
             }
 
