@@ -66,7 +66,7 @@ class MathChain(
 
             +EncodeBase64Handler
             +WsSendMathHandler
-            +WsSendMeltFinishHandler
+//            +WsSendMeltFinishHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }
