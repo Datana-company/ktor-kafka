@@ -3,9 +3,6 @@ package ru.datana.smart.ui.converter.backend
 import codes.spectrum.konveyor.DefaultKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.konveyor
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
@@ -56,35 +53,34 @@ class MathChain(
             +DevicesFilterHandler
             +MeltFilterHandler
             +FrameTimeFilterHandler
-
-            handler {
-                onEnv { status == CorStatus.STARTED }
-                exec {
-                    frame.channel = ModelFrame.Channels.MATH
-                }
-            }
-
             +EncodeBase64Handler
-            +WsSendMathHandler
-//            +WsSendMeltFinishHandler
+            +WsSendMathFrameHandler
+            konveyor {
+                // Временный фильтр на выбросы матмодели по содержанию металла из-за капель металла
+                // в начале и в конце слива
+                on { slagRate.steelRate <= 0.35 }
 
-            handler {
-                onEnv { status == CorStatus.STARTED }
-                exec {
-                    EventsChain(
-                        eventsRepository = eventsRepository,
-                        wsManager = wsManager,
-                        dataTimeout = dataTimeout,
-                        metalRateCriticalPoint = metalRateCriticalPoint,
-                        metalRateWarningPoint = metalRateWarningPoint,
-                        currentState = currentState,
-                        scheduleCleaner = scheduleCleaner,
-                        timeReaction = timeReaction,
-                        timeLimitSiren = timeLimitSiren,
-                        converterId = converterId
-                    ).exec(this)
+                +WsSendMathSlagRateHandler
+
+                handler {
+                    onEnv { status == CorStatus.STARTED }
+                    exec {
+                        EventsChain(
+                            eventsRepository = eventsRepository,
+                            wsManager = wsManager,
+                            dataTimeout = dataTimeout,
+                            metalRateCriticalPoint = metalRateCriticalPoint,
+                            metalRateWarningPoint = metalRateWarningPoint,
+                            currentState = currentState,
+                            scheduleCleaner = scheduleCleaner,
+                            timeReaction = timeReaction,
+                            timeLimitSiren = timeLimitSiren,
+                            converterId = converterId
+                        ).exec(this)
+                    }
                 }
             }
+//            +WsSendMeltFinishHandler
 
             +FinishHandler
         }
