@@ -12,8 +12,8 @@ export class BarChartComponent {
 
   // public xAxisTickFormattingFn = this.xAxisTickFormatting.bind(this);
   // public xAxisTickFormattingFn = (value) => `${value.toString()+"%"}`;
- // public xAxisTickFormattingFn = value => `X ${value.toLocaleString()}`;
- //    @Input() slagRateModel: SlagRateModel;
+  // public xAxisTickFormattingFn = value => `X ${value.toLocaleString()}`;
+  //    @Input() slagRateModel: SlagRateModel;
   view: any[] = [950, 160];
 
   // options
@@ -26,7 +26,7 @@ export class BarChartComponent {
   showYAxisLabel = false;
   xAxisLabel = '';
   showDataLabel = true;
-  barPadding='1';
+  barPadding = '1';
   barChartData: any;
   colorScheme = {
     domain: ['#4E80B2', '#BDE9E3', '#C23557']
@@ -34,7 +34,7 @@ export class BarChartComponent {
 
   @Input() set slagRateChartModel(dat: SlagRateChartModel) {
     const tempAlagRate = ((dat?.slagRate || 0) * 100);
-    const tempAlagRateAkt =((tempAlagRate%1)==0.5?Math.floor(tempAlagRate):Math.round(tempAlagRate))
+    const tempAlagRateAkt = ((tempAlagRate % 1) == 0.5 ? Math.floor(tempAlagRate) : Math.round(tempAlagRate))
     this.barChartData = [
       {
         'name': 'Шлак',
@@ -65,6 +65,7 @@ export class BarChartComponent {
   onDeactivate(data): void {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
+
 // xAxisTickFormatting(value: any){
   //   return value + " %" ;
   // }
