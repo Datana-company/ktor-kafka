@@ -16,6 +16,7 @@ import {SlagRateChartModel} from "./models/slag-rate-chart.model";
 import {SignalerLevelModel} from "./models/signaler-level.model";
 import {SignalerSoundModel} from "./models/signaler-sound.model";
 import {SignalerSoundTypeModel} from "./models/signaler-sound-type.model";
+import {SignalerModel} from "./models/signaler.model";
 
 @Component({
   selector: 'datana-converter-widget',
@@ -162,6 +163,22 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
     ).subscribe(data => {
       this.converterEvents = data;
       console.log('this.converterEvents', this.converterEvents);
+    });
+
+    this.wsService.on('signaler-update').pipe(
+      takeUntil(this._unsubscribe),
+      map((data: any) => {
+        return new SignalerModel(
+          data?.level as SignalerLevelModel,
+          new SignalerSoundModel(
+            data?.sound?.type as SignalerSoundTypeModel,
+            data?.sound?.interval as number
+          )
+        );
+      })
+    ).subscribe(data => {
+      this.converterSignalerLevel = data.level;
+      this.converterSignalerSound = data.sound;
     });
 
 /////// Для теста светофора /////////////////////////////////////////////////////////
