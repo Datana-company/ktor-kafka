@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {Subject, combineLatest} from "rxjs";
+import {combineLatest, Subject} from "rxjs";
 import {filter, map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
 import {EventModel} from "./models/event.model";
@@ -13,6 +13,9 @@ import {ExecutionStatusModel} from "./models/event-execution-status.model";
 import {ConverterAnglesModel} from "./models/converter-angles.model";
 import {ConverterInitModel} from "./models/converter-init.model";
 import {SlagRateChartModel} from "./models/slag-rate-chart.model";
+import {SignalerLevelModel} from "./models/signaler-level.model";
+import {SignalerSoundModel} from "./models/signaler-sound.model";
+import {SignalerSoundTypeModel} from "./models/signaler-sound-type.model";
 
 @Component({
   selector: 'datana-converter-widget',
@@ -30,6 +33,10 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   public converterAnglesData: ConverterAnglesModel;
   public converterEvents: Array<EventModel> = new Array<EventModel>();
   public converterSlagRateChart: SlagRateChartModel;
+  public converterSignalerLevel: SignalerLevelModel = SignalerLevelModel.INFO;
+  public converterSignalerSound: SignalerSoundModel = new SignalerSoundModel(
+    SignalerSoundTypeModel.NONE, 0
+  );
   playlist: string;
 
   constructor(
@@ -156,6 +163,38 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.converterEvents = data;
       console.log('this.converterEvents', this.converterEvents);
     });
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//     document.getElementById('info').addEventListener('click', () => {
+//       console.log('info');
+//       this.converterSignalerLevel = SignalerLevelModel.INFO
+//     });
+//     document.getElementById('warning').addEventListener('click', () => {
+//       console.log('warning');
+//       this.converterSignalerLevel = SignalerLevelModel.WARNING
+//     });
+//     document.getElementById('critical').addEventListener('click', () => {
+//       console.log('critical');
+//       this.converterSignalerLevel = SignalerLevelModel.CRITICAL
+//     });
+//
+//     document.getElementById('sound0').addEventListener('click', () => {
+//       console.log('sound0');
+//       this.converterSignalerSound = new SignalerSoundModel(SignalerSoundTypeModel.NONE, 0)
+//     });
+//     document.getElementById('sound1').addEventListener('click', () => {
+//       console.log('sound1');
+//       this.converterSignalerSound = new SignalerSoundModel(SignalerSoundTypeModel.SOUND_1, 2000)
+//     });
+//     document.getElementById('sound2').addEventListener('click', () => {
+//       console.log('sound2');
+//       this.converterSignalerSound = new SignalerSoundModel(SignalerSoundTypeModel.SOUND_2, 5000)
+//     });
+//     document.getElementById('sound3').addEventListener('click', () => {
+//       console.log('sound3');
+//       this.converterSignalerSound = new SignalerSoundModel(SignalerSoundTypeModel.SOUND_3, 8000)
+//     });
+//////////////////////////////////////////////////////////////////////////////////////////
   }
 
   ngOnDestroy(): void {
