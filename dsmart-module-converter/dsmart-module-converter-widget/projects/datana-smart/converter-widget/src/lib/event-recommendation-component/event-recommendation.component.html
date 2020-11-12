@@ -4,7 +4,6 @@
       {{ event?.dateStart | date: 'HH:mm:ss' }}
     </div>
     <div [class.widget-event-item-instruction-active]="event?.isActive" class="widget-event-item-instruction">
-      <!--                    Время начала плавки:{{ timeStartMeltStream$ | async }}-->
       <div class="widget-event-title">{{ event?.title }}</div>
       <div class="widget-event-execution-status">
         <div *ngIf="isCompleted(event?.executionStatus)" class="widget-event-execution-status-completed">Выполнено</div>
@@ -18,7 +17,6 @@
       {{ event?.dateStart | date: 'HH:mm:ss' }}
     </div>
     <div [class.widget-event-item-info-instruction-active]="event?.isActive" class="widget-event-item-info-instruction">
-      <!--                    Время начала плавки:{{ timeStartMeltStream$ | async }}-->
       <div class="widget-event-title">{{ event?.title }}</div>
       <div class="widget-event-execution-status">
         <div *ngIf="isCompleted(event?.executionStatus)" class="widget-event-execution-status-completed">Выполнено</div>
