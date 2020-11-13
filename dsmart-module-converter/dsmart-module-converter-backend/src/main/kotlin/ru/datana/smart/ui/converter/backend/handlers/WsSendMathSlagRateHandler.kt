@@ -29,10 +29,6 @@ object WsSendMathSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
             }
         }
         context.scheduleCleaner.set(schedule)
-
-        val curState = context.currentState.get() ?: CurrentState()
-        curState.lastSlagRate = context.slagRate
-        context.currentState.set(curState)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {
