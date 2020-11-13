@@ -80,7 +80,7 @@ class MathChain(
                     }
                 }
             }
-//            +WsSendMeltFinishHandler
+            +WsSendMeltFinishHandler
 
             +FinishHandler
         }

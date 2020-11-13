@@ -48,35 +48,34 @@ class EventsChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
+            exec {
+                println("EventsChain ${currentState.get()?.currentMeltInfo?.id}")
+            }
+
             konveyor {
                 on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
-                +UpdateEndEventHandler
                 +CreateCriticalEventHandler
             }
             konveyor {
                 on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateInfoEventHandler
-                +UpdateEndEventHandler
                 +CreateWarningEventHandler
             }
             konveyor {
                 on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
-                +UpdateEndEventHandler
                 +CreateInfoEventHandler
             }
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == 0 } ?: false
-                    && slagRate.slagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == 0 } ?: false }
+                on { currentState.get()?.let { it.currentMeltInfo.id == "" } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
                 +CreateSuccessMeltEventHandler
-                +CreateEndEventHandler
             }
             konveyor {
                 on { angles.angle.takeIf { it != Double.MIN_VALUE } != null }
