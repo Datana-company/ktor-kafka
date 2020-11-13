@@ -8,7 +8,7 @@ import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
 
 object UpdateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val meltId: String = context.currentState.get()?.currentMeltInfo?.id ?: return
+        val meltId: String = context.meltInfo.id
         val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
         activeEvent?.let {
             val historicalEvent = MetalRateInfoEvent(

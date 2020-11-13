@@ -11,18 +11,15 @@ import java.util.*
 
 object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        println("Success Event Start")
-        val meltId: String = context.currentState.get()?.currentMeltInfo?.id ?: return
-        val currentMeltId: String = context.meltInfo.id
+        val meltId: String = context.meltInfo.id
         val slagRateTime = context.frame.frameTime
         context.eventsRepository.getAllByMeltId(meltId).map {
             if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent) {
-                println("Success Event Return")
                 return
             }
         }
         context.eventsRepository.put(
-            currentMeltId,
+            meltId,
             SuccessMeltEvent(
                 id = UUID.randomUUID().toString(),
                 timeStart = slagRateTime,
@@ -31,7 +28,6 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
                 isActive = false
             )
         )
-        println("Success Event Finish")
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

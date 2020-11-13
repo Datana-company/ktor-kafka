@@ -86,11 +86,11 @@ fun Application.module(testing: Boolean = false) {
     val metalRateWarningPoint: Double by lazy {
         environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble()
     }
-    val timeReaction: Long by lazy {
-        environment.config.property("ktor.conveyor.timeReaction").getString().trim().toLong()
+    val reactionTime: Long by lazy {
+        environment.config.property("ktor.conveyor.reactionTime").getString().trim().toLong()
     }
-    val timeLimitSiren: Long by lazy {
-        environment.config.property("ktor.conveyor.timeLimitSiren").getString().trim().toLong()
+    val sirenLimitTime: Long by lazy {
+        environment.config.property("ktor.conveyor.sirenLimitTime").getString().trim().toLong()
     }
 
     // TODO: в будущем найти место, куда пристроить генератор
@@ -119,6 +119,8 @@ fun Application.module(testing: Boolean = false) {
         dataTimeout = dataTimeout,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
         currentState = currentState,
         converterId = converterId,
         framesBasePath = framesBasePath,

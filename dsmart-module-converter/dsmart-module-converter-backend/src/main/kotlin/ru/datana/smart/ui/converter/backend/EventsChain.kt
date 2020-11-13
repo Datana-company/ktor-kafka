@@ -48,10 +48,6 @@ class EventsChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            exec {
-                println("EventsChain ${currentState.get()?.currentMeltInfo?.id}")
-            }
-
             konveyor {
                 on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
                 +UpdateWarningEventHandler
