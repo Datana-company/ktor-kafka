@@ -8,7 +8,7 @@ import ru.datana.smart.ui.converter.ws.models.WsDsmartConverterSignalerSound
 
 fun toWsConverterSignalerModel(signalerModel: SignalerModel) =
     WsDsmartConverterSignaler(
-        level = signalerModel.level.takeIf { it != SignalerModel.SignalerLevelModel.INFO }
+        level = signalerModel.level.takeIf { it != SignalerModel.SignalerLevelModel.NONE }
             ?.let { WsDsmartConverterSignaler.SignalerLevelModel.valueOf(it.name) },
         sound = WsDsmartConverterSignalerSound(
             type = signalerModel.sound.type.takeIf { it != SignalerSoundModel.SignalerSoundTypeModel.NONE }
