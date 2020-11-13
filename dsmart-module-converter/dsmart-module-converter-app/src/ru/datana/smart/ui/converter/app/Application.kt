@@ -25,6 +25,7 @@ import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.websocket.WsManager
+import ru.datana.smart.ui.converter.app.websocket.WsSignalerManager
 import ru.datana.smart.ui.converter.backend.ConverterFacade
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import java.time.Duration
@@ -66,6 +67,7 @@ fun Application.module(testing: Boolean = false) {
     install(KtorKafkaConsumer)
 
     val wsManager = WsManager()
+    val wsSignalerManager = WsSignalerManager()
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
     val topicMath by lazy { environment.config.property("ktor.kafka.consumer.topic.math").getString().trim() }
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
@@ -86,11 +88,11 @@ fun Application.module(testing: Boolean = false) {
     val metalRateWarningPoint: Double by lazy {
         environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble()
     }
-    val timeReaction: Long by lazy {
-        environment.config.property("ktor.conveyor.timeReaction").getString().trim().toLong()
+    val reactionTime: Long by lazy {
+        environment.config.property("ktor.conveyor.reactionTime").getString().trim().toLong()
     }
-    val timeLimitSiren: Long by lazy {
-        environment.config.property("ktor.conveyor.timeLimitSiren").getString().trim().toLong()
+    val sirenLimitTime: Long by lazy {
+        environment.config.property("ktor.conveyor.sirenLimitTime").getString().trim().toLong()
     }
 
     // TODO: в будущем найти место, куда пристроить генератор
@@ -116,9 +118,12 @@ fun Application.module(testing: Boolean = false) {
     val converterFacade = ConverterFacade(
         converterRepository = userEventsRepository,
         wsManager = wsManager,
+        wsSignalerManager = wsSignalerManager,
         dataTimeout = dataTimeout,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
         currentState = currentState,
         converterId = converterId,
         framesBasePath = framesBasePath,
@@ -132,8 +137,9 @@ fun Application.module(testing: Boolean = false) {
         }
 
         webSocket("/ws") {
-            println("onConnect")
+            println("/ws --- onConnect")
             wsManager.addSession(this, websocketContext)
+            wsSignalerManager.init(this, websocketContext)
             try {
                 for (frame in incoming) {
                 }
@@ -143,13 +149,29 @@ fun Application.module(testing: Boolean = false) {
                 logger.error("Error within websocket block due to: ${closeReason.await()}", e)
             } finally {
                 wsManager.delSession(this)
+                wsSignalerManager.close(this)
             }
         }
+
+//        webSocket("/ws_signaler") {
+//            println("/ws_signaler --- onConnect")
+//            wsSignalerManager.init(this, websocketContext)
+//            try {
+//                for (frame in incoming) {
+//                }
+//            } catch (e: ClosedReceiveChannelException) {
+//                println("onClose ${closeReason.await()}")
+//            } catch (e: Throwable) {
+//                logger.error("Error within websocket block due to: ${closeReason.await()}", e)
+//            } finally {
+//                wsSignalerManager.close(this)
+//            }
+//        }
 
         kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles)) {
             try {
                 records.sortedByDescending { it.offset() }
-//                на самом деле уже они отсортированы сначала по топику, затем по offset по убыванию
+//                на самом деле они уже отсортированы сначала по топику, затем по offset по убыванию
                     .distinctBy { it.topic() }
                     .map { it.toInnerModel() }
                     .forEach { record ->

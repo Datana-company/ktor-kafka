@@ -32,12 +32,6 @@ class WsManager : IWsManager {
     }
 
     override suspend fun sendFinish(context: ConverterBeContext) {
-        context.currentState.get()?.currentMeltInfo?.let {
-            val events = context.eventsRepository.getAllByMeltId(it.id)
-            context.also {
-                    context -> context.events = ModelEvents(events = events)
-            }
-        }
         val wsConverterState = WsDsmartResponseConverterState(
             data = toWsConverterStateModel(context)
         )

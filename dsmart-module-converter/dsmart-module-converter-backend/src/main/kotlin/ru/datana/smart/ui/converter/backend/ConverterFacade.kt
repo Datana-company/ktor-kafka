@@ -1,21 +1,19 @@
 package ru.datana.smart.ui.converter.backend
 
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
-import ru.datana.smart.ui.converter.common.models.CurrentState
-import ru.datana.smart.ui.converter.common.models.IWsManager
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
-import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
+import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
 
 class ConverterFacade(
     converterRepository: IUserEventsRepository = IUserEventsRepository.NONE,
     wsManager: IWsManager = IWsManager.NONE,
+    wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     dataTimeout: Long = Long.MIN_VALUE,
     metalRateCriticalPoint: Double = Double.MIN_VALUE,
     metalRateWarningPoint: Double = Double.MIN_VALUE,
-    timeReaction: Long = Long.MIN_VALUE,
-    timeLimitSiren: Long = Long.MIN_VALUE,
+    reactionTime: Long = Long.MIN_VALUE,
+    sirenLimitTime: Long = Long.MIN_VALUE,
     currentState: AtomicReference<CurrentState?> = AtomicReference(),
     scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
     converterId: String = "",
@@ -24,26 +22,28 @@ class ConverterFacade(
     private val mathChain = MathChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
+        wsSignalerManager= wsSignalerManager,
         dataTimeout = dataTimeout,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentState = currentState,
         scheduleCleaner = scheduleCleaner,
-        timeReaction = timeReaction,
-        timeLimitSiren = timeLimitSiren,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
         converterId = converterId,
         framesBasePath = framesBasePath
     )
     private val anglesChain = AnglesChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
+        wsSignalerManager = wsSignalerManager,
         dataTimeout = dataTimeout,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         currentState = currentState,
         scheduleCleaner = scheduleCleaner,
-        timeReaction = timeReaction,
-        timeLimitSiren = timeLimitSiren,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
         converterId = converterId
     )
     private val frameChain = FrameChain(
@@ -54,8 +54,8 @@ class ConverterFacade(
         metalRateWarningPoint = metalRateWarningPoint,
         currentState = currentState,
         scheduleCleaner = scheduleCleaner,
-        timeReaction = timeReaction,
-        timeLimitSiren = timeLimitSiren,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
         converterId = converterId,
         framesBasePath = framesBasePath
     )
@@ -67,8 +67,8 @@ class ConverterFacade(
         metalRateWarningPoint = metalRateWarningPoint,
         currentState = currentState,
         scheduleCleaner = scheduleCleaner,
-        timeReaction = timeReaction,
-        timeLimitSiren = timeLimitSiren,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
         converterId = converterId
     )
 

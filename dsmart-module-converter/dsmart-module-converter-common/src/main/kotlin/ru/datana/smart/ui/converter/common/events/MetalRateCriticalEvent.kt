@@ -14,7 +14,7 @@ data class MetalRateCriticalEvent(
     override val angleMax: Double? = null,
     override val title: String = "Критическая ситуация",
     override val textMessage: String = """
-                                        В потоке детектирован металл – ${toPercent(metalRate)}%, процент потерь превышает критическое значение – ${toPercent(criticalPoint)} %. Верните конвертер в вертикальное положение!
+                                        В потоке детектирован металл – ${toPercent(metalRate)}%, процент потерь превышает критическое значение – ${toPercent(criticalPoint)}%. Верните конвертер в вертикальное положение!
 
                                         """.trimIndent(),
     override val category: IBizEvent.Category = IBizEvent.Category.CRITICAL,

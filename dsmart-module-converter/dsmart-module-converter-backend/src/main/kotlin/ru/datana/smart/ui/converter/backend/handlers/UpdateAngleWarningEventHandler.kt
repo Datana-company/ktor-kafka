@@ -8,7 +8,7 @@ import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 
 object UpdateAngleWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val meltId: String = context.currentState.get()?.currentMeltInfo?.id ?: return
+        val meltId: String = context.meltInfo.id
         val activeEvent = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
         val currentAngle = context.angles.angle
         activeEvent?.let {

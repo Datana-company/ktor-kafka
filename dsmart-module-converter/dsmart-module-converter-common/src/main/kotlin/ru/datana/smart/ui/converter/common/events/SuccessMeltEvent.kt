@@ -14,7 +14,7 @@ data class SuccessMeltEvent(
     override val angleMax: Double? = null,
     override val title: String = "Информация",
     override val textMessage: String = """
-                                        Допустимая норма потерь металла ${toPercent(warningPoint)} % не была превышена.
+                                        Допустимая норма потерь металла ${toPercent(warningPoint)}% не была превышена.
                                         """.trimIndent(),
     override val category: IBizEvent.Category = IBizEvent.Category.INFO,
     override val isActive: Boolean = true,

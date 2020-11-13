@@ -14,7 +14,7 @@ data class MetalRateWarningEvent(
     override val angleMax: Double? = null,
     override val title: String = "Предупреждение",
     override val textMessage: String = """
-                                        В потоке детектирован металл – ${toPercent(metalRate)}% сверх допустимой нормы ${toPercent(warningPoint)} %. Верните конвертер в вертикальное положение.
+                                        В потоке детектирован металл – ${toPercent(metalRate)}% сверх допустимой нормы ${toPercent(warningPoint)}%. Верните конвертер в вертикальное положение.
                                         """.trimIndent(),
     override val category: IBizEvent.Category = IBizEvent.Category.WARNING,
     override val isActive: Boolean = true,

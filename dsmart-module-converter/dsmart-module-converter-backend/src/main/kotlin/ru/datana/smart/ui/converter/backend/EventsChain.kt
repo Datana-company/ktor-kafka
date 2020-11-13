@@ -14,11 +14,12 @@ import java.util.concurrent.atomic.AtomicReference
 class EventsChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
+    var wsSignalerManager: IWsSignalerManager,
     var dataTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
-    var timeReaction: Long,
-    var timeLimitSiren: Long,
+    var reactionTime: Long,
+    var sirenLimitTime: Long,
     var currentState: AtomicReference<CurrentState?>,
     var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
     var converterId: String
@@ -32,11 +33,12 @@ class EventsChain(
             context.also {
                 it.eventsRepository = eventsRepository
                 it.wsManager = wsManager
+                it.wsSignalerManager = wsSignalerManager
                 it.dataTimeout = dataTimeout
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
-                it.timeReaction = timeReaction
-                it.timeLimitSiren = timeLimitSiren
+                it.reactionTime = reactionTime
+                it.sirenLimitTime = sirenLimitTime
                 it.currentState = currentState
                 it.scheduleCleaner = scheduleCleaner
                 it.converterId = converterId
@@ -52,31 +54,26 @@ class EventsChain(
                 on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
-                +UpdateEndEventHandler
                 +CreateCriticalEventHandler
             }
             konveyor {
                 on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateInfoEventHandler
-                +UpdateEndEventHandler
                 +CreateWarningEventHandler
             }
             konveyor {
                 on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
-                +UpdateEndEventHandler
                 +CreateInfoEventHandler
             }
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == 0 } ?: false
-                    && slagRate.slagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == 0 } ?: false }
+                on { currentState.get()?.let { it.currentMeltInfo.id == "" } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
                 +CreateSuccessMeltEventHandler
-                +CreateEndEventHandler
             }
             konveyor {
                 on { angles.angle.takeIf { it != Double.MIN_VALUE } != null }
@@ -95,6 +92,13 @@ class EventsChain(
                 onEnv { status == CorStatus.STARTED }
                 exec {
                     wsManager.sendEvents(this)
+                }
+            }
+//            Цепочка обработки светофора от событий
+            handler {
+                onEnv { status == CorStatus.STARTED && signaler != SignalerModel.NONE }
+                exec {
+                    wsSignalerManager.sendSignaler(this)
                 }
             }
         }
