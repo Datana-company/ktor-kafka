@@ -1,22 +1,22 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {combineLatest, Subject} from "rxjs";
+import {combineLatest, Subject} from 'rxjs';
 import {filter, map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
-import {EventModel} from "./models/event.model";
-import {SlagRateModel} from "./models/slag-rate.model";
-import {ConverterFrameModel} from "./models/converter-frame.model";
-import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
-import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
-import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
-import {EventCategoryModel} from "./models/event-category.model";
-import {ExecutionStatusModel} from "./models/event-execution-status.model";
-import {ConverterAnglesModel} from "./models/converter-angles.model";
-import {ConverterStateModel} from "./models/converter-state.model";
-import {SlagRateChartModel} from "./models/slag-rate-chart.model";
-import {SignalerLevelModel} from "./models/signaler-level.model";
-import {SignalerSoundModel} from "./models/signaler-sound.model";
-import {SignalerSoundTypeModel} from "./models/signaler-sound-type.model";
-import {SignalerModel} from "./models/signaler.model";
+import {EventModel} from './models/event.model';
+import {SlagRateModel} from './models/slag-rate.model';
+import {ConverterFrameModel} from './models/converter-frame.model';
+import {ConverterMeltInfoModel} from './models/converter-melt-info.model';
+import {ConverterMeltModeModel} from './models/converter-melt-mode.model';
+import {ConverterMeltDevicesModel} from './models/converter-melt-devices.model';
+import {EventCategoryModel} from './models/event-category.model';
+import {ExecutionStatusModel} from './models/event-execution-status.model';
+import {ConverterAnglesModel} from './models/converter-angles.model';
+import {ConverterStateModel} from './models/converter-state.model';
+import {SlagRateChartModel} from './models/slag-rate-chart.model';
+import {SignalerLevelModel} from './models/signaler-level.model';
+import {SignalerSoundModel} from './models/signaler-sound.model';
+import {SignalerSoundTypeModel} from './models/signaler-sound-type.model';
+import {SignalerModel} from './models/signaler.model';
 
 @Component({
   selector: 'datana-converter-widget',
@@ -26,7 +26,8 @@ import {SignalerModel} from "./models/signaler.model";
 export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   _unsubscribe = new Subject<void>();
-
+  public current_time: Date;
+  // public current_datetime = new Date();
   public converterMeltInfoData: ConverterMeltInfoModel;
   public converterSlagRateData: SlagRateModel;
   public converterFrameCameraData: ConverterFrameModel;
@@ -42,7 +43,9 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(configProvide) private wsService: IWebsocketService
-  ) { }
+  ) {
+    // timer(1000).subscribe(val => this.current_time = new Date());
+  }
 
   ngOnInit(): void {
     this.playlist = 'http://camera.d.datana.ru/playlist.m3u8'
@@ -180,6 +183,34 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.converterSignalerLevel = data.level;
       this.converterSignalerSound = data.sound;
     });
+  }
+
+  /* функция добавления ведущих нулей */
+
+  /* (если число меньше десяти, перед числом добавляем ноль) */
+  zero_first_format(value) {
+    if (value < 10) {
+      value = '0' + value;
+    }
+    return value;
+  }
+  /* функция получения текущей даты и времени */
+  getDateLocal() {
+    const current_datetime = new Date()
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }
+    return current_datetime.toLocaleDateString('ru-RU', options).substring(0, 14);
+  }
+  getTime() {
+    const current_datetime = new Date()
+    const hours = this.zero_first_format(current_datetime.getHours());
+    const minutes = this.zero_first_format(current_datetime.getMinutes());
+    const seconds = this.zero_first_format(current_datetime.getSeconds());
+    return  hours + ':' + minutes + ':' + seconds;
+  }
 
 /////// Для теста светофора /////////////////////////////////////////////////////////
 //     document.getElementById('info').addEventListener('click', () => {
@@ -212,7 +243,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 //       this.converterSignalerSound = new SignalerSoundModel(SignalerSoundTypeModel.SOUND_3, 8000)
 //     });
 //////////////////////////////////////////////////////////////////////////////////////////
-  }
+
 
   ngOnDestroy(): void {
     this._unsubscribe.next();

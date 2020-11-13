@@ -63,7 +63,29 @@
     left: 40%;
     position: absolute;
 }
+.timeHeader{
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 26px;
+    line-height: 35px;
+    text-align: center;
+    top: 1.2rem;
+    text-align: center;
+    color: #FFFFFF;
+}
+.dateHeader{
 
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 25px;
+    /* identical to box height */
+    text-align: right;
+    top: 1.7rem;
+    color: #FFFFFF;
+}
 .exit{
     position: absolute;
     top: 17px;
