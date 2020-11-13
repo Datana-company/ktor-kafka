@@ -10,7 +10,6 @@ import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverterState
 import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseEvents
 import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverterSignaler
-import java.io.Closeable
 import java.util.concurrent.ConcurrentHashMap
 
 class WsSignalerManager : IWsSignalerManager {
