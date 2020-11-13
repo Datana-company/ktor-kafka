@@ -4,7 +4,6 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.EndMeltEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 import ru.datana.smart.ui.converter.common.events.SuccessMeltEvent
@@ -17,7 +16,7 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
         val meltId: String = context.meltInfo.id
         val slagRateTime = context.frame.frameTime
         context.eventsRepository.getAllByMeltId(meltId).map {
-            if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent || it is EndMeltEvent) {
+            if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent) {
                 return
             }
         }

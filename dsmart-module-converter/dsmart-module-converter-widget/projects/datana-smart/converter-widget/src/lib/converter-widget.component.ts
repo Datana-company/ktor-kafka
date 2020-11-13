@@ -58,7 +58,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
     rawState.subscribe(data => {
       this.converterMeltInfoData = data?.meltInfo;
-      this.converterEvents = Object.assign([], data?.events);
+      // this.converterEvents = data?.events;
     });
 
     this.wsService.on('converter-melt-info-update').pipe(
@@ -160,7 +160,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       ) as Array<EventModel>)
     ).subscribe(data => {
       this.converterEvents = data;
-      console.log('this.converterEvents', this.converterEvents);
     });
 
     this.wsService.on('signaler-update').pipe(

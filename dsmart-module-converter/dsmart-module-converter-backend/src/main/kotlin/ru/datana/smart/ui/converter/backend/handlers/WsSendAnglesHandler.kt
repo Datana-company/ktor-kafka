@@ -24,6 +24,11 @@ object WsSendAnglesHandler: IKonveyorHandler<ConverterBeContext> {
             jobAngles = GlobalScope.launch {
                 delay(context.dataTimeout)
                 context.angles = ModelAngles.NONE
+
+                val curState = context.currentState.get() ?: CurrentState()
+                curState.lastAngles = context.angles
+                context.currentState.set(curState)
+
                 context.wsManager.sendAngles(context)
                 println("jobAngles done")
             }

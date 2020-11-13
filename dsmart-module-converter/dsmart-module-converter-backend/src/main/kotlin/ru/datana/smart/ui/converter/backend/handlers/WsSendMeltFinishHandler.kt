@@ -5,9 +5,11 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import ru.datana.smart.ui.converter.backend.EventsChain
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.CurrentState
+import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 
@@ -23,11 +25,17 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
             }
             jobMeltFinish = GlobalScope.launch {
                 delay(10000L)
-                context.meltInfo = ModelMeltInfo.NONE
                 val curState = context.currentState.get() ?: CurrentState()
-                curState.currentMeltInfo = context.meltInfo
+                curState.currentMeltInfo = ModelMeltInfo.NONE
                 context.currentState.set(curState)
+
+                EventsChain.konveyor.exec(context)
+
+                val events = context.eventsRepository.getAllByMeltId(context.meltInfo.id)
+                context.events = ModelEvents(events = events)
+                context.meltInfo = ModelMeltInfo.NONE
                 context.wsManager.sendFinish(context)
+                context.wsManager.sendEvents(context)
                 println("jobMeltFinish done")
             }
         }

@@ -10,7 +10,7 @@ import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 object UpdateAngleInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val meltId: String = context.currentState.get()?.currentMeltInfo?.id ?: return
+        val meltId: String = context.meltInfo.id
         val activeEvent = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
         val currentAngle = context.angles.angle
         activeEvent?.let {
@@ -25,7 +25,8 @@ object UpdateAngleInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 isActive = it.isActive,
                 angleStart = angleStart,
                 angleFinish = currentAngle,
-                angleMax = angleMax
+                angleMax = angleMax,
+                warningPoint = it.warningPoint
             )
             context.eventsRepository.put(meltId, historicalEvent)
         } ?: return
