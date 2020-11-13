@@ -37,11 +37,11 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                     metalRate = context.slagRate.steelRate
                 )
             )
-            context.signaler = SignalerModel(
-                level = SignalerModel.SignalerLevelModel.INFO,
-                sound = SignalerSoundModel.NONE
-            )
         }
+        context.signaler = SignalerModel(
+            level = SignalerModel.SignalerLevelModel.INFO,
+            sound = SignalerSoundModel.NONE
+        )
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {
