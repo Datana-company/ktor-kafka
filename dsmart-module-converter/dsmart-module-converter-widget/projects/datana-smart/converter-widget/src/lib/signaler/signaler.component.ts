@@ -33,7 +33,8 @@ export class SignalerComponent implements OnInit, OnChanges {
   handleSound = () => {
     clearInterval(this.intervalId)
 
-    if (this.sound?.type !== SignalerSoundTypeModel.NONE) {
+    const type = this.sound?.type;
+    if (type && type !== SignalerSoundTypeModel.NONE) {
       const audio = this.getAudio(this.sound.type);
 
       audio.play()
