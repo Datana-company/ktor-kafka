@@ -3,14 +3,10 @@ package ru.datana.smart.ui.converter.app.websocket
 import io.ktor.http.cio.websocket.DefaultWebSocketSession
 import io.ktor.http.cio.websocket.send
 import kotlinx.serialization.json.Json
-import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.IWsSignalerManager
 import ru.datana.smart.ui.converter.common.models.ModelEvents
-import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverterState
-import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseEvents
 import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverterSignaler
-import java.io.Closeable
 import java.util.concurrent.ConcurrentHashMap
 
 class WsSignalerManager : IWsSignalerManager {
