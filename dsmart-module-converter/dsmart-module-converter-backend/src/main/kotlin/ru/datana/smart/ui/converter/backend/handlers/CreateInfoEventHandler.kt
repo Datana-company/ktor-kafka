@@ -27,21 +27,21 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 angleMax = it.angleMax
             )
             context.eventsRepository.put(meltId, updateEvent)
-        } ?: context.eventsRepository.put(
-            meltId,
-            MetalRateInfoEvent(
-                id = UUID.randomUUID().toString(),
-                timeStart = slagRateTime,
-                timeFinish = slagRateTime,
-                metalRate = context.slagRate.steelRate
+        } ?: run {
+            context.eventsRepository.put(
+                meltId,
+                MetalRateInfoEvent(
+                    id = UUID.randomUUID().toString(),
+                    timeStart = slagRateTime,
+                    timeFinish = slagRateTime,
+                    metalRate = context.slagRate.steelRate
+                )
             )
-        )
-//         переключаем ли светофор при отправке инфо события?
-        context.signaler = SignalerModel(
-            level = SignalerModel.SignalerLevelModel.INFO,
-            sound = SignalerSoundModel.NONE
-        )
-///////////////////////////////////////////////////////////
+            context.signaler = SignalerModel(
+                level = SignalerModel.SignalerLevelModel.INFO,
+                sound = SignalerSoundModel.NONE
+            )
+        }
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {
