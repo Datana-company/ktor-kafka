@@ -33,8 +33,7 @@ object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 context.signaler = SignalerModel(
                     level = SignalerModel.SignalerLevelModel.CRITICAL,
                     sound = SignalerSoundModel(
-                        type = SignalerSoundModel.SignalerSoundTypeModel.NONE,
-                        interval = 1
+                        type = SignalerSoundModel.SignalerSoundTypeModel.NONE
                     )
                 )
             } else {
@@ -42,7 +41,7 @@ object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                     level = SignalerModel.SignalerLevelModel.CRITICAL,
                     sound = SignalerSoundModel(
                         type = SignalerSoundModel.SignalerSoundTypeModel.SOUND_1,
-                        interval = 1
+                        interval = 3000
                     )
                 )
             }

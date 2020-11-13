@@ -10,6 +10,7 @@ import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverterState
 import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseEvents
 import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverterSignaler
+import java.io.Closeable
 import java.util.concurrent.ConcurrentHashMap
 
 class WsSignalerManager : IWsSignalerManager {
@@ -17,19 +18,19 @@ class WsSignalerManager : IWsSignalerManager {
     val wsSessions: MutableCollection<DefaultWebSocketSession> = ConcurrentHashMap.newKeySet()
     val kotlinxSerializer: Json = Json { encodeDefaults = true }
 
-    suspend fun addSession(session: DefaultWebSocketSession, context: ConverterBeContext) {
+    suspend fun init(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
         context.currentState.get()?.currentMeltInfo?.let {
             val events = context.eventsRepository.getAllByMeltId(it.id)
-            context.also { context ->
-                context.events = ModelEvents(events = events)
-            }
+            context.events = ModelEvents(events = events)
         }
-        val wsConverterState = WsDsmartResponseConverterState(
-            data = toWsConverterStateModel(context)
+        val wsSignaler = WsDsmartResponseConverterSignaler(
+            data = toWsConverterSignalerModel(context.signaler)
         )
-        val converterStateSerializedString =
-            kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
+        val converterStateSerializedString = kotlinxSerializer.encodeToString(
+            WsDsmartResponseConverterSignaler.serializer(),
+            wsSignaler
+        )
         session.send(converterStateSerializedString)
     }
 
@@ -55,7 +56,7 @@ class WsSignalerManager : IWsSignalerManager {
         }
     }
 
-    fun delSession(session: DefaultWebSocketSession) {
+    fun close(session: DefaultWebSocketSession) {
         wsSessions -= session
     }
 }

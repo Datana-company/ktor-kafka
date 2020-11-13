@@ -5,6 +5,8 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import java.util.*
 
 object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
@@ -34,6 +36,12 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 metalRate = context.slagRate.steelRate
             )
         )
+//         переключаем ли светофор при отправке инфо события?
+        context.signaler = SignalerModel(
+            level = SignalerModel.SignalerLevelModel.INFO,
+            sound = SignalerSoundModel.NONE
+        )
+///////////////////////////////////////////////////////////
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

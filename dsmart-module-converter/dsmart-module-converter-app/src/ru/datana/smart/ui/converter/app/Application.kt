@@ -137,6 +137,7 @@ fun Application.module(testing: Boolean = false) {
         webSocket("/ws") {
             println("/ws --- onConnect")
             wsManager.addSession(this, websocketContext)
+            wsSignalerManager.init(this, websocketContext)
             try {
                 for (frame in incoming) {
                 }
@@ -146,28 +147,29 @@ fun Application.module(testing: Boolean = false) {
                 logger.error("Error within websocket block due to: ${closeReason.await()}", e)
             } finally {
                 wsManager.delSession(this)
+                wsSignalerManager.close(this)
             }
         }
 
-        webSocket("/ws_signaler") {
-            println("/ws_signaler --- onConnect")
-            wsSignalerManager.addSession(this, websocketContext)
-            try {
-                for (frame in incoming) {
-                }
-            } catch (e: ClosedReceiveChannelException) {
-                println("onClose ${closeReason.await()}")
-            } catch (e: Throwable) {
-                logger.error("Error within websocket block due to: ${closeReason.await()}", e)
-            } finally {
-                wsSignalerManager.delSession(this)
-            }
-        }
+//        webSocket("/ws_signaler") {
+//            println("/ws_signaler --- onConnect")
+//            wsSignalerManager.init(this, websocketContext)
+//            try {
+//                for (frame in incoming) {
+//                }
+//            } catch (e: ClosedReceiveChannelException) {
+//                println("onClose ${closeReason.await()}")
+//            } catch (e: Throwable) {
+//                logger.error("Error within websocket block due to: ${closeReason.await()}", e)
+//            } finally {
+//                wsSignalerManager.close(this)
+//            }
+//        }
 
         kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles)) {
             try {
                 records.sortedByDescending { it.offset() }
-//                на самом деле уже они отсортированы сначала по топику, затем по offset по убыванию
+//                на самом деле они уже отсортированы сначала по топику, затем по offset по убыванию
                     .distinctBy { it.topic() }
                     .map { it.toInnerModel() }
                     .forEach { record ->

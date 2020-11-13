@@ -8,9 +8,9 @@ data class WsDsmartConverterSignaler(
     val sound: WsDsmartConverterSignalerSound? = null
 ) {
     @Serializable
-    enum class SignalerLevelModel(val value: String) {
-        INFO("INFO"),
-        WARNING("WARNING"),
-        CRITICAL("CRITICAL")
+    enum class SignalerLevelModel {
+        INFO,
+        WARNING,
+        CRITICAL
     }
 }
