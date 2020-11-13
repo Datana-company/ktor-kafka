@@ -30,21 +30,6 @@ object UpdateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                 executionStatus = if (isCompletedEvent) IBizEvent.ExecutionStatus.COMPLETED else IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(meltId, historicalEvent)
-            if (isCompletedEvent) {
-                context.signaler = SignalerModel(
-                    level = SignalerModel.SignalerLevelModel.WARNING,
-                    sound = SignalerSoundModel(
-                        type = SignalerSoundModel.SignalerSoundTypeModel.NONE,
-                    )
-                )
-            } else {
-                context.signaler = SignalerModel(
-                    level = SignalerModel.SignalerLevelModel.WARNING,
-                    sound = SignalerSoundModel(
-                        type = SignalerSoundModel.SignalerSoundTypeModel.NONE,
-                    )
-                )
-            }
         } ?: return
     }
 

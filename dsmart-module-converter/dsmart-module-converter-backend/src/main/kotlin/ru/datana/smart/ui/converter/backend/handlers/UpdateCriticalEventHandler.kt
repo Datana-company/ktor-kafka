@@ -29,22 +29,6 @@ object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 executionStatus = if (isCompletedEvent) IBizEvent.ExecutionStatus.COMPLETED else IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(meltId, historicalEvent)
-            if (isCompletedEvent) {
-                context.signaler = SignalerModel(
-                    level = SignalerModel.SignalerLevelModel.CRITICAL,
-                    sound = SignalerSoundModel(
-                        type = SignalerSoundModel.SignalerSoundTypeModel.NONE
-                    )
-                )
-            } else {
-                context.signaler = SignalerModel(
-                    level = SignalerModel.SignalerLevelModel.CRITICAL,
-                    sound = SignalerSoundModel(
-                        type = SignalerSoundModel.SignalerSoundTypeModel.SOUND_1,
-                        interval = 3000
-                    )
-                )
-            }
         } ?: return
     }
 

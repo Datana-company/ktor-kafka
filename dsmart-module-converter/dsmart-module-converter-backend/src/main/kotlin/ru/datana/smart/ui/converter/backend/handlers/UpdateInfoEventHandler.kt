@@ -24,12 +24,6 @@ object UpdateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 angleFinish = it.angleFinish
             )
             context.eventsRepository.put(meltId, historicalEvent)
-            context.signaler = SignalerModel(
-                level = SignalerModel.SignalerLevelModel.INFO,
-                sound = SignalerSoundModel(
-                    type = SignalerSoundModel.SignalerSoundTypeModel.NONE,
-                )
-            )
         } ?: return
     }
 

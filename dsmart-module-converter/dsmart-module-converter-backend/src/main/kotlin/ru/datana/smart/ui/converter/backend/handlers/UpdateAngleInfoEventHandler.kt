@@ -28,10 +28,6 @@ object UpdateAngleInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 angleMax = angleMax
             )
             context.eventsRepository.put(meltId, historicalEvent)
-            context.signaler = SignalerModel(
-                level = SignalerModel.SignalerLevelModel.INFO,
-                sound = SignalerSoundModel.NONE
-            )
         } ?: return
     }
 

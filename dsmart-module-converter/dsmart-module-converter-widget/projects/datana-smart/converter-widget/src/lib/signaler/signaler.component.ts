@@ -21,6 +21,7 @@ export class SignalerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('CHANGES SOUND, changes?.sound: ', changes?.sound)
     if (
       changes?.sound?.currentValue
       && changes?.sound?.currentValue?.type !== changes.sound.previousValue?.type
@@ -31,11 +32,13 @@ export class SignalerComponent implements OnInit, OnChanges {
   }
 
   handleSound = () => {
+    console.log('HANDLING SOUND, this.sound: ', this.sound)
     clearInterval(this.intervalId)
 
     const type = this.sound?.type;
     if (type && type !== SignalerSoundTypeModel.NONE) {
       const audio = this.getAudio(this.sound.type);
+      console.log('audio', audio)
 
       audio.play()
       this.intervalId = setInterval(
