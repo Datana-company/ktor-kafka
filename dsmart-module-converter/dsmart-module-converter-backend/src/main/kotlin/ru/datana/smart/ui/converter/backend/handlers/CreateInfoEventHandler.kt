@@ -39,20 +39,22 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 warningPoint = it.warningPoint
             )
             context.eventsRepository.put(meltId, currentUpdatedEvent)
-        } ?: context.eventsRepository.put(
-            meltId,
-            MetalRateInfoEvent(
-                id = UUID.randomUUID().toString(),
-                timeStart = slagRateTime,
-                timeFinish = slagRateTime,
-                metalRate = context.slagRate.steelRate,
-                warningPoint = context.metalRateWarningPoint
+        } ?: run {
+            context.eventsRepository.put(
+                meltId,
+                MetalRateInfoEvent(
+                    id = UUID.randomUUID().toString(),
+                    timeStart = slagRateTime,
+                    timeFinish = slagRateTime,
+                    metalRate = context.slagRate.steelRate,
+                    warningPoint = context.metalRateWarningPoint
+                )
             )
-        )
-        context.signaler = SignalerModel(
-            level = SignalerModel.SignalerLevelModel.INFO,
-            sound = SignalerSoundModel.NONE
-        )
+            context.signaler = SignalerModel(
+                level = SignalerModel.SignalerLevelModel.INFO,
+                sound = SignalerSoundModel.NONE
+            )
+        }
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {
