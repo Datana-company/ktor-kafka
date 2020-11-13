@@ -5,6 +5,8 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import java.util.*
 
 object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
@@ -25,14 +27,20 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 angleMax = it.angleMax
             )
             context.eventsRepository.put(meltId, updateEvent)
-        } ?: context.eventsRepository.put(
-            meltId,
-            MetalRateInfoEvent(
-                id = UUID.randomUUID().toString(),
-                timeStart = slagRateTime,
-                timeFinish = slagRateTime,
-                metalRate = context.slagRate.steelRate
+        } ?: run {
+            context.eventsRepository.put(
+                meltId,
+                MetalRateInfoEvent(
+                    id = UUID.randomUUID().toString(),
+                    timeStart = slagRateTime,
+                    timeFinish = slagRateTime,
+                    metalRate = context.slagRate.steelRate
+                )
             )
+        }
+        context.signaler = SignalerModel(
+            level = SignalerModel.SignalerLevelModel.INFO,
+            sound = SignalerSoundModel.NONE
         )
     }
 

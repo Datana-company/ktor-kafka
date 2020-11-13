@@ -6,6 +6,8 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 
 object UpdateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
@@ -28,6 +30,21 @@ object UpdateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                 executionStatus = if (isCompletedEvent) IBizEvent.ExecutionStatus.COMPLETED else IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(meltId, historicalEvent)
+            if (isCompletedEvent) {
+                context.signaler = SignalerModel(
+                    level = SignalerModel.SignalerLevelModel.WARNING,
+                    sound = SignalerSoundModel(
+                        type = SignalerSoundModel.SignalerSoundTypeModel.NONE,
+                    )
+                )
+            } else {
+                context.signaler = SignalerModel(
+                    level = SignalerModel.SignalerLevelModel.WARNING,
+                    sound = SignalerSoundModel(
+                        type = SignalerSoundModel.SignalerSoundTypeModel.NONE,
+                    )
+                )
+            }
         } ?: return
     }
 

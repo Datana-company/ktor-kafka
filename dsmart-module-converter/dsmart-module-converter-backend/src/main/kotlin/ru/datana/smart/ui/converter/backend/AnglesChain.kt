@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicReference
 class AnglesChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
+    var wsSignalerManager: IWsSignalerManager,
     var dataTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
@@ -35,6 +36,7 @@ class AnglesChain(
             context.also {
                 it.eventsRepository = eventsRepository
                 it.wsManager = wsManager
+                it.wsSignalerManager = wsSignalerManager
                 it.dataTimeout = dataTimeout
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
@@ -63,6 +65,7 @@ class AnglesChain(
                     EventsChain(
                         eventsRepository = eventsRepository,
                         wsManager = wsManager,
+                        wsSignalerManager = wsSignalerManager,
                         dataTimeout = dataTimeout,
                         metalRateCriticalPoint = metalRateCriticalPoint,
                         metalRateWarningPoint = metalRateWarningPoint,
