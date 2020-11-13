@@ -13,15 +13,16 @@ export class SignalerComponent implements OnInit, OnChanges {
   @Input() level: SignalerLevelModel;
   @Input() sound: SignalerSoundModel;
   intervalId: number;
+  speakerElement: Element;
 
   constructor() {
   }
 
   ngOnInit(): void {
+    this.speakerElement = document.querySelector('.signaler-icon-speaker')
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('CHANGES SOUND, changes?.sound: ', changes?.sound)
     if (
       changes?.sound?.currentValue
       && changes?.sound?.currentValue?.type !== changes.sound.previousValue?.type
@@ -32,15 +33,15 @@ export class SignalerComponent implements OnInit, OnChanges {
   }
 
   handleSound = () => {
-    console.log('HANDLING SOUND, this.sound: ', this.sound)
     clearInterval(this.intervalId)
+    this.speakerElement.classList.add('hidden');
 
     const type = this.sound?.type;
     if (type && type !== SignalerSoundTypeModel.NONE) {
       const audio = this.getAudio(this.sound.type);
-      console.log('audio', audio)
 
       audio.play()
+      this.speakerElement.classList.remove('hidden');
       this.intervalId = setInterval(
         () => audio.play(),
         this.sound.interval

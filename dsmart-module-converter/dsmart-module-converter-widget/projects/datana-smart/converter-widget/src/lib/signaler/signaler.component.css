@@ -7,6 +7,14 @@
     padding-right: 30%;
 }
 
+.signaler-container > * {
+    margin-left: 1rem;
+}
+
+.signaler-icon-speaker {
+
+}
+
 .signaler-level-info {
     fill: #5DADE2;
 }
