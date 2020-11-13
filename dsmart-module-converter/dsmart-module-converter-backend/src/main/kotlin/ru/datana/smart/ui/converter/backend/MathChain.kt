@@ -18,8 +18,8 @@ class MathChain(
     var dataTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
-    var timeReaction: Long,
-    var timeLimitSiren: Long,
+    var reactionTime: Long,
+    var sirenLimitTime: Long,
     var currentState: AtomicReference<CurrentState?>,
     var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
     var converterId: String,
@@ -39,8 +39,8 @@ class MathChain(
                 it.dataTimeout = dataTimeout
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
-                it.timeReaction = timeReaction
-                it.timeLimitSiren = timeLimitSiren
+                it.reactionTime = reactionTime
+                it.sirenLimitTime = sirenLimitTime
                 it.currentState = currentState
                 it.scheduleCleaner = scheduleCleaner
                 it.converterId = converterId
@@ -109,8 +109,8 @@ class MathChain(
                             metalRateWarningPoint = metalRateWarningPoint,
                             currentState = currentState,
                             scheduleCleaner = scheduleCleaner,
-                            timeReaction = timeReaction,
-                            timeLimitSiren = timeLimitSiren,
+                            reactionTime = reactionTime,
+                            sirenLimitTime = sirenLimitTime,
                             converterId = converterId
                         ).exec(this)
                     }

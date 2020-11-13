@@ -16,8 +16,8 @@ class MeltInfoChain(
     var dataTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
-    var timeReaction: Long,
-    var timeLimitSiren: Long,
+    var reactionTime: Long,
+    var sirenLimitTime: Long,
     var currentState: AtomicReference<CurrentState?>,
     var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
     var converterId: String
@@ -35,8 +35,8 @@ class MeltInfoChain(
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
-                it.timeReaction = timeReaction
-                it.timeLimitSiren = timeLimitSiren
+                it.reactionTime = reactionTime
+                it.sirenLimitTime = sirenLimitTime
                 it.currentState = currentState
                 it.scheduleCleaner = scheduleCleaner
                 it.converterId = converterId

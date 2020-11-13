@@ -12,7 +12,7 @@ import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 object UpdateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val meltId: String = context.currentState.get()?.currentMeltInfo?.id ?: return
+        val meltId: String = context.meltInfo.id
         val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
         activeEvent?.let {
             val isCompletedEvent = it.angleFinish?.let { angleFinish -> it.angleMax?.compareTo(angleFinish)?.let { it > 0 } } ?: false
@@ -30,21 +30,6 @@ object UpdateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                 executionStatus = if (isCompletedEvent) IBizEvent.ExecutionStatus.COMPLETED else IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(meltId, historicalEvent)
-            if (isCompletedEvent) {
-                context.signaler = SignalerModel(
-                    level = SignalerModel.SignalerLevelModel.WARNING,
-                    sound = SignalerSoundModel(
-                        type = SignalerSoundModel.SignalerSoundTypeModel.NONE,
-                    )
-                )
-            } else {
-                context.signaler = SignalerModel(
-                    level = SignalerModel.SignalerLevelModel.WARNING,
-                    sound = SignalerSoundModel(
-                        type = SignalerSoundModel.SignalerSoundTypeModel.NONE,
-                    )
-                )
-            }
         } ?: return
     }
 

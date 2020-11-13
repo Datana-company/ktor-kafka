@@ -2,8 +2,17 @@
     height: 100%;
     width: 100%;
     display: flex;
-    justify-content: start;
+    justify-content: flex-end;
     align-content: center;
+    padding-right: 30%;
+}
+
+.signaler-container > * {
+    margin-left: 1rem;
+}
+
+.signaler-icon-speaker {
+
 }
 
 .signaler-level-info {

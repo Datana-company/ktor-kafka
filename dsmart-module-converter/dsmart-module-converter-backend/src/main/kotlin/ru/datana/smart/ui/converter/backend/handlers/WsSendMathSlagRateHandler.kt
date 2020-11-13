@@ -24,6 +24,11 @@ object WsSendMathSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
             jobSlagRate = GlobalScope.launch {
                 delay(context.dataTimeout)
                 context.slagRate = ModelSlagRate.NONE
+
+                val curState = context.currentState.get() ?: CurrentState()
+                curState.lastSlagRate = context.slagRate
+                context.currentState.set(curState)
+
                 context.wsManager.sendSlagRate(context)
                 println("jobMath done")
             }

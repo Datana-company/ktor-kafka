@@ -12,8 +12,8 @@ class ConverterFacade(
     dataTimeout: Long = Long.MIN_VALUE,
     metalRateCriticalPoint: Double = Double.MIN_VALUE,
     metalRateWarningPoint: Double = Double.MIN_VALUE,
-    timeReaction: Long = Long.MIN_VALUE,
-    timeLimitSiren: Long = Long.MIN_VALUE,
+    reactionTime: Long = Long.MIN_VALUE,
+    sirenLimitTime: Long = Long.MIN_VALUE,
     currentState: AtomicReference<CurrentState?> = AtomicReference(),
     scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
     converterId: String = "",
@@ -28,8 +28,8 @@ class ConverterFacade(
         metalRateWarningPoint = metalRateWarningPoint,
         currentState = currentState,
         scheduleCleaner = scheduleCleaner,
-        timeReaction = timeReaction,
-        timeLimitSiren = timeLimitSiren,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
         converterId = converterId,
         framesBasePath = framesBasePath
     )
@@ -42,8 +42,8 @@ class ConverterFacade(
         metalRateWarningPoint = metalRateWarningPoint,
         currentState = currentState,
         scheduleCleaner = scheduleCleaner,
-        timeReaction = timeReaction,
-        timeLimitSiren = timeLimitSiren,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
         converterId = converterId
     )
     private val frameChain = FrameChain(
@@ -54,8 +54,8 @@ class ConverterFacade(
         metalRateWarningPoint = metalRateWarningPoint,
         currentState = currentState,
         scheduleCleaner = scheduleCleaner,
-        timeReaction = timeReaction,
-        timeLimitSiren = timeLimitSiren,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
         converterId = converterId,
         framesBasePath = framesBasePath
     )
@@ -67,8 +67,8 @@ class ConverterFacade(
         metalRateWarningPoint = metalRateWarningPoint,
         currentState = currentState,
         scheduleCleaner = scheduleCleaner,
-        timeReaction = timeReaction,
-        timeLimitSiren = timeLimitSiren,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
         converterId = converterId
     )
 

@@ -34,10 +34,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   public converterAnglesData: ConverterAnglesModel;
   public converterEvents: Array<EventModel> = new Array<EventModel>();
   public converterSlagRateChart: SlagRateChartModel;
-  public converterSignalerLevel: SignalerLevelModel = SignalerLevelModel.INFO;
-  public converterSignalerSound: SignalerSoundModel = new SignalerSoundModel(
-    SignalerSoundTypeModel.NONE, 0
-  );
+  public converterSignalerLevel: SignalerLevelModel;
+  public converterSignalerSound: SignalerSoundModel;
   playlist: string;
 
   constructor(
@@ -60,7 +58,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
     rawState.subscribe(data => {
       this.converterMeltInfoData = data?.meltInfo;
-      this.converterEvents = Object.assign([], data?.events);
+      // this.converterEvents = data?.events;
     });
 
     this.wsService.on('converter-melt-info-update').pipe(
@@ -162,7 +160,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       ) as Array<EventModel>)
     ).subscribe(data => {
       this.converterEvents = data;
-      console.log('this.converterEvents', this.converterEvents);
     });
 
     this.wsService.on('signaler-update').pipe(
