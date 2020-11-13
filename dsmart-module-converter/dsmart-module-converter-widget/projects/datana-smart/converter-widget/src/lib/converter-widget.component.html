@@ -63,7 +63,10 @@
       <div class="row" style="padding-top:1.5rem">
         <div class="col-8" style="text-align: left"><h5> >>Конвертер 2</h5></div>
         <div class="col-2" style="text-align: left;padding-right: 3rem"><h5> >>История рекомендаций</h5></div>
-        <div class="col-2 alarm" style="text-align: center"><img src="/assets/image/alarm-bl.svg">
+        <div class="col-2">
+          <signaler [level]="converterSignalerLevel"
+                    [sound]="converterSignalerSound">
+          </signaler>
         </div>
       </div>
     </div>
@@ -119,3 +122,12 @@
 <!--    No Data-->
 <!--  </div>-->
 <!--</ng-template>-->
+
+
+<!--<p id="info">info</p>-->
+<!--<p id="warning">warning</p>-->
+<!--<p id="critical">critical</p>-->
+<!--<p id="sound0">no sound</p>-->
+<!--<p id="sound1">sound1</p>-->
+<!--<p id="sound2">sound2</p>-->
+<!--<p id="sound3">sound3</p>-->

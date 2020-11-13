@@ -7,32 +7,29 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.*
+import ru.datana.smart.ui.converter.common.models.ModelFrame
+import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 
-object WsSendAnglesHandler: IKonveyorHandler<ConverterBeContext> {
+object WsSendMathFrameHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        context.wsManager.sendAngles(context)
+        context.wsManager.sendFrames(context)
 
         val schedule = context.scheduleCleaner.get() ?: ScheduleCleaner()
         with(schedule) {
-            jobAngles?.let {
+            jobFrameMath?.let {
                 if (it.isActive) {
                     it.cancel()
-                    println("cancel jobAngles")
+                    println("cancel jobFrameMath")
                 }
             }
-            jobAngles = GlobalScope.launch {
+            jobFrameMath = GlobalScope.launch {
                 delay(context.dataTimeout)
-                context.angles = ModelAngles.NONE
-                context.wsManager.sendAngles(context)
-                println("jobAngles done")
+                context.frame = ModelFrame(channel = ModelFrame.Channels.MATH)
+                context.wsManager.sendFrames(context)
+                println("jobFrameMath done")
             }
         }
         context.scheduleCleaner.set(schedule)
-
-        val curState = context.currentState.get() ?: CurrentState()
-        curState.lastAngles = context.angles
-        context.currentState.set(curState)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

@@ -6,7 +6,8 @@ data class ScheduleCleaner(
     var jobAngles: Job? = null,
     var jobSlagRate: Job? = null,
     var jobFrameMath: Job? = null,
-    var jobFrameCamera: Job? = null
+    var jobFrameCamera: Job? = null,
+    var jobMeltFinish: Job? = null
 ) {
 
     companion object {
