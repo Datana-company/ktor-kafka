@@ -138,7 +138,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       map((data: any) => {
         return new ConverterAnglesModel(
           data.angleTime as number,
-          data?.angle?.toFixed(1) as number,
+          data?.angle?.toFixed(0) as number,
           data?.source as number
         );
       })
