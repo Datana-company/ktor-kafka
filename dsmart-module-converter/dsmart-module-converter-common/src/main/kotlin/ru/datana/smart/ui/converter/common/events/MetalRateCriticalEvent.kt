@@ -9,9 +9,7 @@ data class MetalRateCriticalEvent(
     override val timeFinish: Long = Instant.now().toEpochMilli(),
     override val metalRate: Double,
     val criticalPoint: Double,
-    override val angleStart: Double? = null,
-    override val angleFinish: Double? = null,
-    override val angleMax: Double? = null,
+    override val angleStart: Double = Double.MIN_VALUE,
     override val title: String = "Критическая ситуация",
     override val textMessage: String = """
                                         В потоке детектирован металл – ${toPercent(metalRate)}%, процент потерь превышает критическое значение – ${toPercent(criticalPoint)}%. Верните конвертер в вертикальное положение!

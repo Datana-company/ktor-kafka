@@ -9,9 +9,7 @@ data class MetalRateInfoEvent(
     override val timeFinish: Long = Instant.now().toEpochMilli(),
     override val metalRate: Double,
     val warningPoint: Double,
-    override val angleStart: Double? = null,
-    override val angleFinish: Double? = null,
-    override val angleMax: Double? = null,
+    override val angleStart: Double = Double.MIN_VALUE,
     override val title: String = "Информация",
     override val textMessage: String = """
                                         Достигнут предел потерь металла в потоке – ${toPercent(warningPoint)}%.

@@ -5,30 +5,30 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
-import ru.datana.smart.ui.converter.common.models.SignalerModel
-import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
-object UpdateAngleInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
+/*
+* UpdateTimeInfoEventHandler - если прошло время больше, чем значение DATA_TIMEOUT,
+* то записываем текущее событие "Информация" в историю.
+* */
+object UpdateTimeInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val activeEvent = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
-        val currentAngle = context.angles.angle
+        val slagRateTime = context.frame.frameTime
+        val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
         activeEvent?.let {
-            val angleStart = it.angleStart ?: currentAngle
-            val angleMax = if (it.angleMax?.let { it.compareTo(currentAngle) > 0 } == true) it.angleMax else currentAngle
-            val historicalEvent = MetalRateInfoEvent(
+            val isReactionTimeUp = it.timeFinish - it.timeStart >= context.reactionTime
+            val isActive = !isReactionTimeUp
+            val currentEvent = MetalRateInfoEvent(
                 id = it.id,
                 timeStart = it.timeStart,
-                timeFinish = it.timeFinish,
+                timeFinish = slagRateTime,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = it.isActive,
-                angleStart = angleStart,
-                angleFinish = currentAngle,
-                angleMax = angleMax,
+                isActive = isActive,
+                angleStart = it.angleStart,
                 warningPoint = it.warningPoint
             )
-            context.eventsRepository.put(meltId, historicalEvent)
+            context.eventsRepository.put(meltId, currentEvent)
         } ?: return
     }
 
