@@ -4,7 +4,7 @@
     display: flex;
     justify-content: flex-end;
     align-content: center;
-    padding-right: 30%;
+    padding-right: 20%;
 }
 
 .signaler-container > * {
@@ -13,6 +13,10 @@
 
 .signaler-icon-speaker {
 
+}
+/*not data from server*/
+.not-signal-level{
+fill: #C1D0E0
 }
 
 .signaler-level-info {
