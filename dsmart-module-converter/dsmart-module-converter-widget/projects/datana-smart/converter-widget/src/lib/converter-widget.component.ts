@@ -1,22 +1,22 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {combineLatest, Subject} from "rxjs";
+import {combineLatest, interval, scheduled, Subject, timer} from 'rxjs';
 import {filter, map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
-import {EventModel} from "./models/event.model";
-import {SlagRateModel} from "./models/slag-rate.model";
-import {ConverterFrameModel} from "./models/converter-frame.model";
-import {ConverterMeltInfoModel} from "./models/converter-melt-info.model";
-import {ConverterMeltModeModel} from "./models/converter-melt-mode.model";
-import {ConverterMeltDevicesModel} from "./models/converter-melt-devices.model";
-import {EventCategoryModel} from "./models/event-category.model";
-import {ExecutionStatusModel} from "./models/event-execution-status.model";
-import {ConverterAnglesModel} from "./models/converter-angles.model";
-import {ConverterStateModel} from "./models/converter-state.model";
-import {SlagRateChartModel} from "./models/slag-rate-chart.model";
-import {SignalerLevelModel} from "./models/signaler-level.model";
-import {SignalerSoundModel} from "./models/signaler-sound.model";
-import {SignalerSoundTypeModel} from "./models/signaler-sound-type.model";
-import {SignalerModel} from "./models/signaler.model";
+import {EventModel} from './models/event.model';
+import {SlagRateModel} from './models/slag-rate.model';
+import {ConverterFrameModel} from './models/converter-frame.model';
+import {ConverterMeltInfoModel} from './models/converter-melt-info.model';
+import {ConverterMeltModeModel} from './models/converter-melt-mode.model';
+import {ConverterMeltDevicesModel} from './models/converter-melt-devices.model';
+import {EventCategoryModel} from './models/event-category.model';
+import {ExecutionStatusModel} from './models/event-execution-status.model';
+import {ConverterAnglesModel} from './models/converter-angles.model';
+import {ConverterStateModel} from './models/converter-state.model';
+import {SlagRateChartModel} from './models/slag-rate-chart.model';
+import {SignalerLevelModel} from './models/signaler-level.model';
+import {SignalerSoundModel} from './models/signaler-sound.model';
+import {SignalerSoundTypeModel} from './models/signaler-sound-type.model';
+import {SignalerModel} from './models/signaler.model';
 
 @Component({
   selector: 'datana-converter-widget',
@@ -26,7 +26,10 @@ import {SignalerModel} from "./models/signaler.model";
 export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   _unsubscribe = new Subject<void>();
-
+  public current_time = interval(1000)
+    .pipe(
+      map(() => new Date())
+    );
   public converterMeltInfoData: ConverterMeltInfoModel;
   public converterSlagRateData: SlagRateModel;
   public converterFrameCameraData: ConverterFrameModel;
@@ -40,7 +43,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(configProvide) private wsService: IWebsocketService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.playlist = 'http://camera.d.datana.ru/playlist.m3u8'
@@ -120,13 +124,13 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
     )
 
     rawFrames.pipe(
-      filter(frame => frame.channel == 'CAMERA')
+      filter(frame => frame.channel === 'CAMERA')
     ).subscribe(data => {
       this.converterFrameCameraData = data;
     })
 
     rawFrames.pipe(
-      filter(frame => frame.channel == 'MATH')
+      filter(frame => frame.channel === 'MATH')
     ).subscribe(data => {
       this.converterFrameMathData = data;
     })
@@ -178,6 +182,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.converterSignalerSound = data.sound;
     });
 
+  }
+
 /////// Для теста светофора /////////////////////////////////////////////////////////
 //     document.getElementById('info').addEventListener('click', () => {
 //       console.log('info');
@@ -209,7 +215,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 //       this.converterSignalerSound = new SignalerSoundModel(SignalerSoundTypeModel.SOUND_3, 8000)
 //     });
 //////////////////////////////////////////////////////////////////////////////////////////
-  }
 
   ngOnDestroy(): void {
     this._unsubscribe.next();
