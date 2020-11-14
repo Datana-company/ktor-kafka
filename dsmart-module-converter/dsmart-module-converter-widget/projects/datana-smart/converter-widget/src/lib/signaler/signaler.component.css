@@ -4,7 +4,7 @@
     display: flex;
     justify-content: flex-end;
     align-content: center;
-    padding-right: 30%;
+    padding-right: 20%;
 }
 
 .signaler-container > * {
