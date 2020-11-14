@@ -1,7 +1,7 @@
 .topLinePath77 {
     width: 100%;
     height: 8px;
-    top: 0px;
+    top: 0;
 
     background: linear-gradient(90deg, #CCDBEB 16.55%, #22588F 82.04%);
 }
@@ -24,7 +24,6 @@
 .titlesTop1 {
     padding: 0.4%;
     padding-left: 3.5rem;
-    font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
@@ -39,7 +38,6 @@
     height: 25px;
     top: 1.5rem;
 
-    font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
@@ -64,19 +62,15 @@
     position: absolute;
 }
 .timeHeader{
-    font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
     font-size: 26px;
     line-height: 35px;
     text-align: center;
     top: 1.2rem;
-    text-align: center;
     color: #FFFFFF;
 }
 .dateHeader{
-
-    font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
@@ -146,14 +140,11 @@
     border-radius: 4px 4px 0 0;
     background-color: white;
     color: black;
-    font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
     line-height: 20px;
     /* or 111% */
-
-    text-align: center;
 }
 
 .widget-boiling-time {
@@ -185,4 +176,9 @@
     flex-direction: column;
     width: 100%;
     margin-top: auto;
+}
+
+.timer-date, .timer-time {
+    padding-left: 5px;
+    padding-right: 5px;
 }
