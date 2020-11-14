@@ -32,7 +32,7 @@
       <div class="row">
         <div class="col-2" style="text-align: left">
           <div *ngIf="converterMeltInfoData?.meltNumber && converterMeltInfoData?.meltNumber !== null">
-            Плавка: {{converterMeltInfoData?.meltNumber}}
+            Плавка: <span style="font-weight: 600">{{converterMeltInfoData?.meltNumber}}</span>
           </div>
           <div *ngIf="!converterMeltInfoData?.meltNumber || converterMeltInfoData?.meltNumber === null">
             <div class="text">Плавка: -</div>
@@ -40,7 +40,7 @@
         </div>
         <div class="col-6">
           <div *ngIf="converterMeltInfoData?.steelGrade && converterMeltInfoData?.steelGrade !== null">
-            Марка: {{converterMeltInfoData?.steelGrade}}
+            Марка: <span style="font-weight: 600">{{converterMeltInfoData?.steelGrade}}</span>
           </div>
           <div *ngIf="!converterMeltInfoData?.steelGrade || converterMeltInfoData?.steelGrade === null">
             <div class="text">Марка: -</div>
@@ -48,7 +48,7 @@
         </div>
         <div class="col-2" style="text-align: right; padding-right: 6.5%">
           <div *ngIf="converterMeltInfoData?.crewNumber && converterMeltInfoData?.crewNumber !== null">
-            Бригада: {{converterMeltInfoData?.crewNumber}}
+            Бригада: <span style="font-weight: 600">{{converterMeltInfoData?.crewNumber}}</span>
           </div>
           <div *ngIf="!converterMeltInfoData?.steelGrade || converterMeltInfoData?.steelGrade === null">
             <div class="text">Бригада: -</div>
