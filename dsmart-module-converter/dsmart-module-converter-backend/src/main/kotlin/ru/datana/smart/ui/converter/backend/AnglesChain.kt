@@ -18,8 +18,8 @@ class AnglesChain(
     var metalRateWarningPoint: Double,
     var reactionTime: Long,
     var sirenLimitTime: Long,
-    var currentState: AtomicReference<CurrentState?>,
-    var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
+    var currentState: AtomicReference<CurrentState>,
+    var scheduleCleaner: AtomicReference<ScheduleCleaner>,
     var converterId: String
 ) {
 

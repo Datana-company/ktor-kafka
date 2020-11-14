@@ -27,8 +27,8 @@ class ConverterBeContext (
     var sirenLimitTime: Long = Long.MIN_VALUE,
     var dataTimeout: Long = Long.MIN_VALUE,
     var eventsRepository: IUserEventsRepository = IUserEventsRepository.NONE,
-    var currentState: AtomicReference<CurrentState?> = AtomicReference(),
-    var scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
+    var currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE),
+    var scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE),
     var converterId: String = "",
     var framesBasePath: String = ""
 )

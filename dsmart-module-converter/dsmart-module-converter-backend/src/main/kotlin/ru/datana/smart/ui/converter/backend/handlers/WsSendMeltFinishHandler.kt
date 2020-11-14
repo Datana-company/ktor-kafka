@@ -15,7 +15,7 @@ import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 
 object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val schedule = context.scheduleCleaner.get() ?: ScheduleCleaner()
+        val schedule = context.scheduleCleaner.get()
         with(schedule) {
             jobMeltFinish?.let {
                 if (it.isActive) {
@@ -25,9 +25,9 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
             }
             jobMeltFinish = GlobalScope.launch {
                 delay(10000L)
-                val curState = context.currentState.get() ?: CurrentState()
+                val curState = context.currentState.get()
                 curState.currentMeltInfo = ModelMeltInfo.NONE
-                context.currentState.set(curState)
+                context.status = CorStatus.STARTED
 
                 EventsChain.konveyor.exec(context)
 

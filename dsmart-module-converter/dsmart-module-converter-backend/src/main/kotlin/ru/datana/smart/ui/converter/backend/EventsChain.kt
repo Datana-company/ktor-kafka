@@ -19,8 +19,8 @@ class EventsChain(
     var metalRateWarningPoint: Double,
     var reactionTime: Long,
     var sirenLimitTime: Long,
-    var currentState: AtomicReference<CurrentState?>,
-    var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
+    var currentState: AtomicReference<CurrentState>,
+    var scheduleCleaner: AtomicReference<ScheduleCleaner>,
     var converterId: String
 ) {
     suspend fun exec(context: ConverterBeContext) {
@@ -67,7 +67,7 @@ class EventsChain(
                 +CreateInfoEventHandler
             }
             konveyor {
-                on { currentState.get()?.let { it.currentMeltInfo.id == "" } ?: false }
+                on { currentState.get().currentMeltInfo.id.isEmpty() }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
@@ -82,7 +82,7 @@ class EventsChain(
             handler {
                 onEnv { status == CorStatus.STARTED && currentState.get() != null }
                 exec {
-                    val currentMeltInfoId = currentState.get()!!.currentMeltInfo.id
+                    val currentMeltInfoId = currentState.get().currentMeltInfo.id
                     events = ModelEvents(events = eventsRepository.getAllByMeltId(currentMeltInfoId))
                 }
             }

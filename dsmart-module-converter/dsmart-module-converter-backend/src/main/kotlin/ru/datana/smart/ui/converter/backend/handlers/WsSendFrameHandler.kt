@@ -14,7 +14,7 @@ object WsSendFrameHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         context.wsManager.sendFrames(context)
 
-        val schedule = context.scheduleCleaner.get() ?: ScheduleCleaner()
+        val schedule = context.scheduleCleaner.get()
         with(schedule) {
             jobFrameCamera?.let {
                 if (it.isActive) {
@@ -29,7 +29,6 @@ object WsSendFrameHandler: IKonveyorHandler<ConverterBeContext> {
                 println("jobFrameCamera done")
             }
         }
-        context.scheduleCleaner.set(schedule)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {
