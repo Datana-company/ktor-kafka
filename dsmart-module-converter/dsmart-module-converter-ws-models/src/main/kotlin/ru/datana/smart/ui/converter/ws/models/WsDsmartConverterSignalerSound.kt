@@ -5,7 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WsDsmartConverterSignalerSound(
     val type: WsDsmartConverterSignalerSound.SignalerSoundTypeModel? = null,
-    val interval: Int? = null
+    val interval: Int? = null,
+    val timeout: Long? = null
 ) {
     @Serializable
     enum class SignalerSoundTypeModel {

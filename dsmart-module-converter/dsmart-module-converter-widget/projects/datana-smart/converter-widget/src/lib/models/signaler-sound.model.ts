@@ -5,7 +5,7 @@ export class SignalerSoundModel {
   constructor(
     public type: SignalerSoundTypeModel,
     public interval: number,
-    public timeout: number = 15000
+    public timeout: number
   ) {
   }
 
