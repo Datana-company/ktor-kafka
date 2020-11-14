@@ -1,7 +1,7 @@
 .widget-event-item {
     width: calc(100% - 1.5rem);
     /*height: calc(7rem + 8px);*/
-    padding-bottom: 40px;
+    padding-bottom: 20px;
 }
 
 .widget-event-item-warning {
@@ -23,7 +23,7 @@
 
 .widget-event-item-instruction {
     /*height: 5.5rem;*/
-    padding: 0.25rem;
+    padding: 1.25rem;
     border: 2px solid #E6A5B8;
     border-radius: 0 4px 4px 4px;
     font-size: 1.2rem;
@@ -55,7 +55,7 @@
 
 .widget-event-item-info-instruction {
     /*height: 5.5rem;*/
-    padding: 0.25rem;
+    padding: 1.25rem;
     border: 2px solid #C1D0E0;
     border-radius: 0 4px 4px 4px;
     font-size: 1.2rem;
@@ -78,6 +78,7 @@
 .widget-event-title {
     float: left;
     font-weight: bold;
+    padding-bottom: .25rem;
 }
 
 .widget-event-execution-status {
