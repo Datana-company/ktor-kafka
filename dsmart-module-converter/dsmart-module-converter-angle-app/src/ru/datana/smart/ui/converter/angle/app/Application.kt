@@ -64,7 +64,6 @@ fun Application.module(testing: Boolean = false) {
                 .forEach { record ->
                     when (record.topic) {
                         topicMath -> {
-                            println("--- MATH")
                             val mlui = jacksonSerializer.readValue(
                                 record.value,
                                 ConverterTransportMlUi::class.java
@@ -90,7 +89,6 @@ fun Application.module(testing: Boolean = false) {
                             }
                         }
                         topicMeta -> {
-                            println("--- META")
                             val metaInfo = jacksonSerializer.readValue(
                                 record.value,
                                 ConverterMeltInfo::class.java
