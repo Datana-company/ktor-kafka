@@ -36,6 +36,7 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 context.meltInfo = ModelMeltInfo.NONE
                 context.wsManager.sendFinish(context)
                 context.wsManager.sendEvents(context)
+                context.wsSignalerManager.sendSignaler(context)
                 println("jobMeltFinish done")
             }
         }
