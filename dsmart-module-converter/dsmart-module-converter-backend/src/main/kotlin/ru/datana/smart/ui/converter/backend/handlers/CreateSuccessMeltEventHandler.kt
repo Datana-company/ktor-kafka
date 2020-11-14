@@ -18,7 +18,7 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
             level = SignalerModel.SignalerLevelModel.INFO,
             sound = SignalerSoundModel.NONE
         )
-
+        context.status = CorStatus.FINISHED
         val meltId: String = context.meltInfo.id
         context.eventsRepository.getAllByMeltId(meltId).map {
             if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent) {

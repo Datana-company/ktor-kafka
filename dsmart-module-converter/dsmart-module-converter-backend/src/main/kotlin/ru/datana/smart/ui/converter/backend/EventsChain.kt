@@ -82,7 +82,7 @@ class EventsChain(
                 +UpdateAngleInfoEventHandler
             }
             handler {
-                onEnv { status == CorStatus.STARTED && currentState.get() != null }
+                onEnv { status == CorStatus.STARTED }
                 exec {
                     val currentMeltInfoId = currentState.get().currentMeltInfo.id
                     events = ModelEvents(events = eventsRepository.getAllByMeltId(currentMeltInfoId))
