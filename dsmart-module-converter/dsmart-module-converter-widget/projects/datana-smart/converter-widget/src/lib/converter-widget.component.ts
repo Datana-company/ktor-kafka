@@ -30,7 +30,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
     .pipe(
       map(() => new Date())
     );
-  // public current_datetime = new Date();
   public converterMeltInfoData: ConverterMeltInfoModel;
   public converterSlagRateData: SlagRateModel;
   public converterFrameCameraData: ConverterFrameModel;
