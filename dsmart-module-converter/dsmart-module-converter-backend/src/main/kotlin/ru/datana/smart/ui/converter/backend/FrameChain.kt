@@ -66,7 +66,7 @@ class FrameChain(
 
             +EncodeBase64Handler
             +WsSendFrameHandler
-            +WsSendMeltFinishHandler
+//            +WsSendMeltFinishHandler
             +FinishHandler
         }
     }

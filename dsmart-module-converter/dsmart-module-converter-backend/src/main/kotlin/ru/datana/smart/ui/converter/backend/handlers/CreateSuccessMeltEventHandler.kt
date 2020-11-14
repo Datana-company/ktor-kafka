@@ -7,6 +7,8 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 import ru.datana.smart.ui.converter.common.events.SuccessMeltEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import java.util.*
 
 object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
@@ -27,6 +29,10 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
                 warningPoint = context.metalRateWarningPoint,
                 isActive = false
             )
+        )
+        context.signaler = SignalerModel(
+            level = SignalerModel.SignalerLevelModel.INFO,
+            sound = SignalerSoundModel.NONE
         )
     }
 
