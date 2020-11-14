@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {combineLatest, Subject} from 'rxjs';
+import {combineLatest, interval, scheduled, Subject, timer} from 'rxjs';
 import {filter, map, takeUntil} from 'rxjs/operators';
 import {configProvide, IWebsocketService} from '@datana-smart/websocket';
 import {EventModel} from './models/event.model';
@@ -26,7 +26,10 @@ import {SignalerModel} from './models/signaler.model';
 export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   _unsubscribe = new Subject<void>();
-  public current_time: Date;
+  public current_time = interval(1000)
+    .pipe(
+      map(() => new Date())
+    );
   // public current_datetime = new Date();
   public converterMeltInfoData: ConverterMeltInfoModel;
   public converterSlagRateData: SlagRateModel;
@@ -42,7 +45,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(configProvide) private wsService: IWebsocketService
   ) {
-    // timer(1000).subscribe(val => this.current_time = new Date());
   }
 
   ngOnInit(): void {
@@ -123,13 +125,13 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
     )
 
     rawFrames.pipe(
-      filter(frame => frame.channel == 'CAMERA')
+      filter(frame => frame.channel === 'CAMERA')
     ).subscribe(data => {
       this.converterFrameCameraData = data;
     })
 
     rawFrames.pipe(
-      filter(frame => frame.channel == 'MATH')
+      filter(frame => frame.channel === 'MATH')
     ).subscribe(data => {
       this.converterFrameMathData = data;
     })
@@ -180,33 +182,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.converterSignalerLevel = data.level;
       this.converterSignalerSound = data.sound;
     });
-  }
 
-  /* функция добавления ведущих нулей */
-
-  /* (если число меньше десяти, перед числом добавляем ноль) */
-  zero_first_format(value) {
-    if (value < 10) {
-      value = '0' + value;
-    }
-    return value;
-  }
-  /* функция получения текущей даты и времени */
-  getDateLocal() {
-    const current_datetime = new Date()
-    const options = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }
-    return current_datetime.toLocaleDateString('ru-RU', options).substring(0, 14);
-  }
-  getTime() {
-    const current_datetime = new Date()
-    const hours = this.zero_first_format(current_datetime.getHours());
-    const minutes = this.zero_first_format(current_datetime.getMinutes());
-    const seconds = this.zero_first_format(current_datetime.getSeconds());
-    return  hours + ':' + minutes + ':' + seconds;
   }
 
 /////// Для теста светофора /////////////////////////////////////////////////////////
@@ -240,7 +216,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 //       this.converterSignalerSound = new SignalerSoundModel(SignalerSoundTypeModel.SOUND_3, 8000)
 //     });
 //////////////////////////////////////////////////////////////////////////////////////////
-
 
   ngOnDestroy(): void {
     this._unsubscribe.next();

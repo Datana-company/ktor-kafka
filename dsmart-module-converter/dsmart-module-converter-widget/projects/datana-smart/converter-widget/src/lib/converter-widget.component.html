@@ -15,10 +15,10 @@
             Мониторинг и контроль скачивания шлака
           </div>
         </div>
-<!--        <div class="col-1"></div>-->
-        <div class="col-2 dateHeader">{{getDateLocal()}}</div>
-        <div class="col-1  timeHeader">{{getTime()}}</div>
-        <!--        <div class="col-2" style="top: 1.4rem">{{current_time|date :'dd MMMM yyyy'}}</div>-->
+        <div class="col-2" style="top: 1.4rem">
+          <span class="timer-date">{{current_time | async | date :'dd MMMM yyyy'}}</span>
+          <span class="timer-time">{{current_time | async | date :'HH:mm:ss'}}</span>
+        </div>
         <div class="col-1">
           <div class="exit"><img src="/assets/image/Exit1.png"></div>
         </div>
