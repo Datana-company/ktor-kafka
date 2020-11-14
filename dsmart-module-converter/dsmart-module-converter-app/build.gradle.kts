@@ -137,7 +137,10 @@ tasks {
                 "LOG_MAX_FILE_SIZE" to "10MB",
                 "LOG_TOTAL_SIZE_CAP" to "24MB",
                 "LOG_DATANA_LEVEL" to "info",
-                "LOG_COMMON_LEVEL" to "error"
+                "LOG_COMMON_LEVEL" to "error",
+                "METAL_RATE_GEN_TIMEOUT" to "5000",
+                "METAL_RATE_GEN_MAX" to "0.5",
+                "METAL_RATE_GEN_MIN" to "0.0"
             )
         )
     }
