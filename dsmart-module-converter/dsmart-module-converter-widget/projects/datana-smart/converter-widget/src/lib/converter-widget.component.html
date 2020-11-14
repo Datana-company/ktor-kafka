@@ -15,6 +15,7 @@
             Мониторинг и контроль скачивания шлака
           </div>
         </div>
+        <div class="col-1"></div>
         <div class="col-2" style="top: 1.4rem">
           <span class="timer-date">{{current_time | async | date :'dd MMMM yyyy'}}</span>
           <span class="timer-time">{{current_time | async | date :'HH:mm:ss'}}</span>
@@ -63,10 +64,11 @@
         </div>
       </div>
       <div class="lineTop"></div>
-      <div class="row" style="padding-top:1.5rem">
-        <div class="col-8" style="text-align: left"><h5> >>Конвертер 2</h5></div>
-        <div class="col-2" style="text-align: left;padding-right: 3rem"><h5> >>История рекомендаций</h5></div>
-        <div class="col-2">
+      <div class="row titleTop2" style="padding-top:1.5rem">
+        <div class="col-7" style="text-align: left"> >>Конвертер 2</div>
+<!--        style="text-align: left;padding-right: 3rem"-->
+        <div class="col-2" > >>История рекомендаций</div>
+        <div class="col-3">
           <signaler [level]="converterSignalerLevel"
                     [sound]="converterSignalerSound">
           </signaler>
