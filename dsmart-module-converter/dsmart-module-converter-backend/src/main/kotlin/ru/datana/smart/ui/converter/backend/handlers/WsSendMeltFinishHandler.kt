@@ -39,7 +39,6 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 println("jobMeltFinish done")
             }
         }
-        context.scheduleCleaner.set(schedule)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

@@ -91,9 +91,8 @@ class MathChain(
                 handler {
                     on { status == CorStatus.STARTED}
                     exec {
-                        val curState = currentState.get() ?: CurrentState()
+                        val curState = currentState.get()
                         curState.lastSlagRate = slagRate
-                        currentState.set(curState)
                     }
                 }
 

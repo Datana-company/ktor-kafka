@@ -19,10 +19,9 @@ class WsSignalerManager : IWsSignalerManager {
 
     suspend fun init(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
-        context.currentState.get()?.currentMeltInfo?.let {
-            val events = context.eventsRepository.getAllByMeltId(it.id)
-            context.events = ModelEvents(events = events)
-        }
+        val currentMeltId = context.currentState.get().currentMeltInfo.id
+        val events = context.eventsRepository.getAllByMeltId(currentMeltId)
+        context.events = ModelEvents(events = events)
         val wsSignaler = WsDsmartResponseConverterSignaler(
             data = toWsConverterSignalerModel(context.signaler)
         )
