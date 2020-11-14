@@ -34,10 +34,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   public converterAnglesData: ConverterAnglesModel;
   public converterEvents: Array<EventModel> = new Array<EventModel>();
   public converterSlagRateChart: SlagRateChartModel;
-  public converterSignalerLevel: SignalerLevelModel = SignalerLevelModel.INFO;
-  public converterSignalerSound: SignalerSoundModel = new SignalerSoundModel(
-    SignalerSoundTypeModel.NONE, 0
-  );
+  public converterSignalerLevel: SignalerLevelModel;
+  public converterSignalerSound: SignalerSoundModel;
   playlist: string;
 
   constructor(
@@ -138,7 +136,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       map((data: any) => {
         return new ConverterAnglesModel(
           data.angleTime as number,
-          data?.angle?.toFixed(1) as number,
+          data?.angle?.toFixed(0) as number,
           data?.source as number
         );
       })

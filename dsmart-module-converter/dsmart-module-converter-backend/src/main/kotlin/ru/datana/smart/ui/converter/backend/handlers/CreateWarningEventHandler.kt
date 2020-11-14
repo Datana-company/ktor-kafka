@@ -6,13 +6,16 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import java.util.*
 
-object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
+object CreateWarningEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
         val slagRateTime = context.frame.frameTime
-        val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
+        val activeEvent: MetalRateWarningEvent? =
+            context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
         activeEvent?.let {
             val isReactionTimeUp = it.timeFinish - it.timeStart >= context.reactionTime
             if (isReactionTimeUp) {
@@ -38,16 +41,22 @@ object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                 executionStatus = if (isReactionTimeUp) IBizEvent.ExecutionStatus.FAILED else IBizEvent.ExecutionStatus.NONE
             )
             context.eventsRepository.put(meltId, currentUpdatedEvent)
-        } ?: context.eventsRepository.put(
-            meltId,
-            MetalRateWarningEvent(
-                id = UUID.randomUUID().toString(),
-                timeStart = slagRateTime,
-                timeFinish = slagRateTime,
-                metalRate = context.slagRate.steelRate,
-                warningPoint = context.metalRateWarningPoint
+        } ?: run {
+            context.eventsRepository.put(
+                meltId,
+                MetalRateWarningEvent(
+                    id = UUID.randomUUID().toString(),
+                    timeStart = slagRateTime,
+                    timeFinish = slagRateTime,
+                    metalRate = context.slagRate.steelRate,
+                    warningPoint = context.metalRateWarningPoint
+                )
             )
-        )
+            context.signaler = SignalerModel(
+                level = SignalerModel.SignalerLevelModel.WARNING,
+                sound = SignalerSoundModel.NONE
+            )
+        }
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

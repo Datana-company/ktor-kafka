@@ -1,5 +1,5 @@
 <div class="widget-boiling-label">
-  Состав потока
+  Состав потока (%)
 </div>
 <ngx-charts-bar-horizontal
   [view]="view"
@@ -16,6 +16,9 @@
   [barPadding]="barPadding"
   [animations]="false"
   [xAxisLabel]="xAxisLabel"
+  [maxXAxisTickLength]="maxXAxisTickLength"
+  [xAxisTicks]="xAxisTics"
+  [trimXAxisTicks]="trimXAxisTicks"
   [yAxisLabel]="yAxisLabel"
   [showDataLabel]="showDataLabel"
   (select)="onSelect($event)"

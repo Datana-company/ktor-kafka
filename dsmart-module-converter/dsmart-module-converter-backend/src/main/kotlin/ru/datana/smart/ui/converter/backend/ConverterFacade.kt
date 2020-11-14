@@ -1,16 +1,14 @@
 package ru.datana.smart.ui.converter.backend
 
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
-import ru.datana.smart.ui.converter.common.models.CurrentState
-import ru.datana.smart.ui.converter.common.models.IWsManager
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
-import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
+import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
 
 class ConverterFacade(
     converterRepository: IUserEventsRepository = IUserEventsRepository.NONE,
     wsManager: IWsManager = IWsManager.NONE,
+    wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     dataTimeout: Long = Long.MIN_VALUE,
     metalRateCriticalPoint: Double = Double.MIN_VALUE,
     metalRateWarningPoint: Double = Double.MIN_VALUE,
@@ -24,6 +22,7 @@ class ConverterFacade(
     private val mathChain = MathChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
+        wsSignalerManager= wsSignalerManager,
         dataTimeout = dataTimeout,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
@@ -37,6 +36,7 @@ class ConverterFacade(
     private val anglesChain = AnglesChain(
         eventsRepository = converterRepository,
         wsManager = wsManager,
+        wsSignalerManager = wsSignalerManager,
         dataTimeout = dataTimeout,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,

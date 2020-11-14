@@ -4,13 +4,13 @@
 <div class="widget-boiling-time">
   <div class="widget-boiling-time-value">
     <div *ngIf="angleData?.angle && angleData?.angle !== null">
-      {{ angleData?.angle}}
+      <div style="font-size:100px"> {{ angleData?.angle}}</div>
       <div class="text">градусов</div>
     </div>
     <div *ngIf="!angleData?.angle || angleData?.angle === null">
-      <div class="text">"-"<br>градусов</div>
+      <div style="font-size:50px">_</div>
+      <div class="text"><br>градусов</div>
     </div>
   </div>
-
 </div>
 

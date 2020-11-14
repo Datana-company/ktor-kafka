@@ -6,6 +6,8 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 
 object UpdateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
