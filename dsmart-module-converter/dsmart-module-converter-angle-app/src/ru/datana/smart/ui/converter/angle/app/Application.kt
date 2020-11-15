@@ -64,6 +64,7 @@ fun Application.module(testing: Boolean = false) {
                 .forEach { record ->
                     when (record.topic) {
                         topicMath -> {
+                            println("-------- MATH")
                             val mlui = jacksonSerializer.readValue(
                                 record.value,
                                 ConverterTransportMlUi::class.java
@@ -77,6 +78,7 @@ fun Application.module(testing: Boolean = false) {
                                 val closestMessage = angleSchedule?.items?.minByOrNull {
                                     abs(it.timeShift?.let { ts -> ts - timeShift } ?: Long.MAX_VALUE)
                                 }
+                                println(closestMessage)
                                 val converterTransportAngle = ConverterTransportAngle(
                                     meltInfo = mlui.meltInfo,
                                     angleTime = mlui.frameTime,
@@ -89,6 +91,7 @@ fun Application.module(testing: Boolean = false) {
                             }
                         }
                         topicMeta -> {
+                            println("---- META")
                             val metaInfo = jacksonSerializer.readValue(
                                 record.value,
                                 ConverterMeltInfo::class.java
