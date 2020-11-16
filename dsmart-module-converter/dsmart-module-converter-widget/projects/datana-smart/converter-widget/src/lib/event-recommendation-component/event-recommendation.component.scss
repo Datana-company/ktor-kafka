@@ -1,8 +1,8 @@
 .widget-event-item {
     width: calc(100% - 1.5rem);
     /*height: calc(7rem + 8px);*/
-    padding-bottom: 19.5px;
-    min-height: 9.17rem;
+    padding-bottom: 7.5px;
+    //min-height: 9.25rem;
 }
 
 .widget-event-item-warning {
@@ -23,8 +23,9 @@
 }
 
 .widget-event-item-instruction {
-    /*height: 5.5rem;*/
-    min-height: 9.15rem!important;
+    height: 9.5rem!important;
+    max-height: 9.5rem!important;
+    min-height: 9.5rem!important;
     padding: 1.25rem;
     border: 2px solid #E6A5B8;
     border-radius: 0 4px 4px 4px;
@@ -47,7 +48,7 @@
     font-weight: 600;
     font-size: 1.25rem;
     color: white;
-    margin-top: .3rem;
+    //margin-top: .3rem;
 }
 
 .widget-event-item-info-warning-active {
@@ -63,7 +64,7 @@
     font-size: 1.2rem;
     font-weight: 500;
     background-color: white;
-    min-height: 9.15rem;
+    min-height: 9.25rem!important;
 }
 
 .widget-event-item-info-instruction-active {
