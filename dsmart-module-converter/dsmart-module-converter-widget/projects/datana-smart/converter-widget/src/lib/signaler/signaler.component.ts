@@ -46,6 +46,16 @@ export class SignalerComponent implements OnInit, OnChanges {
         () => audio.play(),
         this.sound.interval
       )
+      const execTimeout = (intervalId, timeout) => {
+        setTimeout(
+          () => {
+            clearInterval(intervalId);
+            this.speakerElement.classList.add('hidden');
+          },
+          timeout
+        )
+      }
+      execTimeout(this.intervalId, this.sound.timeout)
     }
   }
 

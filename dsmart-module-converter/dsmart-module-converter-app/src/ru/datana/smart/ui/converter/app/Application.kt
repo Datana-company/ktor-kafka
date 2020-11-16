@@ -189,17 +189,17 @@ fun Application.module(testing: Boolean = false) {
                                 println("topic = math, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleMath(context)
                             }
-                            topicVideo -> {
-                                val kafkaModel = toConverterTransportViMl(record)
-                                val conveyorModelFrame = toModelFrame(kafkaModel)
-                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
-                                val context = ConverterBeContext(
-                                    frame = conveyorModelFrame,
-                                    meltInfo = conveyorModelMeltInfo,
-                                )
-                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-                                converterFacade.handleFrame(context)
-                            }
+//                            topicVideo -> {
+//                                val kafkaModel = toConverterTransportViMl(record)
+//                                val conveyorModelFrame = toModelFrame(kafkaModel)
+//                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
+//                                val context = ConverterBeContext(
+//                                    frame = conveyorModelFrame,
+//                                    meltInfo = conveyorModelMeltInfo,
+//                                )
+//                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+//                                converterFacade.handleFrame(context)
+//                            }
                             topicMeta -> {
                                 val kafkaModel = toConverterMeltInfo(record)
                                 val conveyorModel = toModelMeltInfo(kafkaModel)
