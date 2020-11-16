@@ -34,10 +34,12 @@ object CreateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                     angleStart = currentAngle
                 )
             )
-            context.signaler = SignalerModel(
-                level = SignalerModel.SignalerLevelModel.CRITICAL,
-                sound = SignalerSoundModel.NONE
-            )
+            if (context.signaler == SignalerModel.NONE) {
+                context.signaler = SignalerModel(
+                    level = SignalerModel.SignalerLevelModel.CRITICAL,
+                    sound = SignalerSoundModel.NONE
+                )
+            }
         }
     }
 
