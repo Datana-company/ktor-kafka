@@ -26,6 +26,7 @@ class ConverterBeContext (
     var metalRateWarningPoint: Double = Double.MIN_VALUE,
     var reactionTime: Long = Long.MIN_VALUE,
     var sirenLimitTime: Long = Long.MIN_VALUE,
+    var roundingWeight: Double = Double.MIN_VALUE,
     var dataTimeout: Long = Long.MIN_VALUE,
     var eventsRepository: IUserEventsRepository = IUserEventsRepository.NONE,
     var currentState: AtomicReference<CurrentState?> = AtomicReference(),

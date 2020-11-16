@@ -23,7 +23,7 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
                     id = UUID.randomUUID().toString(),
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.steelRate,
+                    metalRate = context.slagRate.avgSteelRate,
                     criticalPoint = context.metalRateCriticalPoint
                 )
                 context.eventsRepository.put(meltId, newEvent)
@@ -55,7 +55,7 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
                     id = UUID.randomUUID().toString(),
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.steelRate,
+                    metalRate = context.slagRate.avgSteelRate,
                     criticalPoint = context.metalRateCriticalPoint
                 )
             )
