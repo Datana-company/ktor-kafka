@@ -23,7 +23,7 @@ object CreateWarningEventHandler : IKonveyorHandler<ConverterBeContext> {
                     id = UUID.randomUUID().toString(),
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.steelRate,
+                    metalRate = context.slagRate.avgSteelRate,
                     warningPoint = context.metalRateWarningPoint
                 )
                 context.eventsRepository.put(meltId, newEvent)
@@ -48,7 +48,7 @@ object CreateWarningEventHandler : IKonveyorHandler<ConverterBeContext> {
                     id = UUID.randomUUID().toString(),
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.steelRate,
+                    metalRate = context.slagRate.avgSteelRate,
                     warningPoint = context.metalRateWarningPoint
                 )
             )

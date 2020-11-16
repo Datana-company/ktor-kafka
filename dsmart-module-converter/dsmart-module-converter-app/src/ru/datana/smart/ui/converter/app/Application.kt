@@ -94,6 +94,9 @@ fun Application.module(testing: Boolean = false) {
     val sirenLimitTime: Long by lazy {
         environment.config.property("ktor.conveyor.sirenLimitTime").getString().trim().toLong()
     }
+    val roundingWeight: Double by lazy {
+        environment.config.property("ktor.conveyor.roundingWeight").getString().trim().toDouble()
+    }
 
     // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
@@ -124,6 +127,7 @@ fun Application.module(testing: Boolean = false) {
         metalRateWarningPoint = metalRateWarningPoint,
         reactionTime = reactionTime,
         sirenLimitTime = sirenLimitTime,
+        roundingWeight = roundingWeight,
         currentState = currentState,
         converterId = converterId,
         framesBasePath = framesBasePath,
