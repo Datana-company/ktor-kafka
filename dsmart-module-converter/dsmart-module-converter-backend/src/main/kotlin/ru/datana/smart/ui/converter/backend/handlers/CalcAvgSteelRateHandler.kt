@@ -15,7 +15,7 @@ object CalcAvgSteelRateHandler: IKonveyorHandler<ConverterBeContext> {
         with(context.slagRate) {
             context.currentState.get()?.lastSlagRate?.avgSteelRate?.takeIf { it != Double.MIN_VALUE }?.let {
                 avgSteelRate = steelRate * roundingWeight + it * (1 - roundingWeight)
-                avgSteelRate = it + (steelRate - it) * roundingWeight
+//                avgSteelRate = it + (steelRate - it) * roundingWeight
             } ?: run {
                 avgSteelRate = steelRate
             }
