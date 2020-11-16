@@ -20,6 +20,7 @@ class EventsChain(
     var metalRateWarningPoint: Double,
     var reactionTime: Long,
     var sirenLimitTime: Long,
+    var roundingWeight: Double,
     var currentState: AtomicReference<CurrentState?>,
     var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
     var converterId: String
@@ -39,6 +40,7 @@ class EventsChain(
                 it.metalRateWarningPoint = metalRateWarningPoint
                 it.reactionTime = reactionTime
                 it.sirenLimitTime = sirenLimitTime
+                it.roundingWeight = roundingWeight
                 it.currentState = currentState
                 it.scheduleCleaner = scheduleCleaner
                 it.converterId = converterId
@@ -51,19 +53,19 @@ class EventsChain(
         val konveyor = konveyor<ConverterBeContext> {
 
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
+                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
                 +UpdateWarningEventHandler
                 +UpdateInfoEventHandler
                 +CreateCriticalEventHandler
             }
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
+                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateInfoEventHandler
                 +CreateWarningEventHandler
             }
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
+                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
                 +CreateInfoEventHandler
