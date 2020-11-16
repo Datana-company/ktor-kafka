@@ -55,33 +55,33 @@ class EventsChain(
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
                 +UpdateWarningEventHandler
-                +UpdateInfoEventHandler
+//                +UpdateInfoEventHandler
                 +CreateCriticalEventHandler
             }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
                 +UpdateCriticalEventHandler
-                +UpdateInfoEventHandler
+//                +UpdateInfoEventHandler
                 +CreateWarningEventHandler
             }
-            konveyor {
-                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
-                +UpdateCriticalEventHandler
-                +UpdateWarningEventHandler
-                +CreateInfoEventHandler
-            }
+//            konveyor {
+//                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
+//                +UpdateCriticalEventHandler
+//                +UpdateWarningEventHandler
+//                +CreateInfoEventHandler
+//            }
             konveyor {
                 on { currentState.get()?.let { it.currentMeltInfo.id == "" } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
-                +UpdateInfoEventHandler
+//                +UpdateInfoEventHandler
                 +CreateSuccessMeltEventHandler
             }
             konveyor {
                 on { angles.angle.takeIf { it != Double.MIN_VALUE } != null }
                 +UpdateAngleCriticalEventHandler
                 +UpdateAngleWarningEventHandler
-                +UpdateAngleInfoEventHandler
+//                +UpdateAngleInfoEventHandler
             }
             handler {
                 onEnv { status == CorStatus.STARTED && currentState.get() != null }

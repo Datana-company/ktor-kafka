@@ -61,7 +61,9 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
             )
             context.signaler = SignalerModel(
                 level = SignalerModel.SignalerLevelModel.CRITICAL,
-                sound = SignalerSoundModel.NONE
+                sound = SignalerSoundModel(
+                    SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, 3000
+                )
             )
         }
     }
