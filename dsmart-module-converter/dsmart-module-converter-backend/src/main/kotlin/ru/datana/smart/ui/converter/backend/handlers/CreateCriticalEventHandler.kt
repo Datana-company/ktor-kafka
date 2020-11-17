@@ -4,7 +4,6 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
@@ -47,8 +46,7 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
                 angleStart = it.angleStart,
                 angleFinish = it.angleFinish,
                 angleMax = it.angleMax,
-                criticalPoint = it.criticalPoint,
-                executionStatus = if (isReactionTimeUp) IBizEvent.ExecutionStatus.FAILED else IBizEvent.ExecutionStatus.NONE
+                criticalPoint = it.criticalPoint
             )
             context.eventsRepository.put(meltId, currentUpdatedEvent)
         } ?: run {
