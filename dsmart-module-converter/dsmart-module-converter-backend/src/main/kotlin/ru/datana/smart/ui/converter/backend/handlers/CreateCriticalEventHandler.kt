@@ -10,44 +10,19 @@ import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import java.time.Instant
 import java.util.*
 
-object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
+/*
+* CreateCriticalEventHandler - создаётся событие типа "Критическая ситуация",
+* и светофор переходит в критический статус.
+* */
+object CreateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
+        val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: MetalRateCriticalEvent? =
             context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
         val slagRateTime = Instant.now()
         activeEvent?.let {
-            val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
-            val isReactionTimeUp = slagRateTime >= timeStartWithShift
-            if (isReactionTimeUp) {
-                val newEvent = MetalRateCriticalEvent(
-                    id = UUID.randomUUID().toString(),
-                    timeStart = slagRateTime,
-                    timeFinish = slagRateTime,
-                    metalRate = context.slagRate.avgSteelRate,
-                    criticalPoint = context.metalRateCriticalPoint
-                )
-                context.eventsRepository.put(meltId, newEvent)
-                context.signaler = SignalerModel(
-                    level = SignalerModel.SignalerLevelModel.CRITICAL,
-                    sound = SignalerSoundModel(
-                        SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, 3000
-                    )
-                )
-            }
-            val currentUpdatedEvent = MetalRateCriticalEvent(
-                id = it.id,
-                timeStart = it.timeStart,
-                timeFinish = slagRateTime,
-                metalRate = it.metalRate,
-                title = it.title,
-                isActive = !isReactionTimeUp,
-                angleStart = it.angleStart,
-                angleFinish = it.angleFinish,
-                angleMax = it.angleMax,
-                criticalPoint = it.criticalPoint
-            )
-            context.eventsRepository.put(meltId, currentUpdatedEvent)
+            return
         } ?: run {
             context.eventsRepository.put(
                 meltId,
@@ -56,15 +31,16 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     metalRate = context.slagRate.avgSteelRate,
-                    criticalPoint = context.metalRateCriticalPoint
+                    criticalPoint = context.metalRateCriticalPoint,
+                    angleStart = currentAngle
                 )
             )
-            context.signaler = SignalerModel(
-                level = SignalerModel.SignalerLevelModel.CRITICAL,
-                sound = SignalerSoundModel(
-                    SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, 3000
+            if (context.signaler == SignalerModel.NONE) {
+                context.signaler = SignalerModel(
+                    level = SignalerModel.SignalerLevelModel.CRITICAL,
+                    sound = SignalerSoundModel.NONE
                 )
-            )
+            }
         }
     }
 
@@ -72,4 +48,3 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
         return context.status == CorStatus.STARTED
     }
 }
-

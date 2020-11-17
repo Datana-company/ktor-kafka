@@ -9,9 +9,7 @@ data class SuccessMeltEvent(
     override val timeFinish: Instant = Instant.MAX,
     override val metalRate: Double = 0.0,
     val warningPoint: Double,
-    override val angleStart: Double? = null,
-    override val angleFinish: Double? = null,
-    override val angleMax: Double? = null,
+    override val angleStart: Double = Double.MIN_VALUE,
     override val title: String = "Информация",
     override val textMessage: String = """
                                         Допустимая норма потерь металла ${toPercent(warningPoint)}% не была превышена.
