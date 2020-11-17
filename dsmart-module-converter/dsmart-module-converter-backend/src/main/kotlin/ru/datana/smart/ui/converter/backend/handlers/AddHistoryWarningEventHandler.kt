@@ -5,6 +5,8 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 //TODO: придумать другое имя
 /*
@@ -29,6 +31,10 @@ object AddHistoryWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                 warningPoint = it.warningPoint
             )
             context.eventsRepository.put(meltId, historicalEvent)
+            context.signaler = SignalerModel(
+                level = SignalerModel.SignalerLevelModel.INFO,
+                sound = SignalerSoundModel.NONE
+            )
         } ?: return
     }
 
