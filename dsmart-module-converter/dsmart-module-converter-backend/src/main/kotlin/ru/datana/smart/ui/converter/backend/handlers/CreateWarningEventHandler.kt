@@ -5,19 +5,23 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.IBizEvent
+import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import java.time.Instant
 import java.util.*
 
 object CreateWarningEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = context.frame.frameTime
-        val activeEvent: MetalRateWarningEvent? =
-            context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
+        val activeEvent: MetalRateInfoEvent? =
+            context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
+        val slagRateTime = Instant.now()
         activeEvent?.let {
-            val isReactionTimeUp = it.timeFinish - it.timeStart >= context.reactionTime
+            val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
+            val isReactionTimeUp = slagRateTime >= timeStartWithShift
+            println("isReactionTimeUp = ${isReactionTimeUp}, slagRateTime = ${slagRateTime}, timeStartWithShift = ${timeStartWithShift}, timeStart = ${it.timeStart}")
             if (isReactionTimeUp) {
                 val newEvent = MetalRateWarningEvent(
                     id = UUID.randomUUID().toString(),

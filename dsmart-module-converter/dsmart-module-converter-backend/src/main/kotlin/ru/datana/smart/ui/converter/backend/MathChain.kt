@@ -97,7 +97,6 @@ class MathChain(
                         val curState = currentState.get() ?: CurrentState()
                         curState.lastSlagRate = slagRate
                         currentState.set(curState)
-                        println("slagRate = ${slagRate.slagRate}, steelRate = ${slagRate.steelRate}, avgSteelRate = ${slagRate.avgSteelRate}")
                     }
                 }
 

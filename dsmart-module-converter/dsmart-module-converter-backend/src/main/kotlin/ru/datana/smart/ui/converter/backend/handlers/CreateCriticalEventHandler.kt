@@ -8,16 +8,19 @@ import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import java.time.Instant
 import java.util.*
 
 object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = context.frame.frameTime
         val activeEvent: MetalRateCriticalEvent? =
             context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
+        val slagRateTime = Instant.now()
         activeEvent?.let {
-            val isReactionTimeUp = it.timeFinish - it.timeStart >= context.reactionTime
+            val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
+            val isReactionTimeUp = slagRateTime >= timeStartWithShift
+            println("isReactionTimeUp = ${isReactionTimeUp}, slagRateTime = ${slagRateTime}, timeStartWithShift = ${timeStartWithShift}, timeStart = ${it.timeStart}")
             if (isReactionTimeUp) {
                 val newEvent = MetalRateCriticalEvent(
                     id = UUID.randomUUID().toString(),
