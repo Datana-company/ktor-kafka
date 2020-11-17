@@ -32,7 +32,7 @@
       <div class="row">
         <div class="col-2" style="text-align: left">
           <div *ngIf="converterMeltInfoData?.meltNumber && converterMeltInfoData?.meltNumber !== null">
-            Плавка: <span style="font-weight: 600">{{converterMeltInfoData?.meltNumber}}</span>
+            Плавка: <span class="font-weight-600">{{converterMeltInfoData?.meltNumber}}</span>
           </div>
           <div *ngIf="!converterMeltInfoData?.meltNumber || converterMeltInfoData?.meltNumber === null">
             <div class="text">Плавка: -</div>
@@ -40,7 +40,7 @@
         </div>
         <div class="col-6">
           <div *ngIf="converterMeltInfoData?.steelGrade && converterMeltInfoData?.steelGrade !== null">
-            Марка: <span style="font-weight: 600">{{converterMeltInfoData?.steelGrade}}</span>
+            Марка: <span class="font-weight-600">{{converterMeltInfoData?.steelGrade}}</span>
           </div>
           <div *ngIf="!converterMeltInfoData?.steelGrade || converterMeltInfoData?.steelGrade === null">
             <div class="text">Марка: -</div>
@@ -48,7 +48,7 @@
         </div>
         <div class="col-2" style="text-align: right; padding-right: 6.5%">
           <div *ngIf="converterMeltInfoData?.crewNumber && converterMeltInfoData?.crewNumber !== null">
-            Бригада: <span style="font-weight: 600">{{converterMeltInfoData?.crewNumber}}</span>
+            Бригада: <span class="font-weight-600">{{converterMeltInfoData?.crewNumber}}</span>
           </div>
           <div *ngIf="!converterMeltInfoData?.steelGrade || converterMeltInfoData?.steelGrade === null">
             <div class="text">Бригада: -</div>
@@ -104,7 +104,7 @@
         <div class="row">
           <div class="widget-events">
             <div class="container">
-              <div class="panel panel-default overflow-auto" style="max-height:40rem">
+              <div class="overflow-hidden" style="max-height:35.8rem">
                 <event-recommendation-component
                   [events]="converterEvents">
                 </event-recommendation-component>

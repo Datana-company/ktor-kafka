@@ -71,12 +71,15 @@ export class SignalerComponent implements OnInit, OnChanges {
   }
 
   getSignalerClass() {
-    switch (this.level) {
+    switch ((this.level ? this.level : 'NOTSIGNALLEVEL')) {
       case SignalerLevelModel.WARNING: {
         return 'signaler-level-warning';
       }
       case SignalerLevelModel.CRITICAL: {
         return 'signaler-level-critical';
+      }
+      case SignalerLevelModel.NOTSIGNALLEVEL: {
+        return 'not-signal-level';
       }
       default: {
         return 'signaler-level-info';

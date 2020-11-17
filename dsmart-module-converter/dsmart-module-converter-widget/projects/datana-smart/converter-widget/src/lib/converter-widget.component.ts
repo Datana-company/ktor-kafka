@@ -21,7 +21,7 @@ import {SignalerModel} from './models/signaler.model';
 @Component({
   selector: 'datana-converter-widget',
   templateUrl: './converter-widget.component.html',
-  styleUrls: ['./converter-widget.component.css']
+  styleUrls: ['./converter-widget.component.scss']
 })
 export class ConverterWidgetComponent implements OnInit, OnDestroy {
 

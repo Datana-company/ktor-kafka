@@ -14,6 +14,7 @@ class ConverterFacade(
     metalRateWarningPoint: Double = Double.MIN_VALUE,
     reactionTime: Long = Long.MIN_VALUE,
     sirenLimitTime: Long = Long.MIN_VALUE,
+    roundingWeight: Double = Double.MIN_VALUE,
     currentState: AtomicReference<CurrentState?> = AtomicReference(),
     scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
     converterId: String = "",
@@ -30,6 +31,7 @@ class ConverterFacade(
         scheduleCleaner = scheduleCleaner,
         reactionTime = reactionTime,
         sirenLimitTime = sirenLimitTime,
+        roundingWeight = roundingWeight,
         converterId = converterId,
         framesBasePath = framesBasePath
     )
@@ -44,6 +46,7 @@ class ConverterFacade(
         scheduleCleaner = scheduleCleaner,
         reactionTime = reactionTime,
         sirenLimitTime = sirenLimitTime,
+        roundingWeight = roundingWeight,
         converterId = converterId
     )
     private val frameChain = FrameChain(
@@ -56,6 +59,7 @@ class ConverterFacade(
         scheduleCleaner = scheduleCleaner,
         reactionTime = reactionTime,
         sirenLimitTime = sirenLimitTime,
+        roundingWeight = roundingWeight,
         converterId = converterId,
         framesBasePath = framesBasePath
     )
@@ -69,6 +73,7 @@ class ConverterFacade(
         scheduleCleaner = scheduleCleaner,
         reactionTime = reactionTime,
         sirenLimitTime = sirenLimitTime,
+        roundingWeight = roundingWeight,
         converterId = converterId
     )
 

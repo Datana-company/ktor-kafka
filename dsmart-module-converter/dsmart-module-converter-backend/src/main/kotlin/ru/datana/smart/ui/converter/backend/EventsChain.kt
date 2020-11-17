@@ -20,6 +20,7 @@ class EventsChain(
     var metalRateWarningPoint: Double,
     var reactionTime: Long,
     var sirenLimitTime: Long,
+    var roundingWeight: Double,
     var currentState: AtomicReference<CurrentState?>,
     var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
     var converterId: String
@@ -39,6 +40,7 @@ class EventsChain(
                 it.metalRateWarningPoint = metalRateWarningPoint
                 it.reactionTime = reactionTime
                 it.sirenLimitTime = sirenLimitTime
+                it.roundingWeight = roundingWeight
                 it.currentState = currentState
                 it.scheduleCleaner = scheduleCleaner
                 it.converterId = converterId
@@ -51,35 +53,40 @@ class EventsChain(
         val konveyor = konveyor<ConverterBeContext> {
 
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
+                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
                 +UpdateWarningEventHandler
-                +UpdateInfoEventHandler
+//                +UpdateInfoEventHandler
                 +CreateCriticalEventHandler
             }
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
+                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
                 +UpdateCriticalEventHandler
-                +UpdateInfoEventHandler
+//                +UpdateInfoEventHandler
                 +CreateWarningEventHandler
             }
+//            konveyor {
+//                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
+//                +UpdateCriticalEventHandler
+//                +UpdateWarningEventHandler
+//                +CreateInfoEventHandler
+//            }
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
-                +UpdateCriticalEventHandler
-                +UpdateWarningEventHandler
-                +CreateInfoEventHandler
+                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
+                +AddHistoryCriticalEventHandler
+                +AddHistoryWarningEventHandler
             }
             konveyor {
                 on { currentState.get()?.let { it.currentMeltInfo.id == "" } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
-                +UpdateInfoEventHandler
+//                +UpdateInfoEventHandler
                 +CreateSuccessMeltEventHandler
             }
             konveyor {
                 on { angles.angle.takeIf { it != Double.MIN_VALUE } != null }
                 +UpdateAngleCriticalEventHandler
                 +UpdateAngleWarningEventHandler
-                +UpdateAngleInfoEventHandler
+//                +UpdateAngleInfoEventHandler
             }
             handler {
                 onEnv { status == CorStatus.STARTED && currentState.get() != null }
