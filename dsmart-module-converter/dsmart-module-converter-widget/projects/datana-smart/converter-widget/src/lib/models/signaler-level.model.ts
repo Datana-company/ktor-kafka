@@ -1,5 +1,5 @@
 export enum SignalerLevelModel {
-  NOTSIGNALLEVEL= 'NOTSIGNALLEVEL',
+  NO_SIGNAL= 'NO_SIGNAL',
   INFO = 'INFO',
   WARNING = 'WARNING',
   CRITICAL = 'CRITICAL',

@@ -32,7 +32,7 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
             )
         )
         context.signaler = SignalerModel(
-            level = SignalerModel.SignalerLevelModel.INFO,
+            level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
             sound = SignalerSoundModel.NONE
         )
     }
