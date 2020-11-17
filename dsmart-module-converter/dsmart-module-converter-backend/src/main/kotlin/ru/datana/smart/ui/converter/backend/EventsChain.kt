@@ -71,6 +71,11 @@ class EventsChain(
 //                +CreateInfoEventHandler
 //            }
             konveyor {
+                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
+                +AddHistoryCriticalEventHandler
+                +AddHistoryWarningEventHandler
+            }
+            konveyor {
                 on { currentState.get()?.let { it.currentMeltInfo.id == "" } ?: false }
                 +UpdateCriticalEventHandler
                 +UpdateWarningEventHandler
