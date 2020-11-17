@@ -4,13 +4,12 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import java.util.*
 
-object CreateWarningEventHandler : IKonveyorHandler<ConverterBeContext> {
+object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
         val slagRateTime = context.frame.frameTime
@@ -37,8 +36,7 @@ object CreateWarningEventHandler : IKonveyorHandler<ConverterBeContext> {
                 isActive = !isReactionTimeUp,
                 angleStart = it.angleStart,
                 angleFinish = it.angleFinish,
-                warningPoint = it.warningPoint,
-                executionStatus = if (isReactionTimeUp) IBizEvent.ExecutionStatus.FAILED else IBizEvent.ExecutionStatus.NONE
+                warningPoint = it.warningPoint
             )
             context.eventsRepository.put(meltId, currentUpdatedEvent)
         } ?: run {
