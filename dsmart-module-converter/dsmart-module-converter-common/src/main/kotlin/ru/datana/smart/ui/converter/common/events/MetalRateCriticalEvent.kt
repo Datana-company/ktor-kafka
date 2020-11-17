@@ -5,8 +5,8 @@ import java.time.Instant
 
 data class MetalRateCriticalEvent(
     override val id: String = "",
-    override val timeStart: Long = Instant.now().toEpochMilli(),
-    override val timeFinish: Long = Instant.now().toEpochMilli(),
+    override val timeStart: Instant = Instant.MIN,
+    override val timeFinish: Instant = Instant.MAX,
     override val metalRate: Double,
     val criticalPoint: Double,
     override val angleStart: Double? = null,

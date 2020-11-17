@@ -1,8 +1,10 @@
 package ru.datana.smart.ui.converter.common.models
 
+import java.time.Instant
+
 data class ModelMeltInfo(
     var id: String = "",
-    var timeStart: Long = Long.MIN_VALUE,
+    var timeStart: Instant = Instant.MIN,
     var meltNumber: String = "",
     var steelGrade: String = "",
     var crewNumber: String = "",

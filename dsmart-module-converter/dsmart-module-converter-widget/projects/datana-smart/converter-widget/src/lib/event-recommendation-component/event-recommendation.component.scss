@@ -84,11 +84,14 @@
     font-weight: bold;
     padding-bottom: .25rem;
 }
-
 .widget-event-execution-status {
     float: right;
 }
 
 .widget-event-text-message {
     clear: left;
+}
+
+.event-title-text {
+    padding-top: 2px;
 }
