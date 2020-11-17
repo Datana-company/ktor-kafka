@@ -4,10 +4,10 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import java.time.Instant
 
 /*
 * UpdateTimeCriticalEventHandler - если прошло время больше, чем значение DATA_TIMEOUT,
@@ -17,11 +17,12 @@ import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 object UpdateTimeCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = context.frame.frameTime
+        val slagRateTime = Instant.now()
         val activeEvent: MetalRateCriticalEvent? =
             context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
         activeEvent?.let {
-            val isReactionTimeUp = it.timeFinish - it.timeStart >= context.reactionTime
+            val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
+            val isReactionTimeUp = slagRateTime >= timeStartWithShift
             val isActive = !isReactionTimeUp
             if (isReactionTimeUp) {
                 context.signaler = SignalerModel(
@@ -39,8 +40,7 @@ object UpdateTimeCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 title = it.title,
                 isActive = isActive,
                 angleStart = it.angleStart,
-                criticalPoint = it.criticalPoint,
-                executionStatus = if (isReactionTimeUp) IBizEvent.ExecutionStatus.FAILED else IBizEvent.ExecutionStatus.NONE
+                criticalPoint = it.criticalPoint
             )
             context.eventsRepository.put(meltId, currentEvent)
         } ?: return

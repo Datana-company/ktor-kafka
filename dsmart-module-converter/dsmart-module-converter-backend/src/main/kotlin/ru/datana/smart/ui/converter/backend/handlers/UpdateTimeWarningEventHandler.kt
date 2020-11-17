@@ -4,8 +4,8 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import java.time.Instant
 
 /*
 * UpdateTimeWarningEventHandler - если прошло время больше, чем значение DATA_TIMEOUT,
@@ -14,11 +14,12 @@ import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 object UpdateTimeWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = context.frame.frameTime
+        val slagRateTime = Instant.now()
         val activeEvent: MetalRateWarningEvent? =
             context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
         activeEvent?.let {
-            val isReactionTimeUp = it.timeFinish - it.timeStart >= context.reactionTime
+            val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
+            val isReactionTimeUp = slagRateTime >= timeStartWithShift
             val isActive = !isReactionTimeUp
             val currentEvent = MetalRateWarningEvent(
                 id = it.id,
@@ -28,8 +29,7 @@ object UpdateTimeWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                 title = it.title,
                 isActive = isActive,
                 angleStart = it.angleStart,
-                warningPoint = it.warningPoint,
-                executionStatus = if (isReactionTimeUp) IBizEvent.ExecutionStatus.FAILED else IBizEvent.ExecutionStatus.NONE
+                warningPoint = it.warningPoint
             )
             context.eventsRepository.put(meltId, currentEvent)
         } ?: return

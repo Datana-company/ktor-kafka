@@ -40,10 +40,6 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
                 isActive = false
             )
         )
-        context.signaler = SignalerModel(
-            level = SignalerModel.SignalerLevelModel.INFO,
-            sound = SignalerSoundModel.NONE
-        )
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

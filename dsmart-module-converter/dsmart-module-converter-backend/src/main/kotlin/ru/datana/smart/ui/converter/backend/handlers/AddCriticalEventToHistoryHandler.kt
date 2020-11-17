@@ -4,19 +4,19 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
+import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 /*
-* AddHistoryInfoEventHandler - записывает текущее событие "Информация" в историю
+* AddCriticalEventToHistoryHandler - записывает текущее событие "Критическая ситуация" в историю без изменения статуса
 * */
-object AddHistoryInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
+object AddCriticalEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
+        val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
         activeEvent?.let {
-            val historicalEvent = MetalRateInfoEvent(
+            val historicalEvent = MetalRateCriticalEvent(
                 id = it.id,
                 timeStart = it.timeStart,
                 timeFinish = it.timeFinish,
@@ -24,9 +24,13 @@ object AddHistoryInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 title = it.title,
                 isActive = false,
                 angleStart = it.angleStart,
-                warningPoint = it.warningPoint
+                criticalPoint = it.criticalPoint
             )
             context.eventsRepository.put(meltId, historicalEvent)
+            context.signaler = SignalerModel(
+                level = SignalerModel.SignalerLevelModel.INFO,
+                sound = SignalerSoundModel.NONE
+            )
         } ?: return
     }
 

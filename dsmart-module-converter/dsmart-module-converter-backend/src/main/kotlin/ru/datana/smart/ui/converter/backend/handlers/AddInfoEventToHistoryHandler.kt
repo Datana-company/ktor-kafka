@@ -5,33 +5,28 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
-import java.time.Instant
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 /*
-* UpdateTimeInfoEventHandler - если прошло время больше, чем значение DATA_TIMEOUT,
-* то записываем текущее событие "Информация" в историю.
+* AddInfoEventToHistoryHandler - записывает текущее событие "Информация" в историю без изменения статуса
 * */
-object UpdateTimeInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
+object AddInfoEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val activeEvent: MetalRateInfoEvent? =
-            context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
-        val slagRateTime = Instant.now()
+        val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
         activeEvent?.let {
-            val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
-            val isReactionTimeUp = slagRateTime >= timeStartWithShift
-            val isActive = !isReactionTimeUp
-            val currentEvent = MetalRateInfoEvent(
+            val historicalEvent = MetalRateInfoEvent(
                 id = it.id,
                 timeStart = it.timeStart,
-                timeFinish = slagRateTime,
+                timeFinish = it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = isActive,
+                isActive = false,
                 angleStart = it.angleStart,
                 warningPoint = it.warningPoint
             )
-            context.eventsRepository.put(meltId, currentEvent)
+            context.eventsRepository.put(meltId, historicalEvent)
         } ?: return
     }
 

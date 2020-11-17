@@ -54,38 +54,38 @@ class EventsChain(
 
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
-                +AddHistoryWarningEventHandler
-//                +AddHistoryInfoEventHandler
+                +AddFailedWarningEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
                 +UpdateTimeCriticalEventHandler
                 +CreateCriticalEventHandler
                 +CheckAngleCriticalEventHandler
             }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
-                +AddHistoryCriticalEventHandler
-//                +AddHistoryInfoEventHandler
+                +AddFailedCriticalEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
                 +UpdateTimeWarningEventHandler
                 +CreateWarningEventHandler
                 +CheckAngleWarningEventHandler
             }
 //            konveyor {
 //                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
-//                +AddHistoryCriticalEventHandler
-//                +AddHistoryWarningEventHandler
+//                +AddFailedCriticalEventToHistoryHandler
+//                +AddFailedWarningEventToHistoryHandler
 //                +UpdateTimeInfoEventHandler
 //                +CreateInfoEventHandler
 //            }
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) < toPercent(metalRateWarningPoint) } ?: false }
-                +AddHistoryCriticalEventHandler
-                +AddHistoryWarningEventHandler
-//                +AddHistoryInfoEventHandler
+                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
+                +AddCriticalEventToHistoryHandler
+                +AddWarningEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
             }
             konveyor {
                 on { currentState.get().currentMeltInfo.id.isEmpty() }
-                +AddHistoryCriticalEventHandler
-                +AddHistoryWarningEventHandler
-//                +AddHistoryInfoEventHandler
+                +AddFailedCriticalEventToHistoryHandler
+                +AddFailedWarningEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
                 +CreateSuccessMeltEventHandler
             }
             handler {
