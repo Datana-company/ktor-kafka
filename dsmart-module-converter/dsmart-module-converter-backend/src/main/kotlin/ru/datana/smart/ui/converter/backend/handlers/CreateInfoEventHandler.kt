@@ -19,7 +19,6 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
         activeEvent?.let {
             val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
             val isReactionTimeUp = slagRateTime >= timeStartWithShift
-            println("isReactionTimeUp = ${isReactionTimeUp}, slagRateTime = ${slagRateTime}, timeStartWithShift = ${timeStartWithShift}, timeStart = ${it.timeStart}")
             if (isReactionTimeUp) {
                 val newEvent = MetalRateInfoEvent(
                     id = UUID.randomUUID().toString(),

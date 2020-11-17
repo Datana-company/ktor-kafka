@@ -19,7 +19,6 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
         activeEvent?.let {
             val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
             val isReactionTimeUp = slagRateTime >= timeStartWithShift
-            println("isReactionTimeUp = ${isReactionTimeUp}, slagRateTime = ${slagRateTime}, timeStartWithShift = ${timeStartWithShift}, timeStart = ${it.timeStart}")
             if (isReactionTimeUp) {
                 val newEvent = MetalRateCriticalEvent(
                     id = UUID.randomUUID().toString(),
