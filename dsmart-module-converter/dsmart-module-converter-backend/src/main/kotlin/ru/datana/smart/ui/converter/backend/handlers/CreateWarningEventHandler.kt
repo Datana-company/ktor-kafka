@@ -7,6 +7,7 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import java.time.Instant
 import java.util.*
 
 /*
@@ -16,7 +17,7 @@ import java.util.*
 object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = context.frame.frameTime
+        val slagRateTime = Instant.now()
         val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: MetalRateWarningEvent? =
             context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
@@ -29,7 +30,7 @@ object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                     id = UUID.randomUUID().toString(),
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.steelRate,
+                    metalRate = context.slagRate.avgSteelRate,
                     warningPoint = context.metalRateWarningPoint,
                     angleStart = currentAngle
                 )

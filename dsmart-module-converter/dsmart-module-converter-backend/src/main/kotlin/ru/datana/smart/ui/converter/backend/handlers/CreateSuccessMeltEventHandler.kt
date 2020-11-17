@@ -24,6 +24,7 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
         )
         context.status = CorStatus.FINISHED
         val meltId: String = context.meltInfo.id
+        val slagRateTime = Instant.now()
         context.eventsRepository.getAllByMeltId(meltId).map {
             if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent) {
                 return
@@ -33,9 +34,15 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
             meltId,
             SuccessMeltEvent(
                 id = UUID.randomUUID().toString(),
+                timeStart = slagRateTime,
+                timeFinish = slagRateTime,
                 warningPoint = context.metalRateWarningPoint,
                 isActive = false
             )
+        )
+        context.signaler = SignalerModel(
+            level = SignalerModel.SignalerLevelModel.INFO,
+            sound = SignalerSoundModel.NONE
         )
     }
 

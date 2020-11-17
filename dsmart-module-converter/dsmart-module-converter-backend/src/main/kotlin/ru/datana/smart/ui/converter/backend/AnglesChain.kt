@@ -18,6 +18,7 @@ class AnglesChain(
     var metalRateWarningPoint: Double,
     var reactionTime: Long,
     var sirenLimitTime: Long,
+    var roundingWeight: Double,
     var currentState: AtomicReference<CurrentState>,
     var scheduleCleaner: AtomicReference<ScheduleCleaner>,
     var converterId: String
@@ -38,6 +39,7 @@ class AnglesChain(
                 it.metalRateWarningPoint = metalRateWarningPoint
                 it.reactionTime = reactionTime
                 it.sirenLimitTime = sirenLimitTime
+                it.roundingWeight = roundingWeight
                 it.currentState = currentState
                 it.scheduleCleaner = scheduleCleaner
                 it.converterId = converterId

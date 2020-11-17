@@ -145,7 +145,8 @@ tasks {
                 "METAL_RATE_POINT_WARNING" to "0.20",
                 "DATA_TIMEOUT" to "5000",
                 "REACTION_TIME" to "3000",
-                "SIREN_LIMIT_TIME" to "3000"
+                "SIREN_LIMIT_TIME" to "3000",
+                "ROUNDING_WEIGHT" to "0.1"
             )
         )
     }
