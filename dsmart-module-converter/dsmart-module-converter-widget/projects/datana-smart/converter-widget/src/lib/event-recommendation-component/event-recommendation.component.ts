@@ -8,8 +8,8 @@ import {EventCategoryModel} from '../models/event-category.model';
   templateUrl: './event-recommendation.component.html',
   styleUrls: ['./event-recommendation.component.scss']
 })
-export class EventRecommendationComponent  {
-  @Input() events:  Array<EventModel> = new Array<EventModel>();
+export class EventRecommendationComponent {
+  @Input() events: Array<EventModel> = new Array<EventModel>();
 
   public isCompleted(executionStatus: ExecutionStatusModel) {
     return executionStatus === ExecutionStatusModel.COMPLETED;
@@ -25,5 +25,30 @@ export class EventRecommendationComponent  {
 
   public isInfo(eventCategoryModel: EventCategoryModel) {
     return eventCategoryModel === EventCategoryModel.INFO || eventCategoryModel === EventCategoryModel.HINT;
+  }
+
+  public isEventCategoryAndStatus(isActive: boolean, eventCategoryModel: EventCategoryModel) {
+    console.log('123456789qwertyuiisActive', isActive, eventCategoryModel);
+    if (isActive === true) {
+      if (eventCategoryModel === 'CRITICAL') {
+        return 'critical_active.svg';
+      }
+      if (eventCategoryModel === 'WARNING') {
+        return 'warning_active.svg';
+      }
+      if (eventCategoryModel === 'INFO') {
+        return 'info_active.svg';
+      }
+    } else {
+      if (eventCategoryModel === 'CRITICAL') {
+        return 'critical_not_active.svg';
+      }
+      if (eventCategoryModel === 'WARNING') {
+        return 'warning_not_active.svg';
+      }
+      if (eventCategoryModel === 'INFO') {
+        return 'info_not_active.svg';
+      }
+    }
   }
 }
