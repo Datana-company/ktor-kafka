@@ -1,9 +1,11 @@
 package ru.datana.smart.ui.converter.common.events
 
+import java.time.Instant
+
 interface IBizEvent {
     val id: String
-    val timeStart: Long
-    val timeFinish: Long
+    val timeStart: Instant
+    val timeFinish: Instant
     val title: String
     val textMessage: String
     val category: Category

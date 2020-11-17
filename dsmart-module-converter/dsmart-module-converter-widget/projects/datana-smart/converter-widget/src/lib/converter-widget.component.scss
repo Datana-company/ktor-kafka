@@ -16,9 +16,13 @@
     padding: 0.1px;
 }
 
-.widget-container-main-top{
+.widget-container-main-top {
     background: #EAEEF0;
     min-width: 1360px;
+}
+
+.font-weight-600 {
+    font-weight: 600!important;
 }
 
 .titlesTop1 {
@@ -32,10 +36,11 @@
     /* identical to box height */
     color: #222220;
 }
-.titleTop2{
-    font-family: Open Sans!important;
+
+.titleTop2 {
+    font-family: Open Sans !important;
     font-style: normal;
-    font-weight: bold!important;
+    font-weight: bold !important;
     font-size: 20px;
     line-height: 27px;
 
@@ -67,11 +72,12 @@
 }
 
 .logo_mmk {
-    top: calc(0.5rem + 6 * (6.8rem + 1px));
-    left: 40%;
+    top: calc(0.5rem + 6 * (7rem + 1px) - 6.3rem);
+    right: 14.5%;
     position: absolute;
 }
-.timeHeader{
+
+.timeHeader {
     font-style: normal;
     font-weight: normal;
     font-size: 26px;
@@ -80,7 +86,8 @@
     top: 1.2rem;
     color: #FFFFFF;
 }
-.dateHeader{
+
+.dateHeader {
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
@@ -90,7 +97,8 @@
     top: 1.7rem;
     color: #FFFFFF;
 }
-.exit{
+
+.exit {
     position: absolute;
     top: 17px;
     width: 19.61px;
@@ -112,7 +120,7 @@
 }
 
 .widget-container-row {
-    margin-left:3.4%;
+    margin-left: 3.4%;
     margin-right: 3.4%;
     padding-top: 1%;
     /*padding-bottom: 1%;*/
@@ -136,7 +144,7 @@
 .widget-events {
     margin-left: 1%;
     height: 100%;
-    width: 88%;
+    width: 90%;
 }
 
 .widget-boiling-label {

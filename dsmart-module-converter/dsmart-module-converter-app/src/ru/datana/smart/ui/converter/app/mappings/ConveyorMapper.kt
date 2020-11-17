@@ -5,11 +5,12 @@ import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import ru.datana.smart.ui.viml.models.ConverterTransportViMl
 import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
+import java.time.Instant
 
 fun toModelMeltInfo(converterMeltInfo: ConverterMeltInfo) =
     ModelMeltInfo(
         id = converterMeltInfo.id ?: "",
-        timeStart = converterMeltInfo.timeStart ?: Long.MIN_VALUE,
+        timeStart = converterMeltInfo.timeStart?.let { Instant.ofEpochMilli(it) } ?: Instant.MIN,
         meltNumber = converterMeltInfo.meltNumber ?: "",
         steelGrade = converterMeltInfo.steelGrade ?: "",
         crewNumber = converterMeltInfo.crewNumber ?: "",
@@ -50,7 +51,7 @@ fun toModelMeltInfo(converterMeltInfo: ConverterMeltInfo) =
 fun toModelMeltInfo(converterTransportViMl: ConverterTransportViMl) =
     ModelMeltInfo(
         id = converterTransportViMl.meltInfo?.id ?: "",
-        timeStart = converterTransportViMl.meltInfo?.timeStart ?: Long.MIN_VALUE,
+        timeStart = converterTransportViMl.meltInfo?.timeStart?.let { Instant.ofEpochMilli(it) } ?: Instant.MIN,
         meltNumber = converterTransportViMl.meltInfo?.meltNumber ?: "",
         steelGrade = converterTransportViMl.meltInfo?.steelGrade ?: "",
         crewNumber = converterTransportViMl.meltInfo?.crewNumber ?: "",
@@ -91,7 +92,7 @@ fun toModelMeltInfo(converterTransportViMl: ConverterTransportViMl) =
 fun toModelMeltInfo(converterTransportMlUi: ConverterTransportMlUi) =
     ModelMeltInfo(
         id = converterTransportMlUi.meltInfo?.id ?: "",
-        timeStart = converterTransportMlUi.meltInfo?.timeStart ?: Long.MIN_VALUE,
+        timeStart = converterTransportMlUi.meltInfo?.timeStart?.let { Instant.ofEpochMilli(it) } ?: Instant.MIN,
         meltNumber = converterTransportMlUi.meltInfo?.meltNumber ?: "",
         steelGrade = converterTransportMlUi.meltInfo?.steelGrade ?: "",
         crewNumber = converterTransportMlUi.meltInfo?.crewNumber ?: "",
@@ -132,7 +133,7 @@ fun toModelMeltInfo(converterTransportMlUi: ConverterTransportMlUi) =
 fun toModelMeltInfo(converterTransportAngle: ConverterTransportAngle) =
     ModelMeltInfo(
         id = converterTransportAngle.meltInfo?.id ?: "",
-        timeStart = converterTransportAngle.meltInfo?.timeStart ?: Long.MIN_VALUE,
+        timeStart = converterTransportAngle.meltInfo?.timeStart?.let { Instant.ofEpochMilli(it) } ?: Instant.MIN,
         meltNumber = converterTransportAngle.meltInfo?.meltNumber ?: "",
         steelGrade = converterTransportAngle.meltInfo?.steelGrade ?: "",
         crewNumber = converterTransportAngle.meltInfo?.crewNumber ?: "",
@@ -173,7 +174,7 @@ fun toModelMeltInfo(converterTransportAngle: ConverterTransportAngle) =
 fun toModelFrame(converterTransportViMl: ConverterTransportViMl) =
     ModelFrame(
         frameId = converterTransportViMl.frameId ?: "",
-        frameTime = converterTransportViMl.frameTime ?: Long.MIN_VALUE,
+        frameTime = converterTransportViMl.frameTime?.let { Instant.ofEpochMilli(it) } ?: Instant.MIN,
         framePath = converterTransportViMl.framePath ?: ""
     )
 
@@ -181,7 +182,7 @@ fun toModelFrame(converterTransportMlUi: ConverterTransportMlUi) =
     // будут браться другие поля, когда они появятся
     ModelFrame(
         frameId = converterTransportMlUi.frameId ?: "",
-        frameTime = converterTransportMlUi.frameTime ?: Long.MIN_VALUE,
+        frameTime = converterTransportMlUi.frameTime?.let { Instant.ofEpochMilli(it) } ?: Instant.MIN,
         framePath = converterTransportMlUi.framePath ?: ""
     )
 
@@ -193,7 +194,7 @@ fun toModelSlagRate(converterTransportMlUi: ConverterTransportMlUi) =
 
 fun toModelAngles(converterTransportAngle: ConverterTransportAngle) =
     ModelAngles(
-        angleTime = converterTransportAngle.angleTime ?: Long.MIN_VALUE,
+        angleTime = converterTransportAngle.angleTime?.let { Instant.ofEpochMilli(it) } ?: Instant.MIN,
         angle = converterTransportAngle.angle ?: Double.MIN_VALUE,
         source = converterTransportAngle.source ?: Double.MIN_VALUE
     )

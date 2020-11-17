@@ -7,21 +7,24 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import java.time.Instant
 import java.util.*
 
 object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = context.frame.frameTime
-        val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
+        val activeEvent: MetalRateInfoEvent? =
+            context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
+        val slagRateTime = Instant.now()
         activeEvent?.let {
-            val isReactionTimeUp = it.timeFinish - it.timeStart >= context.reactionTime
+            val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
+            val isReactionTimeUp = slagRateTime >= timeStartWithShift
             if (isReactionTimeUp) {
                 val newEvent = MetalRateInfoEvent(
                     id = UUID.randomUUID().toString(),
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.steelRate,
+                    metalRate = context.slagRate.avgSteelRate,
                     warningPoint = context.metalRateWarningPoint
                 )
                 context.eventsRepository.put(meltId, newEvent)
@@ -46,7 +49,7 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                     id = UUID.randomUUID().toString(),
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.steelRate,
+                    metalRate = context.slagRate.avgSteelRate,
                     warningPoint = context.metalRateWarningPoint
                 )
             )

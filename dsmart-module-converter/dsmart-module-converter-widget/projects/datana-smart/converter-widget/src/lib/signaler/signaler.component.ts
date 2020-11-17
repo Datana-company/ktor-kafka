@@ -46,6 +46,16 @@ export class SignalerComponent implements OnInit, OnChanges {
         () => audio.play(),
         this.sound.interval
       )
+      const execTimeout = (intervalId, timeout) => {
+        setTimeout(
+          () => {
+            clearInterval(intervalId);
+            this.speakerElement.classList.add('hidden');
+          },
+          timeout
+        )
+      }
+      execTimeout(this.intervalId, this.sound.timeout)
     }
   }
 
@@ -61,12 +71,15 @@ export class SignalerComponent implements OnInit, OnChanges {
   }
 
   getSignalerClass() {
-    switch (this.level) {
+    switch ((this.level ? this.level : 'NOTSIGNALLEVEL')) {
       case SignalerLevelModel.WARNING: {
         return 'signaler-level-warning';
       }
       case SignalerLevelModel.CRITICAL: {
         return 'signaler-level-critical';
+      }
+      case SignalerLevelModel.NOTSIGNALLEVEL: {
+        return 'not-signal-level';
       }
       default: {
         return 'signaler-level-info';

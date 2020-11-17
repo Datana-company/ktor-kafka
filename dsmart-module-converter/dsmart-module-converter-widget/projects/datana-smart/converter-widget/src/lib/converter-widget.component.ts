@@ -173,7 +173,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
           data?.level as SignalerLevelModel,
           new SignalerSoundModel(
             data?.sound?.type as SignalerSoundTypeModel,
-            data?.sound?.interval as number
+            data?.sound?.interval as number,
+            data?.sound?.timeout as number
           )
         );
       })
