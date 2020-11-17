@@ -20,7 +20,7 @@ class WsSignalerManager : IWsSignalerManager {
     suspend fun init(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
         val wsSignaler = WsDsmartResponseConverterSignaler(
-            data = toWsConverterSignalerModel(context.signaler)
+            data = toWsConverterSignalerModel(context)
         )
         val converterStateSerializedString = kotlinxSerializer.encodeToString(
             WsDsmartResponseConverterSignaler.serializer(),
@@ -31,7 +31,7 @@ class WsSignalerManager : IWsSignalerManager {
 
     override suspend fun sendSignaler(context: ConverterBeContext) {
         val wsSignaler = WsDsmartResponseConverterSignaler(
-            data = toWsConverterSignalerModel(context.signaler)
+            data = toWsConverterSignalerModel(context)
         )
         val signalerSerializedString = kotlinxSerializer
             .encodeToString(WsDsmartResponseConverterSignaler.serializer(), wsSignaler)

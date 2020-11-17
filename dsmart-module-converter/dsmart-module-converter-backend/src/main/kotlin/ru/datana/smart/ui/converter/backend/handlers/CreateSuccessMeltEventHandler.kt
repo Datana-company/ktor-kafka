@@ -15,7 +15,7 @@ import java.util.*
 object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         context.signaler = SignalerModel(
-            level = SignalerModel.SignalerLevelModel.INFO,
+            level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
             sound = SignalerSoundModel.NONE
         )
         context.status = CorStatus.FINISHED

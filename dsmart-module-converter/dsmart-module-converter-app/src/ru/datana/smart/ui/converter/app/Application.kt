@@ -115,7 +115,8 @@ fun Application.module(testing: Boolean = false) {
     val websocketContext = ConverterBeContext(
         currentState = currentState,
         eventsRepository = userEventsRepository,
-        metalRateWarningPoint = metalRateWarningPoint
+        metalRateWarningPoint = metalRateWarningPoint,
+        sirenLimitTime = sirenLimitTime
     )
 
     val converterFacade = ConverterFacade(
