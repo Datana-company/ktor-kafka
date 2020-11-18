@@ -9,6 +9,9 @@ import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.models.ModelFrame
+import ru.datana.smart.ui.converter.common.models.ModelSlagRate
+import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 
 class MathChain(
     var chainSettings: ConverterChainSettings
