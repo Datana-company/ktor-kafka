@@ -8,7 +8,7 @@ import ru.datana.smart.ui.converter.common.Config
 
 @Serializable
 @SerialName("events-update")
-data class WsDsmartResponseEvents(
+data class WsDsmartResponseConverterEvents(
     override val data: WsDsmartEventList? = null,
     override val errors: List<IWsDsmartResponseError>? = null,
     override val event: String? = "events-update"

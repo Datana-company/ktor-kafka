@@ -3,7 +3,6 @@ package ru.datana.smart.ui.converter.common.context
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.time.Instant
-import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 
 class ConverterBeContext (
@@ -31,8 +30,11 @@ class ConverterBeContext (
     var currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE),
     var scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE),
     var signaler: SignalerModel = SignalerModel.NONE,
-
     var converterId: String = "",
     var framesBasePath: String = "",
     var converterFacade: IConverterFacade = IConverterFacade.NONE
-)
+) {
+    companion object {
+        val NONE = ConverterBeContext()
+    }
+}
