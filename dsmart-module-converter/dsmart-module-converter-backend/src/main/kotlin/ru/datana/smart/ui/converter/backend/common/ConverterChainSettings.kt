@@ -6,11 +6,11 @@ import ru.datana.smart.ui.converter.common.models.IConverterFacade
 import ru.datana.smart.ui.converter.common.models.IWsManager
 import ru.datana.smart.ui.converter.common.models.IWsSignalerManager
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
-import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
+import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import java.util.concurrent.atomic.AtomicReference
 
 class ConverterChainSettings(
-    var eventsRepository: IUserEventsRepository = IUserEventsRepository.NONE,
+    var eventsRepository: IEventRepository = IEventRepository.NONE,
     var wsManager: IWsManager = IWsManager.NONE,
     var wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     var dataTimeout: Long = Long.MIN_VALUE,

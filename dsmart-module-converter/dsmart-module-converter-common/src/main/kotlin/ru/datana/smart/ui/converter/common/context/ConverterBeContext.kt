@@ -1,13 +1,11 @@
 package ru.datana.smart.ui.converter.common.context
 
-import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import java.time.Instant
-import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 
-class ConverterBeContext (
+class ConverterBeContext(
 
     var angles: ModelAngles = ModelAngles.NONE,
     var meltInfo: ModelMeltInfo = ModelMeltInfo.NONE,

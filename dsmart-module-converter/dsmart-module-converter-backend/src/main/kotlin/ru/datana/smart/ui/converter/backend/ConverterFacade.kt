@@ -7,11 +7,11 @@ import ru.datana.smart.ui.converter.common.models.IWsManager
 import ru.datana.smart.ui.converter.common.models.IWsSignalerManager
 import ru.datana.smart.ui.converter.common.models.IConverterFacade
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
-import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
+import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import java.util.concurrent.atomic.AtomicReference
 
 class ConverterFacade(
-    converterRepository: IUserEventsRepository = IUserEventsRepository.NONE,
+    converterRepository: IEventRepository = IEventRepository.NONE,
     wsManager: IWsManager = IWsManager.NONE,
     wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     dataTimeout: Long = Long.MIN_VALUE,
@@ -58,10 +58,14 @@ class ConverterFacade(
     private val eventsChain = EventsChain(
         chainSettings = chainSettings
     )
+    private val extEventsChain = ExtEventsChain(
+        chainSettings = chainSettings
+    )
 
     override suspend fun handleMath(context: ConverterBeContext) = mathChain.exec(context)
     override suspend fun handleAngles(context: ConverterBeContext) = anglesChain.exec(context)
     override suspend fun handleFrame(context: ConverterBeContext) = frameChain.exec(context)
     override suspend fun handleMeltInfo(context: ConverterBeContext) = meltInfoChain.exec(context)
     override suspend fun handleEvents(context: ConverterBeContext) = eventsChain.exec(context)
+    override suspend fun handleExtEvents(context: ConverterBeContext) = extEventsChain.exec(context)
 }

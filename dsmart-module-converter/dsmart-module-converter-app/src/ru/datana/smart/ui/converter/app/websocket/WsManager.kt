@@ -18,7 +18,7 @@ class WsManager : IWsManager {
         wsSessions += session
         val currentMeltId = context.currentState.get().currentMeltInfo.id
         val events = context.eventsRepository.getAllByMeltId(currentMeltId)
-        context.events = ModelEvents(events = events)
+        context.events = events
         val wsConverterState = WsDsmartResponseConverterState(
             data = toWsConverterStateModel(context)
         )
