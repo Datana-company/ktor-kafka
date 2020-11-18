@@ -5,6 +5,7 @@ import kotlinx.serialization.json.Json
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.IWsManager
+import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.ws.models.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -13,27 +14,26 @@ class WsManager : IWsManager {
     val wsSessions: MutableCollection<DefaultWebSocketSession> = ConcurrentHashMap.newKeySet()
     val kotlinxSerializer: Json = Json { encodeDefaults = true }
 
-    // TODO: Переписать метод
     suspend fun addSession(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
-        context.currentMeltInfo.get()?.let {
-            val wsMeltInfo = WsDsmartResponseConverterMeltInfo(
-                data = toWsConverterMeltInfoModel(context.currentMeltInfo.get()!!)
-            )
-            val meltInfoSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterMeltInfo.serializer(), wsMeltInfo)
-            session.send(meltInfoSerializedString)
-        }
-
-        val wsEvents = WsDsmartResponseEvents(
-            data = WsDsmartEventList(
-                list = toWsEventListModel(context.eventsRepository.getAll())
-            )
+        val currentMeltId = context.currentState.get().currentMeltInfo.id
+        val events = context.eventsRepository.getAllByMeltId(currentMeltId)
+        context.events = ModelEvents(events = events)
+        val wsConverterState = WsDsmartResponseConverterState(
+            data = toWsConverterStateModel(context)
         )
-        val meltInfoSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseEvents.serializer(), wsEvents)
-        session.send(meltInfoSerializedString)
-
+        val converterStateSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
+        session.send(converterStateSerializedString)
 //        val outObj = context.toWsInit()
 //        session.send()
+    }
+
+    override suspend fun sendFinish(context: ConverterBeContext) {
+        val wsConverterState = WsDsmartResponseConverterState(
+            data = toWsConverterStateModel(context)
+        )
+        val converterStateSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
+        send(converterStateSerializedString)
     }
 
     override suspend fun sendAngles(context: ConverterBeContext) {
@@ -62,7 +62,7 @@ class WsManager : IWsManager {
 
     override suspend fun sendFrames(context: ConverterBeContext) {
         val wsFrame = WsDsmartResponseConverterFrame(
-            data = toWsConverterFrameModel(context.frame)
+            data = toWsConverterFrameDataModel(context.frame)
         )
         val frameSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterFrame.serializer(), wsFrame)
         send(frameSerializedString)
@@ -70,9 +70,7 @@ class WsManager : IWsManager {
 
     override suspend fun sendEvents(context: ConverterBeContext) {
         val wsEvents = WsDsmartResponseEvents(
-            data = WsDsmartEventList(
-                list = toWsEventListModel(context.events)
-            )
+            data = toWsEventListModel(context.events)
         )
         val eventsSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseEvents.serializer(), wsEvents)
         send(eventsSerializedString)

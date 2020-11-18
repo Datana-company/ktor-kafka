@@ -6,17 +6,21 @@ import codes.spectrum.konveyor.konveyor
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.IWsManager
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
+import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
 
 class AnglesChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
+    var wsSignalerManager: IWsSignalerManager,
+    var dataTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
-    var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
+    var reactionTime: Long,
+    var sirenLimitTime: Long,
+    var currentState: AtomicReference<CurrentState>,
+    var scheduleCleaner: AtomicReference<ScheduleCleaner>,
     var converterId: String
 ) {
 
@@ -29,9 +33,14 @@ class AnglesChain(
             context.also {
                 it.eventsRepository = eventsRepository
                 it.wsManager = wsManager
+                it.wsSignalerManager = wsSignalerManager
+                it.dataTimeout = dataTimeout
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
-                it.currentMeltInfo = currentMeltInfo
+                it.reactionTime = reactionTime
+                it.sirenLimitTime = sirenLimitTime
+                it.currentState = currentState
+                it.scheduleCleaner = scheduleCleaner
                 it.converterId = converterId
             },
             env
@@ -41,28 +50,32 @@ class AnglesChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            timeout { 1000 }
-
             +DevicesFilterHandler
             +MeltFilterHandler
+            +AngleTimeFilterHandler
+
+            +WsSendAnglesHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    wsManager.sendAngles(this)
+                    EventsChain(
+                        eventsRepository = eventsRepository,
+                        wsManager = wsManager,
+                        wsSignalerManager = wsSignalerManager,
+                        dataTimeout = dataTimeout,
+                        metalRateCriticalPoint = metalRateCriticalPoint,
+                        metalRateWarningPoint = metalRateWarningPoint,
+                        currentState = currentState,
+                        scheduleCleaner = scheduleCleaner,
+                        reactionTime = reactionTime,
+                        sirenLimitTime = sirenLimitTime,
+                        converterId = converterId
+                    ).exec(this)
                 }
             }
 
-            exec {
-                EventsChain(
-                    eventsRepository = eventsRepository,
-                    wsManager = wsManager,
-                    metalRateCriticalPoint = metalRateCriticalPoint,
-                    metalRateWarningPoint = metalRateWarningPoint,
-                    currentMeltInfo = currentMeltInfo,
-                    converterId = converterId
-                ).exec(this)
-            }
+            +FinishHandler
         }
     }
 }

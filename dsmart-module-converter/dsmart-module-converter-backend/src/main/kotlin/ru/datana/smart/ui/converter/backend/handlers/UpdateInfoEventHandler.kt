@@ -5,10 +5,13 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 object UpdateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateInfoEvent
+        val meltId: String = context.meltInfo.id
+        val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
         activeEvent?.let {
             val historicalEvent = MetalRateInfoEvent(
                 id = it.id,
@@ -18,9 +21,10 @@ object UpdateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                 title = it.title,
                 isActive = false,
                 angleStart = it.angleStart,
-                angleFinish = it.angleFinish
+                angleFinish = it.angleFinish,
+                warningPoint = it.warningPoint
             )
-            context.eventsRepository.put(historicalEvent)
+            context.eventsRepository.put(meltId, historicalEvent)
         } ?: return
     }
 

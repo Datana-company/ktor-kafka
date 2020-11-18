@@ -5,28 +5,30 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
-import java.time.Instant
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 object UpdateAngleInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val frameTime = context.frame.frameTime ?: Instant.now().toEpochMilli()
-        val activeEvent = context.eventsRepository.getActiveMetalRateEvent() as? MetalRateInfoEvent
-        val currentAngle = context.angles.angle!!
+        val meltId: String = context.meltInfo.id
+        val activeEvent = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
+        val currentAngle = context.angles.angle
         activeEvent?.let {
             val angleStart = it.angleStart ?: currentAngle
             val angleMax = if (it.angleMax?.let { it.compareTo(currentAngle) > 0 } == true) it.angleMax else currentAngle
             val historicalEvent = MetalRateInfoEvent(
                 id = it.id,
-                timeStart = if (it.timeStart > frameTime) frameTime else it.timeStart,
-                timeFinish = if (it.timeFinish < frameTime) frameTime else it.timeFinish,
+                timeStart = it.timeStart,
+                timeFinish = it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
                 isActive = it.isActive,
                 angleStart = angleStart,
                 angleFinish = currentAngle,
-                angleMax = angleMax
+                angleMax = angleMax,
+                warningPoint = it.warningPoint
             )
-            context.eventsRepository.put(historicalEvent)
+            context.eventsRepository.put(meltId, historicalEvent)
         } ?: return
     }
 

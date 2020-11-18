@@ -1,5 +1,6 @@
 package ru.datana.smart.ui.converter.app.mappings
 
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -18,7 +19,9 @@ fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     value = value()
 )
 
-val jacksonSerializer: ObjectMapper = ObjectMapper().configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
+val jacksonSerializer: ObjectMapper = ObjectMapper()
+    .configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true)
+    .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
 
 fun toConverterMeltInfo(record: InnerRecord<String, String>): ConverterMeltInfo {
     try {

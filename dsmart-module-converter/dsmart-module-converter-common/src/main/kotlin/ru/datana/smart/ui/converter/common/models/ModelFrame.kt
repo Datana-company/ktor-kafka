@@ -1,12 +1,21 @@
 package ru.datana.smart.ui.converter.common.models
 
 data class ModelFrame(
-    val frameId: String? = null,
-    val frameTime: Long? = null,
-    val framePath: String? = null
+    var frameId: String = "",
+    var frameTime: Long = Long.MIN_VALUE,
+    var framePath: String = "",
+    var image: String = "",
+    var channel: Channels = Channels.NONE
 ) {
 
     companion object {
         val NONE = ModelFrame()
+    }
+
+    enum class Channels {
+        NONE,
+        CAMERA,
+        MATH,
+        MATH_TREATED
     }
 }

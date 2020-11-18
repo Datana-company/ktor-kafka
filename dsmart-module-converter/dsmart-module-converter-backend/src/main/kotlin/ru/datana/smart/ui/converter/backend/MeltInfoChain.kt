@@ -13,9 +13,13 @@ import java.util.concurrent.atomic.AtomicReference
 class MeltInfoChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
+    var dataTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
-    var currentMeltInfo: AtomicReference<ModelMeltInfo?>,
+    var reactionTime: Long,
+    var sirenLimitTime: Long,
+    var currentState: AtomicReference<CurrentState>,
+    var scheduleCleaner: AtomicReference<ScheduleCleaner>,
     var converterId: String
 ) {
 
@@ -27,10 +31,14 @@ class MeltInfoChain(
         konveyor.exec(
             context.also {
                 it.eventsRepository = eventsRepository
+                it.dataTimeout = dataTimeout
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
-                it.currentMeltInfo = currentMeltInfo
+                it.reactionTime = reactionTime
+                it.sirenLimitTime = sirenLimitTime
+                it.currentState = currentState
+                it.scheduleCleaner = scheduleCleaner
                 it.converterId = converterId
             },
             env
@@ -39,8 +47,6 @@ class MeltInfoChain(
 
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
-
-            timeout { 1000 }
 
             +DevicesFilterHandler
             +CurrentMeltInfoHandler

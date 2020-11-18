@@ -1,5 +1,6 @@
 package ru.datana.smart.ui.converter.app.mappings
 
+import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.ws.models.*
@@ -7,60 +8,63 @@ import kotlin.streams.toList
 
 fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
     WsDsmartConverterSlagRate(
-        steelRate = modelSlagRate.steelRate,
-        slagRate = modelSlagRate.slagRate
+        steelRate = modelSlagRate.steelRate.takeIf { it != Double.MIN_VALUE },
+        slagRate = modelSlagRate.slagRate.takeIf { it != Double.MIN_VALUE }
     )
 
 fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
     WsDsmartConverterAngles(
-        angle = modelAngles.angle,
-        source = modelAngles.source
+        angleTime = modelAngles.angleTime.takeIf { it != Long.MIN_VALUE },
+        angle = modelAngles.angle.takeIf { it != Double.MIN_VALUE },
+        source = modelAngles.source.takeIf { it != Double.MIN_VALUE }
     )
 
-fun toWsConverterFrameModel(modelFrame: ModelFrame) =
-    WsDsmartConverterFrame(
-        frameId = modelFrame.frameId,
-        frameTime = modelFrame.frameTime,
-        framePath = modelFrame.framePath
+fun toWsConverterFrameDataModel(modelFrame: ModelFrame) =
+    WsDsmartConverterFrameData(
+        frameId = modelFrame.frameId.takeIf { it.isNotBlank() },
+        frameTime = modelFrame.frameTime.takeIf { it != Long.MIN_VALUE },
+        framePath = modelFrame.framePath.takeIf { it.isNotBlank() },
+        image = modelFrame.image.takeIf { it.isNotBlank() },
+        channel = modelFrame.channel.takeIf { it != ModelFrame.Channels.NONE }.toString()
     )
 
 fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =
     WsDsmartConverterMeltInfo(
-        id = modelMeltInfo.id,
-        timeStart = modelMeltInfo.timeStart,
-        meltNumber = modelMeltInfo.meltNumber,
-        steelGrade = modelMeltInfo.steelGrade,
-        crewNumber = modelMeltInfo.crewNumber,
-        shiftNumber = modelMeltInfo.shiftNumber,
-        mode = modelMeltInfo.mode?.let { WsDsmartConverterMeltInfo.Mode.valueOf(it.name) },
+        id = modelMeltInfo.id.takeIf { it.isNotBlank() },
+        timeStart = modelMeltInfo.timeStart.takeIf { it != Long.MIN_VALUE },
+        meltNumber = modelMeltInfo.meltNumber.takeIf { it.isNotBlank() },
+        steelGrade = modelMeltInfo.steelGrade.takeIf { it.isNotBlank() },
+        crewNumber = modelMeltInfo.crewNumber.takeIf { it.isNotBlank() },
+        shiftNumber = modelMeltInfo.shiftNumber.takeIf { it.isNotBlank() },
+        mode = modelMeltInfo.mode.takeIf { it != ModelMeltInfo.Mode.NONE }?.let { WsDsmartConverterMeltInfo.Mode.valueOf(it.name) },
         devices = WsDsmartConverterMeltDevices(
             converter = WsDsmartConverterDevicesConverter(
-                id = modelMeltInfo.devices?.converter?.id,
-                name = modelMeltInfo.devices?.converter?.name,
-                uri = modelMeltInfo.devices?.converter?.uri,
-                deviceType = modelMeltInfo.devices?.converter?.deviceType,
-                type = modelMeltInfo.devices?.converter?.type?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
+                id = modelMeltInfo.devices.converter.id.takeIf { it.isNotBlank() },
+                name = modelMeltInfo.devices.converter.name.takeIf { it.isNotBlank() },
+                uri = modelMeltInfo.devices.converter.uri.takeIf { it.isNotBlank() },
+                deviceType = modelMeltInfo.devices.converter.deviceType.takeIf { it.isNotBlank() },
+                type = modelMeltInfo.devices.converter.type.takeIf { it != ModelDeviceType.NONE }?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
             ),
             irCamera = WsDsmartConverterDevicesIrCamera(
-                id = modelMeltInfo.devices?.irCamera?.id,
-                name = modelMeltInfo.devices?.irCamera?.name,
-                uri = modelMeltInfo.devices?.irCamera?.uri,
-                deviceType = modelMeltInfo.devices?.irCamera?.deviceType,
-                type = modelMeltInfo.devices?.irCamera?.type?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
+                id = modelMeltInfo.devices.converter.id.takeIf { it.isNotBlank() },
+                name = modelMeltInfo.devices.converter.name.takeIf { it.isNotBlank() },
+                uri = modelMeltInfo.devices.converter.uri.takeIf { it.isNotBlank() },
+                deviceType = modelMeltInfo.devices.converter.deviceType.takeIf { it.isNotBlank() },
+                type = modelMeltInfo.devices.irCamera.type.takeIf { it != ModelDeviceType.NONE }?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
             ),
             selsyn = WsDsmartConverterDevicesSelsyn(
-                id = modelMeltInfo.devices?.selsyn?.id,
-                name = modelMeltInfo.devices?.selsyn?.name,
-                uri = modelMeltInfo.devices?.selsyn?.uri,
-                deviceType = modelMeltInfo.devices?.selsyn?.deviceType,
-                type = modelMeltInfo.devices?.selsyn?.type?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
+                id = modelMeltInfo.devices.converter.id.takeIf { it.isNotBlank() },
+                name = modelMeltInfo.devices.converter.name.takeIf { it.isNotBlank() },
+                uri = modelMeltInfo.devices.converter.uri.takeIf { it.isNotBlank() },
+                deviceType = modelMeltInfo.devices.converter.deviceType.takeIf { it.isNotBlank() },
+                type = modelMeltInfo.devices.selsyn.type.takeIf { it != ModelDeviceType.NONE }?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
             ),
             slagRate = WsDsmartConverterDevicesSlagRate(
-                id = modelMeltInfo.devices?.slagRate?.id,
-                name = modelMeltInfo.devices?.slagRate?.name,
-                uri = modelMeltInfo.devices?.slagRate?.uri,
-                deviceType = modelMeltInfo.devices?.slagRate?.deviceType,
-                type = modelMeltInfo.devices?.slagRate?.type?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
+                id = modelMeltInfo.devices.converter.id.takeIf { it.isNotBlank() },
+                name = modelMeltInfo.devices.converter.name.takeIf { it.isNotBlank() },
+                uri = modelMeltInfo.devices.converter.uri.takeIf { it.isNotBlank() },
+                deviceType = modelMeltInfo.devices.converter.deviceType.takeIf { it.isNotBlank() },
+                type = modelMeltInfo.devices.slagRate.type.takeIf { it != ModelDeviceType.NONE }?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
             )
         )
     )
@@ -77,8 +81,15 @@ fun toWsEventModel(event: IBizEvent) =
         executionStatus = WsDsmartEvent.ExecutionStatus.valueOf(event.executionStatus.name)
     )
 
-fun toWsEventListModel(events: List<IBizEvent>) = events.stream().map { event -> toWsEventModel(event) }.toList()
+fun toWsEventListModel(modelEvents: ModelEvents) = WsDsmartEventList(
+    list = modelEvents.events.stream().map { event -> toWsEventModel(event) }
+        ?.toList()
+        ?: mutableListOf()
+)
 
-fun toWsEventListModel(modelEvents: ModelEvents) = modelEvents.events?.stream()?.map { event -> toWsEventModel(event) }
-    ?.toList()
-    ?: mutableListOf()
+fun toWsConverterStateModel(context: ConverterBeContext) =
+    WsDsmartConverterState(
+        meltInfo = toWsConverterMeltInfoModel(context.currentState.get().currentMeltInfo),
+        events = toWsEventListModel(context.events),
+        warningPoint = context.metalRateWarningPoint
+    )
