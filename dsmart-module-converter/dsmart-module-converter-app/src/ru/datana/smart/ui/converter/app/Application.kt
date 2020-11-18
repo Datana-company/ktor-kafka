@@ -109,8 +109,8 @@ fun Application.module(testing: Boolean = false) {
 
     val userEventsRepository = UserEventRepositoryInMemory()
 
-    val currentState: AtomicReference<CurrentState?> = AtomicReference()
-    val scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference()
+    val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
+    val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)
 
     val websocketContext = ConverterBeContext(
         currentState = currentState,
@@ -191,7 +191,7 @@ fun Application.module(testing: Boolean = false) {
                                     frame = conveyorModelFrame,
                                     meltInfo = conveyorModelMeltInfo
                                 )
-                                println("topic = math, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
+                                println("topic = math, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleMath(context)
                             }
 //                            topicVideo -> {
@@ -202,7 +202,7 @@ fun Application.module(testing: Boolean = false) {
 //                                    frame = conveyorModelFrame,
 //                                    meltInfo = conveyorModelMeltInfo,
 //                                )
-//                                println("topic = video, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
+//                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
 //                                converterFacade.handleFrame(context)
 //                            }
                             topicMeta -> {
@@ -211,7 +211,7 @@ fun Application.module(testing: Boolean = false) {
                                 val context = ConverterBeContext(
                                     meltInfo = conveyorModel
                                 )
-                                println("topic = meta, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
+                                println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleMeltInfo(context)
                             }
                             topicAngles -> {
@@ -222,7 +222,7 @@ fun Application.module(testing: Boolean = false) {
                                     angles = conveyorModelAngles,
                                     meltInfo = conveyorModelMeltInfo
                                 )
-                                println("topic = angles, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
+                                println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleAngles(context)
                             }
                         }

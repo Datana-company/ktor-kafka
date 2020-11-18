@@ -19,8 +19,8 @@ class MeltInfoChain(
     var reactionTime: Long,
     var sirenLimitTime: Long,
     var roundingWeight: Double,
-    var currentState: AtomicReference<CurrentState?>,
-    var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
+    var currentState: AtomicReference<CurrentState>,
+    var scheduleCleaner: AtomicReference<ScheduleCleaner>,
     var converterId: String
 ) {
 
@@ -51,7 +51,7 @@ class MeltInfoChain(
         val konveyor = konveyor<ConverterBeContext> {
 
             +DevicesFilterHandler
-            +CurrentMeltInfoHandler
+            +AddCurrentMeltInfoHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }

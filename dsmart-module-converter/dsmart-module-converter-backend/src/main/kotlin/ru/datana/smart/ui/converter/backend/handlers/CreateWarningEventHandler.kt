@@ -10,37 +10,19 @@ import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import java.time.Instant
 import java.util.*
 
+/*
+* CreateWarningEventHandler - создаём событие типа "Предупреждение",
+* и светофор переходит в статус "Предупреждение".
+* */
 object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
+        val slagRateTime = Instant.now()
+        val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: MetalRateWarningEvent? =
             context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
-        val slagRateTime = Instant.now()
         activeEvent?.let {
-            val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
-            val isReactionTimeUp = slagRateTime >= timeStartWithShift
-            if (isReactionTimeUp) {
-                val newEvent = MetalRateWarningEvent(
-                    id = UUID.randomUUID().toString(),
-                    timeStart = slagRateTime,
-                    timeFinish = slagRateTime,
-                    metalRate = context.slagRate.avgSteelRate,
-                    warningPoint = context.metalRateWarningPoint
-                )
-                context.eventsRepository.put(meltId, newEvent)
-            }
-            val currentUpdatedEvent = MetalRateWarningEvent(
-                id = it.id,
-                timeStart = it.timeStart,
-                timeFinish = slagRateTime,
-                metalRate = it.metalRate,
-                title = it.title,
-                isActive = !isReactionTimeUp,
-                angleStart = it.angleStart,
-                angleFinish = it.angleFinish,
-                warningPoint = it.warningPoint
-            )
-            context.eventsRepository.put(meltId, currentUpdatedEvent)
+            return
         } ?: run {
             context.eventsRepository.put(
                 meltId,
@@ -49,7 +31,8 @@ object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     metalRate = context.slagRate.avgSteelRate,
-                    warningPoint = context.metalRateWarningPoint
+                    warningPoint = context.metalRateWarningPoint,
+                    angleStart = currentAngle
                 )
             )
             context.signaler = SignalerModel(

@@ -21,8 +21,8 @@ class MathChain(
     var reactionTime: Long,
     var sirenLimitTime: Long,
     var roundingWeight: Double,
-    var currentState: AtomicReference<CurrentState?>,
-    var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
+    var currentState: AtomicReference<CurrentState>,
+    var scheduleCleaner: AtomicReference<ScheduleCleaner>,
     var converterId: String,
     var framesBasePath: String
 ) {
@@ -94,9 +94,8 @@ class MathChain(
                 handler {
                     on { status == CorStatus.STARTED}
                     exec {
-                        val curState = currentState.get() ?: CurrentState()
+                        val curState = currentState.get()
                         curState.lastSlagRate = slagRate
-                        currentState.set(curState)
                     }
                 }
 
@@ -120,7 +119,7 @@ class MathChain(
                     }
                 }
             }
-//            +WsSendMeltFinishHandler
+            +WsSendMeltFinishHandler
 
             +FinishHandler
         }

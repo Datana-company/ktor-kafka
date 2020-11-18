@@ -4,21 +4,19 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
-//TODO: придумать другое имя
 /*
-* AddHistoryWarningEventHandler - записывает текущее событие "Предупреждение" в историю без изменения статуса
+* AddInfoEventToHistoryHandler - записывает текущее событие "Информация" в историю без изменения статуса
 * */
-
-object AddHistoryWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
+object AddInfoEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
+        val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
         activeEvent?.let {
-            val historicalEvent = MetalRateWarningEvent(
+            val historicalEvent = MetalRateInfoEvent(
                 id = it.id,
                 timeStart = it.timeStart,
                 timeFinish = it.timeFinish,
@@ -26,15 +24,9 @@ object AddHistoryWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                 title = it.title,
                 isActive = false,
                 angleStart = it.angleStart,
-                angleFinish = it.angleFinish,
-                angleMax = it.angleMax,
                 warningPoint = it.warningPoint
             )
             context.eventsRepository.put(meltId, historicalEvent)
-            context.signaler = SignalerModel(
-                level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
-                sound = SignalerSoundModel.NONE
-            )
         } ?: return
     }
 

@@ -8,11 +8,10 @@ import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
-//TODO: придумать другое имя
 /*
-* AddHistoryCriticalEventHandler - записывает текущее событие "Критическая ситуация" в историю без изменения статуса
+* AddCriticalEventToHistoryHandler - записывает текущее событие "Критическая ситуация" в историю без изменения статуса
 * */
-object AddHistoryCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
+object AddCriticalEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
         val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
@@ -25,8 +24,6 @@ object AddHistoryCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
                 title = it.title,
                 isActive = false,
                 angleStart = it.angleStart,
-                angleFinish = it.angleFinish,
-                angleMax = it.angleMax,
                 criticalPoint = it.criticalPoint
             )
             context.eventsRepository.put(meltId, historicalEvent)

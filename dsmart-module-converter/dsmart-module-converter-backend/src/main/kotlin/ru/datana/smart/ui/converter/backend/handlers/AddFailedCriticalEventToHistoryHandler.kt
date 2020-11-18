@@ -4,27 +4,28 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.events.IBizEvent
+import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 
-object UpdateAngleWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
+/*
+* AddFailedCriticalEventToHistoryHandler - записывает текущее событие "Критическая ситуация"
+* в историю со статусом "Не выполнено"
+* */
+object AddFailedCriticalEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val activeEvent = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
-        val currentAngle = context.angles.angle
+        val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
         activeEvent?.let {
-            val angleStart = it.angleStart ?: currentAngle
-            val angleMax = if (it.angleMax?.let { it.compareTo(currentAngle) > 0 } == true) it.angleMax else currentAngle
-            val historicalEvent = MetalRateWarningEvent(
+            val historicalEvent = MetalRateCriticalEvent(
                 id = it.id,
                 timeStart = it.timeStart,
                 timeFinish = it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = it.isActive,
-                angleStart = angleStart,
-                angleFinish = currentAngle,
-                angleMax = angleMax,
-                warningPoint = context.metalRateWarningPoint,
+                isActive = false,
+                angleStart = it.angleStart,
+                criticalPoint = it.criticalPoint,
+                executionStatus = IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(meltId, historicalEvent)
         } ?: return

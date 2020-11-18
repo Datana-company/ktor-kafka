@@ -13,7 +13,7 @@ object WsSendMathSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         context.wsManager.sendSlagRate(context)
 
-        val schedule = context.scheduleCleaner.get() ?: ScheduleCleaner()
+        val schedule = context.scheduleCleaner.get()
         with(schedule) {
             jobSlagRate?.let {
                 if (it.isActive) {
@@ -25,15 +25,16 @@ object WsSendMathSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
                 delay(context.dataTimeout)
                 context.slagRate = ModelSlagRate.NONE
 
-                val curState = context.currentState.get() ?: CurrentState()
+                val curState = context.currentState.get()
                 curState.lastSlagRate = context.slagRate
-                context.currentState.set(curState)
 
                 context.wsManager.sendSlagRate(context)
                 println("jobMath done")
             }
         }
-        context.scheduleCleaner.set(schedule)
+
+        val curState = context.currentState.get()
+        curState.lastSlagRate = context.slagRate
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {
