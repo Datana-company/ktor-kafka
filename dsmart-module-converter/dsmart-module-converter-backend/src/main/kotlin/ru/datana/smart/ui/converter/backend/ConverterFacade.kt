@@ -4,8 +4,8 @@ import ru.datana.smart.ui.converter.backend.common.ConverterChainSettings
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import ru.datana.smart.ui.converter.common.models.IWsManager
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
+import ru.datana.smart.ui.converter.common.models.IConverterFacade
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
 
@@ -22,7 +22,7 @@ class ConverterFacade(
     converterId: String = "",
     framesBasePath: String = ""
 
-) {
+): IConverterFacade {
     private val chainSettings = ConverterChainSettings(
         eventsRepository = converterRepository,
         wsManager = wsManager,
@@ -34,7 +34,8 @@ class ConverterFacade(
         timeReaction = timeReaction,
         timeLimitSiren = timeLimitSiren,
         converterId = converterId,
-        framesBasePath = framesBasePath
+        framesBasePath = framesBasePath,
+        converterFacade = this
     )
 
     private val mathChain = MathChain(
@@ -49,9 +50,13 @@ class ConverterFacade(
     private val meltInfoChain = MeltInfoChain(
         chainSettings = chainSettings
     )
+    private val eventsChain = EventsChain(
+        chainSettings = chainSettings
+    )
 
-    suspend fun handleMath(context: ConverterBeContext) = mathChain.exec(context)
-    suspend fun handleAngles(context: ConverterBeContext) = anglesChain.exec(context)
-    suspend fun handleFrame(context: ConverterBeContext) = frameChain.exec(context)
-    suspend fun handleMeltInfo(context: ConverterBeContext) = meltInfoChain.exec(context)
+    override suspend fun handleMath(context: ConverterBeContext) = mathChain.exec(context)
+    override suspend fun handleAngles(context: ConverterBeContext) = anglesChain.exec(context)
+    override suspend fun handleFrame(context: ConverterBeContext) = frameChain.exec(context)
+    override suspend fun handleMeltInfo(context: ConverterBeContext) = meltInfoChain.exec(context)
+    override suspend fun handleEvents(context: ConverterBeContext) = eventsChain.exec(context)
 }

@@ -34,7 +34,7 @@ class AnglesChain(
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    EventsChain.konveyor.exec(this)
+                    converterFacade.handleEvents(this)
                 }
             }
 

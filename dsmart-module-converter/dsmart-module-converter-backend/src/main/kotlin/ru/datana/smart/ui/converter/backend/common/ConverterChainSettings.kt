@@ -1,7 +1,9 @@
 package ru.datana.smart.ui.converter.backend.common
 
+import ru.datana.smart.ui.converter.backend.ConverterFacade
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.CurrentState
+import ru.datana.smart.ui.converter.common.models.IConverterFacade
 import ru.datana.smart.ui.converter.common.models.IWsManager
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
@@ -18,7 +20,8 @@ class ConverterChainSettings(
     var currentState: AtomicReference<CurrentState?> = AtomicReference(),
     var scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
     var converterId: String = "",
-    var framesBasePath: String = ""
+    var framesBasePath: String = "",
+    var converterFacade: IConverterFacade = IConverterFacade.NONE
 )
 
 fun ConverterBeContext.setSettings(converterChainSettings: ConverterChainSettings) {
@@ -33,4 +36,5 @@ fun ConverterBeContext.setSettings(converterChainSettings: ConverterChainSetting
     this.scheduleCleaner = converterChainSettings.scheduleCleaner
     this.converterId = converterChainSettings.converterId
     this.framesBasePath = converterChainSettings.framesBasePath
+    this.converterFacade = converterChainSettings.converterFacade
 }
