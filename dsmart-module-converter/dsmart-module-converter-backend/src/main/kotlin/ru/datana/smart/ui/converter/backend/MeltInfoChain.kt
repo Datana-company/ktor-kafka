@@ -3,24 +3,14 @@ package ru.datana.smart.ui.converter.backend
 import codes.spectrum.konveyor.DefaultKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.konveyor
+import ru.datana.smart.ui.converter.backend.common.ConverterChainSettings
+import ru.datana.smart.ui.converter.backend.common.setSettings
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.repositories.IEventRepository
-import java.util.concurrent.atomic.AtomicReference
 
 class MeltInfoChain(
-    var eventsRepository: IEventRepository,
-    var wsManager: IWsManager,
-    var dataTimeout: Long,
-    var metalRateCriticalPoint: Double,
-    var metalRateWarningPoint: Double,
-    var timeReaction: Long,
-    var timeLimitSiren: Long,
-    var currentState: AtomicReference<CurrentState?>,
-    var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
-    var converterId: String
+    var chainSettings: ConverterChainSettings
 ) {
 
     suspend fun exec(context: ConverterBeContext) {
@@ -28,28 +18,15 @@ class MeltInfoChain(
     }
 
     suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        konveyor.exec(
-            context.also {
-                it.eventsRepository = eventsRepository
-                it.dataTimeout = dataTimeout
-                it.wsManager = wsManager
-                it.metalRateCriticalPoint = metalRateCriticalPoint
-                it.metalRateWarningPoint = metalRateWarningPoint
-                it.timeReaction = timeReaction
-                it.timeLimitSiren = timeLimitSiren
-                it.currentState = currentState
-                it.scheduleCleaner = scheduleCleaner
-                it.converterId = converterId
-            },
-            env
-        )
+        context.setSettings(chainSettings)
+        konveyor.exec(context, env)
     }
 
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
             +DevicesFilterHandler
-            +CurrentMeltInfoHandler
+            +AddCurrentMeltInfoHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }

@@ -16,16 +16,24 @@ class WsManager : IWsManager {
 
     suspend fun addSession(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
-        context.currentState.get()?.currentMeltInfo?.let {
-            context.events = context.eventsRepository.getAllByMeltId(it.id)
-        }
-        val wsConverterInit = WsDsmartResponseConverterInit(
-            data = toWsConverterInitModel(context)
+        val currentMeltId = context.currentState.get().currentMeltInfo.id
+        val events = context.eventsRepository.getAllByMeltId(currentMeltId)
+        context.events = ModelEvents(events = events)
+        val wsConverterState = WsDsmartResponseConverterState(
+            data = toWsConverterStateModel(context)
         )
-        val converterInitSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterInit.serializer(), wsConverterInit)
-        session.send(converterInitSerializedString)
+        val converterStateSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
+        session.send(converterStateSerializedString)
 //        val outObj = context.toWsInit()
 //        session.send()
+    }
+
+    override suspend fun sendFinish(context: ConverterBeContext) {
+        val wsConverterState = WsDsmartResponseConverterState(
+            data = toWsConverterStateModel(context)
+        )
+        val converterStateSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
+        send(converterStateSerializedString)
     }
 
     override suspend fun sendAngles(context: ConverterBeContext) {

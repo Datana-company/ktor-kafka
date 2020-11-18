@@ -7,11 +7,11 @@ import ru.datana.smart.common.transport.models.ws.IWsDsmartResponseError
 import ru.datana.smart.ui.converter.common.Config
 
 @Serializable
-@SerialName("converter-init-update")
-data class WsDsmartResponseConverterInit(
-    override val data: WsDsmartConverterInit? = null,
+@SerialName("converter-state-update")
+data class WsDsmartResponseConverterState(
+    override val data: WsDsmartConverterState? = null,
     override val errors: List<IWsDsmartResponseError>? = null,
-    override val event: String? = "converter-init-update"
-) : IWsDsmartResponse<WsDsmartConverterInit> {
+    override val event: String? = "converter-state-update"
+) : IWsDsmartResponse<WsDsmartConverterState> {
     override val module: String? = Config.moduleName
 }

@@ -4,6 +4,7 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.ws.models.*
+import java.time.Instant
 import kotlin.streams.toList
 
 fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
@@ -14,7 +15,7 @@ fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
 
 fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
     WsDsmartConverterAngles(
-        angleTime = modelAngles.angleTime.takeIf { it != Long.MIN_VALUE },
+        angleTime = modelAngles.angleTime.takeIf { it != Instant.MIN }?.toEpochMilli(),
         angle = modelAngles.angle.takeIf { it != Double.MIN_VALUE },
         source = modelAngles.source.takeIf { it != Double.MIN_VALUE }
     )
@@ -22,7 +23,7 @@ fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
 fun toWsConverterFrameDataModel(modelFrame: ModelFrame) =
     WsDsmartConverterFrameData(
         frameId = modelFrame.frameId.takeIf { it.isNotBlank() },
-        frameTime = modelFrame.frameTime.takeIf { it != Long.MIN_VALUE },
+        frameTime = modelFrame.frameTime.takeIf { it != Instant.MIN }?.toEpochMilli(),
         framePath = modelFrame.framePath.takeIf { it.isNotBlank() },
         image = modelFrame.image.takeIf { it.isNotBlank() },
         channel = modelFrame.channel.takeIf { it != ModelFrame.Channels.NONE }.toString()
@@ -31,7 +32,7 @@ fun toWsConverterFrameDataModel(modelFrame: ModelFrame) =
 fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =
     WsDsmartConverterMeltInfo(
         id = modelMeltInfo.id.takeIf { it.isNotBlank() },
-        timeStart = modelMeltInfo.timeStart.takeIf { it != Long.MIN_VALUE },
+        timeStart = modelMeltInfo.timeStart.takeIf { it != Instant.MIN }?.toEpochMilli(),
         meltNumber = modelMeltInfo.meltNumber.takeIf { it.isNotBlank() },
         steelGrade = modelMeltInfo.steelGrade.takeIf { it.isNotBlank() },
         crewNumber = modelMeltInfo.crewNumber.takeIf { it.isNotBlank() },
@@ -72,8 +73,8 @@ fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =
 fun toWsEventModel(event: ModelEvent) =
     WsDsmartEvent(
         id = event.id,
-        timeStart = event.timeStart,
-        timeFinish = event.timeFinish,
+        timeStart = event.timeStart.toEpochMilli(),
+        timeFinish = event.timeFinish.toEpochMilli(),
         title = event.title,
         textMessage = event.textMessage,
         category = WsDsmartEvent.Category.valueOf(event.category.name),
@@ -88,9 +89,9 @@ fun toWsEventListModel(modelEvents: MutableList<ModelEvent>) =
             ?: mutableListOf()
     )
 
-fun toWsConverterInitModel(context: ConverterBeContext) =
-    WsDsmartConverterInit(
-        meltInfo = context.currentState.get()?.currentMeltInfo?.let { toWsConverterMeltInfoModel(it) },
+fun toWsConverterStateModel(context: ConverterBeContext) =
+    WsDsmartConverterState(
+        meltInfo = toWsConverterMeltInfoModel(context.currentState.get().currentMeltInfo),
         events = toWsEventListModel(context.events),
         warningPoint = context.metalRateWarningPoint
     )

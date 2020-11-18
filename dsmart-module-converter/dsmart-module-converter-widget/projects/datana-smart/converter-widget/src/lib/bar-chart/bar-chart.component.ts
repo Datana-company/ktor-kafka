@@ -1,7 +1,7 @@
 import {Component, Input, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {SlagRateChartModel} from "../models/slag-rate-chart.model";
+import {SlagRateChartModel} from '../models/slag-rate-chart.model';
 
 @Component({
     selector: 'bar-chart-component',
@@ -9,42 +9,48 @@ import {SlagRateChartModel} from "../models/slag-rate-chart.model";
     styleUrls: ['./bar-chart.component.scss']
 })
 export class BarChartComponent {
-
-  // public xAxisTickFormattingFn = this.xAxisTickFormatting.bind(this);
-  // public xAxisTickFormattingFn = (value) => `${value.toString()+"%"}`;
- // public xAxisTickFormattingFn = value => `X ${value.toLocaleString()}`;
- //    @Input() slagRateModel: SlagRateModel;
-  view: any[] = [950, 160];
+  view: any[] = [950, 140];
 
   // options
-  showXAxis = false;
+  showXAxis = true;
   showYAxis = true;
   gradient = false;
   showLegend = false;
-  showXAxisLabel = false;
+  showXAxisLabel = true;
   yAxisLabel = '';
   showYAxisLabel = false;
   xAxisLabel = '';
+  maxXAxisTickLength = 10;
+  xAxisTics = [];
+  trimXAxisTicks = true;
   showDataLabel = true;
-  barPadding='1';
+  barPadding = 5;
   barChartData: any;
+
   colorScheme = {
-    domain: ['#4E80B2', '#BDE9E3', '#C23557']
+    // domain: ['#4E80B27f', '#BDE9E37f', '#C235577f']
+    domain: ['#4E80B27f', '#C235577f']
   };
+  dataLabelFormatting = (value) => `${value.toString() + '  %' }`;
+  tickFormat = (o: any) => `<span class=""><span>${o}</span><span>%</span></span>`
 
   @Input() set slagRateChartModel(dat: SlagRateChartModel) {
+    const tempSlagRate = ((dat?.slagRate || 0) * 100);
+    const tempSlagRateAkt = ((tempSlagRate % 1) === 0.5 ? Math.floor(tempSlagRate) : Math.round(tempSlagRate))
+    const warnPoint = (dat?.warningPoint || 0) * 100;
+    this.xAxisTics = [warnPoint]
     this.barChartData = [
       {
         'name': 'Шлак',
-        'value': (dat?.slagRate || 0) * 100
+        'value': tempSlagRateAkt
       },
-      {
-        'name': 'Допустимая доля металла',
-        'value': (dat?.warningPoint || 0) * 100
-      },
+      // {
+      //   'name': 'Допустимая доля металла',
+      //   'value': (dat?.warningPoint || 0) * 100
+      // },
       {
         'name': 'Металл',
-        'value': (dat?.steelRate || 0) * 100
+        'value': Math.round((dat?.steelRate || 0) * 100)
       }
     ];
   }
@@ -63,8 +69,4 @@ export class BarChartComponent {
   onDeactivate(data): void {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
-// xAxisTickFormatting(value: any){
-  //   return value + " %" ;
-  // }
-  // value.toLocaleString()
 }

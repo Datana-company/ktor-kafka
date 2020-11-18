@@ -1,8 +1,7 @@
 .topLinePath77 {
-    /*position: absolute;*/
     width: 100%;
     height: 8px;
-    top: 0px;
+    top: 0;
 
     background: linear-gradient(90deg, #CCDBEB 16.55%, #22588F 82.04%);
 }
@@ -16,28 +15,44 @@
     background: #B7B7B7;
     padding: 0.1px;
 }
-.widget-container-main-top{
+
+.widget-container-main-top {
     background: #EAEEF0;
     min-width: 1360px;
 }
+
+.font-weight-600 {
+    font-weight: 600!important;
+}
+
 .titlesTop1 {
     padding: 0.4%;
     padding-left: 3.5rem;
-    font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
+    font-family: Open Sans;
     line-height: 25px;
     /* identical to box height */
     color: #222220;
 }
+
+.titleTop2 {
+    font-family: Open Sans !important;
+    font-style: normal;
+    font-weight: bold !important;
+    font-size: 20px;
+    line-height: 27px;
+
+    color: #222220;
+}
+
 .title {
     position: absolute;
     width: 751px;
     height: 25px;
     top: 1.5rem;
 
-    font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
@@ -55,21 +70,39 @@
     top: 17px;
     /*background: url(Vector Smart Object.png);*/
 }
+
 .logo_mmk {
-    top: calc(0.5rem + 6 * (6.8rem + 1px));
-    left: 40%;
+    top: calc(0.5rem + 6 * (7rem + 1px) - 6.3rem);
+    right: 14.5%;
     position: absolute;
 }
-.exit{
+
+.timeHeader {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 26px;
+    line-height: 35px;
+    text-align: center;
+    top: 1.2rem;
+    color: #FFFFFF;
+}
+
+.dateHeader {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 25px;
+    /* identical to box height */
+    text-align: right;
+    top: 1.7rem;
+    color: #FFFFFF;
+}
+
+.exit {
     position: absolute;
     top: 17px;
     width: 19.61px;
     height: 26.15px;
-}
-.alarm{
-    width: 6px;
-    height: 6px;
-    padding-bottom: 1%;
 }
 
 .widget-header {
@@ -82,13 +115,12 @@
 }
 
 .widget-container-main {
-    /*height: calc(0.5rem + 6 * (6.5rem + 8px));*/
     min-width: 1360px;
     background: #EAEEF0;
 }
 
 .widget-container-row {
-    margin-left:3.4%;
+    margin-left: 3.4%;
     margin-right: 3.4%;
     padding-top: 1%;
     /*padding-bottom: 1%;*/
@@ -100,7 +132,6 @@
     margin-top: 1rem;
     margin-bottom: 2.0rem;
     padding-bottom: 2.2%;
-    /*margin-left:4.9%;*/
     background: #ffffff;
 }
 
@@ -112,9 +143,8 @@
 
 .widget-events {
     margin-left: 1%;
-    /*margin-right: 13%;*/
     height: 100%;
-    width: 88%;
+    width: 90%;
 }
 
 .widget-boiling-label {
@@ -125,18 +155,14 @@
     width: calc(100% - 2rem - 4px); /*- 2rem - 4px*/
     height: 4rem;
     padding: 1rem;
-    /*border: 2px solid #22588F;*/
     border-radius: 4px 4px 0 0;
     background-color: white;
     color: black;
-    font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
     line-height: 20px;
     /* or 111% */
-
-    text-align: center;
 }
 
 .widget-boiling-time {
@@ -168,4 +194,9 @@
     flex-direction: column;
     width: 100%;
     margin-top: auto;
+}
+
+.timer-date, .timer-time {
+    padding-left: 5px;
+    padding-right: 5px;
 }

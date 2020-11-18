@@ -7,16 +7,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.CurrentState
-import ru.datana.smart.ui.converter.common.models.ModelAngles
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
-import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
+import ru.datana.smart.ui.converter.common.models.*
 
 object WsSendAnglesHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         context.wsManager.sendAngles(context)
 
-        val schedule = context.scheduleCleaner.get() ?: ScheduleCleaner()
+        val schedule = context.scheduleCleaner.get()
         with(schedule) {
             jobAngles?.let {
                 if (it.isActive) {
@@ -26,26 +23,18 @@ object WsSendAnglesHandler: IKonveyorHandler<ConverterBeContext> {
             }
             jobAngles = GlobalScope.launch {
                 delay(context.dataTimeout)
-                context.wsManager.sendAngles(ConverterBeContext())
+                context.angles = ModelAngles.NONE
 
-                val curState = context.currentState.get() ?: CurrentState()
-                with(curState.lastSlagRate) {
-                    if ((slagRate == Double.MIN_VALUE || slagRate == 0.0) &&
-                        (steelRate == Double.MIN_VALUE || steelRate == 0.0)) {
-                        curState.currentMeltInfo = ModelMeltInfo.NONE
-                        println("meltInfo cleared in jobAngles")
-                    }
-                }
-                curState.lastAngles = ModelAngles.NONE
-                context.currentState.set(curState)
+                val curState = context.currentState.get()
+                curState.lastAngles = context.angles
+
+                context.wsManager.sendAngles(context)
                 println("jobAngles done")
             }
         }
-        context.scheduleCleaner.set(schedule)
 
-        val curState = context.currentState.get() ?: CurrentState()
+        val curState = context.currentState.get()
         curState.lastAngles = context.angles
-        context.currentState.set(curState)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

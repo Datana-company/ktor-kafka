@@ -3,28 +3,18 @@ package ru.datana.smart.ui.converter.backend
 import codes.spectrum.konveyor.DefaultKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.konveyor
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import ru.datana.smart.ui.converter.backend.common.ConverterChainSettings
+import ru.datana.smart.ui.converter.backend.common.setSettings
+import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.repositories.IEventRepository
-import java.util.concurrent.atomic.AtomicReference
+import ru.datana.smart.ui.converter.common.models.ModelFrame
+import ru.datana.smart.ui.converter.common.models.ModelSlagRate
+import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 
 class MathChain(
-    var eventsRepository: IEventRepository,
-    var wsManager: IWsManager,
-    var dataTimeout: Long,
-    var metalRateCriticalPoint: Double,
-    var metalRateWarningPoint: Double,
-    var timeReaction: Long,
-    var timeLimitSiren: Long,
-    var currentState: AtomicReference<CurrentState?>,
-    var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
-    var converterId: String,
-    var framesBasePath: String
+    var chainSettings: ConverterChainSettings
 ) {
 
     suspend fun exec(context: ConverterBeContext) {
@@ -32,25 +22,13 @@ class MathChain(
     }
 
     suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        konveyor.exec(
-            context.also {
-                it.eventsRepository = eventsRepository
-                it.wsManager = wsManager
-                it.dataTimeout = dataTimeout
-                it.metalRateCriticalPoint = metalRateCriticalPoint
-                it.metalRateWarningPoint = metalRateWarningPoint
-                it.timeReaction = timeReaction
-                it.timeLimitSiren = timeLimitSiren
-                it.currentState = currentState
-                it.scheduleCleaner = scheduleCleaner
-                it.converterId = converterId
-                it.framesBasePath = framesBasePath
-            },
-            env
-        )
+        context.setSettings(chainSettings)
+        konveyor.exec(context, env)
     }
 
     companion object {
+
+        val logger = datanaLogger(this::class.java)
         val konveyor = konveyor<ConverterBeContext> {
 
             +DevicesFilterHandler
@@ -65,25 +43,44 @@ class MathChain(
             }
 
             +EncodeBase64Handler
-            +WsSendMathHandler
+            +WsSendMathFrameHandler
+            konveyor {
+                // Временный фильтр на выбросы матмодели по содержанию металла из-за капель металла
+                // в начале и в конце слива
+                on {
+                    val res = slagRate.steelRate <= 0.35
+                    val sr = slagRate
+                    val mi = meltInfo
+                    if (! res) {
+                        logger.debug("Filtering out slagRate due to too high value for steelRate", object {
+                            val eventType: String = "dsmart-converter-ui-slagRate-filter-highsteel"
+                            val slagRate: ModelSlagRate = sr
+                            val meltInfo: ModelMeltInfo = mi
+                        })
+                    }
+                    res
+                }
 
-            handler {
-                onEnv { status == CorStatus.STARTED }
-                exec {
-                    EventsChain(
-                        eventsRepository = eventsRepository,
-                        wsManager = wsManager,
-                        dataTimeout = dataTimeout,
-                        metalRateCriticalPoint = metalRateCriticalPoint,
-                        metalRateWarningPoint = metalRateWarningPoint,
-                        currentState = currentState,
-                        scheduleCleaner = scheduleCleaner,
-                        timeReaction = timeReaction,
-                        timeLimitSiren = timeLimitSiren,
-                        converterId = converterId
-                    ).exec(this)
+                +CalcAvgSteelRateHandler
+                +WsSendMathSlagRateHandler
+
+                // Обновляем информацию о последнем значении slagRate
+                handler {
+                    on { status == CorStatus.STARTED}
+                    exec {
+                        val curState = currentState.get()
+                        curState.lastSlagRate = slagRate
+                    }
+                }
+
+                handler {
+                    onEnv { status == CorStatus.STARTED }
+                    exec {
+                        converterFacade.handleEvents(this)
+                    }
                 }
             }
+            +WsSendMeltFinishHandler
 
             +FinishHandler
         }

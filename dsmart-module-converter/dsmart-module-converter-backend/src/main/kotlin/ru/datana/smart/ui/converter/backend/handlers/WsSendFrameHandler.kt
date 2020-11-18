@@ -7,13 +7,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.models.ModelFrame
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 
 object WsSendFrameHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         context.wsManager.sendFrames(context)
 
-        val schedule = context.scheduleCleaner.get() ?: ScheduleCleaner()
+        val schedule = context.scheduleCleaner.get()
         with(schedule) {
             jobFrameCamera?.let {
                 if (it.isActive) {
@@ -23,11 +24,11 @@ object WsSendFrameHandler: IKonveyorHandler<ConverterBeContext> {
             }
             jobFrameCamera = GlobalScope.launch {
                 delay(context.dataTimeout)
-                context.wsManager.sendFrames(ConverterBeContext())
+                context.frame = ModelFrame(channel = ModelFrame.Channels.CAMERA)
+                context.wsManager.sendFrames(context)
                 println("jobFrameCamera done")
             }
         }
-        context.scheduleCleaner.set(schedule)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {
