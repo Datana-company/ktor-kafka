@@ -9,12 +9,6 @@ import {SlagRateChartModel} from '../models/slag-rate-chart.model';
     styleUrls: ['./bar-chart.component.scss']
 })
 export class BarChartComponent {
-
-  // public xAxisTickFormattingFn = this.xAxisTickFormatting.bind(this);
-  // public xAxisTickFormattingFn = (value) => `${value.toString()+"%"}`;
-  // public xAxisTickFormattingFn = value => `X ${value.toLocaleString()}`;
-  //    @Input() slagRateModel: SlagRateModel;
-  // view: any[] = [950, 160];
   view: any[] = [950, 140];
 
   // options
@@ -32,17 +26,18 @@ export class BarChartComponent {
   showDataLabel = true;
   barPadding = 5;
   barChartData: any;
+
   colorScheme = {
     // domain: ['#4E80B27f', '#BDE9E37f', '#C235577f']
     domain: ['#4E80B27f', '#C235577f']
   };
+  dataLabelFormatting = (value) => `${value.toString() + '  %' }`;
   tickFormat = (o: any) => `<span class=""><span>${o}</span><span>%</span></span>`
 
   @Input() set slagRateChartModel(dat: SlagRateChartModel) {
     const tempSlagRate = ((dat?.slagRate || 0) * 100);
     const tempSlagRateAkt = ((tempSlagRate % 1) === 0.5 ? Math.floor(tempSlagRate) : Math.round(tempSlagRate))
     const warnPoint = (dat?.warningPoint || 0) * 100;
-    // this.xAxisLabel = warnPoint.toString();
     this.xAxisTics = [warnPoint]
     this.barChartData = [
       {
@@ -74,9 +69,4 @@ export class BarChartComponent {
   onDeactivate(data): void {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
-
-// xAxisTickFormatting(value: any){
-  //   return value + " %" ;
-  // }
-  // value.toLocaleString()
 }
