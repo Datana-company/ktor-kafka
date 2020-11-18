@@ -20,8 +20,7 @@ class ConverterFacade(
     currentState: AtomicReference<CurrentState?> = AtomicReference(),
     scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
     converterId: String = "",
-    framesBasePath: String = "",
-    converterPlaylistUrl: String = ""
+    framesBasePath: String = ""
 
 ) {
     private val chainSettings = ConverterChainSettings(
@@ -35,8 +34,7 @@ class ConverterFacade(
         timeReaction = timeReaction,
         timeLimitSiren = timeLimitSiren,
         converterId = converterId,
-        framesBasePath = framesBasePath,
-        converterPlaylistUrl = converterPlaylistUrl
+        framesBasePath = framesBasePath
     )
 
     private val mathChain = MathChain(

@@ -18,8 +18,7 @@ class ConverterChainSettings(
     var currentState: AtomicReference<CurrentState?> = AtomicReference(),
     var scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
     var converterId: String = "",
-    var framesBasePath: String = "",
-    var converterPlaylistUrl: String = ""
+    var framesBasePath: String = ""
 )
 
 fun ConverterBeContext.setSettings(converterChainSettings: ConverterChainSettings) {
@@ -34,5 +33,4 @@ fun ConverterBeContext.setSettings(converterChainSettings: ConverterChainSetting
     this.scheduleCleaner = converterChainSettings.scheduleCleaner
     this.converterId = converterChainSettings.converterId
     this.framesBasePath = converterChainSettings.framesBasePath
-    this.converterPlaylistUrl = converterChainSettings.converterPlaylistUrl
 }

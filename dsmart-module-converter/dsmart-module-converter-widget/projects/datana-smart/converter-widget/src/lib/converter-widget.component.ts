@@ -38,13 +38,14 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   public converterSignalerSound: SignalerSoundModel = new SignalerSoundModel(
     SignalerSoundTypeModel.NONE, 0
   );
-  public playlistUrl: string;
+  public playlist: string;
 
   constructor(
     @Inject(configProvide) private wsService: IWebsocketService
   ) { }
 
   ngOnInit(): void {
+    this.playlist = 'http://camera.d.datana.ru/playlist.m3u8'
 
     const rawState = this.wsService.on('converter-state-update').pipe(
       takeUntil(this._unsubscribe),
@@ -52,15 +53,13 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
         return new ConverterStateModel(
           data?.meltInfo as ConverterMeltInfoModel,
           data?.events as Array<EventModel>,
-          data?.warningPoint as number,
-          data?.playlistUrl as string
+          data?.warningPoint as number
         );
       })
     );
 
     rawState.subscribe(data => {
       this.converterMeltInfoData = data?.meltInfo;
-      this.playlistUrl = data?.playlistUrl;
       this.converterEvents = Object.assign([], data?.events);
     });
 

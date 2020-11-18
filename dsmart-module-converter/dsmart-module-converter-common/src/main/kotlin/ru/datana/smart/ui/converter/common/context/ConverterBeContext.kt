@@ -30,6 +30,5 @@ class ConverterBeContext (
     var currentState: AtomicReference<CurrentState?> = AtomicReference(),
     var scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
     var converterId: String = "",
-    var framesBasePath: String = "",
-    var converterPlaylistUrl: String = ""
+    var framesBasePath: String = ""
 )
