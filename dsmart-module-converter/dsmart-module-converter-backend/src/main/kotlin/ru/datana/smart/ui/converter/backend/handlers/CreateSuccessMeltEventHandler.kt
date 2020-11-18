@@ -4,18 +4,29 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.EndMeltEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 import ru.datana.smart.ui.converter.common.events.SuccessMeltEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import java.time.Instant
 import java.util.*
 
+/*
+* CreateSuccessMeltEventHandler - создаётся событие типа "Информация" об успешном завершении плавки
+* и сразу записывается в историю.
+* */
 object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
+        context.signaler = SignalerModel(
+            level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
+            sound = SignalerSoundModel.NONE
+        )
+        context.status = CorStatus.FINISHED
         val meltId: String = context.meltInfo.id
-        val slagRateTime = context.frame.frameTime
+        val slagRateTime = Instant.now()
         context.eventsRepository.getAllByMeltId(meltId).map {
-            if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent || it is EndMeltEvent) {
+            if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent) {
                 return
             }
         }

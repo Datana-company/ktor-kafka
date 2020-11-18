@@ -2,13 +2,21 @@
     height: 100%;
     width: 100%;
     display: flex;
-    justify-content: start;
+    justify-content: flex-end;
     align-content: center;
+    padding-right: 20%;
 }
 
-.signaler-icon {
-    width: 3rem;
-    height: 3rem;
+.signaler-container > * {
+    margin-left: 1rem;
+}
+
+.signaler-icon-speaker {
+
+}
+/*not data from server*/
+.not-signal-level{
+fill: #C1D0E0
 }
 
 .signaler-level-info {

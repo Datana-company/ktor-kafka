@@ -1,7 +1,8 @@
 .widget-event-item {
     width: calc(100% - 1.5rem);
     /*height: calc(7rem + 8px);*/
-    padding-bottom: 40px;
+    padding-bottom: 7.5px;
+    //min-height: 9.25rem;
 }
 
 .widget-event-item-warning {
@@ -22,8 +23,10 @@
 }
 
 .widget-event-item-instruction {
-    /*height: 5.5rem;*/
-    padding: 0.25rem;
+    height: 9.5rem!important;
+    max-height: 9.5rem!important;
+    min-height: 9.5rem!important;
+    padding: 1.25rem;
     border: 2px solid #E6A5B8;
     border-radius: 0 4px 4px 4px;
     font-size: 1.2rem;
@@ -45,7 +48,7 @@
     font-weight: 600;
     font-size: 1.25rem;
     color: white;
-    margin-top: .3rem;
+    //margin-top: .3rem;
 }
 
 .widget-event-item-info-warning-active {
@@ -55,12 +58,13 @@
 
 .widget-event-item-info-instruction {
     /*height: 5.5rem;*/
-    padding: 0.25rem;
+    padding: 1.25rem;
     border: 2px solid #C1D0E0;
     border-radius: 0 4px 4px 4px;
     font-size: 1.2rem;
     font-weight: 500;
     background-color: white;
+    min-height: 9.25rem!important;
 }
 
 .widget-event-item-info-instruction-active {
@@ -78,12 +82,16 @@
 .widget-event-title {
     float: left;
     font-weight: bold;
+    padding-bottom: .25rem;
 }
-
 .widget-event-execution-status {
     float: right;
 }
 
 .widget-event-text-message {
     clear: left;
+}
+
+.event-title-text {
+    padding-top: 2px;
 }

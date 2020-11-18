@@ -15,7 +15,11 @@
             Мониторинг и контроль скачивания шлака
           </div>
         </div>
-        <div class="col-3"></div>
+        <div class="col-1"></div>
+        <div class="col-2" style="top: 1.4rem">
+          <span class="timer-date">{{current_time | async | date :'dd MMMM yyyy'}}</span>
+          <span class="timer-time">{{current_time | async | date :'HH:mm:ss'}}</span>
+        </div>
         <div class="col-1">
           <div class="exit"><img src="/assets/image/Exit1.png"></div>
         </div>
@@ -28,34 +32,43 @@
       <div class="row">
         <div class="col-2" style="text-align: left">
           <div *ngIf="converterMeltInfoData?.meltNumber && converterMeltInfoData?.meltNumber !== null">
-            Плавка: {{converterMeltInfoData?.meltNumber}}
+            Плавка: <span class="font-weight-600">{{converterMeltInfoData?.meltNumber}}</span>
           </div>
           <div *ngIf="!converterMeltInfoData?.meltNumber || converterMeltInfoData?.meltNumber === null">
-            <div class="text">Плавка: "-"</div>
+            <div class="text">Плавка: -</div>
           </div>
         </div>
         <div class="col-6">
           <div *ngIf="converterMeltInfoData?.steelGrade && converterMeltInfoData?.steelGrade !== null">
-            Марка: {{converterMeltInfoData?.steelGrade}}
+            Марка: <span class="font-weight-600">{{converterMeltInfoData?.steelGrade}}</span>
           </div>
           <div *ngIf="!converterMeltInfoData?.steelGrade || converterMeltInfoData?.steelGrade === null">
-            <div class="text">Марка: "-"</div>
+            <div class="text">Марка: -</div>
           </div>
         </div>
-        <div class="col-4" style="text-align: right; padding-right: 6.5%">
+        <div class="col-2" style="text-align: right; padding-right: 6.5%">
           <div *ngIf="converterMeltInfoData?.crewNumber && converterMeltInfoData?.crewNumber !== null">
-            Бригада: {{converterMeltInfoData?.crewNumber}}
+            Бригада: <span class="font-weight-600">{{converterMeltInfoData?.crewNumber}}</span>
           </div>
           <div *ngIf="!converterMeltInfoData?.steelGrade || converterMeltInfoData?.steelGrade === null">
-            <div class="text">Бригада: "-"</div>
+            <div class="text">Бригада: -</div>
+          </div>
+        </div>
+        <div class="col-2" style="text-align: right; padding-right: 6.5%">
+          <div *ngIf="converterMeltInfoData?.shiftNumber && converterMeltInfoData?.shiftNumber !== null">
+            Смена: {{converterMeltInfoData?.shiftNumber}}
+          </div>
+          <div *ngIf="!converterMeltInfoData?.shiftNumber || converterMeltInfoData?.shiftNumber === null">
+            <div class="text">Смена: -</div>
           </div>
         </div>
       </div>
       <div class="lineTop"></div>
-      <div class="row" style="padding-top:1.5rem">
-        <div class="col-8" style="text-align: left"><h5> >>Конвертер 2</h5></div>
-        <div class="col-2" style="text-align: left;padding-right: 3rem"><h5> >>История рекомендаций</h5></div>
-        <div class="col-2">
+      <div class="row titleTop2" style="padding-top:1.5rem">
+        <div class="col-7" style="text-align: left"> >>Конвертер 2</div>
+<!--        style="text-align: left;padding-right: 3rem"-->
+        <div class="col-2" > >>История рекомендаций</div>
+        <div class="col-3">
           <signaler [level]="converterSignalerLevel"
                     [sound]="converterSignalerSound">
           </signaler>
@@ -91,7 +104,7 @@
         <div class="row">
           <div class="widget-events">
             <div class="container">
-              <div class="panel panel-default overflow-auto" style="max-height:40rem">
+              <div class="overflow-hidden" style="max-height:35.8rem">
                 <event-recommendation-component
                   [events]="converterEvents">
                 </event-recommendation-component>

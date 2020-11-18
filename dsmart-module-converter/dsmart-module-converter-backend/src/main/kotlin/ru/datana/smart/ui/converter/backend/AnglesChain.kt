@@ -7,7 +7,6 @@ import ru.datana.smart.ui.converter.backend.common.ConverterChainSettings
 import ru.datana.smart.ui.converter.backend.common.setSettings
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
-import ru.datana.smart.ui.converter.common.context.CorStatus
 
 class AnglesChain(
     var chainSettings: ConverterChainSettings
@@ -30,13 +29,6 @@ class AnglesChain(
             +AngleTimeFilterHandler
 
             +WsSendAnglesHandler
-
-            handler {
-                onEnv { status == CorStatus.STARTED }
-                exec {
-                    converterFacade.handleEvents(this)
-                }
-            }
 
             +FinishHandler
         }

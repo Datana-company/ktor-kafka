@@ -4,13 +4,12 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import kotlin.math.max
 
 object FrameTimeFilterHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val frameTime = context.frame.frameTime
         val newFrameTime = context.lastTimeFrame.updateAndGet {
-            max(frameTime, it)
+            maxOf(frameTime, it)
         }
 
         if (newFrameTime != frameTime) {

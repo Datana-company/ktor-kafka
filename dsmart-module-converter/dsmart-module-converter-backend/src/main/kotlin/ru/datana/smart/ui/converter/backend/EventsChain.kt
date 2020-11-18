@@ -30,45 +30,45 @@ class EventsChain(
         val konveyor = konveyor<ConverterBeContext> {
 
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
-                +UpdateWarningEventHandler
-                +UpdateInfoEventHandler
-                +UpdateEndEventHandler
+                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
+                +AddFailedWarningEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
+                +UpdateTimeCriticalEventHandler
                 +CreateCriticalEventHandler
+                +CheckAngleCriticalEventHandler
             }
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
-                +UpdateCriticalEventHandler
-                +UpdateInfoEventHandler
-                +UpdateEndEventHandler
+                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
+                +AddFailedCriticalEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
+                +UpdateTimeWarningEventHandler
                 +CreateWarningEventHandler
+                +CheckAngleWarningEventHandler
+            }
+//            konveyor {
+//                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
+//                +AddFailedCriticalEventToHistoryHandler
+//                +AddFailedWarningEventToHistoryHandler
+//                +UpdateTimeInfoEventHandler
+//                +CreateInfoEventHandler
+//            }
+            konveyor {
+                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
+                +AddCriticalEventToHistoryHandler
+                +AddWarningEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
             }
             konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
-                +UpdateCriticalEventHandler
-                +UpdateWarningEventHandler
-                +UpdateEndEventHandler
-                +CreateInfoEventHandler
-            }
-            konveyor {
-                on { slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == 0 } ?: false
-                    && slagRate.slagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == 0 } ?: false }
-                +UpdateCriticalEventHandler
-                +UpdateWarningEventHandler
-                +UpdateInfoEventHandler
+                on { currentState.get().currentMeltInfo.id.isEmpty() }
+                +AddFailedCriticalEventToHistoryHandler
+                +AddFailedWarningEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
                 +CreateSuccessMeltEventHandler
-                +CreateEndEventHandler
-            }
-            konveyor {
-                on { angles.angle.takeIf { it != Double.MIN_VALUE } != null }
-                +UpdateAngleCriticalEventHandler
-                +UpdateAngleWarningEventHandler
-                +UpdateAngleInfoEventHandler
             }
             handler {
-                onEnv { status == CorStatus.STARTED && currentState.get() != null }
+                onEnv { status == CorStatus.STARTED }
                 exec {
-                    val currentMeltInfoId = currentState.get()!!.currentMeltInfo.id
+                    val currentMeltInfoId = currentState.get().currentMeltInfo.id
                     events = ModelEvents(events = eventsRepository.getAllByMeltId(currentMeltInfoId))
                 }
             }
@@ -76,6 +76,13 @@ class EventsChain(
                 onEnv { status == CorStatus.STARTED }
                 exec {
                     wsManager.sendEvents(this)
+                }
+            }
+//            Цепочка обработки светофора от событий
+            handler {
+                onEnv { status == CorStatus.STARTED && signaler != SignalerModel.NONE }
+                exec {
+                    wsSignalerManager.sendSignaler(this)
                 }
             }
         }

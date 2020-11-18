@@ -25,6 +25,7 @@ import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.websocket.WsManager
+import ru.datana.smart.ui.converter.app.websocket.WsSignalerManager
 import ru.datana.smart.ui.converter.backend.ConverterFacade
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import java.time.Duration
@@ -66,6 +67,7 @@ fun Application.module(testing: Boolean = false) {
     install(KtorKafkaConsumer)
 
     val wsManager = WsManager()
+    val wsSignalerManager = WsSignalerManager()
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
     val topicMath by lazy { environment.config.property("ktor.kafka.consumer.topic.math").getString().trim() }
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
@@ -86,11 +88,14 @@ fun Application.module(testing: Boolean = false) {
     val metalRateWarningPoint: Double by lazy {
         environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble()
     }
-    val timeReaction: Long by lazy {
-        environment.config.property("ktor.conveyor.timeReaction").getString().trim().toLong()
+    val reactionTime: Long by lazy {
+        environment.config.property("ktor.conveyor.reactionTime").getString().trim().toLong()
     }
-    val timeLimitSiren: Long by lazy {
-        environment.config.property("ktor.conveyor.timeLimitSiren").getString().trim().toLong()
+    val sirenLimitTime: Long by lazy {
+        environment.config.property("ktor.conveyor.sirenLimitTime").getString().trim().toLong()
+    }
+    val roundingWeight: Double by lazy {
+        environment.config.property("ktor.conveyor.roundingWeight").getString().trim().toDouble()
     }
 
     // TODO: в будущем найти место, куда пристроить генератор
@@ -104,21 +109,26 @@ fun Application.module(testing: Boolean = false) {
 
     val userEventsRepository = UserEventRepositoryInMemory()
 
-    val currentState: AtomicReference<CurrentState?> = AtomicReference()
-    val scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference()
+    val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
+    val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)
 
     val websocketContext = ConverterBeContext(
         currentState = currentState,
         eventsRepository = userEventsRepository,
-        metalRateWarningPoint = metalRateWarningPoint
+        metalRateWarningPoint = metalRateWarningPoint,
+        sirenLimitTime = sirenLimitTime
     )
 
     val converterFacade = ConverterFacade(
         converterRepository = userEventsRepository,
         wsManager = wsManager,
+        wsSignalerManager = wsSignalerManager,
         dataTimeout = dataTimeout,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
+        roundingWeight = roundingWeight,
         currentState = currentState,
         converterId = converterId,
         framesBasePath = framesBasePath,
@@ -132,8 +142,9 @@ fun Application.module(testing: Boolean = false) {
         }
 
         webSocket("/ws") {
-            println("onConnect")
+            println("/ws --- onConnect")
             wsManager.addSession(this, websocketContext)
+            wsSignalerManager.init(this, websocketContext)
             try {
                 for (frame in incoming) {
                 }
@@ -143,13 +154,29 @@ fun Application.module(testing: Boolean = false) {
                 logger.error("Error within websocket block due to: ${closeReason.await()}", e)
             } finally {
                 wsManager.delSession(this)
+                wsSignalerManager.close(this)
             }
         }
+
+//        webSocket("/ws_signaler") {
+//            println("/ws_signaler --- onConnect")
+//            wsSignalerManager.init(this, websocketContext)
+//            try {
+//                for (frame in incoming) {
+//                }
+//            } catch (e: ClosedReceiveChannelException) {
+//                println("onClose ${closeReason.await()}")
+//            } catch (e: Throwable) {
+//                logger.error("Error within websocket block due to: ${closeReason.await()}", e)
+//            } finally {
+//                wsSignalerManager.close(this)
+//            }
+//        }
 
         kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles)) {
             try {
                 records.sortedByDescending { it.offset() }
-//                на самом деле уже они отсортированы сначала по топику, затем по offset по убыванию
+//                на самом деле они уже отсортированы сначала по топику, затем по offset по убыванию
                     .distinctBy { it.topic() }
                     .map { it.toInnerModel() }
                     .forEach { record ->
@@ -164,27 +191,27 @@ fun Application.module(testing: Boolean = false) {
                                     frame = conveyorModelFrame,
                                     meltInfo = conveyorModelMeltInfo
                                 )
-                                println("topic = math, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
+                                println("topic = math, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleMath(context)
                             }
-                            topicVideo -> {
-                                val kafkaModel = toConverterTransportViMl(record)
-                                val conveyorModelFrame = toModelFrame(kafkaModel)
-                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
-                                val context = ConverterBeContext(
-                                    frame = conveyorModelFrame,
-                                    meltInfo = conveyorModelMeltInfo,
-                                )
-                                println("topic = video, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
-                                converterFacade.handleFrame(context)
-                            }
+//                            topicVideo -> {
+//                                val kafkaModel = toConverterTransportViMl(record)
+//                                val conveyorModelFrame = toModelFrame(kafkaModel)
+//                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
+//                                val context = ConverterBeContext(
+//                                    frame = conveyorModelFrame,
+//                                    meltInfo = conveyorModelMeltInfo,
+//                                )
+//                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+//                                converterFacade.handleFrame(context)
+//                            }
                             topicMeta -> {
                                 val kafkaModel = toConverterMeltInfo(record)
                                 val conveyorModel = toModelMeltInfo(kafkaModel)
                                 val context = ConverterBeContext(
                                     meltInfo = conveyorModel
                                 )
-                                println("topic = meta, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
+                                println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleMeltInfo(context)
                             }
                             topicAngles -> {
@@ -195,7 +222,7 @@ fun Application.module(testing: Boolean = false) {
                                     angles = conveyorModelAngles,
                                     meltInfo = conveyorModelMeltInfo
                                 )
-                                println("topic = angles, currentMeltId = ${currentState.get()?.currentMeltInfo?.id}, meltId = ${context.meltInfo.id}")
+                                println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleAngles(context)
                             }
                         }

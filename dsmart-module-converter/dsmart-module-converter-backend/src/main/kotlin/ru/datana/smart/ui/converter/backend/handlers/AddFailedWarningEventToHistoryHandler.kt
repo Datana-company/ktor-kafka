@@ -4,14 +4,19 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.EndMeltEvent
+import ru.datana.smart.ui.converter.common.events.IBizEvent
+import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 
-object UpdateEndEventHandler: IKonveyorHandler<ConverterBeContext> {
+/*
+* AddFailedWarningEventToHistoryHandler - записывает текущее событие "Предупреждение"
+* в историю со статусом "Не выполнено"
+* */
+object AddFailedWarningEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val meltId: String = context.currentState.get()?.currentMeltInfo?.id ?: return
-        val activeEvent: EndMeltEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? EndMeltEvent
+        val meltId: String = context.meltInfo.id
+        val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
         activeEvent?.let {
-            val historicalEvent = EndMeltEvent(
+            val historicalEvent = MetalRateWarningEvent(
                 id = it.id,
                 timeStart = it.timeStart,
                 timeFinish = it.timeFinish,
@@ -19,7 +24,8 @@ object UpdateEndEventHandler: IKonveyorHandler<ConverterBeContext> {
                 title = it.title,
                 isActive = false,
                 angleStart = it.angleStart,
-                angleFinish = it.angleFinish
+                warningPoint = it.warningPoint,
+                executionStatus = IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(meltId, historicalEvent)
         } ?: return

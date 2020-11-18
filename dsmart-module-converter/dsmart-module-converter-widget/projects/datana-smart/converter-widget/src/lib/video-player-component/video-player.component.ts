@@ -22,9 +22,10 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
   @Input() imageCamera: string;
   @Input() imageMath: string;
 
-  player: videojs.Player;
+  // player: videojs.Player;
 
-  channel: string = 'camera';
+  // channel = 'camera';
+  channel = 'math';
 
   _safeResourceUrl: SafeResourceUrl
 
@@ -43,28 +44,37 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.player = videojs(this.target.nativeElement, { autoplay: false, controls: true, preload: 'auto', liveui: true, html5: { vhs: { overrideNative: true }, nativeAudioTracks: false, nativeVideoTracks: false}, sources: [{ src: this.playlist, type: 'application/x-mpegURL', }]}, function onPlayerReady() {
-      console.log('onPlayerReady', this);
-    });
+    // this.player = videojs(
+    //   this.target.nativeElement,
+    //   {
+    //     autoplay: false,
+    //     controls: true,
+    //     preload: 'auto',
+    //     liveui: true,
+    //     html5: {vhs: {overrideNative: true}, nativeAudioTracks: false, nativeVideoTracks: false},
+    //     sources: [{src: this.playlist, type: 'application/x-mpegURL',}]
+    //   }, function onPlayerReady() {
+    //     console.log('onPlayerReady', this);
+    //   });
   }
 
   ngOnDestroy() {
-    if (this.player) {
-      this.player.dispose();
-    }
+    // if (this.player) {
+    //   this.player.dispose();
+    // }
   }
 
   setSource = (evt) => {
     this.channel = evt.target.value;
 
-    const player = document.querySelector('.video-js');
+    // const player = document.querySelector('.video-js');
     const imageContainer = document.querySelector('.image-container');
 
     if (this.channel === 'video') {
-      player.classList.remove('hidden')
+      // player.classList.remove('hidden')
       imageContainer.classList.add('hidden')
     } else {
-      player.classList.add('hidden')
+      // player.classList.add('hidden')
       imageContainer.classList.remove('hidden')
     }
   }

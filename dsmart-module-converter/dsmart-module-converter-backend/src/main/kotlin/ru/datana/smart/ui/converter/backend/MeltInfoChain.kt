@@ -26,7 +26,7 @@ class MeltInfoChain(
         val konveyor = konveyor<ConverterBeContext> {
 
             +DevicesFilterHandler
-            +CurrentMeltInfoHandler
+            +AddCurrentMeltInfoHandler
 
             handler {
                 onEnv { status == CorStatus.STARTED }
