@@ -28,7 +28,6 @@ export class EventRecommendationComponent {
   }
 
   public isEventCategoryAndStatus(isActive: boolean, eventCategoryModel: EventCategoryModel) {
-    console.log('123456789qwertyuiisActive', isActive, eventCategoryModel);
     if (isActive === true) {
       if (eventCategoryModel === 'CRITICAL') {
         return 'critical_active.svg';
