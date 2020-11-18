@@ -10,6 +10,7 @@ data class WsDsmartConverterSignaler(
     @Serializable
     enum class SignalerLevelModel {
         NONE,
+        NO_SIGNAL,
         INFO,
         WARNING,
         CRITICAL
