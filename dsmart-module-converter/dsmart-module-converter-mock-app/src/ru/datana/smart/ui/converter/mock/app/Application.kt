@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -34,18 +35,20 @@ fun Application.module(testing: Boolean = false) {
     val kafkaServers: String by lazy { environment.config.property("ktor.kafka.bootstrap.servers").getString().trim() }
     val kafkaTopic: String by lazy { environment.config.property("ktor.kafka.producer.topic.meta").getString().trim() }
     val jacksonObjectMapper: ObjectMapper = jacksonObjectMapper()
-        .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
+        .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
 
     val kafkaProducer: KafkaProducer<String, String> by lazy {
         val props = Properties().apply {
             put(BOOTSTRAP_SERVERS_CONFIG, kafkaServers)
             put("acks", "all")
             put("retries", 3)
-            put("batch.size", 16384);
-            put("linger.ms", 1);
-            put("buffer.memory", 33554432);
-            put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-            put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+            put("batch.size", 16384)
+            put("linger.ms", 1)
+            put("buffer.memory", 33554432)
+            put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+            put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
         }
         KafkaProducer<String, String>(props)
     }
@@ -144,10 +147,55 @@ fun Application.module(testing: Boolean = false) {
 
         post("/add_case") {
 
+            val contentType: ContentType = call.request.contentType()
+            log.info(" --- contentType: {}", contentType)
+            if (contentType == ContentType.MultiPart.Any)
+            {
+                log.info(" +++ contentType: MultiPart.Any")
+            }
+            if (contentType == ContentType.MultiPart.FormData)
+            {
+                log.info(" +++ contentType: MultiPart.FormData")
+            }
+            if (contentType == ContentType.Application.Json)
+            {
+                log.info(" +++ contentType: Application.Json")
+            }
             val context = try {
-                log.info("Data received: {}", call.receiveText())
-                val case = call.receive<ConverterCaseSaveRequest>()
-//                val multipart = call.receiveMultipart()
+//                log.info("Data received: {}", call.receiveText())
+                var case: ConverterCaseSaveRequest = ConverterCaseSaveRequest()// = call.receive<ConverterCaseSaveRequest>()
+                var fileVideo: PartData.FileItem? = null
+                var selsynJson: PartData.FileItem? = null
+                var slagRateJson: PartData.FileItem? = null
+                val multipart = call.receiveMultipart()
+                multipart.forEachPart { part ->
+                    if (part is PartData.FormItem) {
+                        if (part.name == "newCaseJson") {
+                            logger.info(" --- newCaseJson: {}", part.value)
+                            case = try {
+                                jacksonObjectMapper.readValue(part.value)
+                            } catch (e: Throwable) {
+                                logger.error("Error parsing meltInfo body from frontend: {}", e)
+                                return@forEachPart
+                            }
+                        }
+                    } else if (part is PartData.FileItem) {
+                        if (part.name == "fileVideo") {
+                            logger.info(" --- fileVideo: {}", part.originalFileName)
+                            fileVideo = part
+                        } else if (part.name == "selsynJson") {
+                            logger.info(" --- selsynJson: {}", part.originalFileName)
+                            selsynJson = part
+                        } else if (part.name == "slagRateJson") {
+                            logger.info(" --- slagRateJson: {}", part.originalFileName)
+                            slagRateJson = part
+                        }
+                    }
+                }
+                case.fileVideo = fileVideo
+                case.selsynJson = selsynJson
+                case.slagRateJson = slagRateJson
+
 //                val parts = multipart.readAllParts()
 //                val case = ConverterCaseSaveRequest(
 //                    caseId = (parts.find { it.name == "caseId" } as? PartData.FormItem)?.value,

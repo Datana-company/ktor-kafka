@@ -52,6 +52,7 @@ class ConverterMockCreateService(
         val fileName = filePart.originalFileName ?: return EMPTY_FILE
         val file = File(caseDir, fileName)
         filePart.streamProvider().use { its -> file.outputStream().buffered().use { its.copyToSuspend(it) } }
+        filePart.dispose()
         return file
     }
 
@@ -59,12 +60,12 @@ class ConverterMockCreateService(
         context.requestToSave.fileVideo?.let {
             context.fileVideoSaved = uploadFile(context.caseDir, it)
         }
-//        context.requestToSave.selsynJson?.let {
-//            context.selsynJsonSaved = uploadFile(context.caseDir, it)
-//        }
-//        context.requestToSave.slagRateJson?.let {
-//            context.slagRateJsonSaved = uploadFile(context.caseDir, it)
-//        }
+        context.requestToSave.selsynJson?.let {
+            context.selsynJsonSaved = uploadFile(context.caseDir, it)
+        }
+        context.requestToSave.slagRateJson?.let {
+            context.slagRateJsonSaved = uploadFile(context.caseDir, it)
+        }
     }
 
     private suspend fun handleCase(context: ConverterMockContext) {
@@ -87,13 +88,13 @@ class ConverterMockCreateService(
                 converter = ConverterDevicesConverter(
                     id = requestToSave.converterId,
                     name = requestToSave.converterName,
-                    deviceType = ConverterDevicesConverter::class.simpleName,
+//                    deviceType = ConverterDevicesConverter::class.simpleName,
                     type = ConverterDeviceType.DEVICE
                 ),
                 irCamera = ConverterDevicesIrCamera(
                     id = requestToSave.irCameraId,
                     name = requestToSave.irCameraName,
-                    deviceType = ConverterDevicesIrCamera::class.simpleName,
+//                    deviceType = ConverterDevicesIrCamera::class.simpleName,
                     uri = if (context.fileVideoSaved == EMPTY_FILE) null
                     else "${context.fileVideoSaved.parentFile.name}/${context.fileVideoSaved.name}",
                     type = ConverterDeviceType.FILE
@@ -101,7 +102,7 @@ class ConverterMockCreateService(
                 selsyn = ConverterDevicesSelsyn(
                     id = requestToSave.selsynId,
                     name = requestToSave.selsynName,
-                    deviceType = ConverterDevicesSelsyn::class.simpleName,
+//                    deviceType = ConverterDevicesSelsyn::class.simpleName,
                     uri = if (context.selsynJsonSaved == EMPTY_FILE) null
                     else "${context.caseDir.name}/${context.selsynJsonSaved.name}",
                     type = ConverterDeviceType.FILE
@@ -109,7 +110,7 @@ class ConverterMockCreateService(
                 slagRate = ConverterDevicesSlagRate(
                     id = requestToSave.slagRateDeviceId,
                     name = requestToSave.slagRateDeviceName,
-                    deviceType = ConverterDevicesSlagRate::class.simpleName,
+//                    deviceType = ConverterDevicesSlagRate::class.simpleName,
                     uri = if (context.slagRateJsonSaved == EMPTY_FILE) null
                     else "${context.caseDir.name}/${context.slagRateJsonSaved.name}",
                     type = ConverterDeviceType.FILE

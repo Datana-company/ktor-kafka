@@ -45,12 +45,12 @@ data class ConverterCaseSaveRequest(
 
     /* SLAG COMPOSITION resolution device/service */
 
-    @JsonProperty("compositionId")
+    @JsonProperty("slagRateId")
     var slagRateDeviceId: kotlin.String? = null,
-    @JsonProperty("compositionName")
+    @JsonProperty("slagRateName")
     var slagRateDeviceName: kotlin.String? = null,
-//    @JsonProperty("slagRateJson")
-//    var slagRateJson: PartData.FileItem? = null,
+    @JsonProperty("slagRateJson")
+    var slagRateJson: PartData.FileItem? = null,
 
     /* SELSYN device/service */
 
@@ -58,7 +58,6 @@ data class ConverterCaseSaveRequest(
     var selsynId: kotlin.String? = null,
     @JsonProperty("selsynName")
     var selsynName: kotlin.String? = null,
-//    @JsonProperty("slagRateJson")
-//    var selsynJson: PartData.FileItem? = null,
-
+    @JsonProperty("selsynJson")
+    var selsynJson: PartData.FileItem? = null,
 )

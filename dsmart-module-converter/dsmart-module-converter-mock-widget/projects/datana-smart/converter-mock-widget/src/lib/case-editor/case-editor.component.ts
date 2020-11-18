@@ -74,19 +74,25 @@ export class CaseEditorComponent implements OnInit, OnDestroy {
   // }
 
   onSubmit(): void {
-    console.log(this.caseEditorForm.value);
-    this.service.addCase(this.caseEditorForm.value).pipe(
-      takeUntil(this.unsubscribe)
-    ).subscribe(data => {
-      console.log(data);
-      this.newCase.emit("newCase");
+    let caseEditorFormJson = JSON.stringify(this.caseEditorForm.value);
+    console.log(" --- onSubmit() --- " + caseEditorFormJson);
+    // this.service.addCase(this.caseEditorForm.value).pipe(
+    //   takeUntil(this.unsubscribe)
+    // ).subscribe(data => {
+    //   console.log(data);
+    //   this.newCase.emit("newCase");
 
       const formData = new FormData();
-      Object.assign(formData, this.caseEditorForm);
+      // Object.assign(formData, this.caseEditorForm);
       // console.log("Sending FormData", formData);
       formData.append('fileVideo', this.caseEditorForm.get('fileVideo').value);
       formData.append('selsynJson', this.caseEditorForm.get('selsynJson').value);
       formData.append('slagRateJson', this.caseEditorForm.get('slagRateJson').value);
+      this.caseEditorForm.get('fileVideo').setValue(null);
+      this.caseEditorForm.get('selsynJson').setValue(null);
+      this.caseEditorForm.get('slagRateJson').setValue(null);
+      caseEditorFormJson = JSON.stringify(this.caseEditorForm.value);
+      formData.append('newCaseJson', caseEditorFormJson);
 
       this.service.addCase(formData).subscribe(
         (res) => console.log('Response form addCase in onSubmit', res),
@@ -97,7 +103,7 @@ export class CaseEditorComponent implements OnInit, OnDestroy {
       // this.fileUpload.setNewCaseFolderName(data);
       // this.fileUpload.setFileName(this.caseEditorForm.value.meltInfo.devices.irCamera.id);
       // this.fileUpload.onFormSubmit();
-    });
+    // });
   }
 
   caseSelected(selectedCaseId): void {
