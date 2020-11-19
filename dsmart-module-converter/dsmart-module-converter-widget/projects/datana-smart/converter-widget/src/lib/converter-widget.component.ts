@@ -81,6 +81,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       })
     ).subscribe(data => {
       this.converterMeltInfoData = data;
+      // console.log('12345678901234567892345678  this.converterMeltInfoData', this.converterMeltInfoData.devices.irCamera.id)
     });
 
     const rawSlagRate = this.wsService.on('converter-slag-rate-update').pipe(

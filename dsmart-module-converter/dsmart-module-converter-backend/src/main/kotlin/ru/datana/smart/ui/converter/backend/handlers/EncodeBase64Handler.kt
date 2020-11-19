@@ -21,18 +21,11 @@ object EncodeBase64Handler : IKonveyorHandler<ConverterBeContext> {
 
         try {
             val bytes = File(imagePath).readBytes()
-
-//            Для тестов
-//            val folder = if (context.frame.channel == ModelFrame.Channels.CAMERA) "camera" else "math"
-//            val bytes = File("resources/images/$folder/${Random.nextInt(0, 12)}.png").readBytes()
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
             context.frame.image = Base64.getEncoder().encodeToString(bytes)
         } catch (e: Throwable) {
-//            logger.error("Файл {} не прочитался", objs = arrayOf(imagePath))
             println("Файл $imagePath не найден")
-            val bytes = EncodeBase64Handler::class.java.getResource("/images/no-signal.png").readBytes()
-            context.frame.image = Base64.getEncoder().encodeToString(bytes)
+//            val bytes = EncodeBase64Handler::class.java.getResource("/images/no-signal.png").readBytes()
+//            context.frame.image = Base64.getEncoder().encodeToString(bytes)
         }
     }
 
