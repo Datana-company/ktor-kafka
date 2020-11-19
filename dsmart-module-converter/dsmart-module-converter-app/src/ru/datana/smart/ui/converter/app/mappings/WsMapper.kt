@@ -90,7 +90,7 @@ fun toWsEventListModel(modelEvents: ModelEvents) = WsDsmartEventList(
 
 fun toWsConverterStateModel(context: ConverterBeContext) =
     WsDsmartConverterState(
-        meltInfo = context.currentState.get()?.currentMeltInfo?.let { toWsConverterMeltInfoModel(it) },
+        meltInfo = toWsConverterMeltInfoModel(context.currentState.get().currentMeltInfo),
         events = toWsEventListModel(context.events),
         warningPoint = context.metalRateWarningPoint
     )

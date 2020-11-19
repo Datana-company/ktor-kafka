@@ -4,27 +4,28 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
+import ru.datana.smart.ui.converter.common.events.IBizEvent
+import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
 
-object UpdateAngleCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
+/*
+* AddFailedWarningEventToHistoryHandler - записывает текущее событие "Предупреждение"
+* в историю со статусом "Не выполнено"
+* */
+object AddFailedWarningEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val activeEvent = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
-        val currentAngle = context.angles.angle
+        val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
         activeEvent?.let {
-            val angleStart = it.angleStart ?: currentAngle
-            val angleMax = if (it.angleMax?.let { it.compareTo(currentAngle) > 0 } == true) it.angleMax else currentAngle
-            val historicalEvent = MetalRateCriticalEvent(
+            val historicalEvent = MetalRateWarningEvent(
                 id = it.id,
                 timeStart = it.timeStart,
                 timeFinish = it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = it.isActive,
-                angleStart = angleStart,
-                angleFinish = currentAngle,
-                angleMax = angleMax,
-                criticalPoint = context.metalRateCriticalPoint
+                isActive = false,
+                angleStart = it.angleStart,
+                warningPoint = it.warningPoint,
+                executionStatus = IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(meltId, historicalEvent)
         } ?: return

@@ -19,8 +19,8 @@ class FrameChain(
     var reactionTime: Long,
     var sirenLimitTime: Long,
     var roundingWeight: Double,
-    var currentState: AtomicReference<CurrentState?>,
-    var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
+    var currentState: AtomicReference<CurrentState>,
+    var scheduleCleaner: AtomicReference<ScheduleCleaner>,
     var converterId: String,
     var framesBasePath: String
 ) {
@@ -65,7 +65,7 @@ class FrameChain(
 
             +EncodeBase64Handler
             +WsSendFrameHandler
-//            +WsSendMeltFinishHandler
+            +WsSendMeltFinishHandler
             +FinishHandler
         }
     }

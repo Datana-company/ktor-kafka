@@ -12,8 +12,17 @@ import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import java.time.Instant
 import java.util.*
 
+/*
+* CreateSuccessMeltEventHandler - создаётся событие типа "Информация" об успешном завершении плавки
+* и сразу записывается в историю.
+* */
 object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
+        context.signaler = SignalerModel(
+            level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
+            sound = SignalerSoundModel.NONE
+        )
+        context.status = CorStatus.FINISHED
         val meltId: String = context.meltInfo.id
         val slagRateTime = Instant.now()
         context.eventsRepository.getAllByMeltId(meltId).map {
@@ -30,10 +39,6 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
                 warningPoint = context.metalRateWarningPoint,
                 isActive = false
             )
-        )
-        context.signaler = SignalerModel(
-            level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
-            sound = SignalerSoundModel.NONE
         )
     }
 

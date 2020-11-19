@@ -5,7 +5,6 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.konveyor
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
-import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
@@ -20,8 +19,8 @@ class AnglesChain(
     var reactionTime: Long,
     var sirenLimitTime: Long,
     var roundingWeight: Double,
-    var currentState: AtomicReference<CurrentState?>,
-    var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
+    var currentState: AtomicReference<CurrentState>,
+    var scheduleCleaner: AtomicReference<ScheduleCleaner>,
     var converterId: String
 ) {
 
@@ -57,26 +56,6 @@ class AnglesChain(
             +AngleTimeFilterHandler
 
             +WsSendAnglesHandler
-
-            handler {
-                onEnv { status == CorStatus.STARTED }
-                exec {
-                    EventsChain(
-                        eventsRepository = eventsRepository,
-                        wsManager = wsManager,
-                        wsSignalerManager = wsSignalerManager,
-                        dataTimeout = dataTimeout,
-                        metalRateCriticalPoint = metalRateCriticalPoint,
-                        metalRateWarningPoint = metalRateWarningPoint,
-                        currentState = currentState,
-                        scheduleCleaner = scheduleCleaner,
-                        reactionTime = reactionTime,
-                        sirenLimitTime = sirenLimitTime,
-                        roundingWeight = roundingWeight,
-                        converterId = converterId
-                    ).exec(this)
-                }
-            }
 
             +FinishHandler
         }

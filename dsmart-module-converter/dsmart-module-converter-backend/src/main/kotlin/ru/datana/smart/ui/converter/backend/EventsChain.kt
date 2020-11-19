@@ -21,8 +21,8 @@ class EventsChain(
     var reactionTime: Long,
     var sirenLimitTime: Long,
     var roundingWeight: Double,
-    var currentState: AtomicReference<CurrentState?>,
-    var scheduleCleaner: AtomicReference<ScheduleCleaner?>,
+    var currentState: AtomicReference<CurrentState>,
+    var scheduleCleaner: AtomicReference<ScheduleCleaner>,
     var converterId: String
 ) {
     suspend fun exec(context: ConverterBeContext) {
@@ -54,44 +54,44 @@ class EventsChain(
 
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
-                +UpdateWarningEventHandler
-//                +UpdateInfoEventHandler
+                +AddFailedWarningEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
+                +UpdateTimeCriticalEventHandler
                 +CreateCriticalEventHandler
+                +CheckAngleCriticalEventHandler
             }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
-                +UpdateCriticalEventHandler
-//                +UpdateInfoEventHandler
+                +AddFailedCriticalEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
+                +UpdateTimeWarningEventHandler
                 +CreateWarningEventHandler
+                +CheckAngleWarningEventHandler
             }
 //            konveyor {
 //                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
-//                +UpdateCriticalEventHandler
-//                +UpdateWarningEventHandler
+//                +AddFailedCriticalEventToHistoryHandler
+//                +AddFailedWarningEventToHistoryHandler
+//                +UpdateTimeInfoEventHandler
 //                +CreateInfoEventHandler
 //            }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
-                +AddHistoryCriticalEventHandler
-                +AddHistoryWarningEventHandler
+                +AddCriticalEventToHistoryHandler
+                +AddWarningEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
             }
             konveyor {
-                on { currentState.get()?.let { it.currentMeltInfo.id == "" } ?: false }
-                +UpdateCriticalEventHandler
-                +UpdateWarningEventHandler
-//                +UpdateInfoEventHandler
+                on { currentState.get().currentMeltInfo.id.isEmpty() }
+                +AddFailedCriticalEventToHistoryHandler
+                +AddFailedWarningEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
                 +CreateSuccessMeltEventHandler
             }
-            konveyor {
-                on { angles.angle.takeIf { it != Double.MIN_VALUE } != null }
-                +UpdateAngleCriticalEventHandler
-                +UpdateAngleWarningEventHandler
-//                +UpdateAngleInfoEventHandler
-            }
             handler {
-                onEnv { status == CorStatus.STARTED && currentState.get() != null }
+                onEnv { status == CorStatus.STARTED }
                 exec {
-                    val currentMeltInfoId = currentState.get()!!.currentMeltInfo.id
+                    val currentMeltInfoId = currentState.get().currentMeltInfo.id
                     events = ModelEvents(events = eventsRepository.getAllByMeltId(currentMeltInfoId))
                 }
             }

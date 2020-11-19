@@ -15,8 +15,8 @@ class ConverterFacade(
     reactionTime: Long = Long.MIN_VALUE,
     sirenLimitTime: Long = Long.MIN_VALUE,
     roundingWeight: Double = Double.MIN_VALUE,
-    currentState: AtomicReference<CurrentState?> = AtomicReference(),
-    scheduleCleaner: AtomicReference<ScheduleCleaner?> = AtomicReference(),
+    currentState: AtomicReference<CurrentState> = AtomicReference(),
+    scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(),
     converterId: String = "",
     framesBasePath: String = ""
 ) {
