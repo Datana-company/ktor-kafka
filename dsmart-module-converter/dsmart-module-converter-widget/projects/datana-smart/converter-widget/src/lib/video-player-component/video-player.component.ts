@@ -65,11 +65,7 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
   }
 
   isEncodedImageEmpty() {
-    if (this.getEncodedFrame() === '' || this.getEncodedFrame() === null) {
-      return true;
-    } else {
-      return false;
-    }
+    return !!this.getEncodedFrame();
   }
 
   setSource = (evt) => {
