@@ -183,7 +183,7 @@ fun Application.module(testing: Boolean = false) {
                         when (record.topic) {
                             topicMath -> {
                                 val kafkaModel = toConverterTransportMlUi(record)
-                                val context = ConverterBeContext.NONE
+                                val context = ConverterBeContext()
                                 context.setSlagRate(kafkaModel)
                                 context.setFrame(kafkaModel)
                                 context.setMeltInfo(kafkaModel)
@@ -192,7 +192,7 @@ fun Application.module(testing: Boolean = false) {
                             }
 //                            topicVideo -> {
 //                                val kafkaModel = toConverterTransportViMl(record)
-//                                val context = ConverterBeContext.NONE
+//                                val context = ConverterBeContext()
 //                                context.setFrame(kafkaModel)
 //                                context.setMeltInfo(kafkaModel)
 //                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
@@ -200,14 +200,14 @@ fun Application.module(testing: Boolean = false) {
 //                            }
                             topicMeta -> {
                                 val kafkaModel = toConverterMeltInfo(record)
-                                val context = ConverterBeContext.NONE
+                                val context = ConverterBeContext()
                                 context.setMeltInfo(kafkaModel)
                                 println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleMeltInfo(context)
                             }
                             topicAngles -> {
                                 val kafkaModel = toConverterTransportAngle(record)
-                                val context = ConverterBeContext.NONE
+                                val context = ConverterBeContext()
                                 context.setAngles(kafkaModel)
                                 context.setMeltInfo(kafkaModel)
                                 println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")

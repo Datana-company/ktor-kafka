@@ -5,7 +5,7 @@ import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 
-class ConverterBeContext (
+data class ConverterBeContext (
 
     var angles: ModelAngles = ModelAngles.NONE,
     var meltInfo: ModelMeltInfo = ModelMeltInfo.NONE,
@@ -33,8 +33,4 @@ class ConverterBeContext (
     var converterId: String = "",
     var framesBasePath: String = "",
     var converterFacade: IConverterFacade = IConverterFacade.NONE
-) {
-    companion object {
-        val NONE = ConverterBeContext()
-    }
-}
+)
