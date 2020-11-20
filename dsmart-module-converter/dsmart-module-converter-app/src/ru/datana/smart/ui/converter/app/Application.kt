@@ -183,45 +183,33 @@ fun Application.module(testing: Boolean = false) {
                         when (record.topic) {
                             topicMath -> {
                                 val kafkaModel = toConverterTransportMlUi(record)
-                                val conveyorModelSlagRate = toModelSlagRate(kafkaModel)
-                                val conveyorModelFrame = toModelFrame(kafkaModel)
-                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
-                                val context = ConverterBeContext(
-                                    slagRate = conveyorModelSlagRate,
-                                    frame = conveyorModelFrame,
-                                    meltInfo = conveyorModelMeltInfo
-                                )
+                                val context = ConverterBeContext()
+                                context.setSlagRate(kafkaModel)
+                                context.setFrame(kafkaModel)
+                                context.setMeltInfo(kafkaModel)
                                 println("topic = math, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleMath(context)
                             }
 //                            topicVideo -> {
 //                                val kafkaModel = toConverterTransportViMl(record)
-//                                val conveyorModelFrame = toModelFrame(kafkaModel)
-//                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
-//                                val context = ConverterBeContext(
-//                                    frame = conveyorModelFrame,
-//                                    meltInfo = conveyorModelMeltInfo,
-//                                )
+//                                val context = ConverterBeContext()
+//                                context.setFrame(kafkaModel)
+//                                context.setMeltInfo(kafkaModel)
 //                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
 //                                converterFacade.handleFrame(context)
 //                            }
                             topicMeta -> {
                                 val kafkaModel = toConverterMeltInfo(record)
-                                val conveyorModel = toModelMeltInfo(kafkaModel)
-                                val context = ConverterBeContext(
-                                    meltInfo = conveyorModel
-                                )
+                                val context = ConverterBeContext()
+                                context.setMeltInfo(kafkaModel)
                                 println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleMeltInfo(context)
                             }
                             topicAngles -> {
                                 val kafkaModel = toConverterTransportAngle(record)
-                                val conveyorModelAngles = toModelAngles(kafkaModel)
-                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
-                                val context = ConverterBeContext(
-                                    angles = conveyorModelAngles,
-                                    meltInfo = conveyorModelMeltInfo
-                                )
+                                val context = ConverterBeContext()
+                                context.setAngles(kafkaModel)
+                                context.setMeltInfo(kafkaModel)
                                 println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleAngles(context)
                             }

@@ -3,28 +3,18 @@ package ru.datana.smart.ui.converter.backend
 import codes.spectrum.konveyor.DefaultKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.konveyor
+import ru.datana.smart.ui.converter.backend.common.ConverterChainSettings
+import ru.datana.smart.ui.converter.backend.common.setSettings
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
-import java.util.concurrent.atomic.AtomicReference
+import ru.datana.smart.ui.converter.common.models.ModelFrame
+import ru.datana.smart.ui.converter.common.models.ModelSlagRate
+import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 
 class MathChain(
-    var eventsRepository: IUserEventsRepository,
-    var wsManager: IWsManager,
-    var wsSignalerManager: IWsSignalerManager,
-    var dataTimeout: Long,
-    var metalRateCriticalPoint: Double,
-    var metalRateWarningPoint: Double,
-    var reactionTime: Long,
-    var sirenLimitTime: Long,
-    var roundingWeight: Double,
-    var currentState: AtomicReference<CurrentState>,
-    var scheduleCleaner: AtomicReference<ScheduleCleaner>,
-    var converterId: String,
-    var framesBasePath: String
+    var chainSettings: ConverterChainSettings
 ) {
 
     suspend fun exec(context: ConverterBeContext) {
@@ -32,24 +22,8 @@ class MathChain(
     }
 
     suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        konveyor.exec(
-            context.also {
-                it.eventsRepository = eventsRepository
-                it.wsManager = wsManager
-                it.wsSignalerManager= wsSignalerManager
-                it.dataTimeout = dataTimeout
-                it.metalRateCriticalPoint = metalRateCriticalPoint
-                it.metalRateWarningPoint = metalRateWarningPoint
-                it.reactionTime = reactionTime
-                it.sirenLimitTime = sirenLimitTime
-                it.roundingWeight = roundingWeight
-                it.currentState = currentState
-                it.scheduleCleaner = scheduleCleaner
-                it.converterId = converterId
-                it.framesBasePath = framesBasePath
-            },
-            env
-        )
+        context.setSettings(chainSettings)
+        konveyor.exec(context, env)
     }
 
     companion object {
@@ -102,20 +76,7 @@ class MathChain(
                 handler {
                     onEnv { status == CorStatus.STARTED }
                     exec {
-                        EventsChain(
-                            eventsRepository = eventsRepository,
-                            wsManager = wsManager,
-                            wsSignalerManager= wsSignalerManager,
-                            dataTimeout = dataTimeout,
-                            metalRateCriticalPoint = metalRateCriticalPoint,
-                            metalRateWarningPoint = metalRateWarningPoint,
-                            currentState = currentState,
-                            scheduleCleaner = scheduleCleaner,
-                            reactionTime = reactionTime,
-                            sirenLimitTime = sirenLimitTime,
-                            roundingWeight = roundingWeight,
-                            converterId = converterId
-                        ).exec(this)
+                        converterFacade.handleEvents(this)
                     }
                 }
             }

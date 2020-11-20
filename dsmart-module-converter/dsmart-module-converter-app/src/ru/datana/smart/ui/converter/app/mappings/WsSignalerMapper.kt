@@ -5,8 +5,14 @@ import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import ru.datana.smart.ui.converter.ws.models.WsDsmartConverterSignaler
 import ru.datana.smart.ui.converter.ws.models.WsDsmartConverterSignalerSound
+import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverterSignaler
 
-fun toWsConverterSignalerModel(context: ConverterBeContext) =
+fun ConverterBeContext.toWsResponseConverterSignaler() =
+    WsDsmartResponseConverterSignaler(
+        data = toWsConverterSignalerModel(this)
+    )
+
+private fun toWsConverterSignalerModel(context: ConverterBeContext) =
     WsDsmartConverterSignaler(
         level = context.signaler.level.takeIf { it != SignalerModel.SignalerLevelModel.NONE }
             ?.let { WsDsmartConverterSignaler.SignalerLevelModel.valueOf(it.name) },
