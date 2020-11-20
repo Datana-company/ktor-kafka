@@ -42,12 +42,12 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
                     category = ModelEvent.Category.CRITICAL
                 )
             )
-            if (context.signaler == SignalerModel.NONE) {
-                context.signaler = SignalerModel(
-                    level = SignalerModel.SignalerLevelModel.CRITICAL,
-                    sound = SignalerSoundModel.NONE
+            context.signaler = SignalerModel(
+                level = SignalerModel.SignalerLevelModel.CRITICAL,
+                sound = SignalerSoundModel(
+                    SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, 3000
                 )
-            }
+            )
         }
     }
 

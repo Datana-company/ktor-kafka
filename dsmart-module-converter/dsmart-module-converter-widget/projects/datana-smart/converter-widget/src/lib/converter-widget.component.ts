@@ -133,6 +133,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       filter(frame => frame.channel === 'MATH')
     ).subscribe(data => {
       this.converterFrameMathData = data;
+      console.log('this.converterFrameMathData12345', this.converterFrameMathData);
     })
 
     this.wsService.on('converter-angles-update').pipe(

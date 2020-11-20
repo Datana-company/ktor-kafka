@@ -1,5 +1,3 @@
-import {ConverterMeltInfoModel} from "./converter-melt-info.model";
-
 export class ConverterFrameModel {
   constructor(
     public frameId: string,
