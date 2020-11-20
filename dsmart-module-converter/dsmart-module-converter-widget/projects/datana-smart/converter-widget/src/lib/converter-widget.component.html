@@ -65,7 +65,12 @@
       </div>
       <div class="lineTop"></div>
       <div class="row titleTop2" style="padding-top:1.5rem">
-        <div class="col-7" style="text-align: left"> >>Конвертер 2</div>
+        <div *ngIf="converterMeltInfoData?.devices?.converter?.name || converterMeltInfoData?.devices?.converter?.name !== null" class="col-7" style="text-align: left">
+          <span> >>{{converterMeltInfoData?.devices.converter.name}}</span>
+        </div>
+        <div *ngIf="!converterMeltInfoData?.devices?.converter?.name || converterMeltInfoData?.devices?.converter?.name === null" class="col-7" style="text-align: left">
+          <span> >>Конвертер</span>
+        </div>
 <!--        style="text-align: left;padding-right: 3rem"-->
         <div class="col-2" > >>История рекомендаций</div>
         <div class="col-3">
