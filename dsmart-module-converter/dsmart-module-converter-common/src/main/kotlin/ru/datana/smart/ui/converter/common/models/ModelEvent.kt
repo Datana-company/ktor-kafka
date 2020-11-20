@@ -8,15 +8,13 @@ data class ModelEvent(
     var type: EventType = EventType.NONE,
     var timeStart: Instant = Instant.MIN,
     var timeFinish: Instant = Instant.MAX,
-    var title: String = "Информация",
+    var title: String = "",
     var textMessage: String = "",
     var category: Category = Category.INFO,
     var isActive: Boolean = true,
     var executionStatus: ExecutionStatus = ExecutionStatus.NONE,
     var metalRate: Double = Double.MIN_VALUE,
     var angleStart: Double = Double.MIN_VALUE,
-    var angleFinish: Double = Double.MIN_VALUE,
-    var angleMax: Double = Double.MIN_VALUE,
     var warningPoint: Double = Double.MIN_VALUE,
     var criticalPoint: Double = Double.MIN_VALUE
 ) {

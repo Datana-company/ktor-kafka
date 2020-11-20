@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.consumer.ConsumerRecord
-import ru.datana.smart.ui.converter.app.common.exceptions.ConverterDeserializationException
+import ru.datana.smart.ui.converter.common.exceptions.ConverterDeserializationException
 import ru.datana.smart.ui.converter.common.context.InnerRecord
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi

@@ -1,13 +1,13 @@
 package ru.datana.smart.ui.converter.common.models
 
-class ModelExtEvents(
-    val alertRuleId: String? = null,
-    val containerId: String? = null,
-    val component: String? = null,
-    val timestamp: String? = null,
-    val level: String? = null,
-    val loggerName: String? = null,
-    val message: String? = null
+data class ModelExtEvents(
+    var alertRuleId: String = "",
+    var containerId: String = "",
+    var component: String = "",
+    var timestamp: String = "",
+    var level: String = "",
+    var loggerName: String = "",
+    var message: String = ""
 ) {
 
     companion object {
