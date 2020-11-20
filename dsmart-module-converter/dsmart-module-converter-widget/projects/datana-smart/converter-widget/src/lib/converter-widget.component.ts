@@ -186,41 +186,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   }
 
-/////// Для теста светофора /////////////////////////////////////////////////////////
-//     document.getElementById('info').addEventListener('click', () => {
-//       console.log('info');
-//       this.converterSignalerLevel = SignalerLevelModel.INFO
-//     });
-//     document.getElementById('warning').addEventListener('click', () => {
-//       console.log('warning');
-//       this.converterSignalerLevel = SignalerLevelModel.WARNING
-//     });
-//     document.getElementById('critical').addEventListener('click', () => {
-//       console.log('critical');
-//       this.converterSignalerLevel = SignalerLevelModel.CRITICAL
-//     });
-//
-//     document.getElementById('sound0').addEventListener('click', () => {
-//       console.log('sound0');
-//       this.converterSignalerSound = new SignalerSoundModel(SignalerSoundTypeModel.NONE, 0)
-//     });
-//     document.getElementById('sound1').addEventListener('click', () => {
-//       console.log('sound1');
-//       this.converterSignalerSound = new SignalerSoundModel(SignalerSoundTypeModel.SOUND_1, 2000)
-//     });
-//     document.getElementById('sound2').addEventListener('click', () => {
-//       console.log('sound2');
-//       this.converterSignalerSound = new SignalerSoundModel(SignalerSoundTypeModel.SOUND_2, 5000)
-//     });
-//     document.getElementById('sound3').addEventListener('click', () => {
-//       console.log('sound3');
-//       this.converterSignalerSound = new SignalerSoundModel(SignalerSoundTypeModel.SOUND_3, 8000)
-//     });
-//////////////////////////////////////////////////////////////////////////////////////////
-
   ngOnDestroy(): void {
     this._unsubscribe.next();
     this._unsubscribe.complete();
   }
-
 }
