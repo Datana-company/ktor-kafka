@@ -11,7 +11,7 @@ class AngleTest {
 
     @Test
     fun deserializeTest(): Unit {
-        val json = File("resources/schedule.json").readText(Charsets.UTF_8)
+        val json = File("resources/case-case2/selsyn.json").readText(Charsets.UTF_8)
         val schedule = ObjectMapper().configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true).readValue(
             json,
             AngleSchedule::class.java

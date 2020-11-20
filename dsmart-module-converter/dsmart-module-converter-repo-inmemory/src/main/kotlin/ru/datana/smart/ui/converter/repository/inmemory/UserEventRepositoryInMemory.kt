@@ -36,7 +36,7 @@ class UserEventRepositoryInMemory: IUserEventsRepository {
     override fun getActiveByMeltId(meltId: String): List<IBizEvent> {
         return cache.getIfPresent(meltId)?.let { it.values.stream()
             .filter { event -> event.isActive }
-            .sorted(Comparator.comparingLong(IBizEvent::timeStart).reversed())
+            .sorted(Comparator.comparing(IBizEvent::timeStart).reversed())
             .toList()
         } ?: mutableListOf()
     }
@@ -45,7 +45,7 @@ class UserEventRepositoryInMemory: IUserEventsRepository {
         return cache.getIfPresent(meltId)?.let {
             it.values.stream()
                 .filter { event -> event.isActive }
-                .sorted(Comparator.comparingLong(IBizEvent::timeStart).reversed())
+                .sorted(Comparator.comparing(IBizEvent::timeStart).reversed())
                 .filter { event -> event is IMetalRateEvent }
                 .map { event -> event as? IMetalRateEvent }
                 .findFirst()

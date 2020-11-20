@@ -5,18 +5,18 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.IBizEvent
-import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
-import ru.datana.smart.ui.converter.common.models.SignalerModel
-import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 
-
-object UpdateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
+/*
+* AddFailedCriticalEventToHistoryHandler - записывает текущее событие "Критическая ситуация"
+* в историю со статусом "Не выполнено"
+* */
+object AddFailedCriticalEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
+        val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
         activeEvent?.let {
-            val isCompletedEvent = it.angleFinish?.let { angleFinish -> it.angleMax?.compareTo(angleFinish)?.let { it > 0 } } ?: false
-            val historicalEvent = MetalRateWarningEvent(
+            val historicalEvent = MetalRateCriticalEvent(
                 id = it.id,
                 timeStart = it.timeStart,
                 timeFinish = it.timeFinish,
@@ -24,10 +24,8 @@ object UpdateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
                 title = it.title,
                 isActive = false,
                 angleStart = it.angleStart,
-                angleFinish = it.angleFinish,
-                angleMax = it.angleMax,
-                warningPoint = it.warningPoint,
-                executionStatus = if (isCompletedEvent) IBizEvent.ExecutionStatus.COMPLETED else IBizEvent.ExecutionStatus.FAILED
+                criticalPoint = it.criticalPoint,
+                executionStatus = IBizEvent.ExecutionStatus.FAILED
             )
             context.eventsRepository.put(meltId, historicalEvent)
         } ?: return

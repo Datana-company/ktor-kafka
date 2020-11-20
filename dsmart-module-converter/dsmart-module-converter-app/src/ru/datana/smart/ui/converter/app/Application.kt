@@ -94,6 +94,9 @@ fun Application.module(testing: Boolean = false) {
     val sirenLimitTime: Long by lazy {
         environment.config.property("ktor.conveyor.sirenLimitTime").getString().trim().toLong()
     }
+    val roundingWeight: Double by lazy {
+        environment.config.property("ktor.conveyor.roundingWeight").getString().trim().toDouble()
+    }
 
     // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
@@ -112,7 +115,8 @@ fun Application.module(testing: Boolean = false) {
     val websocketContext = ConverterBeContext(
         currentState = currentState,
         eventsRepository = userEventsRepository,
-        metalRateWarningPoint = metalRateWarningPoint
+        metalRateWarningPoint = metalRateWarningPoint,
+        sirenLimitTime = sirenLimitTime
     )
 
     val converterFacade = ConverterFacade(
@@ -124,6 +128,7 @@ fun Application.module(testing: Boolean = false) {
         metalRateWarningPoint = metalRateWarningPoint,
         reactionTime = reactionTime,
         sirenLimitTime = sirenLimitTime,
+        roundingWeight = roundingWeight,
         currentState = currentState,
         converterId = converterId,
         framesBasePath = framesBasePath,
@@ -189,17 +194,17 @@ fun Application.module(testing: Boolean = false) {
                                 println("topic = math, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleMath(context)
                             }
-                            topicVideo -> {
-                                val kafkaModel = toConverterTransportViMl(record)
-                                val conveyorModelFrame = toModelFrame(kafkaModel)
-                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
-                                val context = ConverterBeContext(
-                                    frame = conveyorModelFrame,
-                                    meltInfo = conveyorModelMeltInfo,
-                                )
-                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-                                converterFacade.handleFrame(context)
-                            }
+//                            topicVideo -> {
+//                                val kafkaModel = toConverterTransportViMl(record)
+//                                val conveyorModelFrame = toModelFrame(kafkaModel)
+//                                val conveyorModelMeltInfo = toModelMeltInfo(kafkaModel)
+//                                val context = ConverterBeContext(
+//                                    frame = conveyorModelFrame,
+//                                    meltInfo = conveyorModelMeltInfo,
+//                                )
+//                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+//                                converterFacade.handleFrame(context)
+//                            }
                             topicMeta -> {
                                 val kafkaModel = toConverterMeltInfo(record)
                                 val conveyorModel = toModelMeltInfo(kafkaModel)

@@ -4,7 +4,12 @@
       {{ event?.dateStart | date: 'HH:mm:ss' }}
     </div>
     <div [class.widget-event-item-instruction-active]="event?.isActive" class="widget-event-item-instruction">
-      <div class="widget-event-title">{{ event?.title }}</div>
+
+      <div class="widget-event-title"><span style="margin-right: 1rem">
+        <img src = "/assets/image/{{isEventCategoryAndStatus(event?.isActive, event?.category)}}">
+      </span><span class="event-title-text">{{ event?.title }}</span>
+      </div>
+
       <div class="widget-event-execution-status">
         <div *ngIf="isCompleted(event?.executionStatus)" class="widget-event-execution-status-completed">Выполнено</div>
         <div *ngIf="isFailed(event?.executionStatus)" class="widget-event-execution-status-failed">Не выполнено</div>
@@ -17,7 +22,11 @@
       {{ event?.dateStart | date: 'HH:mm:ss' }}
     </div>
     <div [class.widget-event-item-info-instruction-active]="event?.isActive" class="widget-event-item-info-instruction">
-      <div class="widget-event-title">{{ event?.title }}</div>
+      <div class="widget-event-title"><span style="margin-right: 1rem">
+        <img src = "/assets/image/{{ isEventCategoryAndStatus(event?.isActive, event?.category)}}">
+      </span>
+        <span class="event-title-text">{{ event?.title }}</span>
+      </div>
       <div class="widget-event-execution-status">
         <div *ngIf="isCompleted(event?.executionStatus)" class="widget-event-execution-status-completed">Выполнено</div>
         <div *ngIf="isFailed(event?.executionStatus)" class="widget-event-execution-status-failed">Не выполнено</div>

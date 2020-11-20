@@ -4,31 +4,37 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import java.time.Instant
 
-object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
+/*
+* UpdateTimeCriticalEventHandler - если прошло время больше, чем значение DATA_TIMEOUT,
+* то записываем текущее событие "Критическая ситуация" в историю.
+* Запускается сирена.
+* */
+object UpdateTimeCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
+        val slagRateTime = Instant.now()
+        val activeEvent: MetalRateCriticalEvent? =
+            context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
         activeEvent?.let {
-            val isCompletedEvent = it.angleFinish?.let { angleFinish -> it.angleMax?.compareTo(angleFinish)?.let { it > 0 } } ?: false
-            val historicalEvent = MetalRateCriticalEvent(
+            val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
+            val isReactionTimeUp = slagRateTime >= timeStartWithShift
+            val isActive = !isReactionTimeUp
+            val currentEvent = MetalRateCriticalEvent(
                 id = it.id,
                 timeStart = it.timeStart,
-                timeFinish = it.timeFinish,
+                timeFinish = slagRateTime,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = false,
+                isActive = isActive,
                 angleStart = it.angleStart,
-                angleFinish = it.angleFinish,
-                angleMax = it.angleMax,
-                criticalPoint = it.criticalPoint,
-                executionStatus = if (isCompletedEvent) IBizEvent.ExecutionStatus.COMPLETED else IBizEvent.ExecutionStatus.FAILED
+                criticalPoint = it.criticalPoint
             )
-            context.eventsRepository.put(meltId, historicalEvent)
+            context.eventsRepository.put(meltId, currentEvent)
         } ?: return
     }
 
@@ -36,3 +42,4 @@ object UpdateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
         return context.status == CorStatus.STARTED
     }
 }
+

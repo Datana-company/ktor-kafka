@@ -10,6 +10,7 @@ data class SignalerModel(
 
     enum class SignalerLevelModel {
         NONE,
+        NO_SIGNAL,
         INFO,
         WARNING,
         CRITICAL

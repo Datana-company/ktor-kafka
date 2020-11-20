@@ -5,7 +5,6 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.konveyor
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
-import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
 import java.util.concurrent.atomic.AtomicReference
@@ -19,6 +18,7 @@ class AnglesChain(
     var metalRateWarningPoint: Double,
     var reactionTime: Long,
     var sirenLimitTime: Long,
+    var roundingWeight: Double,
     var currentState: AtomicReference<CurrentState>,
     var scheduleCleaner: AtomicReference<ScheduleCleaner>,
     var converterId: String
@@ -39,6 +39,7 @@ class AnglesChain(
                 it.metalRateWarningPoint = metalRateWarningPoint
                 it.reactionTime = reactionTime
                 it.sirenLimitTime = sirenLimitTime
+                it.roundingWeight = roundingWeight
                 it.currentState = currentState
                 it.scheduleCleaner = scheduleCleaner
                 it.converterId = converterId
@@ -55,25 +56,6 @@ class AnglesChain(
             +AngleTimeFilterHandler
 
             +WsSendAnglesHandler
-
-            handler {
-                onEnv { status == CorStatus.STARTED }
-                exec {
-                    EventsChain(
-                        eventsRepository = eventsRepository,
-                        wsManager = wsManager,
-                        wsSignalerManager = wsSignalerManager,
-                        dataTimeout = dataTimeout,
-                        metalRateCriticalPoint = metalRateCriticalPoint,
-                        metalRateWarningPoint = metalRateWarningPoint,
-                        currentState = currentState,
-                        scheduleCleaner = scheduleCleaner,
-                        reactionTime = reactionTime,
-                        sirenLimitTime = sirenLimitTime,
-                        converterId = converterId
-                    ).exec(this)
-                }
-            }
 
             +FinishHandler
         }

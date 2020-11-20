@@ -7,38 +7,21 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import java.time.Instant
 import java.util.*
 
+/*
+* CreateInfoEventHandler - создаётся событие типа "Информация",
+* и светофор переходит в информационный статус.
+* */
 object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = context.frame.frameTime
+        val slagRateTime = Instant.now()
+        val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: MetalRateInfoEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
         activeEvent?.let {
-            val isReactionTimeUp = it.timeFinish - it.timeStart >= context.reactionTime
-            if (isReactionTimeUp) {
-                val newEvent = MetalRateInfoEvent(
-                    id = UUID.randomUUID().toString(),
-                    timeStart = slagRateTime,
-                    timeFinish = slagRateTime,
-                    metalRate = context.slagRate.steelRate,
-                    warningPoint = context.metalRateWarningPoint
-                )
-                context.eventsRepository.put(meltId, newEvent)
-            }
-            val currentUpdatedEvent = MetalRateInfoEvent(
-                id = it.id,
-                timeStart = it.timeStart,
-                timeFinish = slagRateTime,
-                metalRate = it.metalRate,
-                title = it.title,
-                isActive = !isReactionTimeUp,
-                angleStart = it.angleStart,
-                angleFinish = it.angleFinish,
-                angleMax = it.angleMax,
-                warningPoint = it.warningPoint
-            )
-            context.eventsRepository.put(meltId, currentUpdatedEvent)
+            return
         } ?: run {
             context.eventsRepository.put(
                 meltId,
@@ -46,8 +29,9 @@ object CreateInfoEventHandler: IKonveyorHandler<ConverterBeContext> {
                     id = UUID.randomUUID().toString(),
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.steelRate,
-                    warningPoint = context.metalRateWarningPoint
+                    metalRate = context.slagRate.avgSteelRate,
+                    warningPoint = context.metalRateWarningPoint,
+                    angleStart = currentAngle
                 )
             )
             context.signaler = SignalerModel(
