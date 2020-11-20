@@ -32,7 +32,7 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 EventsChain.konveyor.exec(context)
 
                 val events = context.eventsRepository.getAllByMeltId(context.meltInfo.id)
-                context.events = ModelEvents(events = events)
+                context.events = events
                 context.meltInfo = ModelMeltInfo.NONE
                 context.wsManager.sendFinish(context)
                 context.wsManager.sendEvents(context)
