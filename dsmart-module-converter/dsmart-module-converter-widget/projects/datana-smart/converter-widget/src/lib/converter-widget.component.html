@@ -68,7 +68,7 @@
         <div *ngIf="converterMeltInfoData?.devices?.converter?.name || converterMeltInfoData?.devices?.converter?.name !== null" class="col-7" style="text-align: left">
           <span> >>{{converterMeltInfoData?.devices.converter.name}}</span>
         </div>
-        <div *ngIf="!converterMeltInfoData?.devices.converter.name || converterMeltInfoData?.devices.converter.name === null" class="col-7" style="text-align: left">
+        <div *ngIf="!converterMeltInfoData?.devices?.converter?.name || converterMeltInfoData?.devices?.converter?.name === null" class="col-7" style="text-align: left">
           <span> >>Конвертер</span>
         </div>
 <!--        style="text-align: left;padding-right: 3rem"-->
