@@ -24,14 +24,6 @@ object UpdateTimeCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
             val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
             val isReactionTimeUp = slagRateTime >= timeStartWithShift
             val isActive = !isReactionTimeUp
-            if (isReactionTimeUp) {
-                context.signaler = SignalerModel(
-                    level = SignalerModel.SignalerLevelModel.CRITICAL,
-                    sound = SignalerSoundModel(
-                        SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, 3000
-                    )
-                )
-            }
             val currentEvent = MetalRateCriticalEvent(
                 id = it.id,
                 timeStart = it.timeStart,
