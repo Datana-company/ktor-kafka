@@ -2,8 +2,15 @@
   Тепловизор 1
 </div>
 <div class="video-context-box">
-<!--  <video #target class="video-js hidden" controls playsinline preload="none"></video>-->
-  <img class="image-container" width="580" height="380" [src]="safeResourceUrl">
+  <!--  <video #target class="video-js hidden" controls playsinline preload="none"></video>-->
+  <div *ngIf="!isEncodedImageEmpty()">
+    <div class="image-container  title-over-image video-js">
+      <span class="text-title-over-image">Отсутствует сигнал с тепловизора {{irCamera}}</span>
+    </div>
+  </div>
+  <div *ngIf="isEncodedImageEmpty()">
+    <img class="image-container" width="580" height="380" [src]="safeResourceUrl">
+  </div>
 </div>
 <!--<div class="video-source-radio-group">-->
 <!--  <label>-->

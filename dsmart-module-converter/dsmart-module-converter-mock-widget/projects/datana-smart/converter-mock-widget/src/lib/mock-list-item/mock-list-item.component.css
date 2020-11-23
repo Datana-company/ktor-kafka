@@ -1,10 +1,9 @@
-.widget-mock-list-item {
+.widget-mock-list-item-base {
     width: calc(100% - 0.5rem);
     height: calc(2.2rem + 8px);
-    cursor: pointer;
 }
 
-.widget-mock-list-item-instruction {
+.widget-mock-list-item {
     height: 2rem;
     padding: 0.1rem;
     border: 2px solid SandyBrown;
@@ -12,4 +11,17 @@
     font-size: 1rem;
     font-weight: 500;
     background-color: white;
+}
+
+.widget-mock-list-item-selected {
+    background-color: lightcyan;
+}
+
+.case-name-container {
+    width: 85%;
+    cursor: pointer;
+}
+
+.button-start-container {
+    width: max-content;
 }

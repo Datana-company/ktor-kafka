@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { ConverterWidgetMockModule } from '@datana-smart/converter-mock-widget';
+import {environment} from "../environments/environment";
 
 @NgModule({
     declarations: [
@@ -14,7 +15,9 @@ import { ConverterWidgetMockModule } from '@datana-smart/converter-mock-widget';
         BrowserModule,
         FormsModule,
         HttpClientModule,
-        ConverterWidgetMockModule
+        ConverterWidgetMockModule.config({
+          baseUrl: environment.host
+        }),
     ],
     providers: [],
     bootstrap: [AppComponent]
