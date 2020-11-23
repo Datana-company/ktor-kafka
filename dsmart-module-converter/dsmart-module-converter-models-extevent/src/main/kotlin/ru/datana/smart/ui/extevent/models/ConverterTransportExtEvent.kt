@@ -1,4 +1,4 @@
-package ru.datana.smart.ui.converter.app.mappings
+package ru.datana.smart.ui.extevent.models
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

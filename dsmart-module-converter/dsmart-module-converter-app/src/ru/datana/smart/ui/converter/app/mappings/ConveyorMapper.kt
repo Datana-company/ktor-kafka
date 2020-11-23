@@ -6,6 +6,7 @@ import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import ru.datana.smart.ui.viml.models.ConverterTransportViMl
 import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
+import ru.datana.smart.ui.extevent.models.ConverterTransportExtEvent
 import java.time.Instant
 
 fun ConverterBeContext.setMeltInfo(converterMeltInfo: ConverterMeltInfo) {

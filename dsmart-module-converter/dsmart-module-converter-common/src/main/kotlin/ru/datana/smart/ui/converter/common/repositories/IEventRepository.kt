@@ -6,7 +6,7 @@ interface IEventRepository {
     suspend fun get(id: String): ModelEvent?
     suspend fun create(event: ModelEvent): ModelEvent?
     suspend fun update(event: ModelEvent): ModelEvent?
-    fun getAll(): MutableList<ModelEvent>
+    fun getAllByMeltId(meltId: String): MutableList<ModelEvent>
     fun getAllActiveByMeltId(meltId: String): MutableList<ModelEvent>
     fun getActiveByMeltIdAndEventType(meltId: String, eventType: ModelEvent.EventType): ModelEvent?
 
@@ -24,7 +24,7 @@ interface IEventRepository {
                 TODO("Not yet implemented")
             }
 
-            override fun getAll(): MutableList<ModelEvent> {
+            override fun getAllByMeltId(meltId: String): MutableList<ModelEvent> {
                 TODO("Not yet implemented")
             }
 
@@ -35,12 +35,6 @@ interface IEventRepository {
             override fun getActiveByMeltIdAndEventType(meltId: String, eventType: ModelEvent.EventType): ModelEvent? {
                 TODO("Not yet implemented")
             }
-
-            override fun getAllByMeltId(meltId: String): MutableList<ModelEvent> {
-                TODO("Not yet implemented")
-            }
         }
     }
-
-    fun getAllByMeltId(meltId: String): MutableList<ModelEvent>
 }

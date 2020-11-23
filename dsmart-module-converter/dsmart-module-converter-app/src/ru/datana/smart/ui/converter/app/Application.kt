@@ -216,7 +216,6 @@ fun Application.module(testing: Boolean = false) {
                             }
                             // 1) Получаем данные из Кафки
                             topicEvents -> {
-                                println(" ------------------ topicEvents")
                                 // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
                                 val kafkaModel = toConverterTransportExtEvents(record)
                                 // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
