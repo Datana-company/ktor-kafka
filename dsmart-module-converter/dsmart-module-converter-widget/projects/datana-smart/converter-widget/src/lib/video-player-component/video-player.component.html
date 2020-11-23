@@ -1,5 +1,6 @@
 <div class="widget-boiling-label">
-  Тепловизор 1
+  <span *ngIf="irCamera">{{irCamera}}</span>
+  <span *ngIf="!irCamera">Тепловизор</span>
 </div>
 <div class="video-context-box">
   <!--  <video #target class="video-js hidden" controls playsinline preload="none"></video>-->
