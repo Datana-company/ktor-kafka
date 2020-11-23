@@ -1,5 +1,6 @@
 package main.kotlin.ru.datana.smart.ui.ml.models
 
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper
 import ru.datana.smart.ui.ml.models.TemperatureMlUiDto
 import kotlin.test.Test
@@ -16,7 +17,7 @@ class TimeTest {
             {"version": "0.1", "boilTime": "2020-09-22T18:26:17.246000Z", "deviceState": "switchedOff"}
         """.trimIndent()
 
-        val objectMapper = ObjectMapper()
+        val objectMapper = ObjectMapper().configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true)
         val obj = objectMapper.readValue(json, TemperatureMlUiDto::class.java)
 
         assertEquals("0.1", obj.version)
@@ -30,7 +31,7 @@ class TimeTest {
             {"version": "0.2", "timeActual": 1601047090000, "durationToBoil": 124261, "sensorId": "8e630dd0-5796-45e0-8d85-8a14c5d872dd", "temperatureLast": "24.41999969482422", "state": "switchedOff"}
         """.trimIndent()
 
-        val objectMapper = ObjectMapper()
+        val objectMapper = ObjectMapper().configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true)
         val obj = objectMapper.readValue(json, TemperatureMlUiDto::class.java)
 
         assertEquals("0.2", obj.version)

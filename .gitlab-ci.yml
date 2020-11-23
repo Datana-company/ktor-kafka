@@ -52,6 +52,7 @@ deploy:
         - ./gradlew deploy
     only:
         - dev
+        - /^ver-.*$/
 
 after_script:
     - echo "End CI"

@@ -1,0 +1,37 @@
+<div class="widget-event-item" *ngFor="let event of events">
+  <div *ngIf="isWarning(event?.category)">
+    <div [class.widget-event-item-warning-active]="event?.isActive" class="widget-event-item-warning">
+      {{ event?.dateStart | date: 'HH:mm:ss' }}
+    </div>
+    <div [class.widget-event-item-instruction-active]="event?.isActive" class="widget-event-item-instruction">
+
+      <div class="widget-event-title"><span style="margin-right: 1rem">
+        <img src = "/assets/image/{{isEventCategoryAndStatus(event?.isActive, event?.category)}}">
+      </span><span class="event-title-text">{{ event?.title }}</span>
+      </div>
+
+      <div class="widget-event-execution-status">
+        <div *ngIf="isCompleted(event?.executionStatus)" class="widget-event-execution-status-completed">Выполнено</div>
+        <div *ngIf="isFailed(event?.executionStatus)" class="widget-event-execution-status-failed">Не выполнено</div>
+      </div>
+      <div class="widget-event-text-message">{{ event?.textMessage }}</div>
+    </div>
+  </div>
+  <div *ngIf="isInfo(event?.category)">
+    <div [class.widget-event-item-info-warning-active]="event?.isActive" class="widget-event-item-info-warning">
+      {{ event?.dateStart | date: 'HH:mm:ss' }}
+    </div>
+    <div [class.widget-event-item-info-instruction-active]="event?.isActive" class="widget-event-item-info-instruction">
+      <div class="widget-event-title"><span style="margin-right: 1rem">
+        <img src = "/assets/image/{{ isEventCategoryAndStatus(event?.isActive, event?.category)}}">
+      </span>
+        <span class="event-title-text">{{ event?.title }}</span>
+      </div>
+      <div class="widget-event-execution-status">
+        <div *ngIf="isCompleted(event?.executionStatus)" class="widget-event-execution-status-completed">Выполнено</div>
+        <div *ngIf="isFailed(event?.executionStatus)" class="widget-event-execution-status-failed">Не выполнено</div>
+      </div>
+      <div class="widget-event-text-message">{{ event?.textMessage }}</div>
+    </div>
+  </div>
+</div>

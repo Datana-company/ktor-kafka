@@ -1,27 +1,37 @@
 package ru.datana.smart.ui.converter.app
 
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.http.*
-import io.ktor.http.cio.websocket.*
-import io.ktor.http.content.*
-import io.ktor.request.*
-import io.ktor.response.*
+import io.ktor.application.Application
+import io.ktor.application.install
+import io.ktor.features.CORS
+import io.ktor.features.CallLogging
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.cio.websocket.pingPeriod
+import io.ktor.http.cio.websocket.timeout
+import io.ktor.http.content.defaultResource
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
+import io.ktor.request.path
 import io.ktor.routing.*
-import io.ktor.util.*
-import io.ktor.websocket.*
+import io.ktor.util.KtorExperimentalAPI
+import io.ktor.websocket.WebSockets
+import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
-import ru.datana.smart.ui.converter.app.cor.context.ConverterBeContext
-import ru.datana.smart.ui.converter.app.cor.repository.UserEventsRepository
-import ru.datana.smart.ui.converter.app.cor.services.ForwardServiceKafkaUi
-import ru.datana.smart.ui.converter.app.mappings.toInnerModel
+//import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
+import ru.datana.smart.ui.converter.common.context.ConverterBeContext
+import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.websocket.WsManager
+import ru.datana.smart.ui.converter.app.websocket.WsSignalerManager
+import ru.datana.smart.ui.converter.backend.ConverterFacade
+import ru.datana.smart.ui.converter.common.models.CurrentState
 import java.time.Duration
+import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
+import ru.datana.smart.ui.converter.repository.inmemory.UserEventRepositoryInMemory
+import java.util.concurrent.atomic.AtomicReference
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -57,28 +67,73 @@ fun Application.module(testing: Boolean = false) {
     install(KtorKafkaConsumer)
 
     val wsManager = WsManager()
-    val topicTemperature by lazy { environment.config.property("ktor.kafka.consumer.topic.temperature").getString().trim() }
-    val topicConverter by lazy { environment.config.property("ktor.kafka.consumer.topic.converter").getString().trim() }
-    val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
+    val wsSignalerManager = WsSignalerManager()
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
-    val sensorId by lazy { environment.config.property("ktor.datana.sensor.id").getString().trim() }
-    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
-    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
-    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
-    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
-    val metalRateCriticalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble() }
-    val metalRateNormalPoint: Double by lazy { environment.config.property("ktor.conveyor.metalRatePoint.normal").getString().trim().toDouble() }
+    val topicMath by lazy { environment.config.property("ktor.kafka.consumer.topic.math").getString().trim() }
+    val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
+    val topicAngles by lazy { environment.config.property("ktor.kafka.consumer.topic.angles").getString().trim() }
+    val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
+    val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
+    val framesBasePath by lazy { environment.config.property("paths.base.frames").getString().trim() }
+//    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
+//    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
+//    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
+//    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
+    val dataTimeout: Long by lazy {
+        environment.config.property("ktor.conveyor.dataTimeout").getString().trim().toLong()
+    }
+    val metalRateCriticalPoint: Double by lazy {
+        environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble()
+    }
+    val metalRateWarningPoint: Double by lazy {
+        environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble()
+    }
+    val reactionTime: Long by lazy {
+        environment.config.property("ktor.conveyor.reactionTime").getString().trim().toLong()
+    }
+    val sirenLimitTime: Long by lazy {
+        environment.config.property("ktor.conveyor.sirenLimitTime").getString().trim().toLong()
+    }
+    val roundingWeight: Double by lazy {
+        environment.config.property("ktor.conveyor.roundingWeight").getString().trim().toDouble()
+    }
 
-    val metalRateEventGenerator = MetalRateEventGenerator(
-        timeout = metalRateEventGenTimeout,
-        maxValue = metalRateEventGenMax,
-        minValue = metalRateEventGenMin,
-        changeValue = metalRateEventGenChange
+    // TODO: в будущем найти место, куда пристроить генератор
+//    val metalRateEventGenerator = MetalRateEventGenerator(
+//        timeout = metalRateEventGenTimeout,
+//        maxValue = metalRateEventGenMax,
+//        minValue = metalRateEventGenMin,
+//        changeValue = metalRateEventGenChange
+//    )
+//    metalRateEventGenerator.start()
+
+    val userEventsRepository = UserEventRepositoryInMemory()
+
+    val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
+    val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)
+
+    val websocketContext = ConverterBeContext(
+        currentState = currentState,
+        eventsRepository = userEventsRepository,
+        metalRateWarningPoint = metalRateWarningPoint,
+        sirenLimitTime = sirenLimitTime
     )
-    metalRateEventGenerator.start()
 
-    val userEventsRepository = UserEventsRepository()
-    val videoAdapterStream by lazy {environment.config.property("ktor.datana.video.adapter.url").getString().trim()}
+    val converterFacade = ConverterFacade(
+        converterRepository = userEventsRepository,
+        wsManager = wsManager,
+        wsSignalerManager = wsSignalerManager,
+        dataTimeout = dataTimeout,
+        metalRateCriticalPoint = metalRateCriticalPoint,
+        metalRateWarningPoint = metalRateWarningPoint,
+        reactionTime = reactionTime,
+        sirenLimitTime = sirenLimitTime,
+        roundingWeight = roundingWeight,
+        currentState = currentState,
+        converterId = converterId,
+        framesBasePath = framesBasePath,
+        scheduleCleaner = scheduleCleaner
+    )
 
     routing {
         static("/") {
@@ -86,19 +141,10 @@ fun Application.module(testing: Boolean = false) {
             resources("static")
         }
 
-        get("/front-config") {
-            call.respondText(
-                """
-                {
-                    "videoAdapterStreamRrl": "$videoAdapterStream"
-                }
-                """.trimIndent()
-            )
-        }
-
         webSocket("/ws") {
-            println("onConnect")
-            wsManager.addSession(this)
+            println("/ws --- onConnect")
+            wsManager.addSession(this, websocketContext)
+            wsSignalerManager.init(this, websocketContext)
             try {
                 for (frame in incoming) {
                 }
@@ -108,28 +154,89 @@ fun Application.module(testing: Boolean = false) {
                 logger.error("Error within websocket block due to: ${closeReason.await()}", e)
             } finally {
                 wsManager.delSession(this)
+                wsSignalerManager.close(this)
             }
         }
 
-        kafka(listOf(topicTemperature, topicConverter, topicVideo, topicMeta)) {
-            val context = ConverterBeContext(
-                records = records.map { it.toInnerModel() }
-            )
-            ForwardServiceKafkaUi(
-                logger = logger,
-                wsManager = wsManager,
-                topicTemperature = topicTemperature,
-                topicConverter = topicConverter,
-                topicVideo = topicVideo,
-                topicMeta = topicMeta,
-                metalRateEventGenerator = metalRateEventGenerator,
-                sensorId = sensorId,
-                metalRateCriticalPoint = metalRateCriticalPoint,
-                metalRateNormalPoint = metalRateNormalPoint,
-                eventsRepository = userEventsRepository
-            ).exec(context)
+//        webSocket("/ws_signaler") {
+//            println("/ws_signaler --- onConnect")
+//            wsSignalerManager.init(this, websocketContext)
+//            try {
+//                for (frame in incoming) {
+//                }
+//            } catch (e: ClosedReceiveChannelException) {
+//                println("onClose ${closeReason.await()}")
+//            } catch (e: Throwable) {
+//                logger.error("Error within websocket block due to: ${closeReason.await()}", e)
+//            } finally {
+//                wsSignalerManager.close(this)
+//            }
+//        }
 
-            commitAll()
+        kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles)) {
+            try {
+                records.sortedByDescending { it.offset() }
+//                на самом деле они уже отсортированы сначала по топику, затем по offset по убыванию
+                    .distinctBy { it.topic() }
+                    .map { it.toInnerModel() }
+                    .forEach { record ->
+                        when (record.topic) {
+                            topicMath -> {
+                                val kafkaModel = toConverterTransportMlUi(record)
+                                val context = ConverterBeContext()
+                                context.setSlagRate(kafkaModel)
+                                context.setFrame(kafkaModel)
+                                context.setMeltInfo(kafkaModel)
+                                println("topic = math, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                converterFacade.handleMath(context)
+                            }
+//                            topicVideo -> {
+//                                val kafkaModel = toConverterTransportViMl(record)
+//                                val context = ConverterBeContext()
+//                                context.setFrame(kafkaModel)
+//                                context.setMeltInfo(kafkaModel)
+//                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+//                                converterFacade.handleFrame(context)
+//                            }
+                            topicMeta -> {
+                                val kafkaModel = toConverterMeltInfo(record)
+                                val context = ConverterBeContext()
+                                context.setMeltInfo(kafkaModel)
+                                println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                converterFacade.handleMeltInfo(context)
+                            }
+                            topicAngles -> {
+                                val kafkaModel = toConverterTransportAngle(record)
+                                val context = ConverterBeContext()
+                                context.setAngles(kafkaModel)
+                                context.setMeltInfo(kafkaModel)
+                                println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                converterFacade.handleAngles(context)
+                            }
+                        }
+                    }
+            } catch (e: Throwable) {
+                val msg = e.message ?: ""
+                logger.error(msg)
+            } finally {
+                commitAll()
+            }
         }
     }
 }
+
+// TODO: дописать метод
+//suspend inline fun <reified T, reified K> KtorKafkaConsumerContext.handleMessage(block: (InnerRecord<String, String>) -> Unit) {
+//    try {
+//        val context = ConverterBeContext()
+//
+//        val kafkaModel = toConverterTransportMlUi(record)
+//        val conveyorModel = toModelAnalysis(kafkaModel) // rate
+////        val context = ConverterBeContext(
+////            analysis = conveyorModel // добавить поля и маппинг функции
+////        )
+//        converterFacade.handleSlagRate(context)
+//    } catch (e: Throwable) {
+//
+//    }
+//}

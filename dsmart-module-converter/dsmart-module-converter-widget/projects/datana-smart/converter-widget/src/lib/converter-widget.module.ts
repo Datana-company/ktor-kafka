@@ -1,37 +1,38 @@
-import {APP_INITIALIZER, ModuleWithProviders, NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 import {ConverterWidgetComponent} from './converter-widget.component';
 import {VideoPlayerComponent} from './video-player-component/video-player.component';
-import {ConverterWidgetRoutingModule} from './converter-widget-routing.module';
-import {CommonModule} from '@angular/common';
-import {WebsocketModule} from '@datana-smart/websocket';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
-import {
-  ConfigServiceConfig,
-  configServiceConfig,
-  ConfigServiceModule,
-  ConfigServiceService
-} from '@datana-smart/config-service';
-import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {BarChartComponent} from './bar-chart/bar-chart.component';
+import {ConverterWidgetRoutingModule} from './converter-widget-routing.module';
+import {CommonModule, registerLocaleData} from '@angular/common';
+import {WebsocketModule} from '@datana-smart/websocket';
+import {TiltAngleComponent} from './tilt-angle-component/tilt-angle.component';
+import {EventRecommendationComponent} from './event-recommendation-component/event-recommendation.component';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
+import { SignalerComponent } from './signaler/signaler.component';
+import localeRu from '@angular/common/locales/ru';
 
+registerLocaleData(localeRu);
 
 @NgModule({
   declarations: [
     ConverterWidgetComponent,
     VideoPlayerComponent,
+    TiltAngleComponent,
+    EventRecommendationComponent,
     BarChartComponent,
+    SignalerComponent
+  ],
+  providers: [
+      { provide: LOCALE_ID, useValue: 'ru' }
   ],
   imports: [
     WebsocketModule,
-    ConfigServiceModule,
-    HttpClientModule,
     CommonModule,
-    ConverterWidgetRoutingModule.config(),
+    ConverterWidgetRoutingModule,
     NgxChartsModule
-  ],
-  providers: [
   ],
   exports: [ConverterWidgetComponent]
 })
+export class ConverterWidgetModule {
+}
 
-export class ConverterWidgetModule {}

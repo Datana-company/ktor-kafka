@@ -3,9 +3,7 @@ val kotlinVersion: String by project
 val projectMaintainer: String by project
 val kafkaVersion: String by project
 val dsmartLoggingVersion: String by project
-val konveyorVersion: String by project
 val serializationVersion: String by project
-val guavaVersion: String by project
 
 plugins {
     application
@@ -56,11 +54,13 @@ repositories {
 dependencies {
 
     implementation(project(":dsmart-module-converter:dsmart-module-converter-common"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-backend"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-repo-inmemory"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-ws-models"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-ml-models"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-mlui"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-viml"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-angle"))
     implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
@@ -70,9 +70,7 @@ dependencies {
     implementation("io.ktor:ktor-websockets:$ktorVersion")
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
-    implementation("codes.spectrum:konveyor:$konveyorVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
-    implementation("com.google.guava:guava:$guavaVersion")
     implementation(kotlin("test-junit"))
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 
@@ -129,6 +127,7 @@ tasks {
                 "KAFKA_TOPIC_META" to "",
                 "KAFKA_CLIENT_ID" to "",
                 "KAFKA_GROUP_ID" to "",
+                "FRAMES_BASE_PATH" to "",
                 "SENSOR_ID" to "",
                 "LOGS_KAFKA_HOSTS" to "",
                 "LOGS_KAFKA_TOPIC" to "",
@@ -138,7 +137,16 @@ tasks {
                 "LOG_MAX_FILE_SIZE" to "10MB",
                 "LOG_TOTAL_SIZE_CAP" to "24MB",
                 "LOG_DATANA_LEVEL" to "info",
-                "LOG_COMMON_LEVEL" to "error"
+                "LOG_COMMON_LEVEL" to "error",
+                "METAL_RATE_GEN_TIMEOUT" to "5000",
+                "METAL_RATE_GEN_MAX" to "0.5",
+                "METAL_RATE_GEN_MIN" to "0.0",
+                "METAL_RATE_POINT_CRITICAL" to "0.35",
+                "METAL_RATE_POINT_WARNING" to "0.20",
+                "DATA_TIMEOUT" to "5000",
+                "REACTION_TIME" to "3000",
+                "SIREN_LIMIT_TIME" to "3000",
+                "ROUNDING_WEIGHT" to "0.1"
             )
         )
     }
