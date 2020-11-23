@@ -65,7 +65,12 @@
       </div>
       <div class="lineTop"></div>
       <div class="row titleTop2" style="padding-top:1.5rem">
-        <div class="col-7" style="text-align: left"> >>Конвертер 2</div>
+        <div *ngIf="converterMeltInfoData?.devices?.converter?.name || converterMeltInfoData?.devices?.converter?.name !== null" class="col-7" style="text-align: left">
+          <span> >>{{converterMeltInfoData?.devices.converter.name}}</span>
+        </div>
+        <div *ngIf="!converterMeltInfoData?.devices?.converter?.name || converterMeltInfoData?.devices?.converter?.name === null" class="col-7" style="text-align: left">
+          <span> >>Конвертер</span>
+        </div>
 <!--        style="text-align: left;padding-right: 3rem"-->
         <div class="col-2" > >>История рекомендаций</div>
         <div class="col-3">
@@ -84,7 +89,7 @@
           <div class="col-8">
             <video-player-component
               [playlist]="playlist"
-              [irCamera]="converterMeltInfoData?.devices.irCamera.id"
+              [irCamera]="converterMeltInfoData?.devices?.irCamera?.id"
               [imageCamera]="converterFrameCameraData?.image"
               [imageMath]="converterFrameMathData?.image">
             </video-player-component>
@@ -93,7 +98,7 @@
             <tilt-angle-component [angleData]="converterAnglesData"></tilt-angle-component>
           </div>
         </div>
-        <div class="row  widget-container-row widget-bar-chart">
+        <div class="row widget-container-row widget-bar-chart">
           <div class="col-12">
             <bar-chart-component
               [slagRateChartModel]="converterSlagRateChart">
@@ -122,18 +127,3 @@
     </div>
   </div>
 </div>
-
-<!--<ng-template #noData>-->
-<!--  <div class="temperature">-->
-<!--    No Data-->
-<!--  </div>-->
-<!--</ng-template>-->
-
-
-<!--<p id="info">info</p>-->
-<!--<p id="warning">warning</p>-->
-<!--<p id="critical">critical</p>-->
-<!--<p id="sound0">no sound</p>-->
-<!--<p id="sound1">sound1</p>-->
-<!--<p id="sound2">sound2</p>-->
-<!--<p id="sound3">sound3</p>-->

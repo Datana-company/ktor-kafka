@@ -55,6 +55,10 @@ export class BarChartComponent {
     ];
   }
 
+  formatWarnPoint = (val) => {
+    return val.toFixed(0) + ' %';
+  }
+
   constructor() {
   }
 
