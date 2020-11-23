@@ -35,16 +35,16 @@ export class AppRoutingModule {
       providers: [
         HttpClient,
         {provide: config, useValue: wsConfig},
-        {provide: configServiceConfig, useValue: csConfig},
-        {
-          provide: APP_INITIALIZER,
-          useFactory: (service: ConfigServiceService) => () => {
-            console.log('Requesting for settings');
-            return service.load();
-          },
-          deps: [ConfigServiceService, configServiceConfig, HttpClient],
-          multi: true
-        }
+        // {provide: configServiceConfig, useValue: csConfig},
+        // {
+        //   provide: APP_INITIALIZER,
+        //   useFactory: (service: ConfigServiceService) => () => {
+        //     console.log('Requesting for settings');
+        //     return service.load();
+        //   },
+        //   deps: [ConfigServiceService, configServiceConfig, HttpClient],
+        //   multi: true
+        // }
       ]
     };
   }
