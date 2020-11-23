@@ -6,12 +6,13 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 /*
-* AddFailedWarningEventToHistoryHandler - записывает текущее событие "Предупреждение"
-* в историю со статусом "Не выполнено"
+* AddStatelessWarningEventToHistoryHandler - записывает текущее событие "Предупреждение" в историю без изменения статуса
 * */
-object AddFailedWarningEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
+object AddStatelessWarningEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
         val activeEvent: MetalRateWarningEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
@@ -24,10 +25,13 @@ object AddFailedWarningEventToHistoryHandler: IKonveyorHandler<ConverterBeContex
                 title = it.title,
                 isActive = false,
                 angleStart = it.angleStart,
-                warningPoint = it.warningPoint,
-                executionStatus = IBizEvent.ExecutionStatus.FAILED
+                warningPoint = it.warningPoint
             )
             context.eventsRepository.put(meltId, historicalEvent)
+            context.signaler = SignalerModel(
+                level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
+                sound = SignalerSoundModel.NONE
+            )
         } ?: return
     }
 
