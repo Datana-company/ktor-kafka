@@ -1,7 +1,6 @@
 package ru.datana.smart.ui.converter.app.mappings
 
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
-import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.ws.models.*
 import java.time.Instant
@@ -99,9 +98,9 @@ private fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =
         )
     )
 
-private fun toWsEventListModel(modelEvents: ModelEvents) =
+private fun toWsEventListModel(modelEvents: MutableList<ModelEvent>) =
     WsDsmartEventList(
-        list = modelEvents.events.map { event -> toWsEventModel(event) }.toMutableList()
+        list = modelEvents.map { event -> toWsEventModel(event) }.toMutableList()
     )
 
 private fun toWsEventModel(event: ModelEvent) =

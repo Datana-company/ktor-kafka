@@ -5,7 +5,6 @@ import kotlinx.serialization.json.Json
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.IWsManager
-import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.ws.models.*
 import java.util.concurrent.ConcurrentHashMap
 
