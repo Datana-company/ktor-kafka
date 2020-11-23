@@ -186,6 +186,31 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   }
 
+  get converterDeveiceName() {
+    const converterDeveiceName = this.converterMeltInfoData?.devices?.converter?.name + this.converterMeltInfoData?.devices?.converter?.id
+    return converterDeveiceName ? converterDeveiceName : 'Конвертер -'
+  }
+
+  get converterMeltShiftNumber() {
+    const shiftNumber = this.converterMeltInfoData?.shiftNumber
+    return shiftNumber ? shiftNumber : '-'
+  }
+
+  get converterMeltCrewNumber() {
+    const crewNumber = this.converterMeltInfoData?.crewNumber
+    return crewNumber ? crewNumber : '-'
+  }
+
+  get converterMeltSteelGrade() {
+    const steelGrade  = this.converterMeltInfoData?.steelGrade
+    return steelGrade ? steelGrade : '-'
+  }
+
+  get converterMeltInfoDataMeltNumber() {
+    const meltNumber = this.converterMeltInfoData?.meltNumber
+    return meltNumber ? meltNumber : '-'
+  }
+
   ngOnDestroy(): void {
     this._unsubscribe.next();
     this._unsubscribe.complete();

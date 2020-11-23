@@ -21,7 +21,8 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
   @Input() playlist: string;
   @Input() imageCamera: string;
   @Input() imageMath: string;
-  @Input() irCamera: string;
+  @Input() irCameraId: string;
+  @Input() irCameraName: string;
 
   // player: videojs.Player;
 
@@ -33,7 +34,6 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
   get safeResourceUrl(): SafeResourceUrl {
     const encodedImage = this.getEncodedFrame();
     return this._sanitizer.bypassSecurityTrustResourceUrl(
-      // 'data:image/jpeg;base64, ' + (encodedImage ? encodedImage : defaultImage)
       'data:image/jpeg;base64, ' + encodedImage);
   }
 
