@@ -24,10 +24,10 @@ object AddCriticalEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
             val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
             val isReactionTimeUp = slagRateTime >= timeStartWithShift
             val isActive = !isReactionTimeUp
-            val isAngleSmaller = it.angleStart - currentAngle > 5
+            val isUserReacted = it.angleStart - currentAngle > 5
             val executionStatus = when {
-                isReactionTimeUp && isAngleSmaller -> IBizEvent.ExecutionStatus.COMPLETED
-                isReactionTimeUp && !isAngleSmaller -> IBizEvent.ExecutionStatus.FAILED
+                isReactionTimeUp && isUserReacted -> IBizEvent.ExecutionStatus.COMPLETED
+                isReactionTimeUp && !isUserReacted -> IBizEvent.ExecutionStatus.FAILED
                 else -> IBizEvent.ExecutionStatus.NONE
             }
             val currentEvent = MetalRateCriticalEvent(
