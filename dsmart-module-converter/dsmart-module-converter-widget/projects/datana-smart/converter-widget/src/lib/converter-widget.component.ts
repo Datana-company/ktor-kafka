@@ -186,11 +186,9 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   }
 
   get converterDeveiceName() {
-    const converterDeveiceName: String = this.converterMeltInfoData?.devices?.converter?.name.toString();
-    const converterDeveiceNameAndId: String = converterDeveiceName.
-    concat( ': ', this.converterMeltInfoData?.devices?.converter?.id.toString());
-    console.log('converterDeveiceNameAndId :', converterDeveiceNameAndId);
-    return converterDeveiceNameAndId ? converterDeveiceNameAndId : 'Конвертер -'
+    const converterDeveiceName = this.converterMeltInfoData?.devices?.converter?.name;
+    return converterDeveiceName ? converterDeveiceName.toString()
+      .concat(': ', this.converterMeltInfoData?.devices?.converter?.id.toString()) : 'Конвертер -';
   }
 
   get converterMeltShiftNumber() {

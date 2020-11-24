@@ -83,9 +83,9 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
     }
   }
   get getCameraNameAndId() {
-    const cameraName = this.irCameraName.toString()
-    const cameraNameAndId = cameraName.concat(': ', this.irCameraId)
-    return cameraNameAndId ? cameraNameAndId : 'Тепловизор -'
+    const cameraName = this.irCameraName;
+    return cameraName ? cameraName.toString()
+          .concat(': ', this.irCameraId.toString()) : 'Тепловизор -';
   }
 
   getEncodedFrame = () => {
