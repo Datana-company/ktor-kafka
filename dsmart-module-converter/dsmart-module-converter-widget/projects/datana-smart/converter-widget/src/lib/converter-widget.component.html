@@ -31,47 +31,25 @@
     <div class="titlesTop1">
       <div class="row">
         <div class="col-2" style="text-align: left">
-          <div *ngIf="converterMeltInfoData?.meltNumber && converterMeltInfoData?.meltNumber !== null">
-            Плавка: <span class="font-weight-600">{{converterMeltInfoData?.meltNumber}}</span>
-          </div>
-          <div *ngIf="!converterMeltInfoData?.meltNumber || converterMeltInfoData?.meltNumber === null">
-            <div class="text">Плавка: -</div>
-          </div>
+            <div class="text">Плавка: <span class="font-weight-600">{{converterMeltInfoDataMeltNumber}}</span></div>
         </div>
         <div class="col-6">
-          <div *ngIf="converterMeltInfoData?.steelGrade && converterMeltInfoData?.steelGrade !== null">
-            Марка: <span class="font-weight-600">{{converterMeltInfoData?.steelGrade}}</span>
-          </div>
-          <div *ngIf="!converterMeltInfoData?.steelGrade || converterMeltInfoData?.steelGrade === null">
-            <div class="text">Марка: -</div>
+          <div >
+            <div class="text">Марка: <span class="font-weight-600">{{converterMeltSteelGrade}}</span></div>
           </div>
         </div>
         <div class="col-2" style="text-align: right; padding-right: 6.5%">
-          <div *ngIf="converterMeltInfoData?.crewNumber && converterMeltInfoData?.crewNumber !== null">
-            Бригада: <span class="font-weight-600">{{converterMeltInfoData?.crewNumber}}</span>
-          </div>
-          <div *ngIf="!converterMeltInfoData?.steelGrade || converterMeltInfoData?.steelGrade === null">
-            <div class="text">Бригада: -</div>
-          </div>
+          <div class="text">Бригада: <span class="font-weight-600">{{converterMeltShiftNumber}}</span></div>
         </div>
-        <div class="col-2" style="text-align: right; padding-right: 6.5%">
-          <div *ngIf="converterMeltInfoData?.shiftNumber && converterMeltInfoData?.shiftNumber !== null">
-            Смена: <span class="font-weight-600">{{converterMeltInfoData?.shiftNumber}}</span>
-          </div>
-          <div *ngIf="!converterMeltInfoData?.shiftNumber || converterMeltInfoData?.shiftNumber === null">
-            <div class="text">Смена: -</div>
-          </div>
+        <div class="col-2 text " style="text-align: right; padding-right: 6.5%">
+          <div class="text">Смена: <span class="font-weight-600">{{converterMeltCrewNumber}}</span></div>
         </div>
       </div>
       <div class="lineTop"></div>
       <div class="row titleTop2" style="padding-top:1.5rem">
-        <div *ngIf="converterMeltInfoData?.devices?.converter?.name || converterMeltInfoData?.devices?.converter?.name !== null" class="col-7" style="text-align: left">
-          <span> >>{{converterMeltInfoData?.devices.converter.name}}</span>
+        <div class="col-7" style="text-align: left">
+           >>{{converterDeveiceName}}
         </div>
-        <div *ngIf="!converterMeltInfoData?.devices?.converter?.name || converterMeltInfoData?.devices?.converter?.name === null" class="col-7" style="text-align: left">
-          <span> >>Конвертер</span>
-        </div>
-<!--        style="text-align: left;padding-right: 3rem"-->
         <div class="col-2" > >>История рекомендаций</div>
         <div class="col-3">
           <signaler [level]="converterSignalerLevel"
@@ -89,7 +67,8 @@
           <div class="col-8">
             <video-player-component
               [playlist]="playlist"
-              [irCamera]="converterMeltInfoData?.devices?.irCamera?.id"
+              [irCameraId]="irCameraId"
+              [irCameraName]="irCameraName"
               [imageCamera]="converterFrameCameraData?.image"
               [imageMath]="converterFrameMathData?.image">
             </video-player-component>

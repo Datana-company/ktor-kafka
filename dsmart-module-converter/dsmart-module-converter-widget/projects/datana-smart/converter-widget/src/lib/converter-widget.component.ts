@@ -40,6 +40,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   public converterSignalerLevel: SignalerLevelModel;
   public converterSignalerSound: SignalerSoundModel;
   playlist: string;
+  irCameraId;
+  irCameraName;
 
   constructor(
     @Inject(configProvide) private wsService: IWebsocketService
@@ -81,6 +83,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       })
     ).subscribe(data => {
       this.converterMeltInfoData = data;
+      this.irCameraId = this.converterMeltInfoData?.devices?.irCamera?.id;
+      this.irCameraName = this.converterMeltInfoData?.devices?.irCamera?.name;
     });
 
     const rawSlagRate = this.wsService.on('converter-slag-rate-update').pipe(
@@ -133,7 +137,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       filter(frame => frame.channel === 'MATH')
     ).subscribe(data => {
       this.converterFrameMathData = data;
-      console.log('this.converterFrameMathData12345', this.converterFrameMathData);
     })
 
     this.wsService.on('converter-angles-update').pipe(
@@ -184,6 +187,32 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.converterSignalerSound = data.sound;
     });
 
+  }
+
+  get converterDeveiceName() {
+    const converterDeveiceName = this.converterMeltInfoData?.devices?.converter?.name;
+    return converterDeveiceName ? converterDeveiceName.toString()
+      .concat(': ', this.converterMeltInfoData?.devices?.converter?.id.toString()) : 'Конвертер -';
+  }
+
+  get converterMeltShiftNumber() {
+    const shiftNumber = this.converterMeltInfoData?.shiftNumber
+    return shiftNumber ? shiftNumber : '-'
+  }
+
+  get converterMeltCrewNumber() {
+    const crewNumber = this.converterMeltInfoData?.crewNumber
+    return crewNumber ? crewNumber : '-'
+  }
+
+  get converterMeltSteelGrade() {
+    const steelGrade = this.converterMeltInfoData?.steelGrade
+    return steelGrade ? steelGrade : '-'
+  }
+
+  get converterMeltInfoDataMeltNumber() {
+    const meltNumber = this.converterMeltInfoData?.meltNumber
+    return meltNumber ? meltNumber : '-'
   }
 
   ngOnDestroy(): void {
