@@ -82,6 +82,11 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
       imageContainer.classList.remove('hidden')
     }
   }
+  get getCameraNameAndId() {
+    const cameraName = this.irCameraName.toString()
+    const cameraNameAndId = cameraName.concat(': ', this.irCameraId)
+    return cameraNameAndId ? cameraNameAndId : 'Тепловизор -'
+  }
 
   getEncodedFrame = () => {
     switch (this.channel) {
