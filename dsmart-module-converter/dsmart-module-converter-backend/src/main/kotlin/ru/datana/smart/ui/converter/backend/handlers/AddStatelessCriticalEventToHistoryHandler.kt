@@ -4,37 +4,34 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
-import java.time.Instant
 
 /*
-* UpdateTimeCriticalEventHandler - если прошло время больше, чем значение DATA_TIMEOUT,
-* то записываем текущее событие "Критическая ситуация" в историю.
-* Запускается сирена.
+* AddStatelessCriticalEventToHistoryHandler - записывает текущее событие "Критическая ситуация" в историю без изменения статуса
 * */
-object UpdateTimeCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
+object AddStatelessCriticalEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = Instant.now()
-        val activeEvent: MetalRateCriticalEvent? =
-            context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
+        val activeEvent: MetalRateCriticalEvent? = context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
         activeEvent?.let {
-            val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
-            val isReactionTimeUp = slagRateTime >= timeStartWithShift
-            val isActive = !isReactionTimeUp
-            val currentEvent = MetalRateCriticalEvent(
+            val historicalEvent = MetalRateCriticalEvent(
                 id = it.id,
                 timeStart = it.timeStart,
-                timeFinish = slagRateTime,
+                timeFinish = it.timeFinish,
                 metalRate = it.metalRate,
                 title = it.title,
-                isActive = isActive,
+                isActive = false,
                 angleStart = it.angleStart,
                 criticalPoint = it.criticalPoint
             )
-            context.eventsRepository.put(meltId, currentEvent)
+            context.eventsRepository.put(meltId, historicalEvent)
+            context.signaler = SignalerModel(
+                level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
+                sound = SignalerSoundModel.NONE
+            )
         } ?: return
     }
 
@@ -42,4 +39,3 @@ object UpdateTimeCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
         return context.status == CorStatus.STARTED
     }
 }
-

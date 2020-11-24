@@ -54,38 +54,36 @@ class EventsChain(
 
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
-                +AddFailedWarningEventToHistoryHandler
-//                +AddInfoEventToHistoryHandler
-                +UpdateTimeCriticalEventHandler
+                +AddStatelessWarningEventToHistoryHandler
+//                +AddStatelessInfoEventToHistoryHandler
+                +AddCriticalEventToHistoryHandler
                 +CreateCriticalEventHandler
-                +CheckAngleCriticalEventHandler
             }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
-                +AddFailedCriticalEventToHistoryHandler
-//                +AddInfoEventToHistoryHandler
-                +UpdateTimeWarningEventHandler
+                +AddStatelessCriticalEventToHistoryHandler
+//                +AddStatelessInfoEventToHistoryHandler
+                +AddWarningEventToHistoryHandler
                 +CreateWarningEventHandler
-                +CheckAngleWarningEventHandler
             }
 //            konveyor {
 //                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
-//                +AddFailedCriticalEventToHistoryHandler
-//                +AddFailedWarningEventToHistoryHandler
-//                +UpdateTimeInfoEventHandler
+//                +AddStatelessCriticalEventToHistoryHandler
+//                +AddStatelessWarningEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
 //                +CreateInfoEventHandler
 //            }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
-                +AddCriticalEventToHistoryHandler
-                +AddWarningEventToHistoryHandler
-//                +AddInfoEventToHistoryHandler
+                +AddStatelessCriticalEventToHistoryHandler
+                +AddStatelessWarningEventToHistoryHandler
+//                +AddStatelessInfoEventToHistoryHandler
             }
             konveyor {
                 on { currentState.get().currentMeltInfo.id.isEmpty() }
-                +AddFailedCriticalEventToHistoryHandler
-                +AddFailedWarningEventToHistoryHandler
-//                +AddInfoEventToHistoryHandler
+                +AddStatelessCriticalEventToHistoryHandler
+                +AddStatelessWarningEventToHistoryHandler
+//                +AddStatelessInfoEventToHistoryHandler
                 +CreateSuccessMeltEventHandler
             }
             handler {
