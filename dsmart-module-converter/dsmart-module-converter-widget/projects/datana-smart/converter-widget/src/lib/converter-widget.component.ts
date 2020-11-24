@@ -40,6 +40,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   public converterSignalerLevel: SignalerLevelModel;
   public converterSignalerSound: SignalerSoundModel;
   playlist: string;
+  irCameraId;
+  irCameraName;
 
   constructor(
     @Inject(configProvide) private wsService: IWebsocketService
@@ -81,6 +83,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       })
     ).subscribe(data => {
       this.converterMeltInfoData = data;
+      this.irCameraId = this.converterMeltInfoData?.devices?.irCamera?.id;
+      this.irCameraName = this.converterMeltInfoData?.devices?.irCamera?.name;
     });
 
     const rawSlagRate = this.wsService.on('converter-slag-rate-update').pipe(
