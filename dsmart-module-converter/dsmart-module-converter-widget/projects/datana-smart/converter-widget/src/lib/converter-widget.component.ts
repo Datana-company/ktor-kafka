@@ -187,8 +187,9 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   }
 
   get converterDeveiceName() {
-    const converterDeveiceName = this.converterMeltInfoData?.devices?.converter?.name + this.converterMeltInfoData?.devices?.converter?.id
-    return converterDeveiceName ? converterDeveiceName : 'Конвертер -'
+    const converterDeveiceName = this.converterMeltInfoData?.devices?.converter?.name.toString();
+    const converterDeveiceNameAndId = converterDeveiceName.concat( ':', this.converterMeltInfoData?.devices?.converter?.id);
+    return converterDeveiceNameAndId ? converterDeveiceNameAndId : 'Конвертер -'
   }
 
   get converterMeltShiftNumber() {
@@ -202,7 +203,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   }
 
   get converterMeltSteelGrade() {
-    const steelGrade  = this.converterMeltInfoData?.steelGrade
+    const steelGrade = this.converterMeltInfoData?.steelGrade
     return steelGrade ? steelGrade : '-'
   }
 
