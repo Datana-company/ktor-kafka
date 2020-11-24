@@ -133,7 +133,6 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       filter(frame => frame.channel === 'MATH')
     ).subscribe(data => {
       this.converterFrameMathData = data;
-      console.log('this.converterFrameMathData12345', this.converterFrameMathData);
     })
 
     this.wsService.on('converter-angles-update').pipe(
@@ -187,8 +186,10 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   }
 
   get converterDeveiceName() {
-    const converterDeveiceName = this.converterMeltInfoData?.devices?.converter?.name.toString();
-    const converterDeveiceNameAndId = converterDeveiceName.concat( ':', this.converterMeltInfoData?.devices?.converter?.id);
+    const converterDeveiceName: String = this.converterMeltInfoData?.devices?.converter?.name.toString();
+    const converterDeveiceNameAndId: String = converterDeveiceName.
+    concat( ': ', this.converterMeltInfoData?.devices?.converter?.id.toString());
+    console.log('converterDeveiceNameAndId :', converterDeveiceNameAndId);
     return converterDeveiceNameAndId ? converterDeveiceNameAndId : 'Конвертер -'
   }
 

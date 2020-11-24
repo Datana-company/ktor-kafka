@@ -1,5 +1,5 @@
 <div class="widget-boiling-label">
-  <span *ngIf="irCameraId">{{irCameraName + irCameraId}}</span>
+  <span *ngIf="irCameraId">{{irCameraName.concat( ': ', irCameraId)}}</span>
   <span *ngIf="!irCameraId">Тепловизор -</span>
 </div>
 <div class="video-context-box">
