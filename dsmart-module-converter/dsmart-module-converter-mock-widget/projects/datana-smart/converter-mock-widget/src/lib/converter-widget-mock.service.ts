@@ -13,15 +13,15 @@ export class ConverterWidgetMockService {
   }
 
   getList(): Observable<MockCasesModel> {
-    return this.http.get<MockCasesModel>('/list')
+    return this.http.get<MockCasesModel>('/list');
   }
 
   startCase(dir: string): Observable<any> {
-    console.log(`send dir = ${dir}`)
+    console.log(`send dir = ${dir}`);
     return this.http.get<any>('/send', {
       params: {
         case: dir
       }
-    })
+    });
   }
 }

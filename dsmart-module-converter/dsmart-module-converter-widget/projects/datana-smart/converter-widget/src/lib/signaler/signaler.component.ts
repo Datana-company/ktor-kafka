@@ -71,7 +71,7 @@ export class SignalerComponent implements OnInit, OnChanges {
   }
 
   getSignalerClass() {
-    switch ((this.level)) {
+    switch (this.level) {
       case SignalerLevelModel.CRITICAL: {
         return 'signaler-level-critical';
       }

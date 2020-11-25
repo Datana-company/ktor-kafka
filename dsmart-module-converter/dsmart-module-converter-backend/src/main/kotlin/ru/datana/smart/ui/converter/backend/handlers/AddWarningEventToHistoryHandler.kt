@@ -6,6 +6,8 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import java.time.Instant
 
 /*
@@ -42,6 +44,10 @@ object AddWarningEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
                 executionStatus = executionStatus
             )
             context.eventsRepository.put(meltId, currentEvent)
+            if(executionStatus == IBizEvent.ExecutionStatus.COMPLETED){
+                context.signaler.level = SignalerModel.SignalerLevelModel.NO_SIGNAL
+                context.signaler.sound = SignalerSoundModel.NONE
+            }
         } ?: return
     }
 

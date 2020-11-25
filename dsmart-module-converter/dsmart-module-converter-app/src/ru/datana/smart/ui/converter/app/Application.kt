@@ -32,7 +32,6 @@ import java.time.Duration
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 import ru.datana.smart.ui.converter.repository.inmemory.UserEventRepositoryInMemory
 import java.util.concurrent.atomic.AtomicReference
-
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // Referenced in application.conf
