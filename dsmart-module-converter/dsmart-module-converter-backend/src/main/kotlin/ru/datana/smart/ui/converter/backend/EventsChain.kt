@@ -54,6 +54,7 @@ class EventsChain(
 
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
+                +AddWarningEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
                 +AddCriticalEventToHistoryHandler
@@ -61,6 +62,7 @@ class EventsChain(
             }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
+                +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
                 +AddWarningEventToHistoryHandler
@@ -68,20 +70,26 @@ class EventsChain(
             }
 //            konveyor {
 //                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
+//                +AddCriticalEventToHistoryHandler
 //                +AddStatelessCriticalEventToHistoryHandler
+//                +AddWarningEventToHistoryHandler
 //                +AddStatelessWarningEventToHistoryHandler
 //                +AddInfoEventToHistoryHandler
 //                +CreateInfoEventHandler
 //            }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
+                +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
+                +AddWarningEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
             }
             konveyor {
                 on { currentState.get().currentMeltInfo.id.isEmpty() }
+                +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
+                +AddWarningEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
                 +CreateSuccessMeltEventHandler
