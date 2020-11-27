@@ -51,7 +51,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.playlist = 'http://camera.d.datana.ru/playlist.m3u8'
 
-    const rawState = this.wsService.on('converter-state-update').pipe(
+    const observableRawState = this.wsService.on('converter-state-update').pipe(
       takeUntil(this._unsubscribe),
       map((data: any) => {
         return new ConverterStateModel(
@@ -62,9 +62,10 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       })
     );
 
-    rawState.subscribe(data => {
+    observableRawState.subscribe(data => {
       this.converterMeltInfoData = data?.meltInfo;
-      // this.converterEvents = data?.events;
+      this.irCameraId = this.converterMeltInfoData?.devices?.irCamera?.id;
+      this.irCameraName = this.converterMeltInfoData?.devices?.irCamera?.name;
     });
 
     this.wsService.on('converter-melt-info-update').pipe(
@@ -87,7 +88,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.irCameraName = this.converterMeltInfoData?.devices?.irCamera?.name;
     });
 
-    const rawSlagRate = this.wsService.on('converter-slag-rate-update').pipe(
+    const observableRawSlagRate = this.wsService.on('converter-slag-rate-update').pipe(
       takeUntil(this._unsubscribe),
       map((data: any) => {
         return new SlagRateModel(
@@ -97,12 +98,12 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       })
     )
 
-    rawSlagRate.subscribe(data => {
+    observableRawSlagRate.subscribe(data => {
         this.converterSlagRateData = data;
       }
     )
 
-    combineLatest([rawState, rawSlagRate]).pipe(
+    combineLatest([observableRawState, observableRawSlagRate]).pipe(
       map((data: any) => {
         return new SlagRateChartModel(
           data[1]?.steelRate as number,
@@ -114,7 +115,7 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       this.converterSlagRateChart = data;
     });
 
-    const rawFrames = this.wsService.on('converter-frame-update').pipe(
+    const observableRawFrames = this.wsService.on('converter-frame-update').pipe(
       takeUntil(this._unsubscribe),
       map((data: any) => {
         return new ConverterFrameModel(
@@ -127,13 +128,13 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
       })
     )
 
-    rawFrames.pipe(
+    observableRawFrames.pipe(
       filter(frame => frame.channel === 'CAMERA')
     ).subscribe(data => {
       this.converterFrameCameraData = data;
     })
 
-    rawFrames.pipe(
+    observableRawFrames.pipe(
       filter(frame => frame.channel === 'MATH')
     ).subscribe(data => {
       this.converterFrameMathData = data;
