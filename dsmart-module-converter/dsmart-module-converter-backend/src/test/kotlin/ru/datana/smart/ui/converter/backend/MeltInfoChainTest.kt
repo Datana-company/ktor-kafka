@@ -11,8 +11,8 @@ internal class MeltInfoChainTest {
     @Test
     fun metaTest() {
         val converterFacade = converterFacadeTest()
-        val context = converterBeContextTestCase(
-            params = TestCaseParams(
+        val context = converterBeContextTest(
+            meltInfo = meltInfoTest(
                 meltId = "211626-1606203458852",
                 converterId = "converter2"
             )
