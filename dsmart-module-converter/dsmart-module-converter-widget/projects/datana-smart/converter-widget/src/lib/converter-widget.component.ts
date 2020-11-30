@@ -28,7 +28,8 @@ export class ConverterWidgetComponent implements OnInit, OnDestroy {
   _unsubscribe = new Subject<void>();
   public current_time = interval(1000)
     .pipe(
-      map(() => new Date())
+      // document.lastModified может быть близким приближением к текущему времени сервера
+      map(() => new Date(document.lastModified))
     );
   public converterMeltInfoData: ConverterMeltInfoModel;
   public converterSlagRateData: SlagRateModel;
