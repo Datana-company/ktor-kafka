@@ -24,9 +24,9 @@ fill: #C1D0E0
 }
 
 .signaler-level-warning {
-    fill: #FFC300;
+    fill: #e3b92b;
 }
 
 .signaler-level-critical {
-    fill: #c94c4c;
+    fill: #c23557;
 }
