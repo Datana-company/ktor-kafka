@@ -4,8 +4,7 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.IBizEvent
-import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import java.time.Instant
@@ -20,31 +19,23 @@ object AddWarningEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
         val meltId: String = context.meltInfo.id
         val slagRateTime = Instant.now()
         val currentAngle = context.currentState.get().lastAngles.angle
-        val activeEvent: MetalRateWarningEvent? =
-            context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
+        val activeEvent: ModelEvent? = context.eventsRepository
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.METAL_RATE_WARNING_EVENT)
         activeEvent?.let {
             val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
             val isReactionTimeUp = slagRateTime >= timeStartWithShift
             val isActive = !isReactionTimeUp
             val isUserReacted = it.angleStart - currentAngle > 5
             val executionStatus = when {
-                isReactionTimeUp && isUserReacted -> IBizEvent.ExecutionStatus.COMPLETED
-                isReactionTimeUp && !isUserReacted -> IBizEvent.ExecutionStatus.FAILED
-                else -> IBizEvent.ExecutionStatus.NONE
+                isReactionTimeUp && isUserReacted -> ModelEvent.ExecutionStatus.COMPLETED
+                isReactionTimeUp && !isUserReacted -> ModelEvent.ExecutionStatus.FAILED
+                else -> ModelEvent.ExecutionStatus.NONE
             }
-            val currentEvent = MetalRateWarningEvent(
-                id = it.id,
-                timeStart = it.timeStart,
-                timeFinish = slagRateTime,
-                metalRate = it.metalRate,
-                title = it.title,
-                isActive = isActive,
-                angleStart = it.angleStart,
-                warningPoint = it.warningPoint,
-                executionStatus = executionStatus
-            )
-            context.eventsRepository.put(meltId, currentEvent)
-            if(executionStatus == IBizEvent.ExecutionStatus.COMPLETED){
+            it.timeFinish = slagRateTime
+            it.isActive = isActive
+            it.executionStatus = executionStatus
+            context.eventsRepository.update(it)
+            if(executionStatus == ModelEvent.ExecutionStatus.COMPLETED) {
                 context.signaler.level = SignalerModel.SignalerLevelModel.NO_SIGNAL
                 context.signaler.sound = SignalerSoundModel.NONE
             }
