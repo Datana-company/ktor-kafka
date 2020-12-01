@@ -35,9 +35,11 @@ object AddCriticalEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
             it.isActive = isActive
             it.executionStatus = executionStatus
             context.eventsRepository.update(it)
-            if(executionStatus == ModelEvent.ExecutionStatus.COMPLETED) {
-                context.signaler.level = SignalerModel.SignalerLevelModel.NO_SIGNAL
-                context.signaler.sound = SignalerSoundModel.NONE
+            if (isReactionTimeUp) {
+                context.signaler = SignalerModel(
+                    level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
+                    sound = SignalerSoundModel.NONE
+                )
             }
         } ?: return
     }
