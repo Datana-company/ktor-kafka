@@ -14,6 +14,7 @@ class AnglesChain(
     var wsManager: IWsManager,
     var wsSignalerManager: IWsSignalerManager,
     var dataTimeout: Long,
+    var meltTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
     var reactionTime: Long,
@@ -35,6 +36,7 @@ class AnglesChain(
                 it.wsManager = wsManager
                 it.wsSignalerManager = wsSignalerManager
                 it.dataTimeout = dataTimeout
+                it.meltTimeout = meltTimeout
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
                 it.reactionTime = reactionTime

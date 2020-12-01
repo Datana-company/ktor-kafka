@@ -27,6 +27,7 @@ class ConverterBeContext (
     var sirenLimitTime: Long = Long.MIN_VALUE,
     var roundingWeight: Double = Double.MIN_VALUE,
     var dataTimeout: Long = Long.MIN_VALUE,
+    var meltTimeout: Long = Long.MIN_VALUE,
     var eventsRepository: IUserEventsRepository = IUserEventsRepository.NONE,
     var currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE),
     var scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE),
