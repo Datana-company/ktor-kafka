@@ -14,6 +14,7 @@ class ConverterChainSettings(
     var wsManager: IWsManager = IWsManager.NONE,
     var wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     var dataTimeout: Long = Long.MIN_VALUE,
+    var meltTimeout: Long = Long.MIN_VALUE,
     var metalRateCriticalPoint: Double = Double.MIN_VALUE,
     var metalRateWarningPoint: Double = Double.MIN_VALUE,
     var reactionTime: Long = Long.MIN_VALUE,
@@ -31,6 +32,7 @@ fun ConverterBeContext.setSettings(converterChainSettings: ConverterChainSetting
     this.wsManager = converterChainSettings.wsManager
     this.wsSignalerManager = converterChainSettings.wsSignalerManager
     this.dataTimeout = converterChainSettings.dataTimeout
+    this.meltTimeout = converterChainSettings.meltTimeout
     this.metalRateCriticalPoint = converterChainSettings.metalRateCriticalPoint
     this.metalRateWarningPoint = converterChainSettings.metalRateWarningPoint
     this.reactionTime = converterChainSettings.reactionTime
