@@ -21,7 +21,7 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 }
             }
             jobMeltFinish = GlobalScope.launch {
-                delay(10000L)
+                delay(context.meltTimeout)
                 val curState = context.currentState.get()
                 curState.currentMeltInfo = ModelMeltInfo.NONE
                 context.status = CorStatus.STARTED
