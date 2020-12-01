@@ -109,7 +109,7 @@ class EventsChain(
             }
 //            Цепочка обработки светофора от событий
             handler {
-                onEnv { status == CorStatus.STARTED && signaler != SignalerModel.NONE }
+                onEnv { status == CorStatus.STARTED && signaler.level != SignalerModel.SignalerLevelModel.NONE }
                 exec {
                     wsSignalerManager.sendSignaler(this)
                 }
