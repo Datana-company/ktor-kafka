@@ -31,38 +31,42 @@ class EventsChain(
 
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
-                +AddFailedWarningEventToHistoryHandler
-//                +AddInfoEventToHistoryHandler
-                +UpdateTimeCriticalEventHandler
+                +AddWarningEventToHistoryHandler
+                +AddStatelessWarningEventToHistoryHandler
+//                +AddStatelessInfoEventToHistoryHandler
+                +AddCriticalEventToHistoryHandler
                 +CreateCriticalEventHandler
-                +CheckAngleCriticalEventHandler
             }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
-                +AddFailedCriticalEventToHistoryHandler
-//                +AddInfoEventToHistoryHandler
-                +UpdateTimeWarningEventHandler
+                +AddCriticalEventToHistoryHandler
+                +AddStatelessCriticalEventToHistoryHandler
+//                +AddStatelessInfoEventToHistoryHandler
+                +AddWarningEventToHistoryHandler
                 +CreateWarningEventHandler
-                +CheckAngleWarningEventHandler
             }
 //            konveyor {
 //                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
-//                +AddFailedCriticalEventToHistoryHandler
-//                +AddFailedWarningEventToHistoryHandler
-//                +UpdateTimeInfoEventHandler
+//                +AddCriticalEventToHistoryHandler
+//                +AddStatelessCriticalEventToHistoryHandler
+//                +AddWarningEventToHistoryHandler
+//                +AddStatelessWarningEventToHistoryHandler
+//                +AddInfoEventToHistoryHandler
 //                +CreateInfoEventHandler
 //            }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
                 +AddCriticalEventToHistoryHandler
+                +AddStatelessCriticalEventToHistoryHandler
                 +AddWarningEventToHistoryHandler
-//                +AddInfoEventToHistoryHandler
+                +AddStatelessWarningEventToHistoryHandler
+//                +AddStatelessInfoEventToHistoryHandler
             }
             konveyor {
                 on { currentState.get().currentMeltInfo.id.isEmpty() }
-                +AddFailedCriticalEventToHistoryHandler
-                +AddFailedWarningEventToHistoryHandler
-//                +AddInfoEventToHistoryHandler
+                +AddStatelessCriticalEventToHistoryHandler
+                +AddStatelessWarningEventToHistoryHandler
+//                +AddStatelessInfoEventToHistoryHandler
                 +CreateSuccessMeltEventHandler
             }
             konveyor {
