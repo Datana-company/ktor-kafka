@@ -33,7 +33,7 @@ class SlagEventsChain(
                 +AddStatelessWarningEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
                 +AddCriticalEventToHistoryHandler
-                +CreateCriticalEventHandler
+                +CreateCriticalSlagEventHandler
             }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
@@ -41,7 +41,7 @@ class SlagEventsChain(
                 +AddStatelessCriticalEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
                 +AddWarningEventToHistoryHandler
-                +CreateWarningEventHandler
+                +CreateWarningSlagEventHandler
             }
 //            konveyor {
 //                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
@@ -50,7 +50,7 @@ class SlagEventsChain(
 //                +AddWarningEventToHistoryHandler
 //                +AddStatelessWarningEventToHistoryHandler
 //                +AddInfoEventToHistoryHandler
-//                +CreateInfoEventHandler
+//                +CreateInfoSlagEventHandler
 //            }
             konveyor {
                 on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
@@ -65,7 +65,7 @@ class SlagEventsChain(
                 +AddStatelessCriticalEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
-                +CreateSuccessMeltEventHandler
+                +CreateSuccessMeltSlagEventHandler
             }
             konveyor {
                 on { extEvents.alertRuleId != null }
