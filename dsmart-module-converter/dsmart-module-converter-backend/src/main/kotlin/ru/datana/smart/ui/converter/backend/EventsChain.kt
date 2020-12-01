@@ -87,9 +87,7 @@ class EventsChain(
             }
             konveyor {
                 on { currentState.get().currentMeltInfo.id.isEmpty() }
-                +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
-                +AddWarningEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
                 +CreateSuccessMeltEventHandler
