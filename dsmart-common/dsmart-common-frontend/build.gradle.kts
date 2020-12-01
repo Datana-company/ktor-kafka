@@ -52,6 +52,7 @@ tasks {
 
     val createArtifactLibs by creating {
         dependsOn(ngBuildWebsocket)
+        dependsOn(ngBuildConfigService)
         artifacts {
             add("ngLibs", fileTree("$buildDir/dist").dir)
         }
