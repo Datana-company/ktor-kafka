@@ -37,7 +37,7 @@ object CreateInfoEventHandler : IKonveyorHandler<ConverterBeContext> {
                     angleStart = currentAngle,
                     title = "Информация",
                     textMessage = """
-                                  Достигнут предел потерь металла в потоке – ${toPercent(context.slagRate.steelRate)}%.
+                                  Достигнут предел потерь металла в потоке – ${toPercent(context.slagRate.avgSteelRate)}%.
                                   """.trimIndent(),
                     category = ModelEvent.Category.INFO
                 )

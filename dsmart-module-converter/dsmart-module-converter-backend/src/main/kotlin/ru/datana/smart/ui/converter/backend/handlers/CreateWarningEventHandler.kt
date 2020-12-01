@@ -37,7 +37,7 @@ object CreateWarningEventHandler : IKonveyorHandler<ConverterBeContext> {
                     angleStart = currentAngle,
                     title = "Предупреждение",
                     textMessage = """
-                                  В потоке детектирован металл – ${toPercent(context.slagRate.steelRate)}% сверх допустимой нормы ${toPercent(context.metalRateWarningPoint)} %. Верните конвертер в вертикальное положение.
+                                  В потоке детектирован металл – ${toPercent(context.slagRate.avgSteelRate)}% сверх допустимой нормы ${toPercent(context.metalRateWarningPoint)} %. Верните конвертер в вертикальное положение.
                                   """.trimIndent(),
                     category = ModelEvent.Category.WARNING
                 )
