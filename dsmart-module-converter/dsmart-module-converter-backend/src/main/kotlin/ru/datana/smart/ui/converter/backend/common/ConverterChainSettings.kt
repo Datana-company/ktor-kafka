@@ -1,6 +1,7 @@
 package ru.datana.smart.ui.converter.backend.common
 
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
+import ru.datana.smart.ui.converter.common.events.EventMode
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import ru.datana.smart.ui.converter.common.models.IConverterFacade
 import ru.datana.smart.ui.converter.common.models.IWsManager
@@ -15,6 +16,7 @@ class ConverterChainSettings(
     var wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     var dataTimeout: Long = Long.MIN_VALUE,
     var meltTimeout: Long = Long.MIN_VALUE,
+    var eventMode: EventMode = EventMode.STEEL,
     var metalRateCriticalPoint: Double = Double.MIN_VALUE,
     var metalRateWarningPoint: Double = Double.MIN_VALUE,
     var reactionTime: Long = Long.MIN_VALUE,
@@ -33,6 +35,7 @@ fun ConverterBeContext.setSettings(converterChainSettings: ConverterChainSetting
     this.wsSignalerManager = converterChainSettings.wsSignalerManager
     this.dataTimeout = converterChainSettings.dataTimeout
     this.meltTimeout = converterChainSettings.meltTimeout
+    this.eventMode = converterChainSettings.eventMode
     this.metalRateCriticalPoint = converterChainSettings.metalRateCriticalPoint
     this.metalRateWarningPoint = converterChainSettings.metalRateWarningPoint
     this.reactionTime = converterChainSettings.reactionTime

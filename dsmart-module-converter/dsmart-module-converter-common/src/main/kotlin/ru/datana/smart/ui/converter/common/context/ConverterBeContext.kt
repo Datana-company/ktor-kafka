@@ -1,5 +1,6 @@
 package ru.datana.smart.ui.converter.common.context
 
+import ru.datana.smart.ui.converter.common.events.EventMode
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import java.time.Instant
@@ -22,6 +23,7 @@ data class ConverterBeContext(
     var timeStop: Instant = Instant.now(),
     var wsManager: IWsManager = IWsManager.NONE,
     var wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
+    var eventMode: EventMode = EventMode.STEEL,
     var metalRateCriticalPoint: Double = Double.MIN_VALUE,
     var metalRateWarningPoint: Double = Double.MIN_VALUE,
     var reactionTime: Long = Long.MIN_VALUE,

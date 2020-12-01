@@ -9,11 +9,9 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import ru.datana.smart.ui.converter.common.utils.toPercent
-import java.util.concurrent.atomic.AtomicReference
 
-class EventsChain(
+class SteelEventsChain(
     var chainSettings: ConverterChainSettings
 ) {
 

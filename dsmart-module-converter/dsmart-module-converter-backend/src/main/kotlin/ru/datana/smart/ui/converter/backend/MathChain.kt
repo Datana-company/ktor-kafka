@@ -9,6 +9,7 @@ import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.events.EventMode
 import ru.datana.smart.ui.converter.common.models.ModelFrame
 import ru.datana.smart.ui.converter.common.models.ModelSlagRate
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
@@ -74,9 +75,16 @@ class MathChain(
                 }
 
                 handler {
-                    onEnv { status == CorStatus.STARTED }
+                    onEnv { status == CorStatus.STARTED && eventMode == EventMode.STEEL }
                     exec {
-                        converterFacade.handleEvents(this)
+                        converterFacade.handleSteelEvents(this)
+                    }
+                }
+
+                handler {
+                    onEnv { status == CorStatus.STARTED && eventMode == EventMode.SLAG }
+                    exec {
+                        converterFacade.handleSlagEvents(this)
                     }
                 }
 //            }
