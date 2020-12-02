@@ -78,9 +78,9 @@ export class SignalerComponent implements OnInit, OnChanges {
       case SignalerLevelModel.WARNING: {
         return 'signaler-level-warning';
       }
-      case SignalerLevelModel.INFO: {
-        return 'signaler-level-info';
-      }
+      // case SignalerLevelModel.INFO: {
+      //   return 'signaler-level-info';
+      // }
       case SignalerLevelModel.NO_SIGNAL: {
         return 'not-signal-level';
       }
