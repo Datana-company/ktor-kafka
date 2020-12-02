@@ -32,8 +32,8 @@ object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
                     type = ModelEvent.EventType.METAL_RATE_INFO_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.avgSlagRate,
-                    warningPoint = context.metalRateWarningPoint,
+                    slagRate = context.slagRate.avgSlagRate,
+                    warningPoint = context.streamRateWarningPoint,
                     angleStart = currentAngle,
                     title = "Информация",
                     textMessage = """

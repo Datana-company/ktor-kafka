@@ -38,11 +38,11 @@ object CreateSuccessMeltEventHandler : IKonveyorHandler<ConverterBeContext> {
                 type = ModelEvent.EventType.SUCCESS_MELT_EVENT,
                 timeStart = slagRateTime,
                 timeFinish = slagRateTime,
-                warningPoint = context.metalRateWarningPoint,
+                warningPoint = context.streamRateWarningPoint,
                 isActive = false,
                 title = "Информация",
                 textMessage = """
-                              Допустимая норма потерь металла ${toPercent(context.metalRateWarningPoint)} % не была превышена.
+                              Допустимая норма потерь металла ${toPercent(context.streamRateWarningPoint)} % не была превышена.
                               """.trimIndent(),
                 category = ModelEvent.Category.INFO
             )

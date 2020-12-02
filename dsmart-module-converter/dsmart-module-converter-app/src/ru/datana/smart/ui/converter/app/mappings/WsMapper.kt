@@ -119,5 +119,5 @@ private fun toWsConverterStateModel(context: ConverterBeContext) =
     WsDsmartConverterState(
         meltInfo = toWsConverterMeltInfoModel(context.currentState.get().currentMeltInfo),
         events = toWsEventListModel(context.events),
-        warningPoint = context.metalRateWarningPoint
+        warningPoint = context.streamRateWarningPoint
     )

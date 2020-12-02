@@ -33,7 +33,7 @@ object CreateInfoEventHandler : IKonveyorHandler<ConverterBeContext> {
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     metalRate = context.slagRate.avgSteelRate,
-                    warningPoint = context.metalRateWarningPoint,
+                    warningPoint = context.streamRateWarningPoint,
                     angleStart = currentAngle,
                     title = "Информация",
                     textMessage = """

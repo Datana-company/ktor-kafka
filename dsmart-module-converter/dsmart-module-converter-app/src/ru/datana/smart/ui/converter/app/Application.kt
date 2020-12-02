@@ -89,11 +89,11 @@ fun Application.module(testing: Boolean = false) {
     val meltTimeout: Long by lazy {
         environment.config.property("ktor.conveyor.meltTimeout").getString().trim().toLong()
     }
-    val metalRateCriticalPoint: Double by lazy {
-        environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble()
+    val streamRateCriticalPoint: Double by lazy {
+        environment.config.property("ktor.conveyor.streamRatePoint.critical").getString().trim().toDouble()
     }
-    val metalRateWarningPoint: Double by lazy {
-        environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble()
+    val streamRateWarningPoint: Double by lazy {
+        environment.config.property("ktor.conveyor.streamRatePoint.warning").getString().trim().toDouble()
     }
     val reactionTime: Long by lazy {
         environment.config.property("ktor.conveyor.reactionTime").getString().trim().toLong()
@@ -122,7 +122,7 @@ fun Application.module(testing: Boolean = false) {
     val websocketContext = ConverterBeContext(
         currentState = currentState,
         eventsRepository = userEventsRepository,
-        metalRateWarningPoint = metalRateWarningPoint,
+        streamRateWarningPoint = streamRateWarningPoint,
         sirenLimitTime = sirenLimitTime
     )
 
@@ -133,8 +133,8 @@ fun Application.module(testing: Boolean = false) {
         dataTimeout = dataTimeout,
         eventMode = toEventMode(eventMode),
         meltTimeout = meltTimeout,
-        metalRateCriticalPoint = metalRateCriticalPoint,
-        metalRateWarningPoint = metalRateWarningPoint,
+        metalRateCriticalPoint = streamRateCriticalPoint,
+        metalRateWarningPoint = streamRateWarningPoint,
         reactionTime = reactionTime,
         sirenLimitTime = sirenLimitTime,
         roundingWeight = roundingWeight,

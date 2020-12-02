@@ -17,8 +17,8 @@ class ConverterChainSettings(
     var dataTimeout: Long = Long.MIN_VALUE,
     var meltTimeout: Long = Long.MIN_VALUE,
     var eventMode: EventMode = EventMode.STEEL,
-    var metalRateCriticalPoint: Double = Double.MIN_VALUE,
-    var metalRateWarningPoint: Double = Double.MIN_VALUE,
+    var streamRateCriticalPoint: Double = Double.MIN_VALUE,
+    var streamRateWarningPoint: Double = Double.MIN_VALUE,
     var reactionTime: Long = Long.MIN_VALUE,
     var sirenLimitTime: Long = Long.MIN_VALUE,
     var roundingWeight: Double = Double.MIN_VALUE,
@@ -36,8 +36,8 @@ fun ConverterBeContext.setSettings(converterChainSettings: ConverterChainSetting
     this.dataTimeout = converterChainSettings.dataTimeout
     this.meltTimeout = converterChainSettings.meltTimeout
     this.eventMode = converterChainSettings.eventMode
-    this.metalRateCriticalPoint = converterChainSettings.metalRateCriticalPoint
-    this.metalRateWarningPoint = converterChainSettings.metalRateWarningPoint
+    this.streamRateCriticalPoint = converterChainSettings.streamRateCriticalPoint
+    this.streamRateWarningPoint = converterChainSettings.streamRateWarningPoint
     this.reactionTime = converterChainSettings.reactionTime
     this.sirenLimitTime = converterChainSettings.sirenLimitTime
     this.roundingWeight = converterChainSettings.roundingWeight

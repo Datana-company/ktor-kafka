@@ -14,6 +14,7 @@ data class ModelEvent(
     var isActive: Boolean = true,
     var executionStatus: ExecutionStatus = ExecutionStatus.NONE,
     var metalRate: Double = Double.MIN_VALUE,
+    var slagRate: Double = Double.MIN_VALUE,
     var angleStart: Double = Double.MIN_VALUE,
     var angleFinish: Double = Double.MIN_VALUE,
     var angleMax: Double = Double.MIN_VALUE,

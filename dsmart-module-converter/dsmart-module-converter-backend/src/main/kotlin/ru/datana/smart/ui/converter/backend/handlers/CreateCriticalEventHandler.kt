@@ -33,11 +33,11 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     metalRate = context.slagRate.avgSteelRate,
-                    criticalPoint = context.metalRateCriticalPoint,
+                    criticalPoint = context.streamRateCriticalPoint,
                     angleStart = currentAngle,
                     title = "Критическая ситуация",
                     textMessage = """
-                                  В потоке детектирован металл – ${toPercent(context.slagRate.avgSteelRate)}%, процент потерь превышает критическое значение – ${toPercent(context.metalRateCriticalPoint)} %. Верните конвертер в вертикальное положение!
+                                  В потоке детектирован металл – ${toPercent(context.slagRate.avgSteelRate)}%, процент потерь превышает критическое значение – ${toPercent(context.streamRateCriticalPoint)} %. Верните конвертер в вертикальное положение!
                                   """.trimIndent(),
                     category = ModelEvent.Category.CRITICAL
                 )
