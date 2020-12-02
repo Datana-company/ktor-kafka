@@ -28,7 +28,7 @@ class SlagEventsChain(
         val konveyor = konveyor<ConverterBeContext> {
 
             konveyor {
-                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
+                on { slagRate.avgSlagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
                 +AddWarningEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
@@ -36,7 +36,7 @@ class SlagEventsChain(
                 +CreateCriticalSlagEventHandler
             }
             konveyor {
-                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
+                on { slagRate.avgSlagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
                 +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
@@ -44,7 +44,7 @@ class SlagEventsChain(
                 +CreateWarningSlagEventHandler
             }
 //            konveyor {
-//                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
+//                on { slagRate.avgSlagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
 //                +AddCriticalEventToHistoryHandler
 //                +AddStatelessCriticalEventToHistoryHandler
 //                +AddWarningEventToHistoryHandler
@@ -53,7 +53,7 @@ class SlagEventsChain(
 //                +CreateInfoSlagEventHandler
 //            }
             konveyor {
-                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
+                on { slagRate.avgSlagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
                 +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
                 +AddWarningEventToHistoryHandler

@@ -62,7 +62,15 @@ class MathChain(
 //                    res
 //                }
 
-                +CalcAvgSteelRateHandler
+                konveyor {
+                    on { status == CorStatus.STARTED && eventMode == EventMode.STEEL }
+                    +CalcAvgSteelRateHandler
+                }
+                konveyor {
+                    on { status == CorStatus.STARTED && eventMode == EventMode.SLAG }
+                    +CalcAvgSlagRateHandler
+                }
+
                 +WsSendMathSlagRateHandler
 
                 // Обновляем информацию о последнем значении slagRate

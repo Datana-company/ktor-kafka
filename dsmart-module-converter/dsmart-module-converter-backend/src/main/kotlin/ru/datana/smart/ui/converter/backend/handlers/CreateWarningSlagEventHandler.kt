@@ -32,12 +32,12 @@ object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
                     type = ModelEvent.EventType.METAL_RATE_WARNING_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.avgSteelRate,
+                    metalRate = context.slagRate.avgSlagRate,
                     warningPoint = context.metalRateWarningPoint,
                     angleStart = currentAngle,
                     title = "Предупреждение",
                     textMessage = """
-                                  В потоке детектирован шлака – ${toPercent(context.slagRate.avgSteelRate)}% сверх допустимой нормы ${toPercent(context.metalRateWarningPoint)} %. Верните конвертер в вертикальное положение.
+                                  В потоке детектирован шлака – ${toPercent(context.slagRate.avgSlagRate)}% сверх допустимой нормы ${toPercent(context.metalRateWarningPoint)} %. Верните конвертер в вертикальное положение.
                                   """.trimIndent(),
                     category = ModelEvent.Category.WARNING
                 )
