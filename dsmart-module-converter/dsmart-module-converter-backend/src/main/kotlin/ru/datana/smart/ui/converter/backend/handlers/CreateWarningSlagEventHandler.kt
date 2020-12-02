@@ -22,6 +22,7 @@ object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
         val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_WARNING_EVENT)
+        val avgSlagRate = context.currentState.get().avgSlagRate.steelRate
         activeEvent?.let {
             return
         } ?: run {
@@ -32,12 +33,12 @@ object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
                     type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    slagRate = context.slagRate.avgSlagRate,
+                    slagRate = avgSlagRate,
                     warningPoint = context.streamRateWarningPoint,
                     angleStart = currentAngle,
                     title = "Предупреждение",
                     textMessage = """
-                                  В потоке детектирован шлак – ${toPercent(context.slagRate.avgSlagRate)}% ниже допустимой нормы ${toPercent(context.streamRateWarningPoint)}%. Верните конвертер в вертикальное положение.
+                                  В потоке детектирован шлак – ${toPercent(avgSlagRate)}% ниже допустимой нормы ${toPercent(context.streamRateWarningPoint)}%. Верните конвертер в вертикальное положение.
                                   """.trimIndent(),
                     category = ModelEvent.Category.WARNING
                 )

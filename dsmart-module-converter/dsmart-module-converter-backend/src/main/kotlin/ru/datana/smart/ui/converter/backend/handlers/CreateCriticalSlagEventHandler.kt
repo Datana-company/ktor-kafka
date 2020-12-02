@@ -22,6 +22,7 @@ object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT)
         val slagRateTime = Instant.now()
+        val avgSlagRate = context.currentState.get().avgSlagRate.steelRate
         activeEvent?.let {
             return
         } ?: run {
@@ -32,12 +33,12 @@ object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
                     type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    slagRate = context.slagRate.avgSlagRate,
+                    slagRate = avgSlagRate,
                     criticalPoint = context.streamRateCriticalPoint,
                     angleStart = currentAngle,
                     title = "Критическая ситуация",
                     textMessage = """
-                                  В потоке детектирован шлак – ${toPercent(context.slagRate.avgSlagRate)}%, процент ниже критического значения – ${toPercent(context.streamRateCriticalPoint)}%. Верните конвертер в вертикальное положение!
+                                  В потоке детектирован шлак – ${toPercent(avgSlagRate)}%, процент ниже критического значения – ${toPercent(context.streamRateCriticalPoint)}%. Верните конвертер в вертикальное положение!
                                   """.trimIndent(),
                     category = ModelEvent.Category.CRITICAL
                 )

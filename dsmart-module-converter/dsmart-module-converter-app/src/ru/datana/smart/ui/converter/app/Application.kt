@@ -21,7 +21,7 @@ import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.converter.app.common.EventModeParameter
+import ru.datana.smart.ui.converter.app.common.EventMode
 //import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
@@ -80,8 +80,8 @@ fun Application.module(testing: Boolean = false) {
 //    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
 //    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
 //    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
-    val eventMode: EventModeParameter by lazy {
-        EventModeParameter.valueOf(environment.config.property("ktor.conveyor.eventMode").getString().trim())
+    val eventMode: EventMode by lazy {
+        EventMode.valueOf(environment.config.property("ktor.conveyor.eventMode").getString().trim())
     }
     val dataTimeout: Long by lazy {
         environment.config.property("ktor.conveyor.dataTimeout").getString().trim().toLong()

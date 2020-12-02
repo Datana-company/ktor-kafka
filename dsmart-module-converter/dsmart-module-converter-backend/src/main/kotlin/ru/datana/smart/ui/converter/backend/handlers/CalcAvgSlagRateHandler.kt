@@ -4,7 +4,7 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-
+import ru.datana.smart.ui.converter.common.models.ModelSlagRate
 
 /*
 * CalcAvgSlagRateHandler - вычисляем усредненное значение содержания шлака.
@@ -12,14 +12,18 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 object CalcAvgSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val roundingWeight = context.roundingWeight
-        with(context.slagRate) {
-            context.currentState.get().lastSlagRate.avgSlagRate.takeIf { it != Double.MIN_VALUE }?.let {
-                avgSlagRate = slagRate * roundingWeight + it * (1 - roundingWeight)
-//                avgSlagRate = it + (slagRate - it) * roundingWeight
-            } ?: run {
-                avgSlagRate = slagRate
-            }
+        val currentSlagRate = context.slagRate.slagRate
+        val curState = context.currentState.get()
+        val lastAvgSlagRate = curState.avgSlagRate.slagRate
+        val avgSlagRate = if (lastAvgSlagRate != Double.MIN_VALUE) {
+            currentSlagRate * roundingWeight + lastAvgSlagRate * (1 - roundingWeight)
+//            lastAvgSlagRate + (currentSlagRate - lastAvgSlagRate) * roundingWeight
+        } else {
+            currentSlagRate
         }
+        curState.avgSlagRate = ModelSlagRate(
+            slagRate = avgSlagRate
+        )
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

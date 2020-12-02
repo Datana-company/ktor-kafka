@@ -5,11 +5,9 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.datana.smart.ui.converter.backend.SlagEventsChain
-import ru.datana.smart.ui.converter.backend.SteelEventsChain
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.EventMode
+import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 
 object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
@@ -28,9 +26,9 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 curState.currentMeltInfo = ModelMeltInfo.NONE
                 context.status = CorStatus.STARTED
 
-                if (context.eventMode == EventMode.STEEL) {
+                if (context.eventMode == ModelEventMode.STEEL) {
                     context.converterFacade.handleSteelEvents(context)
-                } else if (context.eventMode == EventMode.SLAG) {
+                } else if (context.eventMode == ModelEventMode.SLAG) {
                     context.converterFacade.handleSlagEvents(context)
                 }
 

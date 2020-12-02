@@ -42,8 +42,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 60.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.16
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.16
                         )
                     )
                 ),
@@ -94,8 +94,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 60.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.11
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.11
                         )
                     )
                 ),
@@ -147,8 +147,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 60.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.16
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.16
                         )
                     )
                 ),
@@ -199,8 +199,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 60.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.11
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.11
                         )
                     )
                 ),
@@ -252,8 +252,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 62.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.16
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.16
                         )
                     )
                 ),
@@ -304,8 +304,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 62.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.11
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.11
                         )
                     )
                 ),

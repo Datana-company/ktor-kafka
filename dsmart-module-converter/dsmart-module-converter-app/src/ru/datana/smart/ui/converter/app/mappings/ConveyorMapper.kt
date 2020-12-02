@@ -1,7 +1,7 @@
 package ru.datana.smart.ui.converter.app.mappings
 
-import ru.datana.smart.ui.converter.app.common.EventModeParameter
-import ru.datana.smart.ui.converter.common.events.EventMode
+import ru.datana.smart.ui.converter.app.common.EventMode
+import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.meta.models.ConverterMeltInfo
@@ -241,5 +241,5 @@ fun toModelExtEvents(converterTransportExtEvent: ConverterTransportExtEvent) =
         message = converterTransportExtEvent.message
     )
 
-fun toEventMode(eventModeParameter: EventModeParameter) =
-    EventMode.valueOf(eventModeParameter.name)
+fun toEventMode(eventMode: EventMode) =
+    ModelEventMode.valueOf(eventMode.name)

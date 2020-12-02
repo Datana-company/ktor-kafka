@@ -22,6 +22,7 @@ object CreateInfoEventHandler : IKonveyorHandler<ConverterBeContext> {
         val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_INFO_EVENT)
+        val avgSteelRate = context.currentState.get().avgSlagRate.steelRate
         activeEvent?.let {
             return
         } ?: run {
@@ -32,12 +33,12 @@ object CreateInfoEventHandler : IKonveyorHandler<ConverterBeContext> {
                     type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.avgSteelRate,
+                    metalRate = avgSteelRate,
                     warningPoint = context.streamRateWarningPoint,
                     angleStart = currentAngle,
                     title = "Информация",
                     textMessage = """
-                                  Достигнут предел потерь металла в потоке – ${toPercent(context.slagRate.avgSteelRate)}%.
+                                  Достигнут предел потерь металла в потоке – ${toPercent(avgSteelRate)}%.
                                   """.trimIndent(),
                     category = ModelEvent.Category.INFO
                 )

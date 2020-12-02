@@ -9,10 +9,8 @@ import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.EventMode
+import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelFrame
-import ru.datana.smart.ui.converter.common.models.ModelSlagRate
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 
 class MathChain(
     var chainSettings: ConverterChainSettings
@@ -63,11 +61,11 @@ class MathChain(
 //                }
 
                 konveyor {
-                    on { status == CorStatus.STARTED && eventMode == EventMode.STEEL }
+                    on { status == CorStatus.STARTED && eventMode == ModelEventMode.STEEL }
                     +CalcAvgSteelRateHandler
                 }
                 konveyor {
-                    on { status == CorStatus.STARTED && eventMode == EventMode.SLAG }
+                    on { status == CorStatus.STARTED && eventMode == ModelEventMode.SLAG }
                     +CalcAvgSlagRateHandler
                 }
 
@@ -83,14 +81,14 @@ class MathChain(
                 }
 
                 handler {
-                    onEnv { status == CorStatus.STARTED && eventMode == EventMode.STEEL }
+                    onEnv { status == CorStatus.STARTED && eventMode == ModelEventMode.STEEL }
                     exec {
                         converterFacade.handleSteelEvents(this)
                     }
                 }
 
                 handler {
-                    onEnv { status == CorStatus.STARTED && eventMode == EventMode.SLAG }
+                    onEnv { status == CorStatus.STARTED && eventMode == ModelEventMode.SLAG }
                     exec {
                         converterFacade.handleSlagEvents(this)
                     }

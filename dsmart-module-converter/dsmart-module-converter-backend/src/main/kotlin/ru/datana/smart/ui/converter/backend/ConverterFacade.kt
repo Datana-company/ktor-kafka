@@ -8,7 +8,7 @@ import ru.datana.smart.ui.converter.common.models.IWsSignalerManager
 import ru.datana.smart.ui.converter.common.models.IConverterFacade
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
-import ru.datana.smart.ui.converter.common.events.EventMode
+import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import java.util.concurrent.atomic.AtomicReference
 
 class ConverterFacade(
@@ -17,7 +17,7 @@ class ConverterFacade(
     wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     dataTimeout: Long = Long.MIN_VALUE,
     meltTimeout: Long = Long.MIN_VALUE,
-    eventMode: EventMode = EventMode.STEEL,
+    eventMode: ModelEventMode = ModelEventMode.STEEL,
     metalRateCriticalPoint: Double = Double.MIN_VALUE,
     metalRateWarningPoint: Double = Double.MIN_VALUE,
     reactionTime: Long = Long.MIN_VALUE,

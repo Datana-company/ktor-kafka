@@ -1,6 +1,6 @@
 package ru.datana.smart.ui.converter.app.common
 
-enum class EventModeParameter {
+enum class EventMode {
     STEEL,
     SLAG
 }

@@ -29,9 +29,11 @@ class SlagEventsChain(
 
             konveyor {
                 on {
-                    slagRate.avgSlagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) >= 0 && toPercent(it) < toPercent(streamRateCriticalPoint)  } ?: false
-                    && !(slagRate.slagRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false
-                    && slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false)
+                    val currentSlagRate = currentState.get().avgSlagRate.slagRate
+                    currentSlagRate.takeIf { it != Double.MIN_VALUE }
+                        ?.let { toPercent(it) >= 0 && toPercent(it) < toPercent(streamRateCriticalPoint)  } ?: false
+                        && !(slagRate.slagRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false
+                        && slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false)
                 }
                 +AddWarningEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
@@ -40,7 +42,11 @@ class SlagEventsChain(
                 +CreateCriticalSlagEventHandler
             }
             konveyor {
-                on { slagRate.avgSlagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) < toPercent(streamRateWarningPoint) && toPercent(it) >= toPercent(streamRateCriticalPoint) } ?: false }
+                on {
+                    val slagRate = currentState.get().avgSlagRate.slagRate
+                    slagRate.takeIf { it != Double.MIN_VALUE }
+                        ?.let { toPercent(it) < toPercent(streamRateWarningPoint) && toPercent(it) >= toPercent(streamRateCriticalPoint) } ?: false
+                }
                 +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
@@ -48,7 +54,11 @@ class SlagEventsChain(
                 +CreateWarningSlagEventHandler
             }
 //            konveyor {
-//                on { slagRate.avgSlagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
+//                on {
+//                    val slagRate = currentState.get().avgSlagRate.slagRate
+//                    slagRate.takeIf { it != Double.MIN_VALUE }
+//                        ?.let { toPercent(it) == toPercent(streamRateWarningPoint) } ?: false
+//                }
 //                +AddCriticalEventToHistoryHandler
 //                +AddStatelessCriticalEventToHistoryHandler
 //                +AddWarningEventToHistoryHandler
@@ -57,9 +67,12 @@ class SlagEventsChain(
 //                +CreateInfoSlagEventHandler
 //            }
             konveyor {
-                on { slagRate.avgSlagRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) >= toPercent(streamRateWarningPoint) } ?: false
-                    || (slagRate.slagRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false
-                    && slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false)
+                on {
+                    val currentSlagRate = currentState.get().avgSlagRate.slagRate
+                    currentSlagRate.takeIf { it != Double.MIN_VALUE }
+                        ?.let { toPercent(it) >= toPercent(streamRateWarningPoint) } ?: false
+                        || (slagRate.slagRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false
+                        && slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false)
                 }
                 +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
