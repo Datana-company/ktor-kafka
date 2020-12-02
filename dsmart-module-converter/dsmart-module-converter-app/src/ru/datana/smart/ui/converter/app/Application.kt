@@ -81,6 +81,9 @@ fun Application.module(testing: Boolean = false) {
     val dataTimeout: Long by lazy {
         environment.config.property("ktor.conveyor.dataTimeout").getString().trim().toLong()
     }
+    val meltTimeout: Long by lazy {
+        environment.config.property("ktor.conveyor.meltTimeout").getString().trim().toLong()
+    }
     val metalRateCriticalPoint: Double by lazy {
         environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble()
     }
@@ -123,6 +126,7 @@ fun Application.module(testing: Boolean = false) {
         wsManager = wsManager,
         wsSignalerManager = wsSignalerManager,
         dataTimeout = dataTimeout,
+        meltTimeout = meltTimeout,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         reactionTime = reactionTime,

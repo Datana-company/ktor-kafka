@@ -14,6 +14,7 @@ class MeltInfoChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
     var dataTimeout: Long,
+    var meltTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
     var reactionTime: Long,
@@ -33,6 +34,7 @@ class MeltInfoChain(
             context.also {
                 it.eventsRepository = eventsRepository
                 it.dataTimeout = dataTimeout
+                it.meltTimeout = meltTimeout
                 it.wsManager = wsManager
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint

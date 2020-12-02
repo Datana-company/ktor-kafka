@@ -14,6 +14,7 @@ class FrameChain(
     var eventsRepository: IUserEventsRepository,
     var wsManager: IWsManager,
     var dataTimeout: Long,
+    var meltTimeout: Long,
     var metalRateCriticalPoint: Double,
     var metalRateWarningPoint: Double,
     var reactionTime: Long,
@@ -35,6 +36,7 @@ class FrameChain(
                 it.eventsRepository = eventsRepository
                 it.wsManager = wsManager
                 it.dataTimeout = dataTimeout
+                it.meltTimeout = meltTimeout
                 it.metalRateCriticalPoint = metalRateCriticalPoint
                 it.metalRateWarningPoint = metalRateWarningPoint
                 it.reactionTime = reactionTime
