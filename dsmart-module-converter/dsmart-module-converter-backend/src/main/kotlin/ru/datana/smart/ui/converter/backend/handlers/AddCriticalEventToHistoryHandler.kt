@@ -20,7 +20,7 @@ object AddCriticalEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
         val slagRateTime = Instant.now()
         val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: ModelEvent? = context.eventsRepository
-            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT)
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT)
         activeEvent?.let {
             val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
             val isReactionTimeUp = slagRateTime >= timeStartWithShift

@@ -3,6 +3,7 @@ package ru.datana.smart.ui.converter.backend
 import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.app.websocket.WsSignalerManager
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
+import ru.datana.smart.ui.converter.common.events.EventMode
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
@@ -14,6 +15,8 @@ fun converterFacadeTest(
     wsManager: IWsManager? = null,
     wsSignalerManager: IWsSignalerManager? = null,
     dataTimeout: Long? = null,
+    meltTimeout: Long? = null,
+    eventMode: EventMode? = null,
     metalRateCriticalPoint: Double? = null,
     metalRateWarningPoint: Double? = null,
     reactionTime: Long? = null,
@@ -29,6 +32,8 @@ fun converterFacadeTest(
         wsManager = wsManager ?: WsManager(),
         wsSignalerManager = wsSignalerManager ?: WsSignalerManager(),
         dataTimeout = dataTimeout ?: 3000L,
+        meltTimeout = meltTimeout ?: 10000L,
+        eventMode = eventMode ?: EventMode.STEEL,
         metalRateCriticalPoint = metalRateCriticalPoint ?: 0.15,
         metalRateWarningPoint = metalRateWarningPoint ?: 0.1,
         reactionTime = reactionTime ?: 3000L,

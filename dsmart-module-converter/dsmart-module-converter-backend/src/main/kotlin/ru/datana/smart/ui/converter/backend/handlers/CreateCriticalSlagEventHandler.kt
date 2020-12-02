@@ -20,7 +20,7 @@ object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
         val meltId: String = context.meltInfo.id
         val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: ModelEvent? = context.eventsRepository
-            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT)
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT)
         val slagRateTime = Instant.now()
         activeEvent?.let {
             return
@@ -29,7 +29,7 @@ object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
                 ModelEvent(
                     id = UUID.randomUUID().toString(),
                     meltId = meltId,
-                    type = ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT,
+                    type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     slagRate = context.slagRate.avgSlagRate,
@@ -37,7 +37,7 @@ object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
                     angleStart = currentAngle,
                     title = "Критическая ситуация",
                     textMessage = """
-                                  В потоке детектирован шлак – ${toPercent(context.slagRate.avgSlagRate)}%, процент потерь превышает критическое значение – ${toPercent(context.streamRateCriticalPoint)} %. Верните конвертер в вертикальное положение!
+                                  В потоке детектирован шлак – ${toPercent(context.slagRate.avgSlagRate)}%, процент ниже критического значения – ${toPercent(context.streamRateCriticalPoint)}%. Верните конвертер в вертикальное положение!
                                   """.trimIndent(),
                     category = ModelEvent.Category.CRITICAL
                 )

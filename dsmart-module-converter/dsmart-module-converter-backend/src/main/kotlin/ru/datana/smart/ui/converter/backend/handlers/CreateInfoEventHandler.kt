@@ -21,7 +21,7 @@ object CreateInfoEventHandler : IKonveyorHandler<ConverterBeContext> {
         val slagRateTime = Instant.now()
         val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: ModelEvent? = context.eventsRepository
-            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.METAL_RATE_INFO_EVENT)
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_INFO_EVENT)
         activeEvent?.let {
             return
         } ?: run {
@@ -29,7 +29,7 @@ object CreateInfoEventHandler : IKonveyorHandler<ConverterBeContext> {
                 ModelEvent(
                     id = UUID.randomUUID().toString(),
                     meltId = meltId,
-                    type = ModelEvent.EventType.METAL_RATE_INFO_EVENT,
+                    type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     metalRate = context.slagRate.avgSteelRate,

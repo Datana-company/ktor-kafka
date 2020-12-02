@@ -36,9 +36,9 @@ data class ModelEvent(
     }
 
     enum class EventType() {
-        METAL_RATE_WARNING_EVENT,
-        METAL_RATE_INFO_EVENT,
-        METAL_RATE_CRITICAL_EVENT,
+        STREAM_RATE_WARNING_EVENT,
+        STREAM_RATE_INFO_EVENT,
+        STREAM_RATE_CRITICAL_EVENT,
         SUCCESS_MELT_EVENT,
         EXT_EVENT,
         NONE
