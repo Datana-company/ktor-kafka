@@ -22,7 +22,7 @@ object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
         val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_INFO_EVENT)
-        val avgSlagRate = context.currentState.get().avgSlagRate.steelRate
+        val avgSlagRate = context.currentState.get().avgSlagRate.slagRate
         activeEvent?.let {
             return
         } ?: run {

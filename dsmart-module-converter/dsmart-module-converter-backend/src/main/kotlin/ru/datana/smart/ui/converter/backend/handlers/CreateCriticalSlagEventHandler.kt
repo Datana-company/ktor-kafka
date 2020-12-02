@@ -22,7 +22,7 @@ object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT)
         val slagRateTime = Instant.now()
-        val avgSlagRate = context.currentState.get().avgSlagRate.steelRate
+        val avgSlagRate = context.currentState.get().avgSlagRate.slagRate
         activeEvent?.let {
             return
         } ?: run {
