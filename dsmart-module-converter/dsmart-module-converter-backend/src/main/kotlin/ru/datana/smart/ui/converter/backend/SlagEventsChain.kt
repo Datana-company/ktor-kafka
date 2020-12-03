@@ -34,6 +34,7 @@ class SlagEventsChain(
                         ?.let { toPercent(it) >= 0 && toPercent(it) < toPercent(streamRateCriticalPoint)  } ?: false
                         && !(slagRate.slagRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false
                         && slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false)
+  // TODO убрать это безобразие во вспомогательный метод
                 }
                 +AddWarningEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
