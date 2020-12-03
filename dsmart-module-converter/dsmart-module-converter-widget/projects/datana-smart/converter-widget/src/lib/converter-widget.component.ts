@@ -26,10 +26,9 @@ import {SignalerModel} from './models/signaler.model';
 export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
   _unsubscribe = new Subject<void>();
-  public current_time = interval(1000)
+  public current_time = interval(100)
     .pipe(
-      // document.lastModified может быть близким приближением к текущему времени сервера
-      map(() => new Date(document.lastModified))
+      map(() => new Date())
     );
   public converterMeltInfoData: ConverterMeltInfoModel;
   public converterSlagRateData: SlagRateModel;
