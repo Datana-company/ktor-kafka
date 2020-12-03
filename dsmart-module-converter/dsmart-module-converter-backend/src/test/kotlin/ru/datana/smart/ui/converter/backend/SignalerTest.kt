@@ -21,7 +21,7 @@ internal class SignalerTest {
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT,
+                type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.16,
@@ -29,7 +29,7 @@ internal class SignalerTest {
                 angleStart = 66.0,
                 title = "Критическая ситуация",
                 textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(0.15)} %. Верните конвертер в вертикальное положение!
+                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(0.15)}%. Верните конвертер в вертикальное положение!
                                   """.trimIndent(),
                 category = ModelEvent.Category.CRITICAL
             ))
@@ -42,8 +42,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 60.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.16
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.16
                         )
                     )
                 ),
@@ -75,7 +75,7 @@ internal class SignalerTest {
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.METAL_RATE_WARNING_EVENT,
+                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.11,
@@ -83,7 +83,7 @@ internal class SignalerTest {
                 angleStart = 66.0,
                 title = "Предупреждение",
                 textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.11)}% сверх допустимой нормы ${toPercent(0.1)} %. Верните конвертер в вертикальное положение.
+                                  В потоке детектирован металл – ${toPercent(0.11)}% сверх допустимой нормы ${toPercent(0.1)}%. Верните конвертер в вертикальное положение.
                                   """.trimIndent(),
                 category = ModelEvent.Category.WARNING
             ))
@@ -94,8 +94,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 60.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.11
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.11
                         )
                     )
                 ),
@@ -127,7 +127,7 @@ internal class SignalerTest {
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT,
+                type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.16,
@@ -135,7 +135,7 @@ internal class SignalerTest {
                 angleStart = 66.0,
                 title = "Критическая ситуация",
                 textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(0.15)} %. Верните конвертер в вертикальное положение!
+                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(0.15)}%. Верните конвертер в вертикальное положение!
                                   """.trimIndent(),
                 category = ModelEvent.Category.CRITICAL
             ))
@@ -147,8 +147,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 60.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.16
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.16
                         )
                     )
                 ),
@@ -180,7 +180,7 @@ internal class SignalerTest {
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.METAL_RATE_WARNING_EVENT,
+                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.11,
@@ -188,7 +188,7 @@ internal class SignalerTest {
                 angleStart = 66.0,
                 title = "Предупреждение",
                 textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.11)}% сверх допустимой нормы ${toPercent(0.1)} %. Верните конвертер в вертикальное положение.
+                                  В потоке детектирован металл – ${toPercent(0.11)}% сверх допустимой нормы ${toPercent(0.1)}%. Верните конвертер в вертикальное положение.
                                   """.trimIndent(),
                 category = ModelEvent.Category.WARNING
             ))
@@ -199,8 +199,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 60.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.11
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.11
                         )
                     )
                 ),
@@ -232,7 +232,7 @@ internal class SignalerTest {
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT,
+                type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.16,
@@ -240,7 +240,7 @@ internal class SignalerTest {
                 angleStart = 66.0,
                 title = "Критическая ситуация",
                 textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(0.15)} %. Верните конвертер в вертикальное положение!
+                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(0.15)}%. Верните конвертер в вертикальное положение!
                                   """.trimIndent(),
                 category = ModelEvent.Category.CRITICAL
             ))
@@ -252,8 +252,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 62.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.16
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.16
                         )
                     )
                 ),
@@ -285,7 +285,7 @@ internal class SignalerTest {
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.METAL_RATE_WARNING_EVENT,
+                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.11,
@@ -293,7 +293,7 @@ internal class SignalerTest {
                 angleStart = 66.0,
                 title = "Предупреждение",
                 textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.11)}% сверх допустимой нормы ${toPercent(0.1)} %. Верните конвертер в вертикальное положение.
+                                  В потоке детектирован металл – ${toPercent(0.11)}% сверх допустимой нормы ${toPercent(0.1)}%. Верните конвертер в вертикальное положение.
                                   """.trimIndent(),
                 category = ModelEvent.Category.WARNING
             ))
@@ -304,8 +304,8 @@ internal class SignalerTest {
                         lastAngles = ModelAngles(
                             angle = 62.0
                         ),
-                        lastSlagRate = ModelSlagRate(
-                            avgSteelRate = 0.11
+                        avgSlagRate = ModelSlagRate(
+                            steelRate = 0.11
                         )
                     )
                 ),

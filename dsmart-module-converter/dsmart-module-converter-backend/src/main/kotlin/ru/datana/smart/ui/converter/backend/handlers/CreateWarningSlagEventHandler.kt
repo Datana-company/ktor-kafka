@@ -12,17 +12,17 @@ import java.time.Instant
 import java.util.*
 
 /*
-* CreateCriticalEventHandler - создаётся событие типа "Критическая ситуация",
-* и светофор переходит в критический статус.
+* CreateWarningSlagEventHandler - создаём событие типа "Предупреждение",
+* и светофор переходит в статус "Предупреждение".
 * */
-object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
+object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
+        val slagRateTime = Instant.now()
         val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: ModelEvent? = context.eventsRepository
-            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT)
-        val slagRateTime = Instant.now()
-        val avgSteelRate = context.currentState.get().avgSlagRate.steelRate
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_WARNING_EVENT)
+        val avgSlagRate = context.currentState.get().avgSlagRate.slagRate
         activeEvent?.let {
             return
         } ?: run {
@@ -30,24 +30,22 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
                 ModelEvent(
                     id = UUID.randomUUID().toString(),
                     meltId = meltId,
-                    type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
+                    type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = avgSteelRate,
-                    criticalPoint = context.streamRateCriticalPoint,
+                    slagRate = avgSlagRate,
+                    warningPoint = context.streamRateWarningPoint,
                     angleStart = currentAngle,
-                    title = "Критическая ситуация",
+                    title = "Предупреждение",
                     textMessage = """
-                                  В потоке детектирован металл – ${toPercent(avgSteelRate)}%, процент потерь превышает критическое значение – ${toPercent(context.streamRateCriticalPoint)}%. Верните конвертер в вертикальное положение!
+                                  В потоке детектирован шлак – ${toPercent(avgSlagRate)}% ниже допустимой нормы ${toPercent(context.streamRateWarningPoint)}%. Верните конвертер в вертикальное положение.
                                   """.trimIndent(),
-                    category = ModelEvent.Category.CRITICAL
+                    category = ModelEvent.Category.WARNING
                 )
             )
             context.signaler = SignalerModel(
-                level = SignalerModel.SignalerLevelModel.CRITICAL,
-                sound = SignalerSoundModel(
-                    SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, 3000
-                )
+                level = SignalerModel.SignalerLevelModel.WARNING,
+                sound = SignalerSoundModel.NONE
             )
         }
     }

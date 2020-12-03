@@ -15,7 +15,7 @@ object AddInfoEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
         val activeEvent: ModelEvent? = context.eventsRepository
-            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.METAL_RATE_INFO_EVENT)
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_INFO_EVENT)
         val slagRateTime = Instant.now()
         activeEvent?.let {
             val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)

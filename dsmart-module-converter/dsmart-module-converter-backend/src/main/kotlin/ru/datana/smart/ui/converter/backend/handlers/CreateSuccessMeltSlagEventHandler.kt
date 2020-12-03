@@ -12,10 +12,10 @@ import java.time.Instant
 import java.util.*
 
 /*
-* CreateSuccessMeltEventHandler - создаётся событие типа "Информация" об успешном завершении плавки
+* CreateSuccessMeltSlagEventHandler - создаётся событие типа "Информация" об успешном завершении плавки
 * и сразу записывается в историю.
 * */
-object CreateSuccessMeltEventHandler : IKonveyorHandler<ConverterBeContext> {
+object CreateSuccessMeltSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         context.signaler = SignalerModel(
             level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
@@ -42,7 +42,7 @@ object CreateSuccessMeltEventHandler : IKonveyorHandler<ConverterBeContext> {
                 isActive = false,
                 title = "Информация",
                 textMessage = """
-                              Допустимая норма потерь металла ${toPercent(context.streamRateWarningPoint)}% не была превышена.
+                              Процент шлака в потоке не был ниже нормы ${toPercent(context.streamRateWarningPoint)}%.
                               """.trimIndent(),
                 category = ModelEvent.Category.INFO
             )

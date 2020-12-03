@@ -8,6 +8,7 @@ import ru.datana.smart.ui.converter.common.models.IWsSignalerManager
 import ru.datana.smart.ui.converter.common.models.IConverterFacade
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
+import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import java.util.concurrent.atomic.AtomicReference
 
 class ConverterFacade(
@@ -16,6 +17,7 @@ class ConverterFacade(
     wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     dataTimeout: Long = Long.MIN_VALUE,
     meltTimeout: Long = Long.MIN_VALUE,
+    eventMode: ModelEventMode = ModelEventMode.STEEL,
     metalRateCriticalPoint: Double = Double.MIN_VALUE,
     metalRateWarningPoint: Double = Double.MIN_VALUE,
     reactionTime: Long = Long.MIN_VALUE,
@@ -33,8 +35,9 @@ class ConverterFacade(
         wsSignalerManager= wsSignalerManager,
         dataTimeout = dataTimeout,
         meltTimeout = meltTimeout,
-        metalRateCriticalPoint = metalRateCriticalPoint,
-        metalRateWarningPoint = metalRateWarningPoint,
+        eventMode = eventMode,
+        streamRateCriticalPoint = metalRateCriticalPoint,
+        streamRateWarningPoint = metalRateWarningPoint,
         currentState = currentState,
         scheduleCleaner = scheduleCleaner,
         reactionTime = reactionTime,
@@ -57,7 +60,10 @@ class ConverterFacade(
     private val meltInfoChain = MeltInfoChain(
         chainSettings = chainSettings
     )
-    private val eventsChain = EventsChain(
+    private val steelEventsChain = SteelEventsChain(
+        chainSettings = chainSettings
+    )
+    private val slagEventsChain = SlagEventsChain(
         chainSettings = chainSettings
     )
     private val extEventsChain = ExtEventsChain(
@@ -68,6 +74,7 @@ class ConverterFacade(
     override suspend fun handleAngles(context: ConverterBeContext) = anglesChain.exec(context)
     override suspend fun handleFrame(context: ConverterBeContext) = frameChain.exec(context)
     override suspend fun handleMeltInfo(context: ConverterBeContext) = meltInfoChain.exec(context)
-    override suspend fun handleEvents(context: ConverterBeContext) = eventsChain.exec(context)
+    override suspend fun handleSteelEvents(context: ConverterBeContext) = steelEventsChain.exec(context)
+    override suspend fun handleSlagEvents(context: ConverterBeContext) = slagEventsChain.exec(context)
     override suspend fun handleExtEvents(context: ConverterBeContext) = extEventsChain.exec(context)
 }

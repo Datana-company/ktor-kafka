@@ -9,11 +9,9 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import ru.datana.smart.ui.converter.common.utils.toPercent
-import java.util.concurrent.atomic.AtomicReference
 
-class EventsChain(
+class SteelEventsChain(
     var chainSettings: ConverterChainSettings
 ) {
 
@@ -30,7 +28,11 @@ class EventsChain(
         val konveyor = konveyor<ConverterBeContext> {
 
             konveyor {
-                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateCriticalPoint)  } ?: false }
+                on {
+                    val currentSteelRate = currentState.get().avgSlagRate.steelRate
+                    currentSteelRate.takeIf { it != Double.MIN_VALUE }
+                        ?.let { toPercent(it) > toPercent(streamRateCriticalPoint)  } ?: false
+                }
                 +AddWarningEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
@@ -38,7 +40,11 @@ class EventsChain(
                 +CreateCriticalEventHandler
             }
             konveyor {
-                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(metalRateWarningPoint) && toPercent(it) <= toPercent(metalRateCriticalPoint) } ?: false }
+                on {
+                    val currentSteelRate = currentState.get().avgSlagRate.steelRate
+                    currentSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(streamRateWarningPoint)
+                        && toPercent(it) <= toPercent(streamRateCriticalPoint) } ?: false
+                }
                 +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
@@ -46,7 +52,11 @@ class EventsChain(
                 +CreateWarningEventHandler
             }
 //            konveyor {
-//                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) == toPercent(metalRateWarningPoint) } ?: false }
+//                on {
+//                    val currentSteelRate = currentState.get().avgSlagRate.steelRate
+//                    currentSteelRate.takeIf { it != Double.MIN_VALUE }
+//                        ?.let { toPercent(it) == toPercent(streamRateWarningPoint) } ?: false
+//                }
 //                +AddCriticalEventToHistoryHandler
 //                +AddStatelessCriticalEventToHistoryHandler
 //                +AddWarningEventToHistoryHandler
@@ -55,7 +65,11 @@ class EventsChain(
 //                +CreateInfoEventHandler
 //            }
             konveyor {
-                on { slagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) <= toPercent(metalRateWarningPoint) } ?: false }
+                on {
+                    val currentSteelRate = currentState.get().avgSlagRate.steelRate
+                    currentSteelRate.takeIf { it != Double.MIN_VALUE }
+                        ?.let { toPercent(it) <= toPercent(streamRateWarningPoint) } ?: false
+                }
                 +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
                 +AddWarningEventToHistoryHandler

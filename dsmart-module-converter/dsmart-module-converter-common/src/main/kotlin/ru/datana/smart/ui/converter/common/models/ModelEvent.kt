@@ -14,6 +14,7 @@ data class ModelEvent(
     var isActive: Boolean = true,
     var executionStatus: ExecutionStatus = ExecutionStatus.NONE,
     var metalRate: Double = Double.MIN_VALUE,
+    var slagRate: Double = Double.MIN_VALUE,
     var angleStart: Double = Double.MIN_VALUE,
     var angleFinish: Double = Double.MIN_VALUE,
     var angleMax: Double = Double.MIN_VALUE,
@@ -35,9 +36,9 @@ data class ModelEvent(
     }
 
     enum class EventType() {
-        METAL_RATE_WARNING_EVENT,
-        METAL_RATE_INFO_EVENT,
-        METAL_RATE_CRITICAL_EVENT,
+        STREAM_RATE_WARNING_EVENT,
+        STREAM_RATE_INFO_EVENT,
+        STREAM_RATE_CRITICAL_EVENT,
         SUCCESS_MELT_EVENT,
         EXT_EVENT,
         NONE

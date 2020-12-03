@@ -21,6 +21,7 @@ import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
+import ru.datana.smart.ui.converter.app.common.EventMode
 //import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
@@ -79,17 +80,20 @@ fun Application.module(testing: Boolean = false) {
 //    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
 //    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
 //    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
+    val eventMode: EventMode by lazy {
+        EventMode.valueOf(environment.config.property("ktor.conveyor.eventMode").getString().trim())
+    }
     val dataTimeout: Long by lazy {
         environment.config.property("ktor.conveyor.dataTimeout").getString().trim().toLong()
     }
     val meltTimeout: Long by lazy {
         environment.config.property("ktor.conveyor.meltTimeout").getString().trim().toLong()
     }
-    val metalRateCriticalPoint: Double by lazy {
-        environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble()
+    val streamRateCriticalPoint: Double by lazy {
+        environment.config.property("ktor.conveyor.streamRatePoint.critical").getString().trim().toDouble()
     }
-    val metalRateWarningPoint: Double by lazy {
-        environment.config.property("ktor.conveyor.metalRatePoint.warning").getString().trim().toDouble()
+    val streamRateWarningPoint: Double by lazy {
+        environment.config.property("ktor.conveyor.streamRatePoint.warning").getString().trim().toDouble()
     }
     val reactionTime: Long by lazy {
         environment.config.property("ktor.conveyor.reactionTime").getString().trim().toLong()
@@ -118,7 +122,7 @@ fun Application.module(testing: Boolean = false) {
     val websocketContext = ConverterBeContext(
         currentState = currentState,
         eventsRepository = userEventsRepository,
-        metalRateWarningPoint = metalRateWarningPoint,
+        streamRateWarningPoint = streamRateWarningPoint,
         sirenLimitTime = sirenLimitTime
     )
 
@@ -127,9 +131,10 @@ fun Application.module(testing: Boolean = false) {
         wsManager = wsManager,
         wsSignalerManager = wsSignalerManager,
         dataTimeout = dataTimeout,
+        eventMode = toEventMode(eventMode),
         meltTimeout = meltTimeout,
-        metalRateCriticalPoint = metalRateCriticalPoint,
-        metalRateWarningPoint = metalRateWarningPoint,
+        metalRateCriticalPoint = streamRateCriticalPoint,
+        metalRateWarningPoint = streamRateWarningPoint,
         reactionTime = reactionTime,
         sirenLimitTime = sirenLimitTime,
         roundingWeight = roundingWeight,
@@ -217,19 +222,19 @@ fun Application.module(testing: Boolean = false) {
                                 println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleAngles(context)
                             }
-                            // 1) Получаем данные из Кафки
-                            topicEvents -> {
-                                // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
-                                val kafkaModel = toConverterTransportExtEvents(record)
-                                // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
-                                val conveyorModelExtEvents = toModelExtEvents(kafkaModel)
-                                // 4) Запихиваем эту модель в контекст
-                                val context = ConverterBeContext(
-                                    extEvents = conveyorModelExtEvents
-                                )
-                                // 5) Вызываем цепочку для обработки поступившего сообщения
-                                converterFacade.handleExtEvents(context)
-                            }
+//                            // 1) Получаем данные из Кафки
+//                            topicEvents -> {
+//                                // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
+//                                val kafkaModel = toConverterTransportExtEvents(record)
+//                                // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
+//                                val conveyorModelExtEvents = toModelExtEvents(kafkaModel)
+//                                // 4) Запихиваем эту модель в контекст
+//                                val context = ConverterBeContext(
+//                                    extEvents = conveyorModelExtEvents
+//                                )
+//                                // 5) Вызываем цепочку для обработки поступившего сообщения
+//                                converterFacade.handleExtEvents(context)
+//                            }
                     }
                 }
             } catch(e: Throwable) {
