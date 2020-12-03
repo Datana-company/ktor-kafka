@@ -1,7 +1,6 @@
 package ru.datana.smart.ui.converter.app.mappings
 
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
-import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.ws.models.*
 import java.time.Instant
@@ -76,35 +75,35 @@ private fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =
                 type = modelMeltInfo.devices.converter.type.takeIf { it != ModelDeviceType.NONE }?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
             ),
             irCamera = WsDsmartConverterDevicesIrCamera(
-                id = modelMeltInfo.devices.converter.id.takeIf { it.isNotBlank() },
-                name = modelMeltInfo.devices.converter.name.takeIf { it.isNotBlank() },
-                uri = modelMeltInfo.devices.converter.uri.takeIf { it.isNotBlank() },
-                deviceType = modelMeltInfo.devices.converter.deviceType.takeIf { it.isNotBlank() },
+                id = modelMeltInfo.devices.irCamera.id.takeIf { it.isNotBlank() },
+                name = modelMeltInfo.devices.irCamera.name.takeIf { it.isNotBlank() },
+                uri = modelMeltInfo.devices.irCamera.uri.takeIf { it.isNotBlank() },
+                deviceType = modelMeltInfo.devices.irCamera.deviceType.takeIf { it.isNotBlank() },
                 type = modelMeltInfo.devices.irCamera.type.takeIf { it != ModelDeviceType.NONE }?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
             ),
             selsyn = WsDsmartConverterDevicesSelsyn(
-                id = modelMeltInfo.devices.converter.id.takeIf { it.isNotBlank() },
-                name = modelMeltInfo.devices.converter.name.takeIf { it.isNotBlank() },
-                uri = modelMeltInfo.devices.converter.uri.takeIf { it.isNotBlank() },
-                deviceType = modelMeltInfo.devices.converter.deviceType.takeIf { it.isNotBlank() },
+                id = modelMeltInfo.devices.selsyn.id.takeIf { it.isNotBlank() },
+                name = modelMeltInfo.devices.selsyn.name.takeIf { it.isNotBlank() },
+                uri = modelMeltInfo.devices.selsyn.uri.takeIf { it.isNotBlank() },
+                deviceType = modelMeltInfo.devices.selsyn.deviceType.takeIf { it.isNotBlank() },
                 type = modelMeltInfo.devices.selsyn.type.takeIf { it != ModelDeviceType.NONE }?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
             ),
             slagRate = WsDsmartConverterDevicesSlagRate(
-                id = modelMeltInfo.devices.converter.id.takeIf { it.isNotBlank() },
-                name = modelMeltInfo.devices.converter.name.takeIf { it.isNotBlank() },
-                uri = modelMeltInfo.devices.converter.uri.takeIf { it.isNotBlank() },
-                deviceType = modelMeltInfo.devices.converter.deviceType.takeIf { it.isNotBlank() },
+                id = modelMeltInfo.devices.slagRate.id.takeIf { it.isNotBlank() },
+                name = modelMeltInfo.devices.slagRate.name.takeIf { it.isNotBlank() },
+                uri = modelMeltInfo.devices.slagRate.uri.takeIf { it.isNotBlank() },
+                deviceType = modelMeltInfo.devices.slagRate.deviceType.takeIf { it.isNotBlank() },
                 type = modelMeltInfo.devices.slagRate.type.takeIf { it != ModelDeviceType.NONE }?.let { WsDsmartConverterDeviceType.valueOf(it.name) }
             )
         )
     )
 
-private fun toWsEventListModel(modelEvents: ModelEvents) =
+private fun toWsEventListModel(modelEvents: MutableList<ModelEvent>) =
     WsDsmartEventList(
-        list = modelEvents.events.map { event -> toWsEventModel(event) }.toMutableList()
+        list = modelEvents.map { event -> toWsEventModel(event) }.toMutableList()
     )
 
-private fun toWsEventModel(event: IBizEvent) =
+private fun toWsEventModel(event: ModelEvent) =
     WsDsmartEvent(
         id = event.id,
         timeStart = event.timeStart.toEpochMilli(),

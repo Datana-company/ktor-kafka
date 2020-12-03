@@ -44,22 +44,22 @@ class MathChain(
 
             +EncodeBase64Handler
             +WsSendMathFrameHandler
-            konveyor {
+//            konveyor {
                 // Временный фильтр на выбросы матмодели по содержанию металла из-за капель металла
                 // в начале и в конце слива
-                on {
-                    val res = slagRate.steelRate <= 0.35
-                    val sr = slagRate
-                    val mi = meltInfo
-                    if (! res) {
-                        logger.debug("Filtering out slagRate due to too high value for steelRate", object {
-                            val eventType: String = "dsmart-converter-ui-slagRate-filter-highsteel"
-                            val slagRate: ModelSlagRate = sr
-                            val meltInfo: ModelMeltInfo = mi
-                        })
-                    }
-                    res
-                }
+//                on {
+//                    val res = slagRate.steelRate <= 0.35
+//                    val sr = slagRate
+//                    val mi = meltInfo
+//                    if (! res) {
+//                        logger.debug("Filtering out slagRate due to too high value for steelRate", object {
+//                            val eventType: String = "dsmart-converter-ui-slagRate-filter-highsteel"
+//                            val slagRate: ModelSlagRate = sr
+//                            val meltInfo: ModelMeltInfo = mi
+//                        })
+//                    }
+//                    res
+//                }
 
                 +CalcAvgSteelRateHandler
                 +WsSendMathSlagRateHandler
@@ -79,7 +79,7 @@ class MathChain(
                         converterFacade.handleEvents(this)
                     }
                 }
-            }
+//            }
             +WsSendMeltFinishHandler
 
             +FinishHandler

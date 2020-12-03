@@ -41,7 +41,6 @@ interface IWsManager {
             override suspend fun sendEvents(context: ConverterBeContext) {
                 TODO("Not yet implemented")
             }
-
         }
     }
 }

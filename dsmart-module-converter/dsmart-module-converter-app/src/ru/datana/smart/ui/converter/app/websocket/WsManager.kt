@@ -5,7 +5,6 @@ import kotlinx.serialization.json.Json
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.IWsManager
-import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.ws.models.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -18,7 +17,7 @@ class WsManager : IWsManager {
         wsSessions += session
         val currentMeltId = context.currentState.get().currentMeltInfo.id
         val events = context.eventsRepository.getAllByMeltId(currentMeltId)
-        context.events = ModelEvents(events = events)
+        context.events = events
         val wsConverterState = context.toWsResponseConverterState()
         val converterStateSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
         session.send(converterStateSerializedString)

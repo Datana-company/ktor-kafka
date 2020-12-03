@@ -4,9 +4,10 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
+import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import ru.datana.smart.ui.converter.common.utils.toPercent
 import java.time.Instant
 import java.util.*
 
@@ -14,25 +15,31 @@ import java.util.*
 * CreateCriticalEventHandler - создаётся событие типа "Критическая ситуация",
 * и светофор переходит в критический статус.
 * */
-object CreateCriticalEventHandler: IKonveyorHandler<ConverterBeContext> {
+object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
         val currentAngle = context.currentState.get().lastAngles.angle
-        val activeEvent: MetalRateCriticalEvent? =
-            context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateCriticalEvent
+        val activeEvent: ModelEvent? = context.eventsRepository
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT)
         val slagRateTime = Instant.now()
         activeEvent?.let {
             return
         } ?: run {
-            context.eventsRepository.put(
-                meltId,
-                MetalRateCriticalEvent(
+            context.eventsRepository.create(
+                ModelEvent(
                     id = UUID.randomUUID().toString(),
+                    meltId = meltId,
+                    type = ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     metalRate = context.slagRate.avgSteelRate,
                     criticalPoint = context.metalRateCriticalPoint,
-                    angleStart = currentAngle
+                    angleStart = currentAngle,
+                    title = "Критическая ситуация",
+                    textMessage = """
+                                  В потоке детектирован металл – ${toPercent(context.slagRate.avgSteelRate)}%, процент потерь превышает критическое значение – ${toPercent(context.metalRateCriticalPoint)} %. Верните конвертер в вертикальное положение!
+                                  """.trimIndent(),
+                    category = ModelEvent.Category.CRITICAL
                 )
             )
             context.signaler = SignalerModel(

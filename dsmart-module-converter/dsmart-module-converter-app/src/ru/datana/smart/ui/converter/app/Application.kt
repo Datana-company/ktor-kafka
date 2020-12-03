@@ -30,9 +30,8 @@ import ru.datana.smart.ui.converter.backend.ConverterFacade
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import java.time.Duration
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
-import ru.datana.smart.ui.converter.repository.inmemory.UserEventRepositoryInMemory
+import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.util.concurrent.atomic.AtomicReference
-
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // Referenced in application.conf
@@ -73,6 +72,7 @@ fun Application.module(testing: Boolean = false) {
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicAngles by lazy { environment.config.property("ktor.kafka.consumer.topic.angles").getString().trim() }
     val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
+    val topicEvents by lazy { environment.config.property("ktor.kafka.consumer.topic.events").getString().trim() }
     val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
     val framesBasePath by lazy { environment.config.property("paths.base.frames").getString().trim() }
 //    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
@@ -81,6 +81,9 @@ fun Application.module(testing: Boolean = false) {
 //    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
     val dataTimeout: Long by lazy {
         environment.config.property("ktor.conveyor.dataTimeout").getString().trim().toLong()
+    }
+    val meltTimeout: Long by lazy {
+        environment.config.property("ktor.conveyor.meltTimeout").getString().trim().toLong()
     }
     val metalRateCriticalPoint: Double by lazy {
         environment.config.property("ktor.conveyor.metalRatePoint.critical").getString().trim().toDouble()
@@ -107,7 +110,7 @@ fun Application.module(testing: Boolean = false) {
 //    )
 //    metalRateEventGenerator.start()
 
-    val userEventsRepository = UserEventRepositoryInMemory()
+    val userEventsRepository = EventRepositoryInMemory()
 
     val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
     val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)
@@ -124,6 +127,7 @@ fun Application.module(testing: Boolean = false) {
         wsManager = wsManager,
         wsSignalerManager = wsSignalerManager,
         dataTimeout = dataTimeout,
+        meltTimeout = meltTimeout,
         metalRateCriticalPoint = metalRateCriticalPoint,
         metalRateWarningPoint = metalRateWarningPoint,
         reactionTime = reactionTime,
@@ -173,7 +177,7 @@ fun Application.module(testing: Boolean = false) {
 //            }
 //        }
 
-        kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles)) {
+        kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles, topicEvents)) {
             try {
                 records.sortedByDescending { it.offset() }
 //                на самом деле они уже отсортированы сначала по топику, затем по offset по убыванию
@@ -213,9 +217,22 @@ fun Application.module(testing: Boolean = false) {
                                 println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleAngles(context)
                             }
-                        }
+                            // 1) Получаем данные из Кафки
+                            topicEvents -> {
+                                // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
+                                val kafkaModel = toConverterTransportExtEvents(record)
+                                // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
+                                val conveyorModelExtEvents = toModelExtEvents(kafkaModel)
+                                // 4) Запихиваем эту модель в контекст
+                                val context = ConverterBeContext(
+                                    extEvents = conveyorModelExtEvents
+                                )
+                                // 5) Вызываем цепочку для обработки поступившего сообщения
+                                converterFacade.handleExtEvents(context)
+                            }
                     }
-            } catch (e: Throwable) {
+                }
+            } catch(e: Throwable) {
                 val msg = e.message ?: ""
                 logger.error(msg)
             } finally {

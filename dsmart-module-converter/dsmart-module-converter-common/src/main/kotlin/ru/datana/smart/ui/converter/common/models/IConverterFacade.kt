@@ -35,6 +35,12 @@ interface IConverterFacade {
             override suspend fun handleEvents(context: ConverterBeContext) {
                 TODO("Not yet implemented")
             }
+
+            override suspend fun handleExtEvents(context: ConverterBeContext) {
+                TODO("Not yet implemented")
+            }
         }
     }
+
+    suspend fun handleExtEvents(context: ConverterBeContext)
 }
