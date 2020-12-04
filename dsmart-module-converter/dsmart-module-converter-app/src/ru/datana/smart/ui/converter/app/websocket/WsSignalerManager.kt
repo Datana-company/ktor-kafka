@@ -3,12 +3,9 @@ package ru.datana.smart.ui.converter.app.websocket
 import io.ktor.http.cio.websocket.DefaultWebSocketSession
 import io.ktor.http.cio.websocket.send
 import kotlinx.serialization.json.Json
-import ru.datana.smart.ui.converter.app.mappings.*
+import ru.datana.smart.ui.converter.app.mappings.toWsResponseConverterSignaler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.IWsSignalerManager
-import ru.datana.smart.ui.converter.common.models.ModelEvents
-import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverterState
-import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseEvents
 import ru.datana.smart.ui.converter.ws.models.WsDsmartResponseConverterSignaler
 import java.util.concurrent.ConcurrentHashMap
 
@@ -19,9 +16,7 @@ class WsSignalerManager : IWsSignalerManager {
 
     suspend fun init(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
-        val wsSignaler = WsDsmartResponseConverterSignaler(
-            data = toWsConverterSignalerModel(context)
-        )
+        val wsSignaler = context.toWsResponseConverterSignaler()
         val converterStateSerializedString = kotlinxSerializer.encodeToString(
             WsDsmartResponseConverterSignaler.serializer(),
             wsSignaler
@@ -30,9 +25,7 @@ class WsSignalerManager : IWsSignalerManager {
     }
 
     override suspend fun sendSignaler(context: ConverterBeContext) {
-        val wsSignaler = WsDsmartResponseConverterSignaler(
-            data = toWsConverterSignalerModel(context)
-        )
+        val wsSignaler = context.toWsResponseConverterSignaler()
         val signalerSerializedString = kotlinxSerializer
             .encodeToString(WsDsmartResponseConverterSignaler.serializer(), wsSignaler)
         send(signalerSerializedString)

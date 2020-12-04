@@ -4,9 +4,10 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
+import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import ru.datana.smart.ui.converter.common.utils.toPercent
 import java.time.Instant
 import java.util.*
 
@@ -14,25 +15,32 @@ import java.util.*
 * CreateWarningEventHandler - создаём событие типа "Предупреждение",
 * и светофор переходит в статус "Предупреждение".
 * */
-object CreateWarningEventHandler: IKonveyorHandler<ConverterBeContext> {
+object CreateWarningEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
         val slagRateTime = Instant.now()
         val currentAngle = context.currentState.get().lastAngles.angle
-        val activeEvent: MetalRateWarningEvent? =
-            context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateWarningEvent
+        val activeEvent: ModelEvent? = context.eventsRepository
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_WARNING_EVENT)
+        val avgSteelRate = context.currentState.get().avgSlagRate.steelRate
         activeEvent?.let {
             return
         } ?: run {
-            context.eventsRepository.put(
-                meltId,
-                MetalRateWarningEvent(
+            context.eventsRepository.create(
+                ModelEvent(
                     id = UUID.randomUUID().toString(),
+                    meltId = meltId,
+                    type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.avgSteelRate,
-                    warningPoint = context.metalRateWarningPoint,
-                    angleStart = currentAngle
+                    metalRate = avgSteelRate,
+                    warningPoint = context.streamRateWarningPoint,
+                    angleStart = currentAngle,
+                    title = "Предупреждение",
+                    textMessage = """
+                                  В потоке детектирован металл – ${toPercent(avgSteelRate)}% сверх допустимой нормы ${toPercent(context.streamRateWarningPoint)}%. Верните конвертер в вертикальное положение.
+                                  """.trimIndent(),
+                    category = ModelEvent.Category.WARNING
                 )
             )
             context.signaler = SignalerModel(

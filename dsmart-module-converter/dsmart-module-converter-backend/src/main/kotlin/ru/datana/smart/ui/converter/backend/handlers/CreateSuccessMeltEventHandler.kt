@@ -4,11 +4,10 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
-import ru.datana.smart.ui.converter.common.events.MetalRateWarningEvent
-import ru.datana.smart.ui.converter.common.events.SuccessMeltEvent
+import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
+import ru.datana.smart.ui.converter.common.utils.toPercent
 import java.time.Instant
 import java.util.*
 
@@ -16,7 +15,7 @@ import java.util.*
 * CreateSuccessMeltEventHandler - создаётся событие типа "Информация" об успешном завершении плавки
 * и сразу записывается в историю.
 * */
-object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
+object CreateSuccessMeltEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         context.signaler = SignalerModel(
             level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
@@ -26,18 +25,26 @@ object CreateSuccessMeltEventHandler: IKonveyorHandler<ConverterBeContext> {
         val meltId: String = context.meltInfo.id
         val slagRateTime = Instant.now()
         context.eventsRepository.getAllByMeltId(meltId).map {
-            if (it is MetalRateCriticalEvent || it is MetalRateWarningEvent) {
+            if (it.type == ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT ||
+                it.type == ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
+            ) {
                 return
             }
         }
-        context.eventsRepository.put(
-            meltId,
-            SuccessMeltEvent(
+        context.eventsRepository.create(
+            ModelEvent(
                 id = UUID.randomUUID().toString(),
+                meltId = meltId,
+                type = ModelEvent.EventType.SUCCESS_MELT_EVENT,
                 timeStart = slagRateTime,
                 timeFinish = slagRateTime,
-                warningPoint = context.metalRateWarningPoint,
-                isActive = false
+                warningPoint = context.streamRateWarningPoint,
+                isActive = false,
+                title = "Информация",
+                textMessage = """
+                              Допустимая норма потерь металла ${toPercent(context.streamRateWarningPoint)}% не была превышена.
+                              """.trimIndent(),
+                category = ModelEvent.Category.INFO
             )
         )
     }

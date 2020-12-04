@@ -10,6 +10,7 @@ import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import ru.datana.smart.ui.viml.models.ConverterTransportViMl
 import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
+import ru.datana.smart.ui.extevent.models.ConverterTransportExtEvent
 
 fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     topic = topic(),
@@ -20,8 +21,11 @@ fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
 )
 
 val jacksonSerializer: ObjectMapper = ObjectMapper()
-    .configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true)
-    .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
+    .configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true).configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
+    // Если в десериализуемом JSON-е встретится поле, которого нет в классе,
+    // то не будет выброшено исключение UnrecognizedPropertyException,
+    // т.е. мы отменяем проверку строгого соответствия JSON и класса
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
 fun toConverterMeltInfo(record: InnerRecord<String, String>): ConverterMeltInfo {
     try {
@@ -50,6 +54,14 @@ fun toConverterTransportViMl(record: InnerRecord<String, String>): ConverterTran
 fun toConverterTransportAngle(record: InnerRecord<String, String>): ConverterTransportAngle {
     try {
         return jacksonSerializer.readValue(record.value, ConverterTransportAngle::class.java)!!
+    } catch (e: Exception) {
+        throw ConverterDeserializationException(e.message, e.cause)
+    }
+}
+
+fun toConverterTransportExtEvents(record: InnerRecord<String, String>): ConverterTransportExtEvent {
+    try {
+        return jacksonSerializer.readValue(record.value, ConverterTransportExtEvent::class.java)!!
     } catch (e: Exception) {
         throw ConverterDeserializationException(e.message, e.cause)
     }

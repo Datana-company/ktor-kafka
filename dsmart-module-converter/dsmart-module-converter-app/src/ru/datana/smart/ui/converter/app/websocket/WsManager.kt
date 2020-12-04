@@ -5,7 +5,6 @@ import kotlinx.serialization.json.Json
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.IWsManager
-import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.ws.models.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -18,61 +17,45 @@ class WsManager : IWsManager {
         wsSessions += session
         val currentMeltId = context.currentState.get().currentMeltInfo.id
         val events = context.eventsRepository.getAllByMeltId(currentMeltId)
-        context.events = ModelEvents(events = events)
-        val wsConverterState = WsDsmartResponseConverterState(
-            data = toWsConverterStateModel(context)
-        )
+        context.events = events
+        val wsConverterState = context.toWsResponseConverterState()
         val converterStateSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
         session.send(converterStateSerializedString)
-//        val outObj = context.toWsInit()
-//        session.send()
     }
 
     override suspend fun sendFinish(context: ConverterBeContext) {
-        val wsConverterState = WsDsmartResponseConverterState(
-            data = toWsConverterStateModel(context)
-        )
+        val wsConverterState = context.toWsResponseConverterState()
         val converterStateSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
         send(converterStateSerializedString)
     }
 
     override suspend fun sendAngles(context: ConverterBeContext) {
-        val wsAngles = WsDsmartResponseConverterAngles(
-            data = toWsConverterAnglesModel(context.angles)
-        )
+        val wsAngles = context.toWsConverterResponseAngles()
         val meltInfoSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterAngles.serializer(), wsAngles)
         send(meltInfoSerializedString)
     }
 
     override suspend fun sendMeltInfo(context: ConverterBeContext) {
-        val wsMeltInfo = WsDsmartResponseConverterMeltInfo(
-            data = toWsConverterMeltInfoModel(context.meltInfo)
-        )
+        val wsMeltInfo = context.toWsConverterResponseMeltInfo()
         val meltInfoSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterMeltInfo.serializer(), wsMeltInfo)
         send(meltInfoSerializedString)
     }
 
     override suspend fun sendSlagRate(context: ConverterBeContext) {
-        val wsSlagRate = WsDsmartResponseConverterSlagRate(
-            data = toWsConverterSlagRateModel(context.slagRate)
-        )
+        val wsSlagRate = context.toWsConverterResponseSlagRate()
         val slagRateSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterSlagRate.serializer(), wsSlagRate)
         send(slagRateSerializedString)
     }
 
     override suspend fun sendFrames(context: ConverterBeContext) {
-        val wsFrame = WsDsmartResponseConverterFrame(
-            data = toWsConverterFrameDataModel(context.frame)
-        )
+        val wsFrame = context.toWsConverterResponseFrame()
         val frameSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterFrame.serializer(), wsFrame)
         send(frameSerializedString)
     }
 
     override suspend fun sendEvents(context: ConverterBeContext) {
-        val wsEvents = WsDsmartResponseEvents(
-            data = toWsEventListModel(context.events)
-        )
-        val eventsSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseEvents.serializer(), wsEvents)
+        val wsEvents = context.toWsResponseConverterEvent()
+        val eventsSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterEvents.serializer(), wsEvents)
         send(eventsSerializedString)
     }
 

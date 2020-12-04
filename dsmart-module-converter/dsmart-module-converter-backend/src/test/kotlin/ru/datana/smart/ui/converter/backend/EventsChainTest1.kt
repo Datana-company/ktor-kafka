@@ -2,13 +2,10 @@ package ru.datana.smart.ui.converter.backend
 
 
 import kotlinx.coroutines.runBlocking
-import ru.datana.smart.ui.converter.common.events.IBizEvent
-import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
-import ru.datana.smart.ui.converter.common.models.CurrentState
-import ru.datana.smart.ui.converter.common.models.ModelAngles
-import ru.datana.smart.ui.converter.common.models.ModelFrame
-import ru.datana.smart.ui.converter.common.models.ModelSlagRate
-import ru.datana.smart.ui.converter.repository.inmemory.UserEventRepositoryInMemory
+import ru.datana.smart.ui.converter.common.models.*
+import ru.datana.smart.ui.converter.common.utils.toPercent
+import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
+
 import java.time.Instant
 import kotlin.test.Test
 import java.util.*
@@ -21,71 +18,70 @@ internal class EventsChainTest1 {
 //    Если есть активная рекомендация об изменении угла конвертера и при этом потери «металла»
 //    сами по себе вернулись в пределы допустимой нормы, такая рекомендация должна становиться бледной,
 //    независимо от того появилась ли сверху новая рекомендация или нет.
-
-//    NKR-1055 Предупреждение "Не выполнено" - т.к. истекло время реакции (3 сек), % металла не снизился, угол не уменьшился
-//    Предупреждение "Выполнено" - т.к. истекло время реакции (3 сек), % металла не снизился, угол уменьшился не менее, чем на 5 градусов
-//    Предупреждение "без статуса" - т.к.  % металла снизился до допустимой нормы, а время реакции еще не истекло
     @BeforeTest
     fun prepareMetaDataTestBefore() {
 
     }
     @Test
     fun isEventActive() {
-        val repository = UserEventRepositoryInMemory()
-        repository.put(
-            "211626-1606203458852", MetalRateCriticalEvent(
-                id = UUID.randomUUID().toString(),
-                timeStart = Instant.now().minusMillis(1000L),
-                timeFinish = Instant.now().minusMillis(1000L),
-                metalRate = 0.11,
-                criticalPoint = 0.15,
-                angleStart = 66.0,
-                isActive = true
-            )
-        )
-
-        val converterFacade = converterFacadeTest(
-            roundingWeight = 0.5,
-            currentState = AtomicReference(
-                CurrentState(
-                    currentMeltInfo = defaultMeltInfoTest(),
-                    lastAngles = ModelAngles(
-                        angle = 66.0
-                    ),
-                    lastSlagRate = ModelSlagRate(
-                        avgSteelRate = 0.11,
-                        steelRate = 0.11
-
-                    )
-                )
-            ),
-            converterRepository = repository
-        )
-//       val converterFacade = ConverterFacade()
-        val context = converterBeContextTest(
-            meltInfo = defaultMeltInfoTest(),
-            slagRate = ModelSlagRate(
-                slagRate = 0.11,
-                steelRate = 0.11
-//                avgSteelRate = 0.11
-            ),
-            frame = ModelFrame(
-                frameTime = Instant.now()
-            )
-        )
-
-
         runBlocking {
+            val repository = EventRepositoryInMemory()
+            repository.create(
+                ModelEvent(
+                    id = UUID.randomUUID().toString(),
+                    meltId = "211626-1606203458852",
+                    type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
+                    timeStart = Instant.now().minusMillis(1000L),
+                    timeFinish = Instant.now().minusMillis(1000L),
+                    metalRate = 0.16,
+                    criticalPoint = 0.15,
+                    angleStart = 66.0,
+                    title = "Критическая ситуация",
+                    textMessage = """
+                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(
+                        0.15
+                    )}%. Верните конвертер в вертикальное положение!
+                                  """.trimIndent(),
+                    category = ModelEvent.Category.CRITICAL
+                )
+            )
+
+            val converterFacade = converterFacadeTest(
+                roundingWeight = 0.5,
+                currentState = AtomicReference(
+                    CurrentState(
+                        currentMeltInfo = defaultMeltInfoTest(),
+                        lastAngles = ModelAngles(
+                            angle = 66.0
+                        ),
+                        lastSlagRate = ModelSlagRate(
+                            steelRate = 0.16
+
+                        )
+                    )
+                ),
+                converterRepository = repository
+            )
+
+            val context = converterBeContextTest(
+                meltInfo = defaultMeltInfoTest(),
+                slagRate = ModelSlagRate(
+                    slagRate = 0.001,
+                    steelRate = 0.001
+
+                ),
+                frame = ModelFrame(
+                    frameTime = Instant.now()
+                )
+            )
+
+
+
             converterFacade.handleMath(context)
+
+            assertEquals(ModelEvent.Category.CRITICAL, context.events.first().category)
+            assertEquals(false, context.events.first().isActive)
         }
-
-//        assertEquals(IBizEvent.Category.CRITICAL, context.events.events.first().category)
-        assertEquals(false,  context.events.events.first().isActive)
-
-
-//            context.eventsRepository.getActiveByMeltId("211626-1606203458852")
-//            .forEach() { it.isActive })
-//        eventsRepository.getActiveByMeltId("211626-1606203458852"). isActive)
     }
 }
 

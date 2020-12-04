@@ -1,26 +1,54 @@
 package ru.datana.smart.ui.converter.app.mappings
 
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
-import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.ws.models.*
 import java.time.Instant
-import kotlin.streams.toList
 
-fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
+fun ConverterBeContext.toWsConverterResponseSlagRate() =
+    WsDsmartResponseConverterSlagRate(
+        data = toWsConverterSlagRateModel(this.slagRate)
+    )
+
+fun ConverterBeContext.toWsConverterResponseAngles() =
+    WsDsmartResponseConverterAngles(
+        data = toWsConverterAnglesModel(this.angles)
+    )
+
+fun ConverterBeContext.toWsConverterResponseFrame() =
+    WsDsmartResponseConverterFrame(
+        data = toWsConverterFrameDataModel(this.frame)
+    )
+
+fun ConverterBeContext.toWsConverterResponseMeltInfo() =
+    WsDsmartResponseConverterMeltInfo(
+        data = toWsConverterMeltInfoModel(this.meltInfo)
+    )
+
+fun ConverterBeContext.toWsResponseConverterEvent() =
+    WsDsmartResponseConverterEvents(
+        data = toWsEventListModel(this.events)
+    )
+
+fun ConverterBeContext.toWsResponseConverterState() =
+    WsDsmartResponseConverterState(
+        data = toWsConverterStateModel(this)
+    )
+
+private fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
     WsDsmartConverterSlagRate(
         steelRate = modelSlagRate.steelRate.takeIf { it != Double.MIN_VALUE },
         slagRate = modelSlagRate.slagRate.takeIf { it != Double.MIN_VALUE }
     )
 
-fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
+private fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
     WsDsmartConverterAngles(
         angleTime = modelAngles.angleTime.takeIf { it != Instant.MIN }?.toEpochMilli(),
         angle = modelAngles.angle.takeIf { it != Double.MIN_VALUE },
         source = modelAngles.source.takeIf { it != Double.MIN_VALUE }
     )
 
-fun toWsConverterFrameDataModel(modelFrame: ModelFrame) =
+private fun toWsConverterFrameDataModel(modelFrame: ModelFrame) =
     WsDsmartConverterFrameData(
         frameId = modelFrame.frameId.takeIf { it.isNotBlank() },
         frameTime = modelFrame.frameTime.takeIf { it != Instant.MIN }?.toEpochMilli(),
@@ -29,7 +57,7 @@ fun toWsConverterFrameDataModel(modelFrame: ModelFrame) =
         channel = modelFrame.channel.takeIf { it != ModelFrame.Channels.NONE }.toString()
     )
 
-fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =
+private fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =
     WsDsmartConverterMeltInfo(
         id = modelMeltInfo.id.takeIf { it.isNotBlank() },
         timeStart = modelMeltInfo.timeStart.takeIf { it != Instant.MIN }?.toEpochMilli(),
@@ -70,7 +98,12 @@ fun toWsConverterMeltInfoModel(modelMeltInfo: ModelMeltInfo) =
         )
     )
 
-fun toWsEventModel(event: IBizEvent) =
+private fun toWsEventListModel(modelEvents: MutableList<ModelEvent>) =
+    WsDsmartEventList(
+        list = modelEvents.map { event -> toWsEventModel(event) }.toMutableList()
+    )
+
+private fun toWsEventModel(event: ModelEvent) =
     WsDsmartEvent(
         id = event.id,
         timeStart = event.timeStart.toEpochMilli(),
@@ -82,15 +115,9 @@ fun toWsEventModel(event: IBizEvent) =
         executionStatus = WsDsmartEvent.ExecutionStatus.valueOf(event.executionStatus.name)
     )
 
-fun toWsEventListModel(modelEvents: ModelEvents) = WsDsmartEventList(
-    list = modelEvents.events.stream().map { event -> toWsEventModel(event) }
-        ?.toList()
-        ?: mutableListOf()
-)
-
-fun toWsConverterStateModel(context: ConverterBeContext) =
+private fun toWsConverterStateModel(context: ConverterBeContext) =
     WsDsmartConverterState(
         meltInfo = toWsConverterMeltInfoModel(context.currentState.get().currentMeltInfo),
         events = toWsEventListModel(context.events),
-        warningPoint = context.metalRateWarningPoint
+        warningPoint = context.streamRateWarningPoint
     )

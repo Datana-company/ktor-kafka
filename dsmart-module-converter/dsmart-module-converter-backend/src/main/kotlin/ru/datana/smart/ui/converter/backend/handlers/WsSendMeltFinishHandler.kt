@@ -5,15 +5,12 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.datana.smart.ui.converter.backend.EventsChain
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.CurrentState
-import ru.datana.smart.ui.converter.common.models.ModelEvents
+import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
-import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 /**
- * СЌС‚РѕС‚ РѕР±СЂР°Р±РѕС‚С‡РёРє СЃР»СѓР¶РёС‚ РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёРµ РєРѕРЅС†Р° РїР»Р°РІРєРё Рё РѕС‚РїСЂР°РІРєРё Р·Р°РІРµСЂС€Р°СЋС‰РёС… Р·РЅР°С‡РµРЅРёР№ РЅР° С„СЂРѕРЅС‚
+ * этот обработчик служит для определение конца плавки и отправки завершающих значений на фронт
  */
 object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
@@ -31,10 +28,14 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 curState.currentMeltInfo = ModelMeltInfo.NONE
                 context.status = CorStatus.STARTED
 
-                EventsChain.konveyor.exec(context)
+                if (context.eventMode == ModelEventMode.STEEL) {
+                    context.converterFacade.handleSteelEvents(context)
+                } else if (context.eventMode == ModelEventMode.SLAG) {
+                    context.converterFacade.handleSlagEvents(context)
+                }
 
                 val events = context.eventsRepository.getAllByMeltId(context.meltInfo.id)
-                context.events = ModelEvents(events = events)
+                context.events = events
                 context.meltInfo = ModelMeltInfo.NONE
                 context.wsManager.sendFinish(context)
                 context.wsManager.sendEvents(context)
