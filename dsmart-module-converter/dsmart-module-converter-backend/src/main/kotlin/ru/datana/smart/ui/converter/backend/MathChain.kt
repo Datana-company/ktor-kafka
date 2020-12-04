@@ -121,7 +121,8 @@ class MathChain(
                         ).exec(this)
                     }
                 }
-//            }
+
+            //определение конца плавки и отправки завершающих значений на фронт
             +WsSendMeltFinishHandler
 
             +FinishHandler

@@ -2,7 +2,6 @@ package ru.datana.smart.ui.converter.backend
 
 
 import kotlinx.coroutines.runBlocking
-import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.events.IBizEvent
 import ru.datana.smart.ui.converter.common.events.MetalRateCriticalEvent
 import ru.datana.smart.ui.converter.common.models.CurrentState
@@ -22,6 +21,10 @@ internal class EventsChainTest1 {
 //    Если есть активная рекомендация об изменении угла конвертера и при этом потери «металла»
 //    сами по себе вернулись в пределы допустимой нормы, такая рекомендация должна становиться бледной,
 //    независимо от того появилась ли сверху новая рекомендация или нет.
+
+//    NKR-1055 Предупреждение "Не выполнено" - т.к. истекло время реакции (3 сек), % металла не снизился, угол не уменьшился
+//    Предупреждение "Выполнено" - т.к. истекло время реакции (3 сек), % металла не снизился, угол уменьшился не менее, чем на 5 градусов
+//    Предупреждение "без статуса" - т.к.  % металла снизился до допустимой нормы, а время реакции еще не истекло
     @BeforeTest
     fun prepareMetaDataTestBefore() {
 
@@ -29,17 +32,17 @@ internal class EventsChainTest1 {
     @Test
     fun isEventActive() {
         val repository = UserEventRepositoryInMemory()
-//        repository.put(
-//            "211626-1606203458852", MetalRateCriticalEvent(
-//                id = UUID.randomUUID().toString(),
-//                timeStart = Instant.now().minusMillis(1000L),
-//                timeFinish = Instant.now().minusMillis(1000L),
-//                metalRate = 0.18,
-//                criticalPoint = 0.17,
-//                angleStart = 66.0,
-//                isActive = true
-//            )
-//        )
+        repository.put(
+            "211626-1606203458852", MetalRateCriticalEvent(
+                id = UUID.randomUUID().toString(),
+                timeStart = Instant.now().minusMillis(1000L),
+                timeFinish = Instant.now().minusMillis(1000L),
+                metalRate = 0.11,
+                criticalPoint = 0.15,
+                angleStart = 66.0,
+                isActive = true
+            )
+        )
 
         val converterFacade = converterFacadeTest(
             roundingWeight = 0.5,
@@ -58,7 +61,7 @@ internal class EventsChainTest1 {
             ),
             converterRepository = repository
         )
-//       val converterFacade = converterFacadeTest()
+//       val converterFacade = ConverterFacade()
         val context = converterBeContextTest(
             meltInfo = defaultMeltInfoTest(),
             slagRate = ModelSlagRate(

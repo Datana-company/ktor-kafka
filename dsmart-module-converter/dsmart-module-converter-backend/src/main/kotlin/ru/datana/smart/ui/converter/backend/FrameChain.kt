@@ -67,6 +67,7 @@ class FrameChain(
 
             +EncodeBase64Handler
             +WsSendFrameHandler
+            // определение конца плавки и отправки завершающих значений на фронт
             +WsSendMeltFinishHandler
             +FinishHandler
         }

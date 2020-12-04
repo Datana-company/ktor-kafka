@@ -12,7 +12,9 @@ import ru.datana.smart.ui.converter.common.models.CurrentState
 import ru.datana.smart.ui.converter.common.models.ModelEvents
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
-
+/**
+ * этот обработчик служит для определение конца плавки и отправки завершающих значений на фронт
+ */
 object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val schedule = context.scheduleCleaner.get()
