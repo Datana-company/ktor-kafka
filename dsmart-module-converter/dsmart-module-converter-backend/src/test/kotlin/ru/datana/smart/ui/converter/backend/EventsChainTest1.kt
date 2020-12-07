@@ -10,7 +10,6 @@ import java.time.Instant
 import kotlin.test.Test
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 
 internal class EventsChainTest1 {
