@@ -46,12 +46,14 @@ fun converterFacadeTest(
     )
 
 fun converterBeContextTest(
+    reactionTime: Long? = null,
     meltInfo: ModelMeltInfo? = null,
     angles: ModelAngles? = null,
     frame: ModelFrame? = null,
     slagRate: ModelSlagRate? = null
 ) =
     ConverterBeContext(
+        reactionTime = Long.MIN_VALUE,
         meltInfo = meltInfo ?: defaultMeltInfoTest(),
         angles = angles ?: ModelAngles.NONE,
         frame = frame ?: ModelFrame.NONE,
