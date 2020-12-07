@@ -316,6 +316,7 @@ internal class EventsChainTest1 {
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(false, context.events.first().isActive)
+            assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
         }
     }
 }
