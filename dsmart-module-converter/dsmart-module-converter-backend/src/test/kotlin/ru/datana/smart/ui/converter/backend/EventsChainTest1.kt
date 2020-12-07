@@ -14,14 +14,11 @@ import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 
 internal class EventsChainTest1 {
-    //    NKR-1031
+//    NKR-1031
 //    Если есть активная рекомендация об изменении угла конвертера и при этом потери «металла»
 //    сами по себе вернулись в пределы допустимой нормы, такая рекомендация должна становиться бледной,
 //    независимо от того появилась ли сверху новая рекомендация или нет.
-    @BeforeTest
-    fun prepareMetaDataTestBefore() {
 
-    }
     @Test
     fun isEventActive() {
         runBlocking {
@@ -74,8 +71,6 @@ internal class EventsChainTest1 {
                     frameTime = Instant.now()
                 )
             )
-
-
 
             converterFacade.handleMath(context)
 
