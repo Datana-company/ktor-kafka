@@ -320,5 +320,3 @@ internal class EventsChainTest1 {
         }
     }
 }
-
-

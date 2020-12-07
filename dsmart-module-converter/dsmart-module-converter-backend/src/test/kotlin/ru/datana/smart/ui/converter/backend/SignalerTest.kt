@@ -328,4 +328,72 @@ internal class SignalerTest {
             assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
         }
     }
+    /**NKR-905
+     * [лимит на звуковой сигнал сирены] - в секундах - сколько по длительности должен продолжаться звуковой сигнал
+     * [время реакции на рекомендацию] - REACTION_TIME   - Уже проверено в EventsChainTest
+     * [допустимый % потери] - METAL_RATE_POINT_WARNING - Уже проверено в EventsChainTest
+     * [% критической потери металла] - METAL_RATE_POINT_CRITICAL - Уже проверено в EventsChainTest
+     */
+    @Test
+    fun isEventActiveAfterSirenLimitTime() {
+        runBlocking {
+            val repository = EventRepositoryInMemory()
+            repository.create(
+                ModelEvent(
+                    id = UUID.randomUUID().toString(),
+                    meltId = "211626-1606203458852",
+                    type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
+                    timeStart = Instant.now().minusMillis(11000L),
+                    timeFinish = Instant.now().minusMillis(1000L),
+                    metalRate = 0.16,
+                    criticalPoint = 0.15,
+                    angleStart = 66.0,
+                    title = "Критическая ситуация",
+                    textMessage = """
+                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(
+                        0.15
+                    )}%. Верните конвертер в вертикальное положение!
+                                  """.trimIndent(),
+                    category = ModelEvent.Category.CRITICAL
+                )
+            )
+
+            val converterFacade = converterFacadeTest(
+
+                roundingWeight = 0.1,
+                metalRateWarningPoint = 0.1,
+                metalRateCriticalPoint = 0.34,
+                reactionTime = 3000,
+                sirenLimitTime = 3000,
+                currentState = AtomicReference(
+                    CurrentState(
+                        currentMeltInfo = defaultMeltInfoTest(),
+                        lastAngles = ModelAngles(
+                            angle = 66.0
+                        ),
+                        lastSlagRate = ModelSlagRate(
+                            steelRate = 0.16
+
+                        )
+                    )
+                ),
+                converterRepository = repository
+            )
+
+            val context = converterBeContextTest(
+                meltInfo = defaultMeltInfoTest(),
+                slagRate = ModelSlagRate(
+                    slagRate = 0.001,
+                    steelRate = 0.16
+
+                ),
+                frame = ModelFrame(
+                    frameTime = Instant.now()
+                )
+            )
+
+            converterFacade.handleMath(context)
+            assertEquals(3000L, context.sirenLimitTime)
+        }
+    }
 }
