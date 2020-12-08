@@ -46,6 +46,21 @@ fun converterFacadeTest(
         scheduleCleaner = scheduleCleaner ?: AtomicReference(ScheduleCleaner.NONE)
     )
 
+fun converterBeContextTest(
+    reactionTime: Long? = null,
+    meltInfo: ModelMeltInfo? = null,
+    angles: ModelAngles? = null,
+    frame: ModelFrame? = null,
+    slagRate: ModelSlagRate? = null
+) =
+    ConverterBeContext(
+        reactionTime = Long.MIN_VALUE,
+        meltInfo = meltInfo ?: defaultMeltInfoTest(),
+        angles = angles ?: ModelAngles.NONE,
+        frame = frame ?: ModelFrame.NONE,
+        slagRate = slagRate ?: ModelSlagRate.NONE
+    )
+
 fun createCurrentStateForTest(
     lastAngleTime: Instant? = null,
     lastAngle: Double? = null,
@@ -68,22 +83,6 @@ fun createCurrentStateForTest(
     )
     return currentState
 }
-
-fun converterBeContextTest(
-    reactionTime: Long? = null,
-    meltInfo: ModelMeltInfo? = null,
-    angles: ModelAngles? = null,
-    frame: ModelFrame? = null,
-    slagRate: ModelSlagRate? = null
-) =
-    ConverterBeContext(
-        reactionTime = Long.MIN_VALUE,
-        meltInfo = meltInfo ?: defaultMeltInfoTest(),
-        angles = angles ?: ModelAngles.NONE,
-        frame = frame ?: ModelFrame.NONE,
-        slagRate = slagRate ?: ModelSlagRate.NONE
-    )
-
 suspend fun createRepositoryWithEventForTest(
     eventType: ModelEvent.EventType,
     timeStart: Instant,
