@@ -4,7 +4,7 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.events.MetalRateInfoEvent
+import ru.datana.smart.ui.converter.common.models.ModelEvent
 import java.time.Instant
 
 /*
@@ -14,24 +14,16 @@ import java.time.Instant
 object AddInfoEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val activeEvent: MetalRateInfoEvent? =
-            context.eventsRepository.getActiveMetalRateEventByMeltId(meltId) as? MetalRateInfoEvent
+        val activeEvent: ModelEvent? = context.eventsRepository
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_INFO_EVENT)
         val slagRateTime = Instant.now()
         activeEvent?.let {
             val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
             val isReactionTimeUp = slagRateTime >= timeStartWithShift
             val isActive = !isReactionTimeUp
-            val currentEvent = MetalRateInfoEvent(
-                id = it.id,
-                timeStart = it.timeStart,
-                timeFinish = slagRateTime,
-                metalRate = it.metalRate,
-                title = it.title,
-                isActive = isActive,
-                angleStart = it.angleStart,
-                warningPoint = it.warningPoint
-            )
-            context.eventsRepository.put(meltId, currentEvent)
+            it.timeFinish = slagRateTime
+            it.isActive = isActive
+            context.eventsRepository.update(it)
         } ?: return
     }
 

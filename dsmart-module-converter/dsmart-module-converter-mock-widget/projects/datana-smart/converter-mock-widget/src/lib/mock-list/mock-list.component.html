@@ -2,7 +2,8 @@
     <div *ngFor="let obj of mockList">
         <mock-list-item-component
             [mockListItem] = "obj"
-            (selectedCase) = "transitionalSelectedCase.emit($event)">
+            (selectedCase) = "newCaseSelected($event)"
+            (startedCase) = "caseStarted($event)">
         </mock-list-item-component>
     </div>
 </div>

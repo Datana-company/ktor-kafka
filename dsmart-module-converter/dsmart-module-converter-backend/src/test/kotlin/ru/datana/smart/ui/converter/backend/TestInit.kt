@@ -3,17 +3,20 @@ package ru.datana.smart.ui.converter.backend
 import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.app.websocket.WsSignalerManager
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
+import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.repositories.IUserEventsRepository
-import ru.datana.smart.ui.converter.repository.inmemory.UserEventRepositoryInMemory
+import ru.datana.smart.ui.converter.common.repositories.IEventRepository
+import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 
 fun converterFacadeTest(
-    converterRepository: IUserEventsRepository? = null,
+    converterRepository: IEventRepository? = null,
     wsManager: IWsManager? = null,
     wsSignalerManager: IWsSignalerManager? = null,
     dataTimeout: Long? = null,
+    meltTimeout: Long? = null,
+    eventMode: ModelEventMode? = null,
     metalRateCriticalPoint: Double? = null,
     metalRateWarningPoint: Double? = null,
     reactionTime: Long? = null,
@@ -25,10 +28,12 @@ fun converterFacadeTest(
     scheduleCleaner: AtomicReference<ScheduleCleaner>? = null,
 ) =
     ConverterFacade(
-        converterRepository = converterRepository ?: UserEventRepositoryInMemory(),
+        converterRepository = converterRepository ?: EventRepositoryInMemory(),
         wsManager = wsManager ?: WsManager(),
         wsSignalerManager = wsSignalerManager ?: WsSignalerManager(),
         dataTimeout = dataTimeout ?: 3000L,
+        meltTimeout = meltTimeout ?: 10000L,
+        eventMode = eventMode ?: ModelEventMode.STEEL,
         metalRateCriticalPoint = metalRateCriticalPoint ?: 0.15,
         metalRateWarningPoint = metalRateWarningPoint ?: 0.1,
         reactionTime = reactionTime ?: 3000L,
