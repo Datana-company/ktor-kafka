@@ -8,6 +8,7 @@ import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.time.Instant
+import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 
 fun converterFacadeTest(
@@ -45,6 +46,30 @@ fun converterFacadeTest(
         scheduleCleaner = scheduleCleaner ?: AtomicReference(ScheduleCleaner.NONE)
     )
 
+fun createCurrentStateForTest(
+    lastAngleTime: Instant? =null,
+    lastAngle: Double? = null,
+    lastSource: Double ?= null,
+    lastSteelRate: Double? = null,
+    lastSlagRate:Double? = null)
+    :AtomicReference<CurrentState> {
+    val currentState = AtomicReference(
+        CurrentState(
+            currentMeltInfo = defaultMeltInfoTest(),
+            lastAngles = ModelAngles(
+                angleTime = lastAngleTime ?: Instant.MIN,
+                angle = lastAngle ?: Double.MIN_VALUE ,
+                source = lastSource ?: Double.MIN_VALUE
+            ),
+            lastSlagRate = ModelSlagRate(
+                steelRate = lastSteelRate ?: Double.MIN_VALUE ,
+                slagRate = lastSlagRate ?: Double.MIN_VALUE
+            )
+        )
+    )
+    return currentState
+}
+
 fun converterBeContextTest(
     reactionTime: Long? = null,
     meltInfo: ModelMeltInfo? = null,
@@ -59,6 +84,31 @@ fun converterBeContextTest(
         frame = frame ?: ModelFrame.NONE,
         slagRate = slagRate ?: ModelSlagRate.NONE
     )
+
+suspend fun createRepositoryWithEventForTest(
+    eventType: ModelEvent.EventType,
+    timeStart: Instant,
+    metalRate: Double = 0.16,
+    criticalPoint: Double = 0.15,
+    angleStart: Double = 0.60,
+    category: ModelEvent.Category)
+    : EventRepositoryInMemory {
+    val repositoryInMemory = EventRepositoryInMemory()
+    repositoryInMemory.create(ModelEvent(
+        id = UUID.randomUUID().toString(),
+        meltId = "211626-1606203458852",
+        type = eventType,
+        timeStart = timeStart,
+        timeFinish = Instant.now().minusMillis(1000L),
+        metalRate = metalRate,
+        criticalPoint = criticalPoint,
+        angleStart = angleStart,
+        category = category
+    )
+    )
+    return repositoryInMemory
+}
+
 
 fun defaultMeltInfoTest() =
     meltInfoTest("211626-1606203458852", "converter1")

@@ -258,45 +258,21 @@ internal class EventsChainTest {
     @Test
     fun isEventActiveAfterReactionTime() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
-            repository.create(
-                ModelEvent(
-                    id = UUID.randomUUID().toString(),
-                    meltId = "211626-1606203458852",
-                    type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                    timeStart = Instant.now().minusMillis(11000L),
-                    timeFinish = Instant.now().minusMillis(1000L),
-                    metalRate = 0.11,
-                    criticalPoint = 0.15,
-                    angleStart = 66.0,
-                    title = "Критическая ситуация",
-                    textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(
-                        0.15
-                    )}%. Верните конвертер в вертикальное положение!
-                                  """.trimIndent(),
-                    category = ModelEvent.Category.WARNING
-                )
+            val repository = createRepositoryWithEventForTest(
+                ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                Instant.now().minusMillis(11000L),
+                0.11,
+                0.15,
+                66.0,
+                ModelEvent.Category.WARNING
             )
 
             val converterFacade = converterFacadeTest(
-
                 roundingWeight = 0.1,
                 metalRateWarningPoint = 0.1,
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
-                currentState = AtomicReference(
-                    CurrentState(
-                        currentMeltInfo = defaultMeltInfoTest(),
-                        lastAngles = ModelAngles(
-                            angle = 66.0
-                        ),
-                        lastSlagRate = ModelSlagRate(
-                            steelRate = 0.14
-
-                        )
-                    )
-                ),
+                currentState = createCurrentStateForTest(null,66.0,null,0.14,null),
                 converterRepository = repository
             )
 
