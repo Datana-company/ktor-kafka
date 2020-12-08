@@ -25,7 +25,7 @@ import {SignalerModel} from './models/signaler.model';
 })
 export class ConverterWidgetComponent implements OnInit, OnDestroy {
 
-  _unsubscribe = new Subject<void>();
+  _unsubscribe = new Subject<void>(); 
   public current_time = interval(100)
     .pipe(
       map(() => new Date())
