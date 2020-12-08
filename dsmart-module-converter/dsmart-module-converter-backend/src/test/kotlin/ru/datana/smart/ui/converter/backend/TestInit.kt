@@ -47,22 +47,21 @@ fun converterFacadeTest(
     )
 
 fun createCurrentStateForTest(
-    lastAngleTime: Instant? =null,
+    lastAngleTime: Instant? = null,
     lastAngle: Double? = null,
-    lastSource: Double ?= null,
+    lastSource: Double? = null,
     lastSteelRate: Double? = null,
-    lastSlagRate:Double? = null)
-    :AtomicReference<CurrentState> {
+    lastSlagRate: Double? = null): AtomicReference<CurrentState> {
     val currentState = AtomicReference(
         CurrentState(
             currentMeltInfo = defaultMeltInfoTest(),
             lastAngles = ModelAngles(
                 angleTime = lastAngleTime ?: Instant.MIN,
-                angle = lastAngle ?: Double.MIN_VALUE ,
+                angle = lastAngle ?: Double.MIN_VALUE,
                 source = lastSource ?: Double.MIN_VALUE
             ),
             lastSlagRate = ModelSlagRate(
-                steelRate = lastSteelRate ?: Double.MIN_VALUE ,
+                steelRate = lastSteelRate ?: Double.MIN_VALUE,
                 slagRate = lastSlagRate ?: Double.MIN_VALUE
             )
         )
