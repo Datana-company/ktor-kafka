@@ -12,7 +12,7 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.test.assertEquals
 
-internal class EventsChainTest1 {
+internal class EventsChainTest {
     /**  NKR-1031
      *  Если есть активная рекомендация об изменении угла конвертера и при этом потери «металла»
      *  сами по себе вернулись в пределы допустимой нормы, такая рекомендация должна становиться бледной,
