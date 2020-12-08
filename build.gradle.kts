@@ -1,26 +1,22 @@
 plugins {
-    kotlin("js") apply false
-    kotlin("jvm") apply false
-    kotlin("multiplatform") apply false
-    kotlin("plugin.serialization") apply false
-    id("com.bmuschko.docker-remote-api") apply false
-    id("com.bmuschko.docker-java-application") apply false
-    id("org.openapi.generator") apply false
+    kotlin("jvm")
 }
 
-group = "ru.datana.smart.ui"
-version = "0.6.12"
+group = "ru.datana.smart.common.ktor.kafka"
+version = "0.6.0"
 
-subprojects {
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-//        kotlinOptions.suppressWarnings = true
-        kotlinOptions.jvmTarget = "11"
-    }
+repositories {
+    mavenCentral()
+}
 
-    repositories {
-        mavenLocal()
-        jcenter()
-        maven { url = uri("https://kotlin.bintray.com/ktor") }
-        maven { url = uri("https://nexus.datana.ru/repository/datana-release/") }
-    }
+dependencies {
+    val ktorVersion: String by project
+
+    implementation(kotlin("stdlib"))
+    implementation("io.ktor:ktor-server-core:$ktorVersion")
+    implementation("io.ktor:ktor-server-host-common:$ktorVersion")
+    implementation("org.apache.kafka:kafka-clients:2.5.0")
+
+    testImplementation("io.ktor:ktor-server-netty:$ktorVersion")
+    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }

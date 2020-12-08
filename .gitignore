@@ -1,5 +1,2 @@
-/.gradle
-/.idea
-**.iml
 /build
-/LOGS_DIR_IS_UNDEFINED
+/.gradle
