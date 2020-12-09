@@ -85,7 +85,7 @@ internal class EventsChainTest {
                 ),
             )
             converterFacade.handleMath(context)
-            
+
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
 
