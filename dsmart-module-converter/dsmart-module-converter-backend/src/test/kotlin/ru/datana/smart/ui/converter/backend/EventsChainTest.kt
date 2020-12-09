@@ -17,18 +17,25 @@ internal class EventsChainTest {
     @Test
     fun isEventActive() {
         runBlocking {
-            val repository =  createRepositoryWithEventForTest(
-                ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                Instant.now().minusMillis(1000L),
-                0.16,
-                0.15,
-                0.1,
-                66.0,
-                ModelEvent.Category.CRITICAL)
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
+                timeStart = Instant.now().minusMillis(1000L),
+                metalRate = 0.16,
+                criticalPoint = 0.15,
+                warningPoint = 0.1,
+                angleStart = 66.0,
+                category = ModelEvent.Category.CRITICAL
+            )
 
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(null,66.0,null,0.16,null),
+                currentState = createCurrentStateForTest(
+                    lastAngleTime = null,
+                    lastAngle = 66.0,
+                    lastSource = null,
+                    lastSteelRate = 0.16,
+                    lastSlagRate = null
+                ),
                 converterRepository = repository
             )
 
@@ -56,14 +63,14 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusFAILED() {
         runBlocking {
-            val repository =  createRepositoryWithEventForTest(
-                ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                Instant.now().minusMillis(5000L),
-                0.11,
-                null,
-                0.1,
-                60.0,
-                ModelEvent.Category.WARNING
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                timeStart = Instant.now().minusMillis(5000L),
+                metalRate = 0.11,
+                criticalPoint = null,
+                warningPoint = 0.1,
+                angleStart = 60.0,
+                category = ModelEvent.Category.WARNING
             )
 
             val converterFacade = converterFacadeTest(
@@ -71,7 +78,13 @@ internal class EventsChainTest {
                 metalRateWarningPoint = 0.1,
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
-                currentState = createCurrentStateForTest(null,60.0,null,0.11,null),
+                currentState = createCurrentStateForTest(
+                    lastAngleTime = null,
+                    lastAngle = 60.0,
+                    lastSource = null,
+                    lastSteelRate = 0.11,
+                    lastSlagRate = null
+                ),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -99,14 +112,14 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusCOMPLETED() {
         runBlocking {
-            val repository =  createRepositoryWithEventForTest(
-                ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                Instant.now().minusMillis(5000L),
-                0.11,
-                null,
-                0.1,
-                68.0,
-                ModelEvent.Category.WARNING
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                timeStart = Instant.now().minusMillis(5000L),
+                metalRate = 0.11,
+                criticalPoint = null,
+                warningPoint = 0.1,
+                angleStart = 68.0,
+                category = ModelEvent.Category.WARNING
             )
 
             val converterFacade = converterFacadeTest(
@@ -114,7 +127,13 @@ internal class EventsChainTest {
                 metalRateWarningPoint = 0.1,
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
-                currentState = createCurrentStateForTest(null,60.0,null,0.11,null),
+                currentState = createCurrentStateForTest(
+                    lastAngleTime = null,
+                    lastAngle = 60.0,
+                    lastSource = null,
+                    lastSteelRate = 0.11,
+                    lastSlagRate = null
+                ),
                 converterRepository = repository
             )
 
@@ -141,21 +160,26 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusNone() {
         runBlocking {
-            val repository =  createRepositoryWithEventForTest(
-                ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                Instant.now().minusMillis(2000L),
-                0.16,
-                null,
-                0.1,
-                68.0,
-                ModelEvent.Category.WARNING
+            val repository = createRepositoryWithEventForTest(
+                eventType= ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                timeStart = Instant.now().minusMillis(2000L),
+                metalRate = 0.16,
+                criticalPoint = null,
+                warningPoint = 0.1,
+                angleStart = 68.0,
+                category = ModelEvent.Category.WARNING
             )
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 metalRateWarningPoint = 0.1,
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
-                currentState = createCurrentStateForTest(null,60.0,null,0.16,null),
+                currentState = createCurrentStateForTest(
+                    lastAngleTime = null,
+                    lastAngle = 60.0,
+                    lastSource = null,
+                    lastSteelRate = 0.16,
+                    lastSlagRate = null),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -227,13 +251,13 @@ internal class EventsChainTest {
     fun isEventActiveAfterReactionTime() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
-                ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                Instant.now().minusMillis(11000L),
-                0.11,
-                null,
-                0.1,
-                66.0,
-                ModelEvent.Category.WARNING
+                eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                timeStart = Instant.now().minusMillis(11000L),
+                metalRate = 0.11,
+                criticalPoint = null,
+                warningPoint = 0.1,
+                angleStart = 66.0,
+                category = ModelEvent.Category.WARNING
             )
 
             val converterFacade = converterFacadeTest(
@@ -241,7 +265,7 @@ internal class EventsChainTest {
                 metalRateWarningPoint = 0.1,
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
-                currentState = createCurrentStateForTest(null,66.0,null,0.14,null),
+                currentState = createCurrentStateForTest(null, 66.0, null, 0.14, null),
                 converterRepository = repository
             )
 
