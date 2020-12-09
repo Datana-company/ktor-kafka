@@ -3,13 +3,9 @@ package ru.datana.smart.ui.converter.backend
 
 import kotlinx.coroutines.runBlocking
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.utils.toPercent
-import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 
 import java.time.Instant
 import kotlin.test.Test
-import java.util.*
-import java.util.concurrent.atomic.AtomicReference
 import kotlin.test.assertEquals
 
 internal class EventsChainTest {
@@ -21,41 +17,18 @@ internal class EventsChainTest {
     @Test
     fun isEventActive() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
-            repository.create(
-                ModelEvent(
-                    id = UUID.randomUUID().toString(),
-                    meltId = "211626-1606203458852",
-                    type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                    timeStart = Instant.now().minusMillis(1000L),
-                    timeFinish = Instant.now().minusMillis(1000L),
-                    metalRate = 0.16,
-                    criticalPoint = 0.15,
-                    angleStart = 66.0,
-                    title = "Критическая ситуация",
-                    textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(
-                        0.15
-                    )}%. Верните конвертер в вертикальное положение!
-                                  """.trimIndent(),
-                    category = ModelEvent.Category.CRITICAL
-                )
-            )
+            val repository =  createRepositoryWithEventForTest(
+                ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
+                Instant.now().minusMillis(1000L),
+                0.16,
+                0.15,
+                0.1,
+                66.0,
+                ModelEvent.Category.CRITICAL)
 
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = AtomicReference(
-                    CurrentState(
-                        currentMeltInfo = defaultMeltInfoTest(),
-                        lastAngles = ModelAngles(
-                            angle = 66.0
-                        ),
-                        lastSlagRate = ModelSlagRate(
-                            steelRate = 0.16
-
-                        )
-                    )
-                ),
+                currentState = createCurrentStateForTest(null,66.0,null,0.16,null),
                 converterRepository = repository
             )
 
@@ -70,7 +43,6 @@ internal class EventsChainTest {
                     frameTime = Instant.now()
                 )
             )
-
             converterFacade.handleMath(context)
 
             assertEquals(ModelEvent.Category.CRITICAL, context.events.first().category)
@@ -84,39 +56,22 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusFAILED() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
-            repository.create(ModelEvent(
-                id = UUID.randomUUID().toString(),
-                meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = Instant.now().minusMillis(5000L),
-                timeFinish = Instant.now().minusMillis(1000L),
-                metalRate = 0.011,
-                warningPoint = 0.1,
-                angleStart = 60.0,
-                title = "Предупреждение",
-                textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.11)}% сверх допустимой нормы ${toPercent(0.1)}%. Верните конвертер в вертикальное положение.
-                                  """.trimIndent(),
-                category = ModelEvent.Category.WARNING
-            ))
+            val repository =  createRepositoryWithEventForTest(
+                ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                Instant.now().minusMillis(5000L),
+                0.11,
+                null,
+                0.1,
+                60.0,
+                ModelEvent.Category.WARNING
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 metalRateWarningPoint = 0.1,
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
-
-                currentState = AtomicReference(
-                    CurrentState(
-                        currentMeltInfo = defaultMeltInfoTest(),
-                        lastAngles = ModelAngles(
-                            angle = 60.0
-                        ),
-                        avgSlagRate = ModelSlagRate(
-                            steelRate = 0.011
-                        )
-                    )
-                ),
+                currentState = createCurrentStateForTest(null,60.0,null,0.11,null),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -130,6 +85,7 @@ internal class EventsChainTest {
                 ),
             )
             converterFacade.handleMath(context)
+            
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
 
@@ -143,43 +99,26 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusCOMPLETED() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
-            repository.create(ModelEvent(
-                id = UUID.randomUUID().toString(),
-                meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = Instant.now().minusMillis(5000L),
-                timeFinish = Instant.now().minusMillis(1000L),
-                metalRate = 0.011,
-                warningPoint = 0.1,
-                angleStart = 68.0,
-                title = "Предупреждение",
-                textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.11)}% сверх допустимой нормы ${toPercent(0.1)}%. Верните конвертер в вертикальное положение.
-                                  """.trimIndent(),
-                category = ModelEvent.Category.WARNING
-            ))
+            val repository =  createRepositoryWithEventForTest(
+                ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                Instant.now().minusMillis(5000L),
+                0.11,
+                null,
+                0.1,
+                68.0,
+                ModelEvent.Category.WARNING
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 metalRateWarningPoint = 0.1,
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
-
-                currentState = AtomicReference(
-                    CurrentState(
-                        currentMeltInfo = defaultMeltInfoTest(),
-                        lastAngles = ModelAngles(
-                            angle = 60.0
-                        ),
-                        avgSlagRate = ModelSlagRate(
-                            steelRate = 0.011
-                        )
-                    )
-                ),
+                currentState = createCurrentStateForTest(null,60.0,null,0.11,null),
                 converterRepository = repository
             )
+
             val context = converterBeContextTest(
-//            reactionTime = 3000L,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.011
@@ -189,12 +128,12 @@ internal class EventsChainTest {
                 ),
             )
             converterFacade.handleMath(context)
+
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
 
         }
     }
-
 
     /** NKR-1055  ModelEvent.ExecutionStatus.None
      * Предупреждение "без статуса" - т.к.  % металла снизился до допустимой нормы, а время реакции еще не истекло.
@@ -202,39 +141,21 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusNone() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
-            repository.create(ModelEvent(
-                id = UUID.randomUUID().toString(),
-                meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = Instant.now().minusMillis(2000L),
-                timeFinish = Instant.now().minusMillis(1000L),
-                metalRate = 0.16,
-                warningPoint = 0.1,
-                angleStart = 68.0,
-                title = "Предупреждение",
-                textMessage = """
-                                      В потоке детектирован металл – ${toPercent(0.16)}% сверх допустимой нормы ${toPercent(0.1)}%. Верните конвертер в вертикальное положение.
-                                      """.trimIndent(),
-                category = ModelEvent.Category.WARNING
-            ))
+            val repository =  createRepositoryWithEventForTest(
+                ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                Instant.now().minusMillis(2000L),
+                0.16,
+                null,
+                0.1,
+                68.0,
+                ModelEvent.Category.WARNING
+            )
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 metalRateWarningPoint = 0.1,
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
-
-                currentState = AtomicReference(
-                    CurrentState(
-                        currentMeltInfo = defaultMeltInfoTest(),
-                        lastAngles = ModelAngles(
-                            angle = 60.0
-                        ),
-                        avgSlagRate = ModelSlagRate(
-                            steelRate = 0.16
-                        )
-                    )
-                ),
+                currentState = createCurrentStateForTest(null,60.0,null,0.16,null),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -247,6 +168,7 @@ internal class EventsChainTest {
                 ),
             )
             converterFacade.handleMath(context)
+
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
 
@@ -262,7 +184,8 @@ internal class EventsChainTest {
                 ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 Instant.now().minusMillis(11000L),
                 0.11,
-                0.15,
+                null,
+                0.1,
                 66.0,
                 ModelEvent.Category.WARNING
             )

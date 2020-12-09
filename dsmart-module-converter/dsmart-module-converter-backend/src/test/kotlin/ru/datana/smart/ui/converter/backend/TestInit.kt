@@ -83,12 +83,14 @@ fun createCurrentStateForTest(
     )
     return currentState
 }
+
 suspend fun createRepositoryWithEventForTest(
     eventType: ModelEvent.EventType,
     timeStart: Instant,
-    metalRate: Double = 0.16,
-    criticalPoint: Double = 0.15,
-    angleStart: Double = 0.60,
+    metalRate: Double? = null,
+    criticalPoint: Double? = null,
+    warningPoint: Double? = null,
+    angleStart: Double? = null,
     category: ModelEvent.Category)
     : EventRepositoryInMemory {
     val repositoryInMemory = EventRepositoryInMemory()
@@ -98,9 +100,10 @@ suspend fun createRepositoryWithEventForTest(
         type = eventType,
         timeStart = timeStart,
         timeFinish = Instant.now().minusMillis(1000L),
-        metalRate = metalRate,
-        criticalPoint = criticalPoint,
-        angleStart = angleStart,
+        metalRate = metalRate ?: 0.16,
+        criticalPoint = criticalPoint ?: 0.15,
+        warningPoint = warningPoint ?: 0.1,
+        angleStart = angleStart ?: 0.60,
         category = category
     )
     )
