@@ -15,7 +15,7 @@ internal class EventsChainTest {
      *  независимо от того появилась ли сверху новая рекомендация или нет.
      */
     @Test
-    fun isEventActive() {
+    fun isEventActiveNKR1031() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
@@ -61,7 +61,7 @@ internal class EventsChainTest {
      *  Предупреждение "Не выполнено" - т.к. истекло время реакции (3 сек), % металла не снизился, угол не уменьшился
      */
     @Test
-    fun isExecutionStatusFAILED() {
+    fun isExecutionStatusFAILEDNKR1055() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
@@ -110,7 +110,7 @@ internal class EventsChainTest {
      *  угол уменьшился не менее, чем на 5 градусов
      */
     @Test
-    fun isExecutionStatusCOMPLETED() {
+    fun isExecutionStatusCOMPLETEDNKR1055() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
@@ -158,7 +158,7 @@ internal class EventsChainTest {
      * Предупреждение "без статуса" - т.к.  % металла снизился до допустимой нормы, а время реакции еще не истекло.
      */
     @Test
-    fun isExecutionStatusNone() {
+    fun isExecutionStatusNoneNKR1055() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType= ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
@@ -204,7 +204,7 @@ internal class EventsChainTest {
      *  currentState.get().currentMeltInfo.id.isEmpty()
      */
 //    @Test
-//    fun isExecutionStatusNoneIfMeltFinish() {
+//    fun isExecutionStatusNoneIfMeltFinishNKR1080() {
 //        runBlocking {
 //            val repository =  createRepositoryWithEventForTest(
 //                ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
@@ -248,7 +248,7 @@ internal class EventsChainTest {
      * ui-converter. По окончанию скачивания шлака последняя рекомендация и световой сигнал не меняют статус (остаются активными)
      */
     @Test
-    fun isEventActiveAfterReactionTime() {
+    fun isEventActiveAfterReactionTimeNKR1041() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,

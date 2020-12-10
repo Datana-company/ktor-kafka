@@ -11,7 +11,7 @@ internal class SignalerTest {
 
     // #1061 - Не успела выполниться Critical, содержание металла пришло в норму
     @Test
-    fun signalerTestCase9() {
+    fun signalerTestCase9NKR1061() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
@@ -54,7 +54,7 @@ internal class SignalerTest {
 
     // #1061 - Не успела выполниться Warning, содержание металла пришло в норму
     @Test
-    fun signalerTestCase10() {
+    fun signalerTestCase10NKR1061() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
@@ -96,7 +96,7 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Critical (статус Выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase13() {
+    fun signalerTestCase13NKR1061() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
@@ -139,7 +139,7 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Warning (статус Выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase14() {
+    fun signalerTestCase14NKR1061() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
@@ -180,7 +180,7 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Critical (статус Не выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase15() {
+    fun signalerTestCase15NKR1061() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
@@ -223,7 +223,7 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Warning (статус Не выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase16() {
+    fun signalerTestCase16NKR1061() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
@@ -270,7 +270,7 @@ internal class SignalerTest {
      * [% критической потери металла] - METAL_RATE_POINT_CRITICAL - Уже проверено в EventsChainTest
      */
     @Test
-    fun isEventActiveAfterSirenLimitTime() {
+    fun isEventActiveAfterSirenLimitTimeNKR905() {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
