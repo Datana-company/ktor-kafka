@@ -66,7 +66,10 @@ fun createCurrentStateForTest(
     lastAngle: Double? = null,
     lastSource: Double? = null,
     lastSteelRate: Double? = null,
-    lastSlagRate: Double? = null): AtomicReference<CurrentState> {
+    lastSlagRate: Double? = null,
+    avgSlagRate: Double? = null,
+    avgSteelRate: Double? = null)
+    : AtomicReference<CurrentState> {
     val currentState = AtomicReference(
         CurrentState(
             currentMeltInfo = defaultMeltInfoTest(),
@@ -78,6 +81,10 @@ fun createCurrentStateForTest(
             lastSlagRate = ModelSlagRate(
                 steelRate = lastSteelRate ?: Double.MIN_VALUE,
                 slagRate = lastSlagRate ?: Double.MIN_VALUE
+            ),
+            avgSlagRate = ModelSlagRate(
+                steelRate = avgSteelRate?:Double.MIN_VALUE,
+                slagRate = avgSlagRate?:Double.MIN_VALUE
             )
         )
     )
