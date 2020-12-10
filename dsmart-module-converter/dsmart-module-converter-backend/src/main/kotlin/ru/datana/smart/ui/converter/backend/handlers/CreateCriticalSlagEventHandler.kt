@@ -8,7 +8,6 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import ru.datana.smart.ui.converter.common.utils.toPercent
-import java.time.Instant
 import java.util.*
 
 /*
@@ -18,11 +17,11 @@ import java.util.*
 object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val currentAngle = context.currentState.get().lastAngles.angle
+        val currentAngle = context.currentAngle
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT)
-        val slagRateTime = Instant.now()
-        val avgSlagRate = context.currentState.get().avgSlagRate.slagRate
+        val slagRateTime = context.timeStart
+        val avgSlagRate = context.avgSlagRate
         activeEvent?.let {
             return
         } ?: run {
@@ -38,7 +37,10 @@ object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
                     angleStart = currentAngle,
                     title = "Критическая ситуация",
                     textMessage = """
-                                  В потоке детектирован шлак – ${toPercent(avgSlagRate)}%, процент ниже критического значения – ${toPercent(context.streamRateCriticalPoint)}%. Верните конвертер в вертикальное положение!
+                                  В потоке детектирован металл – ${avgSlagRate.toPercent()}%,
+                                  процент потерь превышает критическое значение –
+                                  ${context.streamRateCriticalPoint.toPercent()}%.
+                                  Верните конвертер в вертикальное положение!
                                   """.trimIndent(),
                     category = ModelEvent.Category.CRITICAL
                 )

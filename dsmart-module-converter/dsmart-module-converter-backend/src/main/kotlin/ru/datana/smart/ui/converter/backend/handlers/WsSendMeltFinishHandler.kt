@@ -7,6 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.models.CurrentState
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 
@@ -22,8 +23,7 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
             }
             jobMeltFinish = GlobalScope.launch {
                 delay(context.meltTimeout)
-                val curState = context.currentState.get()
-                curState.currentMeltInfo = ModelMeltInfo.NONE
+                context.currentState.set(CurrentState.NONE)
                 context.status = CorStatus.STARTED
 
                 if (context.eventMode == ModelEventMode.STEEL) {
