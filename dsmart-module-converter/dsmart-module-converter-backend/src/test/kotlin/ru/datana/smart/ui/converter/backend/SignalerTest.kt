@@ -26,11 +26,9 @@ internal class SignalerTest {
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
-                    lastAngleTime = null,
                     lastAngle = 60.0,
-                    lastSource = null,
                     lastSteelRate = 0.16,
-                    lastSlagRate = null
+                    avgSteelRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -68,11 +66,8 @@ internal class SignalerTest {
 
             val converterFacade = converterFacadeTest(
                 currentState = createCurrentStateForTest(
-                    lastAngleTime = null,
                     lastAngle = 60.0,
-                    lastSource = null,
-                    lastSteelRate = 0.11,
-                    lastSlagRate = null
+                    avgSteelRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -111,11 +106,8 @@ internal class SignalerTest {
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
-                    lastAngleTime = null,
                     lastAngle = 60.0,
-                    lastSource = null,
-                    lastSteelRate = 0.16,
-                    lastSlagRate = null
+                    avgSteelRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -152,11 +144,8 @@ internal class SignalerTest {
             )
             val converterFacade = converterFacadeTest(
                 currentState = createCurrentStateForTest(
-                    lastAngleTime = null,
                     lastAngle = 60.0,
-                    lastSource = null,
-                    lastSteelRate = 0.11,
-                    lastSlagRate = null
+                    avgSteelRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -195,11 +184,8 @@ internal class SignalerTest {
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
-                    lastAngleTime = null,
                     lastAngle = 62.0,
-                    lastSource = null,
-                    lastSteelRate = 0.16,
-                    lastSlagRate = null
+                    avgSteelRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -237,11 +223,8 @@ internal class SignalerTest {
 
             val converterFacade = converterFacadeTest(
                 currentState = createCurrentStateForTest(
-                    lastAngleTime = null,
                     lastAngle = 62.0,
-                    lastSource = null,
-                    lastSteelRate = 0.16,
-                    lastSlagRate = null
+                    avgSteelRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -277,7 +260,6 @@ internal class SignalerTest {
                 timeStart = Instant.now().minusMillis(3000L),
                 metalRate = 0.16,
                 criticalPoint = 0.15,
-                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -290,11 +272,8 @@ internal class SignalerTest {
                 reactionTime = 3000,
                 sirenLimitTime = 3000,
                 currentState = createCurrentStateForTest(
-                    lastAngleTime = null,
                     lastAngle = 66.0,
-                    lastSource = null,
-                    lastSteelRate = 0.16,
-                    lastSlagRate = null
+                    avgSteelRate = 0.16
                 ),
                 converterRepository = repository
             )

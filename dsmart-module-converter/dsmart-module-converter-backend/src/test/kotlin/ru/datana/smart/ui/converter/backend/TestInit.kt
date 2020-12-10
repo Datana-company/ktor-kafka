@@ -78,6 +78,7 @@ fun createCurrentStateForTest(
                 angle = lastAngle ?: Double.MIN_VALUE,
                 source = lastSource ?: Double.MIN_VALUE
             ),
+
             lastSlagRate = ModelSlagRate(
                 steelRate = lastSteelRate ?: Double.MIN_VALUE,
                 slagRate = lastSlagRate ?: Double.MIN_VALUE

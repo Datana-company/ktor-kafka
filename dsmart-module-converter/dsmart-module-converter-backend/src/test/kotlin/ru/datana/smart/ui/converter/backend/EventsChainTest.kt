@@ -31,11 +31,8 @@ internal class EventsChainTest {
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
-                    lastAngleTime = null,
-                    lastAngle = 66.0,
-                    lastSource = null,
-                    lastSteelRate = 0.16,
-                    lastSlagRate = null
+                    lastAngle = 60.0,
+                    avgSteelRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -45,7 +42,6 @@ internal class EventsChainTest {
                 slagRate = ModelSlagRate(
                     slagRate = 0.001,
                     steelRate = 0.001
-
                 ),
                 frame = ModelFrame(
                     frameTime = Instant.now()
@@ -80,16 +76,13 @@ internal class EventsChainTest {
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
                 currentState = createCurrentStateForTest(
-                    lastAngleTime = null,
                     lastAngle = 60.0,
-                    lastSource = null,
-                    lastSteelRate = 0.11,
-                    lastSlagRate = null
+                    avgSteelRate = 0.11
+
                 ),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
-//            reactionTime = 3000L,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.011
@@ -129,11 +122,8 @@ internal class EventsChainTest {
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
                 currentState = createCurrentStateForTest(
-                    lastAngleTime = null,
                     lastAngle = 60.0,
-                    lastSource = null,
-                    lastSteelRate = 0.11,
-                    lastSlagRate = null
+                    avgSteelRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -150,6 +140,7 @@ internal class EventsChainTest {
             converterFacade.handleMath(context)
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
+            delay(4000)
             assertEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
 
         }
@@ -176,11 +167,8 @@ internal class EventsChainTest {
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
                 currentState = createCurrentStateForTest(
-                    lastAngleTime = null,
                     lastAngle = 60.0,
-                    lastSource = null,
                     lastSteelRate = 0.16,
-                    lastSlagRate = null,
                     avgSteelRate = 0.11
                 ),
                 converterRepository = repository
@@ -237,22 +225,19 @@ internal class EventsChainTest {
 //                reactionTime = 3000L,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
-                    steelRate = 0.011
+                    steelRate = 0.12
                 ),
                 frame = ModelFrame(
                     frameTime = Instant.now()
                 ),
             )
             converterFacade.handleMath(context)
-//            delay(6000)
+            delay(6000)
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
-            println("123321456" + context.events)
             assertEquals(false, context.events.first().isActive)
-//            assertEquals("",context.currentState.get().currentMeltInfo.id)
-//            assertEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
-
+            assertEquals("",context.currentState.get().currentMeltInfo.id)
         }
     }
 
@@ -264,7 +249,7 @@ internal class EventsChainTest {
         runBlocking {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = Instant.now().minusMillis(11000L),
+                timeStart = Instant.now().minusMillis(1000L),
                 metalRate = 0.11,
                 criticalPoint = null,
                 warningPoint = 0.1,
@@ -273,11 +258,15 @@ internal class EventsChainTest {
             )
 
             val converterFacade = converterFacadeTest(
+                meltTimeout = 5000L,
                 roundingWeight = 0.1,
                 metalRateWarningPoint = 0.1,
                 metalRateCriticalPoint = 0.34,
                 reactionTime = 3000,
-                currentState = createCurrentStateForTest(null, 66.0, null, 0.14, null),
+                currentState = createCurrentStateForTest(
+                    lastAngle = 66.0,
+                    lastSteelRate =  0.14,
+                    avgSteelRate = 0.14),
                 converterRepository = repository
             )
 
@@ -294,7 +283,7 @@ internal class EventsChainTest {
             )
 
             converterFacade.handleMath(context)
-
+            delay(6000)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(false, context.events.first().isActive)
             assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
