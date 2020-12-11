@@ -230,15 +230,15 @@ fun ConverterBeContext.setAngles(converterTransportAngle: ConverterTransportAngl
     )
 }
 
-fun ConverterBeContext.setExtEvents(converterTransportExtEvent: ConverterTransportExtEvent) {
-    this.extEvents = ModelExtEvents(
+fun ConverterBeContext.setExtEvent(converterTransportExtEvent: ConverterTransportExtEvent) {
+    this.extEvent = ModelEvent(
         alertRuleId = converterTransportExtEvent.alertRuleId ?: "",
         containerId = converterTransportExtEvent.containerId ?: "",
         component = converterTransportExtEvent.component ?: "",
         timestamp = converterTransportExtEvent.timestamp ?: "",
         level = converterTransportExtEvent.level ?: "",
         loggerName = converterTransportExtEvent.loggerName ?: "",
-        message = converterTransportExtEvent.message ?: ""
+        textMessage = converterTransportExtEvent.message ?: ""
     )
 }
 

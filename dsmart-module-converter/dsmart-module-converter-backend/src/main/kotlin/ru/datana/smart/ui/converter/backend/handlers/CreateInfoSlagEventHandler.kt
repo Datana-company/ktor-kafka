@@ -28,19 +28,18 @@ object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
         } ?: run {
             context.eventsRepository.create(
                 ModelEvent(
-                    id = UUID.randomUUID().toString(),
                     meltId = meltId,
                     type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     slagRate = avgSlagRate,
-                    warningPoint = context.streamRateWarningPoint,
                     angleStart = currentAngle,
                     title = "Информация",
                     textMessage = """
                                   Достигнут предел шлака в потоке – ${toPercent(avgSlagRate)}%.
                                   """.trimIndent(),
-                    category = ModelEvent.Category.INFO
+                    category = ModelEvent.Category.INFO,
+                    executionStatus = ModelEvent.ExecutionStatus.STATELESS
                 )
             )
             context.signaler = SignalerModel(

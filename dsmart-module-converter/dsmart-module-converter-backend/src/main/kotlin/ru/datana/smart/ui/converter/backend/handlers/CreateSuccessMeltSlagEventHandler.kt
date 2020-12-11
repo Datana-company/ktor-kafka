@@ -33,18 +33,17 @@ object CreateSuccessMeltSlagEventHandler : IKonveyorHandler<ConverterBeContext> 
         }
         context.eventsRepository.create(
             ModelEvent(
-                id = UUID.randomUUID().toString(),
                 meltId = meltId,
                 type = ModelEvent.EventType.SUCCESS_MELT_EVENT,
                 timeStart = slagRateTime,
                 timeFinish = slagRateTime,
-                warningPoint = context.streamRateWarningPoint,
                 isActive = false,
                 title = "Информация",
                 textMessage = """
                               Процент шлака в потоке не был ниже нормы ${toPercent(context.streamRateWarningPoint)}%.
                               """.trimIndent(),
-                category = ModelEvent.Category.INFO
+                category = ModelEvent.Category.INFO,
+                executionStatus = ModelEvent.ExecutionStatus.STATELESS
             )
         )
     }

@@ -112,7 +112,7 @@ private fun toWsEventModel(event: ModelEvent) =
         textMessage = event.textMessage.takeIf { it.isNotBlank() },
         category = event.category.takeIf { it != ModelEvent.Category.NONE }?.let { WsDsmartEvent.Category.valueOf(it.name) },
         isActive = event.isActive,
-        executionStatus = WsDsmartEvent.ExecutionStatus.valueOf(event.executionStatus.name)
+        executionStatus = event.executionStatus.takeIf { it != ModelEvent.ExecutionStatus.NONE }?.let { WsDsmartEvent.ExecutionStatus.valueOf(it.name) }
     )
 
 private fun toWsConverterStateModel(context: ConverterBeContext) =

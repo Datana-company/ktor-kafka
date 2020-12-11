@@ -77,7 +77,6 @@ fun Application.module(testing: Boolean = false) {
     val topicMath by lazy { environment.config.property("ktor.kafka.consumer.topic.math").getString().trim() }
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicAngles by lazy { environment.config.property("ktor.kafka.consumer.topic.angles").getString().trim() }
-    val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
     val topicEvents by lazy { environment.config.property("ktor.kafka.consumer.topic.events").getString().trim() }
     val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
     val framesBasePath by lazy { environment.config.property("paths.base.frames").getString().trim() }
@@ -234,7 +233,7 @@ fun Application.module(testing: Boolean = false) {
                                 // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
 //                                val context = ConverterBeContext()
                                 // 4) Запихиваем эту модель в контекст
-//                                context.setExtEvents(kafkaModel)
+//                                context.setExtEvent(kafkaModel)
                                 // 5) Вызываем цепочку для обработки поступившего сообщения
 //                                println("topic = events, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
 //                                converterFacade.handleExtEvents(context)

@@ -17,8 +17,12 @@ data class EventInMemoryDto(
     val metalRate: Double? = null,
     val slagRate: Double? = null,
     val angleStart: Double? = null,
-    val warningPoint: Double? = null,
-    val criticalPoint: Double? = null
+    val alertRuleId: String? = null,
+    val containerId: String? = null,
+    val component: String? = null,
+    val timestamp: String? = null,
+    val level: String? = null,
+    val loggerName: String? = null
 ) {
     fun toModel(): ModelEvent = ModelEvent(
         id = id ?: throw ExceptionInInitializerError("id is null"),
@@ -34,8 +38,12 @@ data class EventInMemoryDto(
         metalRate = metalRate ?: Double.MIN_VALUE,
         slagRate = slagRate ?: Double.MIN_VALUE,
         angleStart = angleStart ?: Double.MIN_VALUE,
-        warningPoint = warningPoint ?: Double.MIN_VALUE,
-        criticalPoint = criticalPoint ?: Double.MIN_VALUE
+        alertRuleId = alertRuleId ?: "",
+        containerId = containerId ?: "",
+        component = component ?: "",
+        timestamp = timestamp ?: "",
+        level = level ?: "",
+        loggerName = loggerName ?: ""
     )
 
     companion object {
@@ -51,12 +59,16 @@ data class EventInMemoryDto(
             textMessage = event.textMessage.takeIf { it.isNotBlank() },
             category = event.category.takeIf { it != ModelEvent.Category.NONE }?.let { EventInMemoryCategories.valueOf(it.name) },
             isActive = event.isActive,
-            executionStatus = EventInMemoryExecutionStatus.valueOf(event.executionStatus.name),
+            executionStatus = event.executionStatus.takeIf { it != ModelEvent.ExecutionStatus.NONE }?.let { EventInMemoryExecutionStatus.valueOf(it.name) },
             metalRate = event.metalRate.takeIf { it != Double.MIN_VALUE },
             slagRate = event.slagRate.takeIf { it != Double.MIN_VALUE },
             angleStart = event.angleStart.takeIf { it != Double.MIN_VALUE },
-            warningPoint = event.warningPoint.takeIf { it != Double.MIN_VALUE },
-            criticalPoint = event.criticalPoint.takeIf { it != Double.MIN_VALUE }
+            alertRuleId = event.alertRuleId.takeIf { it.isNotBlank() },
+            containerId = event.containerId.takeIf { it.isNotBlank() },
+            component = event.component.takeIf { it.isNotBlank() },
+            timestamp = event.timestamp.takeIf { it.isNotBlank() },
+            level = event.level.takeIf { it.isNotBlank() },
+            loggerName = event.loggerName.takeIf { it.isNotBlank() }
         )
     }
 }

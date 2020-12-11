@@ -28,19 +28,18 @@ object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
         } ?: run {
             context.eventsRepository.create(
                 ModelEvent(
-                    id = UUID.randomUUID().toString(),
                     meltId = meltId,
                     type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     slagRate = avgSlagRate,
-                    warningPoint = context.streamRateWarningPoint,
                     angleStart = currentAngle,
                     title = "Предупреждение",
                     textMessage = """
                                   В потоке детектирован шлак – ${toPercent(avgSlagRate)}% ниже допустимой нормы ${toPercent(context.streamRateWarningPoint)}%. Верните конвертер в вертикальное положение.
                                   """.trimIndent(),
-                    category = ModelEvent.Category.WARNING
+                    category = ModelEvent.Category.WARNING,
+                    executionStatus = ModelEvent.ExecutionStatus.STATELESS
                 )
             )
             context.signaler = SignalerModel(

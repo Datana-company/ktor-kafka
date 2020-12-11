@@ -13,8 +13,7 @@ data class ConverterBeContext(
     var frame: ModelFrame = ModelFrame.NONE,
     var slagRate: ModelSlagRate = ModelSlagRate.NONE,
     var events: MutableList<ModelEvent> = mutableListOf(),
-    // внутренняя модель (dsmart-module-converter-common.models)
-    var extEvents: ModelExtEvents = ModelExtEvents.NONE,
+    var extEvent: ModelEvent = ModelEvent.NONE,
     var lastTimeAngles: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
     var lastTimeFrame: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
     var status: CorStatus = CorStatus.STARTED,

@@ -10,14 +10,18 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
+@OptIn(ExperimentalTime::class)
 internal class SignalerTest {
 
     // #1061 - Не успела выполниться Critical, содержание металла пришло в норму
     @Test
     fun signalerTestCase9() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
+            val repository = EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES))
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
@@ -25,7 +29,6 @@ internal class SignalerTest {
                 timeStart = Instant.now().minusMillis(1000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
                 angleStart = 66.0,
                 title = "Критическая ситуация",
                 textMessage = """
@@ -71,7 +74,7 @@ internal class SignalerTest {
     @Test
     fun signalerTestCase10() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
+            val repository = EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES))
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
@@ -79,7 +82,6 @@ internal class SignalerTest {
                 timeStart = Instant.now().minusMillis(1000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.11,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 title = "Предупреждение",
                 textMessage = """
@@ -123,7 +125,7 @@ internal class SignalerTest {
     @Test
     fun signalerTestCase13() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
+            val repository = EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES))
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
@@ -131,7 +133,6 @@ internal class SignalerTest {
                 timeStart = Instant.now().minusMillis(3000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
                 angleStart = 66.0,
                 title = "Критическая ситуация",
                 textMessage = """
@@ -176,7 +177,7 @@ internal class SignalerTest {
     @Test
     fun signalerTestCase14() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
+            val repository = EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES))
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
@@ -184,7 +185,6 @@ internal class SignalerTest {
                 timeStart = Instant.now().minusMillis(3000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.11,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 title = "Предупреждение",
                 textMessage = """
@@ -228,7 +228,7 @@ internal class SignalerTest {
     @Test
     fun signalerTestCase15() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
+            val repository = EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES))
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
@@ -236,7 +236,6 @@ internal class SignalerTest {
                 timeStart = Instant.now().minusMillis(3000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
                 angleStart = 66.0,
                 title = "Критическая ситуация",
                 textMessage = """
@@ -281,7 +280,7 @@ internal class SignalerTest {
     @Test
     fun signalerTestCase16() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
+            val repository = EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES))
             repository.create(ModelEvent(
                 id = UUID.randomUUID().toString(),
                 meltId = "211626-1606203458852",
@@ -289,7 +288,6 @@ internal class SignalerTest {
                 timeStart = Instant.now().minusMillis(3000L),
                 timeFinish = Instant.now().minusMillis(1000L),
                 metalRate = 0.11,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 title = "Предупреждение",
                 textMessage = """

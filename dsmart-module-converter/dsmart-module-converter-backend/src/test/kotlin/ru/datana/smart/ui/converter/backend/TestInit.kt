@@ -9,7 +9,11 @@ import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
+@ExperimentalTime
 fun converterFacadeTest(
     converterRepository: IEventRepository? = null,
     wsManager: IWsManager? = null,
@@ -28,7 +32,7 @@ fun converterFacadeTest(
     scheduleCleaner: AtomicReference<ScheduleCleaner>? = null,
 ) =
     ConverterFacade(
-        converterRepository = converterRepository ?: EventRepositoryInMemory(),
+        converterRepository = converterRepository ?: EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
         wsManager = wsManager ?: WsManager(),
         wsSignalerManager = wsSignalerManager ?: WsSignalerManager(),
         dataTimeout = dataTimeout ?: 3000L,
