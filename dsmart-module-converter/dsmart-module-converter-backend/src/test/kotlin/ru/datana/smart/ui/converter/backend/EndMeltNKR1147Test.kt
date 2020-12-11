@@ -15,7 +15,7 @@ import kotlin.test.Test
  * NKR-1147
  * Во время окончания плавки генерируется ещё одна рекомендация (исправлено)
  */
-class EndMeltNKR1147Test {
+internal class EndMeltNKR1147Test {
 
     /**
      * NKR-1147
@@ -26,13 +26,15 @@ class EndMeltNKR1147Test {
     @Test
     fun endMeltTestCase1() {
         runBlocking {
+            val timeStart = Instant.now()
+            val meltTimeout = 5000L
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                timeStart = Instant.now().minusMillis(1000L),
+                timeStart = timeStart.minusMillis(1000L),
                 category = ModelEvent.Category.CRITICAL
             )
 
-            val meltTimeout = 5000L
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 meltTimeout = meltTimeout,
@@ -44,12 +46,13 @@ class EndMeltNKR1147Test {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.1
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -70,9 +73,11 @@ class EndMeltNKR1147Test {
     @Test
     fun endMeltTestCase2() {
         runBlocking {
+            val timeStart = Instant.now()
+            val meltTimeout = 5000L
+
             val repository = EventRepositoryInMemory()
 
-            val meltTimeout = 5000L
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 meltTimeout = meltTimeout,
@@ -84,12 +89,13 @@ class EndMeltNKR1147Test {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.01
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -110,13 +116,15 @@ class EndMeltNKR1147Test {
     @Test
     fun endMeltTestCase3() {
         runBlocking {
+            val timeStart = Instant.now()
+            val meltTimeout = 5000L
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                timeStart = Instant.now().minusMillis(1000L),
+                timeStart = timeStart.minusMillis(1000L),
                 category = ModelEvent.Category.CRITICAL
             )
 
-            val meltTimeout = 5000L
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 meltTimeout = meltTimeout,
@@ -129,12 +137,13 @@ class EndMeltNKR1147Test {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.1
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -155,9 +164,11 @@ class EndMeltNKR1147Test {
     @Test
     fun endMeltTestCase4() {
         runBlocking {
+            val timeStart = Instant.now()
+            val meltTimeout = 5000L
+
             val repository = EventRepositoryInMemory()
 
-            val meltTimeout = 5000L
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 meltTimeout = meltTimeout,
@@ -170,12 +181,13 @@ class EndMeltNKR1147Test {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.01
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
