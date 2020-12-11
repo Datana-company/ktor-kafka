@@ -222,7 +222,6 @@ internal class EventsChainTest {
             )
 
             val context = converterBeContextTest(
-//                reactionTime = 3000L,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.12
