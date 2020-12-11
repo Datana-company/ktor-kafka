@@ -1,23 +1,15 @@
-#image: adoptopenjdk/openjdk11:alpine-slim
-#image: docker:git
 image: registry.datana.ru/alpine-java-docker
 
 services:
-    - name: docker:19.03.14-dind
-      command: ["--tls=false"]
-
+    - docker:dind
 
 variables:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
-    #DOCKER_HOST: tcp://localhost:2375
-    #DOCKER_TLS_CERTDIR: "/certs"
     DOCKER_TLS_CERTDIR: ""
-    #JAVA_IMAGE: adoptopenjdk/openjdk11:alpine-slim
     JAVA_IMAGE: registry.datana.ru/alpine-java-docker
 
 stages:
-    #    - build
     - test
     - deploy
 
@@ -30,15 +22,6 @@ before_script:
 cache:
     paths:
         - .gradle
-#        - .gradle/wrapper
-#        - .gradle/caches
-
-#build:
-#    stage: build
-#    script:
-#        - ./gradlew build
-#    only:
-#        - master
 
 test:
     image: adoptopenjdk/openjdk11:alpine-slim
@@ -54,6 +37,7 @@ deploy:
         - ./gradlew deploy
     only:
         - dev
+        - master
         - /^ver-.*$/
 
 after_script:
