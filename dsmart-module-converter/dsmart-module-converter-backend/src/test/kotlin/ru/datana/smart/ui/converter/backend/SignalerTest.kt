@@ -3,7 +3,6 @@ package ru.datana.smart.ui.converter.backend
 import kotlinx.coroutines.runBlocking
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.utils.toPercent
 import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.time.Instant
 import java.util.*
@@ -27,10 +26,6 @@ internal class SignalerTest {
                 metalRate = 0.16,
                 criticalPoint = 0.15,
                 angleStart = 66.0,
-                title = "Критическая ситуация",
-                textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(0.15)}%. Верните конвертер в вертикальное положение!
-                                  """.trimIndent(),
                 category = ModelEvent.Category.CRITICAL
             ))
 
@@ -81,10 +76,6 @@ internal class SignalerTest {
                 metalRate = 0.11,
                 warningPoint = 0.1,
                 angleStart = 66.0,
-                title = "Предупреждение",
-                textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.11)}% сверх допустимой нормы ${toPercent(0.1)}%. Верните конвертер в вертикальное положение.
-                                  """.trimIndent(),
                 category = ModelEvent.Category.WARNING
             ))
             val converterFacade = converterFacadeTest(
@@ -133,10 +124,6 @@ internal class SignalerTest {
                 metalRate = 0.16,
                 criticalPoint = 0.15,
                 angleStart = 66.0,
-                title = "Критическая ситуация",
-                textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(0.15)}%. Верните конвертер в вертикальное положение!
-                                  """.trimIndent(),
                 category = ModelEvent.Category.CRITICAL
             ))
             val converterFacade = converterFacadeTest(
@@ -186,10 +173,6 @@ internal class SignalerTest {
                 metalRate = 0.11,
                 warningPoint = 0.1,
                 angleStart = 66.0,
-                title = "Предупреждение",
-                textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.11)}% сверх допустимой нормы ${toPercent(0.1)}%. Верните конвертер в вертикальное положение.
-                                  """.trimIndent(),
                 category = ModelEvent.Category.WARNING
             ))
             val converterFacade = converterFacadeTest(
@@ -238,10 +221,6 @@ internal class SignalerTest {
                 metalRate = 0.16,
                 criticalPoint = 0.15,
                 angleStart = 66.0,
-                title = "Критическая ситуация",
-                textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.16)}%, процент потерь превышает критическое значение – ${toPercent(0.15)}%. Верните конвертер в вертикальное положение!
-                                  """.trimIndent(),
                 category = ModelEvent.Category.CRITICAL
             ))
             val converterFacade = converterFacadeTest(
@@ -291,10 +270,6 @@ internal class SignalerTest {
                 metalRate = 0.11,
                 warningPoint = 0.1,
                 angleStart = 66.0,
-                title = "Предупреждение",
-                textMessage = """
-                                  В потоке детектирован металл – ${toPercent(0.11)}% сверх допустимой нормы ${toPercent(0.1)}%. Верните конвертер в вертикальное положение.
-                                  """.trimIndent(),
                 category = ModelEvent.Category.WARNING
             ))
             val converterFacade = converterFacadeTest(

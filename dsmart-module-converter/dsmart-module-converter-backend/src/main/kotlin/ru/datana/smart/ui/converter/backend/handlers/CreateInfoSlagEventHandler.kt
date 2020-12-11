@@ -37,7 +37,7 @@ object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
                     angleStart = currentAngle,
                     title = "Информация",
                     textMessage = """
-                                  Достигнут предел потерь металла в потоке – ${avgSlagRate.toPercent()}%.
+                                  Достигнут предел потерь шлака в потоке – ${avgSlagRate.toPercent()}%.
                                   """.trimIndent(),
                     category = ModelEvent.Category.INFO
                 )
