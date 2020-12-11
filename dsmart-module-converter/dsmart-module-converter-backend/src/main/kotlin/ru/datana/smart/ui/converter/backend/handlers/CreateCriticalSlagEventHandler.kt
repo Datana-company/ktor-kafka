@@ -8,7 +8,6 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import ru.datana.smart.ui.converter.common.utils.toPercent
-import java.time.Instant
 import java.util.*
 
 /*
@@ -21,7 +20,7 @@ object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
         val currentAngle = context.currentAngle
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT)
-        val slagRateTime = Instant.now()
+        val slagRateTime = context.timeStart
         val avgSlagRate = context.avgSlagRate
         activeEvent?.let {
             return
