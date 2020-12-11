@@ -9,9 +9,8 @@ import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelFrame
-import ru.datana.smart.ui.converter.common.models.ModelSlagRate
-import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 
 class MathChain(
     var chainSettings: ConverterChainSettings
@@ -44,24 +43,32 @@ class MathChain(
 
             +EncodeBase64Handler
             +WsSendMathFrameHandler
-            konveyor {
+//            konveyor {
                 // Временный фильтр на выбросы матмодели по содержанию металла из-за капель металла
                 // в начале и в конце слива
-                on {
-                    val res = slagRate.steelRate <= 0.35
-                    val sr = slagRate
-                    val mi = meltInfo
-                    if (! res) {
-                        logger.debug("Filtering out slagRate due to too high value for steelRate", object {
-                            val eventType: String = "dsmart-converter-ui-slagRate-filter-highsteel"
-                            val slagRate: ModelSlagRate = sr
-                            val meltInfo: ModelMeltInfo = mi
-                        })
-                    }
-                    res
+//                on {
+//                    val res = slagRate.steelRate <= 0.35
+//                    val sr = slagRate
+//                    val mi = meltInfo
+//                    if (! res) {
+//                        logger.debug("Filtering out slagRate due to too high value for steelRate", object {
+//                            val eventType: String = "dsmart-converter-ui-slagRate-filter-highsteel"
+//                            val slagRate: ModelSlagRate = sr
+//                            val meltInfo: ModelMeltInfo = mi
+//                        })
+//                    }
+//                    res
+//                }
+
+                konveyor {
+                    on { status == CorStatus.STARTED && eventMode == ModelEventMode.STEEL }
+                    +CalcAvgSteelRateHandler
+                }
+                konveyor {
+                    on { status == CorStatus.STARTED && eventMode == ModelEventMode.SLAG }
+                    +CalcAvgSlagRateHandler
                 }
 
-                +CalcAvgSteelRateHandler
                 +WsSendMathSlagRateHandler
 
                 // Обновляем информацию о последнем значении slagRate
@@ -74,12 +81,19 @@ class MathChain(
                 }
 
                 handler {
-                    onEnv { status == CorStatus.STARTED }
+                    onEnv { status == CorStatus.STARTED && eventMode == ModelEventMode.STEEL }
                     exec {
-                        converterFacade.handleEvents(this)
+                        converterFacade.handleSteelEvents(this)
                     }
                 }
-            }
+
+                handler {
+                    onEnv { status == CorStatus.STARTED && eventMode == ModelEventMode.SLAG }
+                    exec {
+                        converterFacade.handleSlagEvents(this)
+                    }
+                }
+//            }
             +WsSendMeltFinishHandler
 
             +FinishHandler

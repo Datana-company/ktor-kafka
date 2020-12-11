@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   host: `http://${location.hostname}:${location.port}/`
+  // host: `http://localhost:8080`
 };
 
 /*

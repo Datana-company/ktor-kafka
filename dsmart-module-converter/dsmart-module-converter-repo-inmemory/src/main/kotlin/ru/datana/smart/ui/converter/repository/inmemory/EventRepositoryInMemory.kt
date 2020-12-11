@@ -26,14 +26,13 @@ class EventRepositoryInMemory@OptIn(ExperimentalTime::class) constructor(
             }
         }
 
-    override suspend fun get(id: String): ModelEvent {
-        if (id.isBlank()) throw EventRepoWrongIdException(id)
-        return cache.get(id)?.toModel() ?: throw EventRepoNotFoundException(id)
+    override suspend fun get(id: String): ModelEvent? {
+        return cache.getIfPresent(id)?.toModel()
     }
 
-    override suspend fun create(event: ModelEvent): ModelEvent {
-        val dto = EventInMemoryDto.of(event, UUID.randomUUID().toString())
-        return save(dto).toModel()
+    override suspend fun create(event: ModelEvent): ModelEvent? {
+        val dto = EventInMemoryDto.of(event)
+        return save(dto)?.toModel()
     }
 
     override suspend fun update(event: ModelEvent): ModelEvent {
@@ -63,7 +62,6 @@ class EventRepositoryInMemory@OptIn(ExperimentalTime::class) constructor(
             .take(10)
             .toMutableList()
     }
-
 
     override fun getAllActiveByMeltId(meltId: String): MutableList<ModelEvent> {
         return cache.asMap().values.asSequence()

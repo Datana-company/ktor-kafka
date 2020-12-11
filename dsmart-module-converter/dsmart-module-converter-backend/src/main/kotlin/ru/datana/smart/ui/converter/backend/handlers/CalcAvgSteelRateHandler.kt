@@ -4,6 +4,7 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.models.ModelSlagRate
 
 
 /*
@@ -12,14 +13,18 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 object CalcAvgSteelRateHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val roundingWeight = context.roundingWeight
-        with(context.slagRate) {
-            context.currentState.get()?.lastSlagRate?.avgSteelRate?.takeIf { it != Double.MIN_VALUE }?.let {
-                avgSteelRate = steelRate * roundingWeight + it * (1 - roundingWeight)
-//                avgSteelRate = it + (steelRate - it) * roundingWeight
-            } ?: run {
-                avgSteelRate = steelRate
-            }
+        val currentSteelRate = context.slagRate.steelRate
+        val curState = context.currentState.get()
+        val lastAvgSteelRate = curState.avgSlagRate.steelRate
+        val avgSteelRate = if (lastAvgSteelRate != Double.MIN_VALUE) {
+            currentSteelRate * roundingWeight + lastAvgSteelRate * (1 - roundingWeight)
+//            lastAvgSteelRate + (currentSteelRate - lastAvgSteelRate) * roundingWeight
+        } else {
+            currentSteelRate
         }
+        curState.avgSlagRate = ModelSlagRate(
+            steelRate = avgSteelRate
+        )
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

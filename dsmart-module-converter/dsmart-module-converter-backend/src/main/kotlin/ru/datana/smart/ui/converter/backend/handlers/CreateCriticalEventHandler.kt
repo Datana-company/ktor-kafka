@@ -20,8 +20,9 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
         val meltId: String = context.meltInfo.id
         val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: ModelEvent? = context.eventsRepository
-            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT)
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT)
         val slagRateTime = Instant.now()
+        val avgSteelRate = context.currentState.get().avgSlagRate.steelRate
         activeEvent?.let {
             return
         } ?: run {
@@ -29,15 +30,15 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
                 ModelEvent(
                     id = UUID.randomUUID().toString(),
                     meltId = meltId,
-                    type = ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT,
+                    type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = context.slagRate.avgSteelRate,
-                    criticalPoint = context.metalRateCriticalPoint,
+                    metalRate = avgSteelRate,
+                    criticalPoint = context.streamRateCriticalPoint,
                     angleStart = currentAngle,
                     title = "Критическая ситуация",
                     textMessage = """
-                                  В потоке детектирован металл – ${toPercent(context.slagRate.steelRate)}%, процент потерь превышает критическое значение – ${toPercent(context.metalRateCriticalPoint)} %. Верните конвертер в вертикальное положение!
+                                  В потоке детектирован металл – ${toPercent(avgSteelRate)}%, процент потерь превышает критическое значение – ${toPercent(context.streamRateCriticalPoint)}%. Верните конвертер в вертикальное положение!
                                   """.trimIndent(),
                     category = ModelEvent.Category.CRITICAL
                 )

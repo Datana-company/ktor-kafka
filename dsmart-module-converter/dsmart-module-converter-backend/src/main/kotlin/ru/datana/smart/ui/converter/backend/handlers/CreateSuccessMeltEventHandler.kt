@@ -25,8 +25,8 @@ object CreateSuccessMeltEventHandler : IKonveyorHandler<ConverterBeContext> {
         val meltId: String = context.meltInfo.id
         val slagRateTime = Instant.now()
         context.eventsRepository.getAllByMeltId(meltId).map {
-            if (it.type == ModelEvent.EventType.METAL_RATE_CRITICAL_EVENT ||
-                it.type == ModelEvent.EventType.METAL_RATE_WARNING_EVENT
+            if (it.type == ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT ||
+                it.type == ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
             ) {
                 return
             }
@@ -38,11 +38,11 @@ object CreateSuccessMeltEventHandler : IKonveyorHandler<ConverterBeContext> {
                 type = ModelEvent.EventType.SUCCESS_MELT_EVENT,
                 timeStart = slagRateTime,
                 timeFinish = slagRateTime,
-                warningPoint = context.metalRateWarningPoint,
+                warningPoint = context.streamRateWarningPoint,
                 isActive = false,
                 title = "Информация",
                 textMessage = """
-                              Допустимая норма потерь металла ${toPercent(context.metalRateWarningPoint)} % не была превышена.
+                              Допустимая норма потерь металла ${toPercent(context.streamRateWarningPoint)}% не была превышена.
                               """.trimIndent(),
                 category = ModelEvent.Category.INFO
             )

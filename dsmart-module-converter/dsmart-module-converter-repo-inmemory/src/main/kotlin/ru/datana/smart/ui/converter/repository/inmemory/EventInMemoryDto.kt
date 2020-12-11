@@ -15,6 +15,7 @@ data class EventInMemoryDto(
     val isActive: Boolean? = true,
     val executionStatus: EventInMemoryExecutionStatus? = null,
     val metalRate: Double? = null,
+    val slagRate: Double? = null,
     val angleStart: Double? = null,
     val warningPoint: Double? = null,
     val criticalPoint: Double? = null
@@ -31,6 +32,7 @@ data class EventInMemoryDto(
         isActive = isActive ?: true,
         executionStatus = executionStatus?.let { ModelEvent.ExecutionStatus.valueOf(it.name) } ?: ModelEvent.ExecutionStatus.NONE,
         metalRate = metalRate ?: Double.MIN_VALUE,
+        slagRate = slagRate ?: Double.MIN_VALUE,
         angleStart = angleStart ?: Double.MIN_VALUE,
         warningPoint = warningPoint ?: Double.MIN_VALUE,
         criticalPoint = criticalPoint ?: Double.MIN_VALUE
@@ -51,6 +53,7 @@ data class EventInMemoryDto(
             isActive = event.isActive,
             executionStatus = EventInMemoryExecutionStatus.valueOf(event.executionStatus.name),
             metalRate = event.metalRate.takeIf { it != Double.MIN_VALUE },
+            slagRate = event.slagRate.takeIf { it != Double.MIN_VALUE },
             angleStart = event.angleStart.takeIf { it != Double.MIN_VALUE },
             warningPoint = event.warningPoint.takeIf { it != Double.MIN_VALUE },
             criticalPoint = event.criticalPoint.takeIf { it != Double.MIN_VALUE }

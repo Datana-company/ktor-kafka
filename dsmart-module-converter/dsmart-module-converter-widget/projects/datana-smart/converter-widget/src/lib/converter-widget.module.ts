@@ -35,3 +35,4 @@ registerLocaleData(localeRu);
 })
 export class ConverterWidgetModule {
 }
+
