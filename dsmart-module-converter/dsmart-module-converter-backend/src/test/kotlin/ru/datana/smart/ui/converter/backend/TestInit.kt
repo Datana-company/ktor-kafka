@@ -68,7 +68,8 @@ fun createCurrentStateForTest(
     lastSteelRate: Double? = null,
     lastSlagRate: Double? = null,
     avgSlagRate: Double? = null,
-    avgSteelRate: Double? = null)
+    avgSteelRate: Double? = null
+)
     : AtomicReference<CurrentState> {
     val currentState = AtomicReference(
         CurrentState(
@@ -84,8 +85,8 @@ fun createCurrentStateForTest(
                 slagRate = lastSlagRate ?: Double.MIN_VALUE
             ),
             avgSlagRate = ModelSlagRate(
-                steelRate = avgSteelRate?:Double.MIN_VALUE,
-                slagRate = avgSlagRate?:Double.MIN_VALUE
+                steelRate = avgSteelRate ?: Double.MIN_VALUE,
+                slagRate = avgSlagRate ?: Double.MIN_VALUE
             )
         )
     )
@@ -99,21 +100,23 @@ suspend fun createRepositoryWithEventForTest(
     criticalPoint: Double? = null,
     warningPoint: Double? = null,
     angleStart: Double? = null,
-    category: ModelEvent.Category)
+    category: ModelEvent.Category
+)
     : EventRepositoryInMemory {
     val repositoryInMemory = EventRepositoryInMemory()
-    repositoryInMemory.create(ModelEvent(
-        id = UUID.randomUUID().toString(),
-        meltId = "211626-1606203458852",
-        type = eventType,
-        timeStart = timeStart,
-        timeFinish = Instant.now().minusMillis(1000L),
-        metalRate = metalRate ?: 0.16,
-        criticalPoint = criticalPoint ?: 0.15,
-        warningPoint = warningPoint ?: 0.1,
-        angleStart = angleStart ?: 0.60,
-        category = category
-    )
+    repositoryInMemory.create(
+        ModelEvent(
+            id = UUID.randomUUID().toString(),
+            meltId = "211626-1606203458852",
+            type = eventType,
+            timeStart = timeStart,
+            timeFinish = Instant.now().minusMillis(1000L),
+            metalRate = metalRate ?: 0.16,
+            criticalPoint = criticalPoint ?: 0.15,
+            warningPoint = warningPoint ?: 0.1,
+            angleStart = angleStart ?: 0.60,
+            category = category
+        )
     )
     return repositoryInMemory
 }
@@ -125,7 +128,9 @@ fun defaultMeltInfoTest() =
 
 fun meltInfoTest(
     meltId: String? = null,
-    converterId: String? = null
+    converterId: String? = null,
+    irCameraName: String? = null,
+    irCameraId: String? = null
 ) =
     ModelMeltInfo(
         id = meltId ?: "",
@@ -144,8 +149,8 @@ fun meltInfoTest(
                 type = ModelDeviceType.FILE
             ),
             irCamera = ModelDevicesIrCamera(
-                id = "ir-cam-25",
-                name = "IR camera for Converter",
+                id = irCameraId ?: "ir-cam-25",
+                name = irCameraName ?: "IR camera for Converter",
                 uri = "case-demo/5.mp4",
                 deviceType = "ConverterDevicesIrCamera",
                 type = ModelDeviceType.FILE
