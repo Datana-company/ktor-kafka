@@ -55,8 +55,9 @@ class EndMeltNKR1147Test {
             converterFacade.handleMath(context)
             delay(meltTimeout + 1000L)
 
-            println(context.events)
             assertEquals(1, context.events.size)
+            assertEquals(ModelEvent.Category.CRITICAL, context.events.first().category)
+            assertEquals(false, context.events.first().isActive)
         }
     }
 
@@ -94,8 +95,9 @@ class EndMeltNKR1147Test {
             converterFacade.handleMath(context)
             delay(meltTimeout + 1000L)
 
-            println(context.events)
             assertEquals(1, context.events.size)
+            assertEquals(ModelEvent.Category.INFO, context.events.first().category)
+            assertEquals(false, context.events.first().isActive)
         }
     }
 
@@ -138,8 +140,9 @@ class EndMeltNKR1147Test {
             converterFacade.handleMath(context)
             delay(meltTimeout + 1000L)
 
-            println(context.events)
             assertEquals(1, context.events.size)
+            assertEquals(ModelEvent.Category.CRITICAL, context.events.first().category)
+            assertEquals(false, context.events.first().isActive)
         }
     }
 
@@ -178,8 +181,9 @@ class EndMeltNKR1147Test {
             converterFacade.handleMath(context)
             delay(meltTimeout + 1000L)
 
-            println(context.events)
             assertEquals(1, context.events.size)
+            assertEquals(ModelEvent.Category.INFO, context.events.first().category)
+            assertEquals(false, context.events.first().isActive)
         }
     }
 }
