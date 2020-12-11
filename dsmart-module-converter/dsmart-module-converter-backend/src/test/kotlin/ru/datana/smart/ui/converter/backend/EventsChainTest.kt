@@ -465,6 +465,51 @@ internal class EventsChainTest {
             assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
         }
     }
+
+    /////////////////////
+    @Test
+    fun isEventActiveAfterReactionTimeNKR1041_WithFalseParameterTest() {
+        runBlocking {
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                timeStart = Instant.now().minusMillis(1000L),
+                metalRate = 0.001,
+                criticalPoint = null,
+                warningPoint = 0.1,
+                angleStart = 66.0,
+                category = ModelEvent.Category.WARNING
+            )
+
+            val converterFacade = converterFacadeTest(
+                meltTimeout = 5000L,
+                roundingWeight = 0.1,
+                metalRateWarningPoint = 0.1,
+                metalRateCriticalPoint = 0.13,
+                reactionTime = 3000,
+                currentState = createCurrentStateForTest(
+                    lastAngle = 66.0,
+                    lastSteelRate =  0.14,
+                    avgSteelRate = 0.18),
+                converterRepository = repository
+            )
+
+            val context = converterBeContextTest(
+                meltInfo = defaultMeltInfoTest(),
+                slagRate = ModelSlagRate(
+                    slagRate = 0.018,
+                    steelRate = 0.18
+
+                ),
+                frame = ModelFrame(
+                    frameTime = Instant.now()
+                )
+            )
+
+            converterFacade.handleMath(context)
+            assertNotEquals(false, context.events.first().isActive)
+            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
+        }
+    }/////////////
     /** Допустимая доля на графике должна меняться в зависимости от значения "METAL_RATE_POINT_WARNING". */
     @Test
     fun isMetalRatePointWarningRightNKR906() {
