@@ -133,8 +133,11 @@ internal class SignalerTest {
     @Test
     fun signalerTestCase14NKR1061() {
         runBlocking {
-            val repository = createRepositoryWithEventForTest(
-                eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+            val repository = EventRepositoryInMemory()
+            repository.create(ModelEvent(
+                id = UUID.randomUUID().toString(),
+                meltId = "211626-1606203458852",
+                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
                 metalRate = 0.11,
                 criticalPoint = null,

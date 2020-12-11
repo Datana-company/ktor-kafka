@@ -8,7 +8,6 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import ru.datana.smart.ui.converter.common.utils.toPercent
-import java.time.Instant
 import java.util.*
 
 /*
@@ -18,11 +17,11 @@ import java.util.*
 object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = Instant.now()
-        val currentAngle = context.currentState.get().lastAngles.angle
+        val slagRateTime = context.timeStart
+        val currentAngle = context.currentAngle
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_WARNING_EVENT)
-        val avgSlagRate = context.currentState.get().avgSlagRate.slagRate
+        val avgSlagRate = context.avgSlagRate
         activeEvent?.let {
             return
         } ?: run {
@@ -38,7 +37,7 @@ object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
                     angleStart = currentAngle,
                     title = "Предупреждение",
                     textMessage = """
-                                  В потоке детектирован шлак – ${toPercent(avgSlagRate)}% ниже допустимой нормы ${toPercent(context.streamRateWarningPoint)}%. Верните конвертер в вертикальное положение.
+                                  В потоке детектирован шлак – ${avgSlagRate.toPercent()}% сверх допустимой нормы ${context.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                                   """.trimIndent(),
                     category = ModelEvent.Category.WARNING
                 )

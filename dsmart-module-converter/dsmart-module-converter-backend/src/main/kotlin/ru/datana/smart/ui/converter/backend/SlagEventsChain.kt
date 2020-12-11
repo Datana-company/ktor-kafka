@@ -9,6 +9,7 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
+import ru.datana.smart.ui.converter.common.utils.isNotEmpty
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 class SlagEventsChain(
@@ -29,12 +30,8 @@ class SlagEventsChain(
 
             konveyor {
                 on {
-                    val currentSlagRate = currentState.get().avgSlagRate.slagRate
-                    currentSlagRate.takeIf { it != Double.MIN_VALUE }
-                        ?.let { toPercent(it) >= 0 && toPercent(it) < toPercent(streamRateCriticalPoint)  } ?: false
-                        && !(slagRate.slagRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false
-                        && slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false)
-  // TODO убрать это безобразие во вспомогательный метод
+                    avgSlagRate.isNotEmpty() && streamRateCriticalPoint.isNotEmpty()
+                        && avgSlagRate.toPercent() > streamRateCriticalPoint.toPercent()
                 }
                 +AddWarningEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
@@ -44,9 +41,9 @@ class SlagEventsChain(
             }
             konveyor {
                 on {
-                    val slagRate = currentState.get().avgSlagRate.slagRate
-                    slagRate.takeIf { it != Double.MIN_VALUE }
-                        ?.let { toPercent(it) < toPercent(streamRateWarningPoint) && toPercent(it) >= toPercent(streamRateCriticalPoint) } ?: false
+                    avgSlagRate.isNotEmpty() && streamRateCriticalPoint.isNotEmpty()
+                        && avgSlagRate.toPercent() > streamRateWarningPoint.toPercent()
+                        && avgSlagRate.toPercent() <= streamRateCriticalPoint.toPercent()
                 }
                 +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
@@ -56,9 +53,8 @@ class SlagEventsChain(
             }
 //            konveyor {
 //                on {
-//                    val slagRate = currentState.get().avgSlagRate.slagRate
-//                    slagRate.takeIf { it != Double.MIN_VALUE }
-//                        ?.let { toPercent(it) == toPercent(streamRateWarningPoint) } ?: false
+//                    avgSlagRate.isNotEmpty() && streamRateWarningPoint.isNotEmpty()
+//                        && avgSlagRate.toPercent() == streamRateWarningPoint.toPercent()
 //                }
 //                +AddCriticalEventToHistoryHandler
 //                +AddStatelessCriticalEventToHistoryHandler
@@ -69,11 +65,8 @@ class SlagEventsChain(
 //            }
             konveyor {
                 on {
-                    val currentSlagRate = currentState.get().avgSlagRate.slagRate
-                    currentSlagRate.takeIf { it != Double.MIN_VALUE }
-                        ?.let { toPercent(it) >= toPercent(streamRateWarningPoint) } ?: false
-                        || (slagRate.slagRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false
-                        && slagRate.steelRate.takeIf { it != Double.MIN_VALUE }?.let { it == 0.0 } ?: false)
+                    avgSlagRate.isNotEmpty() && streamRateWarningPoint.isNotEmpty()
+                        && avgSlagRate.toPercent() <= streamRateWarningPoint.toPercent()
                 }
                 +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
@@ -82,7 +75,7 @@ class SlagEventsChain(
 //                +AddStatelessInfoEventToHistoryHandler
             }
             konveyor {
-                on { currentState.get().currentMeltInfo.id.isEmpty() }
+                on { currentMeltId.isEmpty() }
                 +AddStatelessCriticalEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
@@ -95,8 +88,7 @@ class SlagEventsChain(
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    val currentMeltInfoId = currentState.get().currentMeltInfo.id
-                    events = eventsRepository.getAllByMeltId(currentMeltInfoId)
+                    events = eventsRepository.getAllByMeltId(currentMeltId)
                 }
             }
             handler {

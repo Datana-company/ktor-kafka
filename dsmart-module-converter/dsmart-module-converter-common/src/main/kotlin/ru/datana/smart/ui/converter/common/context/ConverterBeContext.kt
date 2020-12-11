@@ -38,4 +38,15 @@ data class ConverterBeContext(
     var converterId: String = "",
     var framesBasePath: String = "",
     var converterFacade: IConverterFacade = IConverterFacade.NONE
-)
+) {
+    val currentMeltInfo: ModelMeltInfo
+        get() = currentState.get().currentMeltInfo
+    val currentMeltId: String
+        get() = currentState.get().currentMeltInfo.id
+    val avgSteelRate: Double
+        get() = currentState.get().avgSlagRate.steelRate
+    val avgSlagRate: Double
+        get() = currentState.get().avgSlagRate.slagRate
+    val currentAngle: Double
+        get() = currentState.get().lastAngles.angle
+}
