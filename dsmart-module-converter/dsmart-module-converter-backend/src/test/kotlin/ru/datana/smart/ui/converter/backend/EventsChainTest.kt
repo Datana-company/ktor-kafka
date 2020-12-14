@@ -229,10 +229,10 @@ internal class EventsChainTest {
         }
     }
 
-    /** NKR-1055  ModelEvent.ExecutionStatus.COMPLETED
-         *  Предупреждение "Выполнено" - т.к. истекло время реакции (3 сек), % металла не снизился,
-         *  угол уменьшился не менее, чем на 5 градусов
-         */
+//    /** NKR-1055  ModelEvent.ExecutionStatus.COMPLETED
+//         *  Предупреждение "Выполнено" - т.к. истекло время реакции (3 сек), % металла не снизился,
+//         *  угол уменьшился не менее, чем на 5 градусов
+//         */
     @Test
     fun isExecutionStatusCOMPLETEDNKR1055_WithFalseParameterTest() {
         runBlocking {
@@ -370,7 +370,6 @@ internal class EventsChainTest {
     /** NKR-1080  ModelEvent.ExecutionStatus.StatusNone
      *  последняя рекомендация не должна быть отмечена статусом "Выполнено", т. к угол наклона не изменился,
      *  рекомендация выдалалась и плавка закончилась, последняя рекомендация должна просто уйти в историю без статуса
-     *  currentState.get().currentMeltInfo.id.isEmpty()
      */
     @Test
     fun isExecutionStatusNoneIfMeltFinishNKR1080() {
@@ -385,7 +384,7 @@ internal class EventsChainTest {
             )
 
             val converterFacade = converterFacadeTest(
-                meltTimeout = 5000L,
+                meltTimeout = 3000L,
                 roundingWeight = 0.1,
                 metalRateWarningPoint = 0.1,
                 metalRateCriticalPoint = 0.16,
@@ -414,6 +413,53 @@ internal class EventsChainTest {
             assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
             assertEquals(false, context.events.first().isActive)
             assertEquals("",context.currentState.get().currentMeltInfo.id)
+        }
+    }
+
+    /** NKR-1080  ModelEvent.ExecutionStatus.StatusNone
+     *  последняя рекомендация не должна быть отмечена статусом "Выполнено", т. к угол наклона не изменился,
+     *  рекомендация выдалась и плавка закончилась, последняя рекомендация должна просто уйти в историю без статуса
+     */
+    @Test
+    fun isExecutionStatusNoneIfMeltFinishNKR1080_WithFalseParameterTest() {
+        runBlocking {
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                timeStart = Instant.now().minusMillis(1000L),
+                metalRate = 0.011,
+                warningPoint = 0.1,
+                angleStart = 68.0,
+                category = ModelEvent.Category.WARNING
+            )
+
+            val converterFacade = converterFacadeTest(
+                meltTimeout = 3000L,
+                roundingWeight = 0.1,
+                metalRateWarningPoint = 0.1,
+                metalRateCriticalPoint = 0.16,
+                reactionTime = 1000L,
+                currentState = createCurrentStateForTest(
+                    lastAngle = 60.0,
+                    lastSteelRate = 0.011,
+                    avgSteelRate = 0.011
+                ),
+                converterRepository = repository
+            )
+
+            val context = converterBeContextTest(
+                meltInfo = defaultMeltInfoTest(),
+                slagRate = ModelSlagRate(
+                    steelRate = 0.011,
+                    slagRate = 0.00
+                ),
+                frame = ModelFrame(
+                    frameTime = Instant.now()
+                ),
+            )
+            converterFacade.handleMath(context)
+            assertNotEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertNotEquals(true, context.events.first().isActive)
+            assertNotEquals("",context.currentState.get().currentMeltInfo.id)
         }
     }
 
