@@ -76,16 +76,13 @@ internal class EndMeltNKR1147Test {
             val timeStart = Instant.now()
             val meltTimeout = 5000L
 
-            val repository = EventRepositoryInMemory()
-
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 meltTimeout = meltTimeout,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     avgSteelRate = 0.01
-                ),
-                converterRepository = repository
+                )
             )
 
             val context = converterBeContextTest(
@@ -167,8 +164,6 @@ internal class EndMeltNKR1147Test {
             val timeStart = Instant.now()
             val meltTimeout = 5000L
 
-            val repository = EventRepositoryInMemory()
-
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 meltTimeout = meltTimeout,
@@ -176,8 +171,7 @@ internal class EndMeltNKR1147Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     avgSlagRate = 0.01
-                ),
-                converterRepository = repository
+                )
             )
 
             val context = converterBeContextTest(
