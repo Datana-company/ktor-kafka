@@ -416,10 +416,6 @@ internal class EventsChainTest {
         }
     }
 
-    /** NKR-1080  ModelEvent.ExecutionStatus.StatusNone
-     *  последняя рекомендация не должна быть отмечена статусом "Выполнено", т. к угол наклона не изменился,
-     *  рекомендация выдалась и плавка закончилась, последняя рекомендация должна просто уйти в историю без статуса
-     */
     @Test
     fun isExecutionStatusNoneIfMeltFinishNKR1080_WithFalseParameterTest() {
         runBlocking {
@@ -488,7 +484,8 @@ internal class EventsChainTest {
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     lastSteelRate =  0.14,
-                    avgSteelRate = 0.14),
+                    avgSteelRate = 0.14
+                ),
                 converterRepository = repository
             )
 
@@ -512,7 +509,6 @@ internal class EventsChainTest {
         }
     }
 
-    /////////////////////
     @Test
     fun isEventActiveAfterReactionTimeNKR1041_WithFalseParameterTest() {
         runBlocking {
@@ -535,7 +531,8 @@ internal class EventsChainTest {
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     lastSteelRate =  0.14,
-                    avgSteelRate = 0.18),
+                    avgSteelRate = 0.18
+                ),
                 converterRepository = repository
             )
 
@@ -555,7 +552,7 @@ internal class EventsChainTest {
             assertNotEquals(false, context.events.first().isActive)
             assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
         }
-    }/////////////
+    }
     /** Допустимая доля на графике должна меняться в зависимости от значения "METAL_RATE_POINT_WARNING". */
     @Test
     fun isMetalRatePointWarningRightNKR906() {
@@ -597,6 +594,7 @@ internal class EventsChainTest {
             converterFacade.handleMath(context)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(0.1, context.events.first().warningPoint)
+            assertNotEquals(0.2, context.events.first().warningPoint)
         }
     }
 
