@@ -18,7 +18,10 @@ data class ModelEvent(
     var angleFinish: Double = Double.MIN_VALUE,
     var angleMax: Double = Double.MIN_VALUE,
     var warningPoint: Double = Double.MIN_VALUE,
-    var criticalPoint: Double = Double.MIN_VALUE
+    var criticalPoint: Double = Double.MIN_VALUE,
+    var alertRuleId: String = "",
+    var component: String = "",
+    var timestamp: String = ""
 ) {
     enum class Category() {
         CRITICAL,

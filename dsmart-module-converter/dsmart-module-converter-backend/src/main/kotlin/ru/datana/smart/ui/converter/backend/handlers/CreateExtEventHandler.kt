@@ -35,7 +35,10 @@ object CreateExtEventHandler : IKonveyorHandler<ConverterBeContext> {
                     else -> {
                         ModelEvent.Category.INFO
                     }
-                }
+                },
+                alertRuleId = context.extEvents.alertRuleId ?: "",
+                component = context.extEvents.component ?: "",
+                timestamp = context.extEvents.timestamp ?: ""
             )
         )
     }

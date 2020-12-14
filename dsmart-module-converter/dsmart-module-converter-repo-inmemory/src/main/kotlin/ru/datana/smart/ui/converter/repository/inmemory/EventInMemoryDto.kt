@@ -19,7 +19,10 @@ data class EventInMemoryDto(
     var angleFinish: Double = Double.MIN_VALUE,
     var angleMax: Double = Double.MIN_VALUE,
     var warningPoint: Double = Double.MIN_VALUE,
-    var criticalPoint: Double = Double.MIN_VALUE
+    var criticalPoint: Double = Double.MIN_VALUE,
+    var alertRuleId: String = "",
+    var component: String = "",
+    var timestamp: String = ""
 
 // TODO На будущее. Пока не заработало
 //    val id: String? = null,
@@ -55,7 +58,11 @@ data class EventInMemoryDto(
         angleFinish = angleFinish,
         angleMax = angleMax,
         warningPoint = warningPoint,
-        criticalPoint = criticalPoint
+        criticalPoint = criticalPoint,
+        alertRuleId = alertRuleId,
+        component = component,
+        timestamp = timestamp
+
 
 // TODO На будущее. Пока не заработало
 //        id = id ?: throw ExceptionInInitializerError("id is null"),
@@ -95,7 +102,10 @@ data class EventInMemoryDto(
             angleFinish = event.angleFinish,
             angleMax = event.angleMax,
             warningPoint = event.warningPoint,
-            criticalPoint = event.criticalPoint
+            criticalPoint = event.criticalPoint,
+            alertRuleId = event.alertRuleId,
+            component = event.component,
+            timestamp = event.timestamp
         )
     }
 }
