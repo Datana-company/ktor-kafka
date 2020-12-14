@@ -17,7 +17,7 @@ class EventRepositoryInMemory@OptIn(ExperimentalTime::class) constructor(
 ) : IEventRepository {
     @OptIn(ExperimentalTime::class)
     private var cache: Cache<String, EventInMemoryDto> = object : Cache2kBuilder<String, EventInMemoryDto>() {}
-        .expireAfterWrite(ttl.toLongMilliseconds(), TimeUnit.MINUTES)
+        .expireAfterWrite(ttl.toLongMilliseconds(), TimeUnit.MILLISECONDS)
         .suppressExceptions(false)
         .build()
         .also { cache ->
