@@ -9,6 +9,7 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
+import ru.datana.smart.ui.converter.common.utils.isNotEmpty
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 class SteelEventsChain(
@@ -29,9 +30,8 @@ class SteelEventsChain(
 
             konveyor {
                 on {
-                    val currentSteelRate = currentState.get().avgSlagRate.steelRate
-                    currentSteelRate.takeIf { it != Double.MIN_VALUE }
-                        ?.let { toPercent(it) > toPercent(streamRateCriticalPoint)  } ?: false
+                    avgSteelRate.isNotEmpty() && streamRateCriticalPoint.isNotEmpty()
+                        && avgSteelRate.toPercent() > streamRateCriticalPoint.toPercent()
                 }
                 +AddWarningEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
@@ -41,9 +41,9 @@ class SteelEventsChain(
             }
             konveyor {
                 on {
-                    val currentSteelRate = currentState.get().avgSlagRate.steelRate
-                    currentSteelRate.takeIf { it != Double.MIN_VALUE }?.let { toPercent(it) > toPercent(streamRateWarningPoint)
-                        && toPercent(it) <= toPercent(streamRateCriticalPoint) } ?: false
+                    avgSteelRate.isNotEmpty() && streamRateCriticalPoint.isNotEmpty()
+                        && avgSteelRate.toPercent() > streamRateWarningPoint.toPercent()
+                        && avgSteelRate.toPercent() <= streamRateCriticalPoint.toPercent()
                 }
                 +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
@@ -53,9 +53,8 @@ class SteelEventsChain(
             }
 //            konveyor {
 //                on {
-//                    val currentSteelRate = currentState.get().avgSlagRate.steelRate
-//                    currentSteelRate.takeIf { it != Double.MIN_VALUE }
-//                        ?.let { toPercent(it) == toPercent(streamRateWarningPoint) } ?: false
+//                    avgSteelRate.isNotEmpty() && streamRateWarningPoint.isNotEmpty()
+//                        && avgSteelRate.toPercent() == streamRateWarningPoint.toPercent()
 //                }
 //                +AddCriticalEventToHistoryHandler
 //                +AddStatelessCriticalEventToHistoryHandler
@@ -66,9 +65,8 @@ class SteelEventsChain(
 //            }
             konveyor {
                 on {
-                    val currentSteelRate = currentState.get().avgSlagRate.steelRate
-                    currentSteelRate.takeIf { it != Double.MIN_VALUE }
-                        ?.let { toPercent(it) <= toPercent(streamRateWarningPoint) } ?: false
+                    avgSteelRate.isNotEmpty() && streamRateWarningPoint.isNotEmpty()
+                        && avgSteelRate.toPercent() <= streamRateWarningPoint.toPercent()
                 }
                 +AddCriticalEventToHistoryHandler
                 +AddStatelessCriticalEventToHistoryHandler
@@ -77,21 +75,20 @@ class SteelEventsChain(
 //                +AddStatelessInfoEventToHistoryHandler
             }
             konveyor {
-                on { currentState.get().currentMeltInfo.id.isEmpty() }
+                on { currentMeltId.isEmpty() }
                 +AddStatelessCriticalEventToHistoryHandler
                 +AddStatelessWarningEventToHistoryHandler
 //                +AddStatelessInfoEventToHistoryHandler
                 +CreateSuccessMeltEventHandler
             }
             konveyor {
-                on { extEvents.alertRuleId != null }
+                on { extEvent.alertRuleId.isNotBlank() }
                 +CreateExtEventHandler
             }
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    val currentMeltInfoId = currentState.get().currentMeltInfo.id
-                    events = eventsRepository.getAllByMeltId(currentMeltInfoId)
+                    events = eventsRepository.getAllByMeltId(currentMeltId)
                 }
             }
             handler {

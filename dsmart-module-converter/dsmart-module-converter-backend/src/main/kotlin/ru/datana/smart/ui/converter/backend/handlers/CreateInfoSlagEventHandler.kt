@@ -8,7 +8,6 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import ru.datana.smart.ui.converter.common.utils.toPercent
-import java.time.Instant
 import java.util.*
 
 /*
@@ -18,29 +17,28 @@ import java.util.*
 object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = Instant.now()
-        val currentAngle = context.currentState.get().lastAngles.angle
+        val slagRateTime = context.timeStart
+        val currentAngle = context.currentAngle
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_INFO_EVENT)
-        val avgSlagRate = context.currentState.get().avgSlagRate.slagRate
+        val avgSlagRate = context.avgSlagRate
         activeEvent?.let {
             return
         } ?: run {
             context.eventsRepository.create(
                 ModelEvent(
-                    id = UUID.randomUUID().toString(),
                     meltId = meltId,
                     type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     slagRate = avgSlagRate,
-                    warningPoint = context.streamRateWarningPoint,
                     angleStart = currentAngle,
                     title = "Информация",
                     textMessage = """
-                                  Достигнут предел шлака в потоке – ${toPercent(avgSlagRate)}%.
+                                  Достигнут предел потерь шлака в потоке – ${avgSlagRate.toPercent()}%.
                                   """.trimIndent(),
-                    category = ModelEvent.Category.INFO
+                    category = ModelEvent.Category.INFO,
+                    executionStatus = ModelEvent.ExecutionStatus.STATELESS
                 )
             )
             context.signaler = SignalerModel(

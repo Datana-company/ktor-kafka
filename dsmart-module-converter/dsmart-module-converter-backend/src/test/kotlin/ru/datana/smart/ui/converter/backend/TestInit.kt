@@ -10,7 +10,11 @@ import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.time.Instant
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
+@OptIn(ExperimentalTime::class)
 fun converterFacadeTest(
     converterRepository: IEventRepository? = null,
     wsManager: IWsManager? = null,
@@ -29,7 +33,7 @@ fun converterFacadeTest(
     scheduleCleaner: AtomicReference<ScheduleCleaner>? = null,
 ) =
     ConverterFacade(
-        converterRepository = converterRepository ?: EventRepositoryInMemory(),
+        converterRepository = converterRepository ?: EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
         wsManager = wsManager ?: WsManager(),
         wsSignalerManager = wsSignalerManager ?: WsSignalerManager(),
         dataTimeout = dataTimeout ?: 3000L,
@@ -47,7 +51,7 @@ fun converterFacadeTest(
     )
 
 fun converterBeContextTest(
-    reactionTime: Long? = null,
+    timeStart: Instant? = null,
     meltInfo: ModelMeltInfo? = null,
     angles: ModelAngles? = null,
     frame: ModelFrame? = null,
@@ -55,6 +59,7 @@ fun converterBeContextTest(
     extEvents: ModelExtEvents? = null
 ) =
     ConverterBeContext(
+        timeStart = timeStart ?: Instant.now(),
         reactionTime = Long.MIN_VALUE,
         meltInfo = meltInfo ?: defaultMeltInfoTest(),
         angles = angles ?: ModelAngles.NONE,
@@ -95,17 +100,17 @@ fun createCurrentStateForTest(
     return currentState
 }
 
+@OptIn(ExperimentalTime::class)
 suspend fun createRepositoryWithEventForTest(
     eventType: ModelEvent.EventType,
     timeStart: Instant,
     metalRate: Double? = null,
-    criticalPoint: Double? = null,
-    warningPoint: Double? = null,
     angleStart: Double? = null,
-    category: ModelEvent.Category
+    category: ModelEvent.Category,
+    executionStatus: ModelEvent.ExecutionStatus? = null,
 )
     : EventRepositoryInMemory {
-    val repositoryInMemory = EventRepositoryInMemory()
+    val repositoryInMemory = EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES))
     repositoryInMemory.create(
         ModelEvent(
             id = UUID.randomUUID().toString(),
@@ -114,10 +119,9 @@ suspend fun createRepositoryWithEventForTest(
             timeStart = timeStart,
             timeFinish = Instant.now().minusMillis(1000L),
             metalRate = metalRate ?: 0.16,
-            criticalPoint = criticalPoint ?: 0.15,
-            warningPoint = warningPoint ?: 0.1,
             angleStart = angleStart ?: 0.60,
-            category = category
+            category = category,
+            executionStatus = executionStatus ?: ModelEvent.ExecutionStatus.STATELESS
         )
     )
     return repositoryInMemory

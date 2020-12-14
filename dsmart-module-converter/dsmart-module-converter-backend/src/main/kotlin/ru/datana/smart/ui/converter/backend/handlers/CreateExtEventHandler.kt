@@ -11,18 +11,17 @@ import java.util.*
 object CreateExtEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         // TODO Нужно ли делать неактивными все другие сообщения?
-//        context.currentState.get()?.currentMeltInfo = ModelMeltInfo(id = UUID.randomUUID().toString()) //TODO для тестирования
-        val meltId: String = context.currentState.get()?.currentMeltInfo?.id ?: return
-        println(" --- message: " + context.extEvents.message + " --- meltId: " + meltId)
+//        context.currentState.get().currentMeltInfo = ModelMeltInfo(id = UUID.randomUUID().toString()) //TODO для тестирования
+        val meltId: String = context.currentState.get().currentMeltInfo.id
+        println(" --- message: " + context.extEvent.textMessage + " --- meltId: " + meltId)
         context.eventsRepository.create(
             ModelEvent(
-                id = UUID.randomUUID().toString(),
                 meltId = meltId,
                 type = ModelEvent.EventType.EXT_EVENT,
                 timeStart = Instant.now(),
                 timeFinish = Instant.now(),
-                textMessage = context.extEvents.message ?: "",
-                category = when (context.extEvents.level) {
+                textMessage = context.extEvent.textMessage,
+                category = when (context.extEvent.level) {
                     "INFO" -> {
                         ModelEvent.Category.INFO
                     }
@@ -36,6 +35,7 @@ object CreateExtEventHandler : IKonveyorHandler<ConverterBeContext> {
                         ModelEvent.Category.INFO
                     }
                 },
+                executionStatus = ModelEvent.ExecutionStatus.STATELESS,
                 alertRuleId = context.extEvents.alertRuleId ?: "",
                 component = context.extEvents.component ?: "",
                 timestamp = context.extEvents.timestamp ?: ""

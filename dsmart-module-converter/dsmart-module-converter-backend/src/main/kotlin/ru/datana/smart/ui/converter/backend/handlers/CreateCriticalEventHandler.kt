@@ -8,7 +8,6 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 import ru.datana.smart.ui.converter.common.utils.toPercent
-import java.time.Instant
 import java.util.*
 
 /*
@@ -18,29 +17,28 @@ import java.util.*
 object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val currentAngle = context.currentState.get().lastAngles.angle
+        val currentAngle = context.currentAngle
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT)
-        val slagRateTime = Instant.now()
-        val avgSteelRate = context.currentState.get().avgSlagRate.steelRate
+        val slagRateTime = context.timeStart
+        val avgSteelRate = context.avgSteelRate
         activeEvent?.let {
             return
         } ?: run {
             context.eventsRepository.create(
                 ModelEvent(
-                    id = UUID.randomUUID().toString(),
                     meltId = meltId,
                     type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     metalRate = avgSteelRate,
-                    criticalPoint = context.streamRateCriticalPoint,
                     angleStart = currentAngle,
                     title = "Критическая ситуация",
                     textMessage = """
-                                  В потоке детектирован металл – ${toPercent(avgSteelRate)}%, процент потерь превышает критическое значение – ${toPercent(context.streamRateCriticalPoint)}%. Верните конвертер в вертикальное положение!
+                                  В потоке детектирован металл – ${avgSteelRate.toPercent()}%, процент потерь превышает критическое значение – ${context.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
                                   """.trimIndent(),
-                    category = ModelEvent.Category.CRITICAL
+                    category = ModelEvent.Category.CRITICAL,
+                    executionStatus = ModelEvent.ExecutionStatus.STATELESS
                 )
             )
             context.signaler = SignalerModel(
