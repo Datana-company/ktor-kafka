@@ -593,8 +593,8 @@ internal class EventsChainTest {
             )
             converterFacade.handleMath(context)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(0.1, context.events.first().warningPoint)
-            assertNotEquals(0.2, context.events.first().warningPoint)
+            assertEquals(0.1, context.streamRateWarningPoint)
+            assertNotEquals(0.2, context.streamRateWarningPoint)
         }
     }
 

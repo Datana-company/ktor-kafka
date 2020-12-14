@@ -3,10 +3,7 @@ package ru.datana.smart.ui.converter.backend
 import kotlinx.coroutines.runBlocking
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
+import kotlin.test.*
 
 internal class MeltInfoChainTest {
 
@@ -45,6 +42,8 @@ internal class MeltInfoChainTest {
         assertEquals(CorStatus.SUCCESS, context.status)
         assertEquals("IR camera for Converter", context.meltInfo.devices.irCamera.name)
         assertEquals("ir-cam-25", context.meltInfo.devices.irCamera.id)
+        assertFalse( context.meltInfo.devices.irCamera.name == "IR camera for Converter-test",)
+        assertFalse("ir-cam-25-test" == context.meltInfo.devices.irCamera.id)
     }
 }
 
