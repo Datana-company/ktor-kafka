@@ -20,7 +20,6 @@ internal class EventsChainTest {
     fun isEventActiveNKR1031() {
         runBlocking {
             val timeStart = Instant.now()
-
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
@@ -107,7 +106,6 @@ internal class EventsChainTest {
     fun isExecutionStatusFailedNKR1055() {
         runBlocking {
             val timeStart = Instant.now()
-
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
@@ -201,7 +199,6 @@ internal class EventsChainTest {
     fun isExecutionStatusCOMPLETEDNKR1055() {
         runBlocking {
             val timeStart = Instant.now()
-
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
