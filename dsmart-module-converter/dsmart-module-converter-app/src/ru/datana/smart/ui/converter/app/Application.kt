@@ -108,6 +108,9 @@ fun Application.module(testing: Boolean = false) {
     val roundingWeight: Double by lazy {
         environment.config.property("ktor.conveyor.roundingWeight").getString().trim().toDouble()
     }
+    val storageDuration: Int by lazy {
+        environment.config.property("ktor.conveyor.repository.inmemory.storageDuration").getString().trim().toInt()
+    }
 
     // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
@@ -118,7 +121,7 @@ fun Application.module(testing: Boolean = false) {
 //    )
 //    metalRateEventGenerator.start()
 
-    val userEventsRepository = EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES))
+    val userEventsRepository = EventRepositoryInMemory(ttl = storageDuration.toDuration(DurationUnit.MINUTES))
 
     val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
     val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)

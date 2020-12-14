@@ -13,7 +13,7 @@ import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
-@ExperimentalTime
+@OptIn(ExperimentalTime::class)
 fun converterFacadeTest(
     converterRepository: IEventRepository? = null,
     wsManager: IWsManager? = null,
