@@ -19,7 +19,9 @@ internal class MeltInfoChainTest {
         context = converterBeContextTest(
             meltInfo = meltInfoTest(
                 meltId = "211626-1606203458852",
-                converterId = "converter2"
+                converterId = "converter2",
+                irCameraName = "IR camera for Converter",
+                irCameraId = "ir-cam-25",
             )
         )
     }
@@ -31,7 +33,18 @@ internal class MeltInfoChainTest {
         }
 
         assertEquals(CorStatus.SUCCESS, context.status)
-        assertNotEquals(context.meltInfo.id, context.currentState.get().currentMeltInfo.id)
+        assertNotEquals(context.meltInfo.id, context.currentMeltId)
+    }
+
+    @Test
+    fun irCameraNameAndIdTestNKR1071AndNKR954() {
+        runBlocking {
+            converterFacade.handleMeltInfo(context)
+        }
+
+        assertEquals(CorStatus.SUCCESS, context.status)
+        assertEquals("IR camera for Converter", context.meltInfo.devices.irCamera.name)
+        assertEquals("ir-cam-25", context.meltInfo.devices.irCamera.id)
     }
 }
 

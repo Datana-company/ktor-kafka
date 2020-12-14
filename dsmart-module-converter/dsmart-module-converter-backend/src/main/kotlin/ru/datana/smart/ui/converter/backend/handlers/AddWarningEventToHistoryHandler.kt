@@ -7,7 +7,6 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
-import java.time.Instant
 
 /*
 * AddWarningEventToHistoryHandler - если прошло время больше, чем значение DATA_TIMEOUT,
@@ -17,8 +16,8 @@ import java.time.Instant
 object AddWarningEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = Instant.now()
-        val currentAngle = context.currentState.get().lastAngles.angle
+        val slagRateTime = context.timeStart
+        val currentAngle = context.currentAngle
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_WARNING_EVENT)
         activeEvent?.let {
