@@ -1,6 +1,5 @@
 package ru.datana.smart.ui.converter.backend
 
-
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import ru.datana.smart.ui.converter.common.models.*
@@ -19,12 +18,12 @@ internal class EventsChainTest {
     @Test
     fun isEventActiveNKR1031() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -39,6 +38,7 @@ internal class EventsChainTest {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.001,
@@ -59,12 +59,12 @@ internal class EventsChainTest {
     @Test
     fun isEventActiveNKR1031_WithFalseParameterTest() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -79,6 +79,7 @@ internal class EventsChainTest {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.16,
@@ -100,12 +101,12 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusFailedNKR1055() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(7000L),
                 metalRate = 0.011,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 60.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -123,6 +124,7 @@ internal class EventsChainTest {
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.011
@@ -142,12 +144,12 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusFailedNKR1055_WithFalseParameterTest() {
     runBlocking {
+        val timeStart = Instant.now()
+
         val repository = createRepositoryWithEventForTest(
             eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
             timeStart = Instant.now().minusMillis(3000L),
             metalRate = 0.011,
-            criticalPoint = null,
-            warningPoint = 0.1,
             angleStart = 68.0,
             category = ModelEvent.Category.WARNING
         )
@@ -165,6 +167,7 @@ internal class EventsChainTest {
             converterRepository = repository
         )
         val context = converterBeContextTest(
+            timeStart = timeStart,
             meltInfo = defaultMeltInfoTest(),
             slagRate = ModelSlagRate(
                 steelRate = 0.011
@@ -189,12 +192,12 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusCOMPLETEDNKR1055() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(5000L),
                 metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -212,6 +215,7 @@ internal class EventsChainTest {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.011
@@ -236,12 +240,12 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusCOMPLETEDNKR1055_WithFalseParameterTest() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(5000L),
                 metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -259,6 +263,7 @@ internal class EventsChainTest {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.011
@@ -276,18 +281,18 @@ internal class EventsChainTest {
         }
     }
 
-    /** NKR-1055  ModelEvent.ExecutionStatus.None
+    /** NKR-1055  ModelEvent.ExecutionStatus.Stateless
      * Предупреждение "без статуса" - т.к.  % металла снизился до допустимой нормы, а время реакции еще не истекло.
      */
     @Test
-    fun isExecutionStatusNoneNKR1055() {
+    fun isExecutionStatusStatelessNKR1055() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(2000L),
                 metalRate = 0.16,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -304,6 +309,7 @@ internal class EventsChainTest {
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.001
@@ -315,23 +321,23 @@ internal class EventsChainTest {
             converterFacade.handleMath(context)
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
 
         }
     }
 
-    /** NKR-1055  ModelEvent.ExecutionStatus.None
+    /** NKR-1055  ModelEvent.ExecutionStatus.Stateless
      * Предупреждение "без статуса" - т.к.  % металла не снизился до допустимой нормы, а время реакции еще не истекло.
      */
     @Test
     fun isExecutionStatusNoneNKR1055_WithFalseParameterTest() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(8000L),
                 metalRate = 0.01,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -348,6 +354,7 @@ internal class EventsChainTest {
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.11,
@@ -361,7 +368,7 @@ internal class EventsChainTest {
             converterFacade.handleMath(context)
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertNotEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertNotEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
 
         }
     }
@@ -374,11 +381,12 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusNoneIfMeltFinishNKR1080() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
                 metalRate = 0.011,
-                warningPoint = 0.1,
                 angleStart = 60.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -398,6 +406,7 @@ internal class EventsChainTest {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.12
@@ -410,7 +419,7 @@ internal class EventsChainTest {
             delay(6000)
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
             assertEquals(false, context.events.first().isActive)
             assertEquals("",context.currentState.get().currentMeltInfo.id)
         }
@@ -419,11 +428,12 @@ internal class EventsChainTest {
     @Test
     fun isExecutionStatusNoneIfMeltFinishNKR1080_WithFalseParameterTest() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
                 metalRate = 0.011,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -443,6 +453,7 @@ internal class EventsChainTest {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.011,
@@ -453,7 +464,7 @@ internal class EventsChainTest {
                 ),
             )
             converterFacade.handleMath(context)
-            assertNotEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertNotEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
             assertNotEquals(true, context.events.first().isActive)
             assertNotEquals("",context.currentState.get().currentMeltInfo.id)
         }
@@ -465,12 +476,12 @@ internal class EventsChainTest {
     @Test
     fun isEventActiveAfterReactionTimeNKR1041() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
                 metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -490,6 +501,7 @@ internal class EventsChainTest {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.001,
@@ -512,12 +524,12 @@ internal class EventsChainTest {
     @Test
     fun isEventActiveAfterReactionTimeNKR1041_WithFalseParameterTest() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
                 metalRate = 0.001,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -537,6 +549,7 @@ internal class EventsChainTest {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.018,
@@ -557,12 +570,12 @@ internal class EventsChainTest {
     @Test
     fun isMetalRatePointWarningRightNKR906() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
                 metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -581,6 +594,7 @@ internal class EventsChainTest {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.001,
@@ -593,8 +607,8 @@ internal class EventsChainTest {
             )
             converterFacade.handleMath(context)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(0.1, context.events.first().warningPoint)
-            assertNotEquals(0.2, context.events.first().warningPoint)
+            assertEquals(0.1, context.streamRateWarningPoint)
+            assertNotEquals(0.2, context.streamRateWarningPoint)
         }
     }
 
