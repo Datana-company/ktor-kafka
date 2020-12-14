@@ -8,6 +8,7 @@ import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.time.Instant
+import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
@@ -50,17 +51,81 @@ fun converterFacadeTest(
     )
 
 fun converterBeContextTest(
+    timeStart: Instant? = null,
     meltInfo: ModelMeltInfo? = null,
     angles: ModelAngles? = null,
     frame: ModelFrame? = null,
     slagRate: ModelSlagRate? = null
 ) =
     ConverterBeContext(
+        timeStart = timeStart ?: Instant.now(),
+        reactionTime = Long.MIN_VALUE,
         meltInfo = meltInfo ?: defaultMeltInfoTest(),
         angles = angles ?: ModelAngles.NONE,
         frame = frame ?: ModelFrame.NONE,
         slagRate = slagRate ?: ModelSlagRate.NONE
     )
+
+fun createCurrentStateForTest(
+    lastAngleTime: Instant? = null,
+    lastAngle: Double? = null,
+    lastSource: Double? = null,
+    lastSteelRate: Double? = null,
+    lastSlagRate: Double? = null,
+    avgSlagRate: Double? = null,
+    avgSteelRate: Double? = null
+)
+    : AtomicReference<CurrentState> {
+    val currentState = AtomicReference(
+        CurrentState(
+            currentMeltInfo = defaultMeltInfoTest(),
+            lastAngles = ModelAngles(
+                angleTime = lastAngleTime ?: Instant.MIN,
+                angle = lastAngle ?: Double.MIN_VALUE,
+                source = lastSource ?: Double.MIN_VALUE
+            ),
+
+            lastSlagRate = ModelSlagRate(
+                steelRate = lastSteelRate ?: Double.MIN_VALUE,
+                slagRate = lastSlagRate ?: Double.MIN_VALUE
+            ),
+            avgSlagRate = ModelSlagRate(
+                steelRate = avgSteelRate ?: Double.MIN_VALUE,
+                slagRate = avgSlagRate ?: Double.MIN_VALUE
+            )
+        )
+    )
+    return currentState
+}
+
+suspend fun createRepositoryWithEventForTest(
+    eventType: ModelEvent.EventType,
+    timeStart: Instant,
+    metalRate: Double? = null,
+    criticalPoint: Double? = null,
+    warningPoint: Double? = null,
+    angleStart: Double? = null,
+    category: ModelEvent.Category
+)
+    : EventRepositoryInMemory {
+    val repositoryInMemory = EventRepositoryInMemory()
+    repositoryInMemory.create(
+        ModelEvent(
+            id = UUID.randomUUID().toString(),
+            meltId = "211626-1606203458852",
+            type = eventType,
+            timeStart = timeStart,
+            timeFinish = Instant.now().minusMillis(1000L),
+            metalRate = metalRate ?: 0.16,
+            criticalPoint = criticalPoint ?: 0.15,
+            warningPoint = warningPoint ?: 0.1,
+            angleStart = angleStart ?: 0.60,
+            category = category
+        )
+    )
+    return repositoryInMemory
+}
+
 
 fun defaultMeltInfoTest() =
     meltInfoTest("211626-1606203458852", "converter1")
@@ -68,7 +133,9 @@ fun defaultMeltInfoTest() =
 
 fun meltInfoTest(
     meltId: String? = null,
-    converterId: String? = null
+    converterId: String? = null,
+    irCameraName: String? = null,
+    irCameraId: String? = null
 ) =
     ModelMeltInfo(
         id = meltId ?: "",
@@ -87,8 +154,8 @@ fun meltInfoTest(
                 type = ModelDeviceType.FILE
             ),
             irCamera = ModelDevicesIrCamera(
-                id = "ir-cam-25",
-                name = "IR camera for Converter",
+                id = irCameraId ?: "ir-cam-25",
+                name = irCameraName ?: "IR camera for Converter",
                 uri = "case-demo/5.mp4",
                 deviceType = "ConverterDevicesIrCamera",
                 type = ModelDeviceType.FILE
