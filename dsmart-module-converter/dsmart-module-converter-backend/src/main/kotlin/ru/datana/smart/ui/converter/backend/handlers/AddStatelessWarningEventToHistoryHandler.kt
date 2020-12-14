@@ -5,25 +5,24 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelEvent
-import java.time.Instant
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 /*
-* UpdateTimeWarningEventHandler - если прошло время больше, чем значение DATA_TIMEOUT,
-* то записываем текущее событие "Предупреждение" в историю.
+* AddStatelessWarningEventToHistoryHandler - записывает текущее событие "Предупреждение" в историю без изменения статуса
 * */
-object UpdateTimeWarningEventHandler : IKonveyorHandler<ConverterBeContext> {
+object AddStatelessWarningEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = Instant.now()
         val activeEvent: ModelEvent? = context.eventsRepository
-            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.METAL_RATE_WARNING_EVENT)
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_WARNING_EVENT)
         activeEvent?.let {
-            val timeStartWithShift = it.timeStart.plusMillis(context.reactionTime)
-            val isReactionTimeUp = slagRateTime >= timeStartWithShift
-            val isActive = !isReactionTimeUp
-            it.timeFinish = slagRateTime
-            it.isActive = isActive
+            it.isActive = false
             context.eventsRepository.update(it)
+            context.signaler = SignalerModel(
+                level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
+                sound = SignalerSoundModel.NONE
+            )
         } ?: return
     }
 

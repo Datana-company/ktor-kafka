@@ -5,13 +5,10 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.datana.smart.ui.converter.backend.EventsChain
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.CurrentState
-import ru.datana.smart.ui.converter.common.models.ModelEvents
+import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
-import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 
 object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
@@ -24,12 +21,16 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 }
             }
             jobMeltFinish = GlobalScope.launch {
-                delay(10000L)
+                delay(context.meltTimeout)
                 val curState = context.currentState.get()
                 curState.currentMeltInfo = ModelMeltInfo.NONE
                 context.status = CorStatus.STARTED
 
-                EventsChain.konveyor.exec(context)
+                if (context.eventMode == ModelEventMode.STEEL) {
+                    context.converterFacade.handleSteelEvents(context)
+                } else if (context.eventMode == ModelEventMode.SLAG) {
+                    context.converterFacade.handleSlagEvents(context)
+                }
 
                 val events = context.eventsRepository.getAllByMeltId(context.meltInfo.id)
                 context.events = events

@@ -5,20 +5,24 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelEvent
+import ru.datana.smart.ui.converter.common.models.SignalerModel
+import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
 
 /*
-* AddFailedWarningEventToHistoryHandler - записывает текущее событие "Предупреждение"
-* в историю со статусом "Не выполнено"
+* AddStatelessCriticalEventToHistoryHandler - записывает текущее событие "Критическая ситуация" в историю без изменения статуса
 * */
-object AddFailedWarningEventToHistoryHandler : IKonveyorHandler<ConverterBeContext> {
+object AddStatelessCriticalEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
         val activeEvent: ModelEvent? = context.eventsRepository
-            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.METAL_RATE_WARNING_EVENT)
+            .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT)
         activeEvent?.let {
             it.isActive = false
-            it.executionStatus = ModelEvent.ExecutionStatus.FAILED
             context.eventsRepository.update(it)
+            context.signaler = SignalerModel(
+                level = SignalerModel.SignalerLevelModel.NO_SIGNAL,
+                sound = SignalerSoundModel.NONE
+            )
         } ?: return
     }
 

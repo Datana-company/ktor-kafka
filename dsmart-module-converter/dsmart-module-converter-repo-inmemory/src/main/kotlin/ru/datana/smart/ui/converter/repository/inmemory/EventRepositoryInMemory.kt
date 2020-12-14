@@ -15,12 +15,12 @@ class EventRepositoryInMemory : IEventRepository {
         .expireAfterWrite(10, TimeUnit.MINUTES)
         .build()
 
-    override suspend fun get(eventId: String): ModelEvent? {
-        return cache.getIfPresent(eventId)?.toModel()
+    override suspend fun get(id: String): ModelEvent? {
+        return cache.getIfPresent(id)?.toModel()
     }
 
     override suspend fun create(event: ModelEvent): ModelEvent? {
-        val dto = EventInMemoryDto.of(event, UUID.randomUUID().toString())
+        val dto = EventInMemoryDto.of(event)
         return save(dto)?.toModel()
     }
 

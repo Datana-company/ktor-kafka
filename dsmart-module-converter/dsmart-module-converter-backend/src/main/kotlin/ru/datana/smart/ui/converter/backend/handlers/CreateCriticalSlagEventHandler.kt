@@ -12,17 +12,17 @@ import java.time.Instant
 import java.util.*
 
 /*
-* CreateCriticalEventHandler - создаётся событие типа "Критическая ситуация",
+* CreateCriticalSlagEventHandler - создаётся событие типа "Критическая ситуация",
 * и светофор переходит в критический статус.
 * */
-object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
+object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
         val currentAngle = context.currentState.get().lastAngles.angle
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT)
         val slagRateTime = Instant.now()
-        val avgSteelRate = context.currentState.get().avgSlagRate.steelRate
+        val avgSlagRate = context.currentState.get().avgSlagRate.slagRate
         activeEvent?.let {
             return
         } ?: run {
@@ -33,12 +33,12 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
                     type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
-                    metalRate = avgSteelRate,
+                    slagRate = avgSlagRate,
                     criticalPoint = context.streamRateCriticalPoint,
                     angleStart = currentAngle,
                     title = "Критическая ситуация",
                     textMessage = """
-                                  В потоке детектирован металл – ${toPercent(avgSteelRate)}%, процент потерь превышает критическое значение – ${toPercent(context.streamRateCriticalPoint)}%. Верните конвертер в вертикальное положение!
+                                  В потоке детектирован шлак – ${toPercent(avgSlagRate)}%, процент ниже критического значения – ${toPercent(context.streamRateCriticalPoint)}%. Верните конвертер в вертикальное положение!
                                   """.trimIndent(),
                     category = ModelEvent.Category.CRITICAL
                 )

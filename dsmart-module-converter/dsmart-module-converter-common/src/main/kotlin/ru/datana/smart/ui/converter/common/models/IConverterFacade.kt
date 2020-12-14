@@ -12,7 +12,11 @@ interface IConverterFacade {
 
     suspend fun handleMeltInfo(context: ConverterBeContext)
 
-    suspend fun handleEvents(context: ConverterBeContext)
+    suspend fun handleSteelEvents(context: ConverterBeContext)
+
+    suspend fun handleSlagEvents(context: ConverterBeContext)
+
+    suspend fun handleExtEvents(context: ConverterBeContext)
 
     companion object {
         val NONE = object: IConverterFacade {
@@ -32,7 +36,11 @@ interface IConverterFacade {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun handleEvents(context: ConverterBeContext) {
+            override suspend fun handleSteelEvents(context: ConverterBeContext) {
+                TODO("Not yet implemented")
+            }
+
+            override suspend fun handleSlagEvents(context: ConverterBeContext) {
                 TODO("Not yet implemented")
             }
 
@@ -41,6 +49,4 @@ interface IConverterFacade {
             }
         }
     }
-
-    suspend fun handleExtEvents(context: ConverterBeContext)
 }

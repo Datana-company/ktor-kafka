@@ -29,7 +29,7 @@ export class BarChartComponent {
 
   colorScheme = {
     // domain: ['#4E80B27f', '#BDE9E37f', '#C235577f']
-    domain: ['#4E80B27f', '#C235577f']
+    domain: ['#4E80B2', '#C23557']
   };
   dataLabelFormatting = (value) => `${value.toString() + '  %' }`;
   tickFormat = (o: any) => `<span class=""><span>${o}</span><span>%</span></span>`
@@ -53,6 +53,10 @@ export class BarChartComponent {
         'value': Math.round((dat?.steelRate || 0) * 100)
       }
     ];
+  }
+
+  formatWarnPoint = (val) => {
+    return val.toFixed(0) + ' %';
   }
 
   constructor() {

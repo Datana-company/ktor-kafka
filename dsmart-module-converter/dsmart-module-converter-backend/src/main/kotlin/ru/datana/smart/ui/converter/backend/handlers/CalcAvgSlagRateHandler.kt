@@ -6,24 +6,23 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelSlagRate
 
-
 /*
-* CalcAvgSteelRateHandler - вычисляем усредненное значение содержания металла.
+* CalcAvgSlagRateHandler - вычисляем усредненное значение содержания шлака.
 * */
-object CalcAvgSteelRateHandler: IKonveyorHandler<ConverterBeContext> {
+object CalcAvgSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val roundingWeight = context.roundingWeight
-        val currentSteelRate = context.slagRate.steelRate
+        val currentSlagRate = context.slagRate.slagRate
         val curState = context.currentState.get()
-        val lastAvgSteelRate = curState.avgSlagRate.steelRate
-        val avgSteelRate = if (lastAvgSteelRate != Double.MIN_VALUE) {
-            currentSteelRate * roundingWeight + lastAvgSteelRate * (1 - roundingWeight)
-//            lastAvgSteelRate + (currentSteelRate - lastAvgSteelRate) * roundingWeight
+        val lastAvgSlagRate = curState.avgSlagRate.slagRate
+        val avgSlagRate = if (lastAvgSlagRate != Double.MIN_VALUE) {
+            currentSlagRate * roundingWeight + lastAvgSlagRate * (1 - roundingWeight)
+//            lastAvgSlagRate + (currentSlagRate - lastAvgSlagRate) * roundingWeight
         } else {
-            currentSteelRate
+            currentSlagRate
         }
         curState.avgSlagRate = ModelSlagRate(
-            steelRate = avgSteelRate
+            slagRate = avgSlagRate
         )
     }
 

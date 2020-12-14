@@ -35,7 +35,7 @@ class ExtEventsChain(
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    converterFacade.handleEvents(this)
+                    converterFacade.handleSteelEvents(this)
                 }
             }
             +FinishHandler

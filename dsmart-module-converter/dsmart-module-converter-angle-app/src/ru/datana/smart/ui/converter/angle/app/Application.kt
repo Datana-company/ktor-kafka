@@ -39,6 +39,7 @@ fun Application.module(testing: Boolean = false) {
     val topicAngle: String by lazy {
         environment.config.property("ktor.kafka.producer.topic.angle").getString().trim()
     }
+    val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
     val jacksonSerializer: ObjectMapper = ObjectMapper().configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true)
     val kafkaProducer: KafkaProducer<String, String> by lazy {
         val props = Properties().apply {
@@ -69,8 +70,8 @@ fun Application.module(testing: Boolean = false) {
                                 record.value,
                                 ConverterTransportMlUi::class.java
                             )
-                            if (
-                                angleSchedule != null
+                            if (converterId == mlui.meltInfo?.devices?.converter?.id
+                                && angleSchedule != null
                                 && mlui.frameTime != null
                                 && mlui.meltInfo?.timeStart != null
                             ) {
@@ -96,14 +97,16 @@ fun Application.module(testing: Boolean = false) {
                                 record.value,
                                 ConverterMeltInfo::class.java
                             )
-                            val scheduleRelativePath = metaInfo?.devices?.selsyn?.uri
-                            val scheduleAbsolutePath = "${scheduleBasePath}/${scheduleRelativePath}"
+                            if (converterId == metaInfo.devices?.converter?.id) {
+                                val scheduleRelativePath = metaInfo?.devices?.selsyn?.uri
+                                val scheduleAbsolutePath = "${scheduleBasePath}/${scheduleRelativePath}"
 
-                            val json = File(scheduleAbsolutePath).readText(Charsets.UTF_8)
-                            angleSchedule = jacksonSerializer.readValue(
-                                json,
-                                AngleSchedule::class.java
-                            )
+                                val json = File(scheduleAbsolutePath).readText(Charsets.UTF_8)
+                                angleSchedule = jacksonSerializer.readValue(
+                                    json,
+                                    AngleSchedule::class.java
+                                )
+                            }
                         }
                     }
                 }
