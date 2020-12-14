@@ -30,7 +30,7 @@ internal class MeltInfoChainTest {
         }
 
         assertEquals(CorStatus.SUCCESS, context.status)
-        assertNotEquals(context.meltInfo.id, context.currentState.get().currentMeltInfo.id)
+        assertNotEquals(context.meltInfo.id, context.currentMeltId)
     }
 
     @Test

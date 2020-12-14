@@ -11,11 +11,13 @@ import kotlin.test.assertNotEquals
 internal class SignalerTest {
     // #1061 - Не успела выполниться Critical, содержание металла пришло в норму
     @Test
-    fun signalerTestCase9NKR1061() {
+    fun signalerTestCase1NKR1061() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                timeStart = Instant.now().minusMillis(1000L),
+                timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.16,
                 criticalPoint = 0.15,
                 warningPoint = null,
@@ -33,13 +35,14 @@ internal class SignalerTest {
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -95,11 +98,13 @@ internal class SignalerTest {
 
     // #1061 - Не успела выполниться Warning, содержание металла пришло в норму
     @Test
-    fun signalerTestCase10NKR1061() {
+    fun signalerTestCase2NKR1061() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = Instant.now().minusMillis(1000L),
+                timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.11,
                 criticalPoint = null,
                 warningPoint = 0.1,
@@ -115,13 +120,14 @@ internal class SignalerTest {
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -177,11 +183,13 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Critical (статус Выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase13NKR1061() {
+    fun signalerTestCase3NKR1061() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                timeStart = Instant.now().minusMillis(3000L),
+                timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.16,
                 criticalPoint = 0.15,
                 warningPoint = null,
@@ -198,13 +206,14 @@ internal class SignalerTest {
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -259,11 +268,13 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Warning (статус Выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase14NKR1061() {
+    fun signalerTestCase4NKR1061() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = Instant.now().minusMillis(3000L),
+                timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.11,
                 criticalPoint = null,
                 warningPoint = 0.1,
@@ -278,13 +289,14 @@ internal class SignalerTest {
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -338,11 +350,13 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Critical (статус Не выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase15NKR1061() {
+    fun signalerTestCase5NKR1061() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                timeStart = Instant.now().minusMillis(3000L),
+                timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.16,
                 criticalPoint = 0.15,
                 warningPoint = null,
@@ -359,13 +373,14 @@ internal class SignalerTest {
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -420,11 +435,13 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Warning (статус Не выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase16NKR1061() {
+    fun signalerTestCase6NKR1061() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = Instant.now().minusMillis(3000L),
+                timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.11,
                 criticalPoint = null,
                 warningPoint = 0.1,
@@ -440,13 +457,14 @@ internal class SignalerTest {
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -508,9 +526,11 @@ internal class SignalerTest {
     @Test
     fun isEventActiveAfterSirenLimitTimeNKR905() {
         runBlocking {
+            val timeStart = Instant.now()
+
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                timeStart = Instant.now().minusMillis(3000L),
+                timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.16,
                 criticalPoint = 0.15,
                 angleStart = 66.0,
@@ -532,6 +552,7 @@ internal class SignalerTest {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.001,
@@ -539,7 +560,7 @@ internal class SignalerTest {
 
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
 
