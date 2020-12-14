@@ -110,7 +110,7 @@ fun Application.module(testing: Boolean = false) {
         environment.config.property("ktor.conveyor.roundingWeight").getString().trim().toDouble()
     }
     val storageDuration: Int by lazy {
-        environment.config.property("ktor.conveyor.repository.inmemory.storageDuration").getString().trim().toInt()
+        environment.config.property("ktor.repository.inmemory.storageDuration").getString().trim().toInt()
     }
 
     // TODO: в будущем найти место, куда пристроить генератор
