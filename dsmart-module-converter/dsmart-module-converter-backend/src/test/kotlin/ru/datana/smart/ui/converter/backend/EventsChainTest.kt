@@ -24,8 +24,6 @@ internal class EventsChainTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -69,8 +67,6 @@ internal class EventsChainTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
                 metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 60.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -118,8 +114,6 @@ internal class EventsChainTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
                 metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -167,8 +161,6 @@ internal class EventsChainTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(2000L),
                 metalRate = 0.16,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -197,7 +189,7 @@ internal class EventsChainTest {
             converterFacade.handleMath(context)
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
 
         }
     }
@@ -216,7 +208,6 @@ internal class EventsChainTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.011,
-                warningPoint = 0.1,
                 angleStart = 60.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -249,7 +240,7 @@ internal class EventsChainTest {
             delay(6000)
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
             assertEquals(false, context.events.first().isActive)
             assertEquals("",context.currentState.get().currentMeltInfo.id)
         }
@@ -267,8 +258,6 @@ internal class EventsChainTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -316,8 +305,6 @@ internal class EventsChainTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -349,7 +336,7 @@ internal class EventsChainTest {
             )
             converterFacade.handleMath(context)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(0.1, context.events.first().warningPoint)
+            assertEquals(0.1, context.streamRateWarningPoint)
         }
     }
 

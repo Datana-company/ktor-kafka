@@ -19,8 +19,6 @@ internal class SignalerTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -63,8 +61,6 @@ internal class SignalerTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -105,8 +101,6 @@ internal class SignalerTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -148,8 +142,6 @@ internal class SignalerTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -189,8 +181,6 @@ internal class SignalerTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -232,8 +222,6 @@ internal class SignalerTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -279,7 +267,6 @@ internal class SignalerTest {
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
