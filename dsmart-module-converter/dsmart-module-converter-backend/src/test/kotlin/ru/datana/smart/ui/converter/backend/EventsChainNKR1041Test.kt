@@ -31,8 +31,8 @@ internal class EventsChainNKR1041Test {
             val converterFacade = converterFacadeTest(
                 meltTimeout = 5000L,
                 roundingWeight = 0.1,
-                metalRateWarningPoint = 0.1,
-                metalRateCriticalPoint = 0.34,
+                streamRateWarningPoint = 0.1,
+                streamRateCriticalPoint = 0.34,
                 reactionTime = 3000,
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
@@ -80,8 +80,8 @@ internal class EventsChainNKR1041Test {
             val converterFacade = converterFacadeTest(
                 meltTimeout = 5000L,
                 roundingWeight = 0.1,
-                metalRateWarningPoint = 0.1,
-                metalRateCriticalPoint = 0.13,
+                streamRateWarningPoint = 0.1,
+                streamRateCriticalPoint = 0.13,
                 reactionTime = 3000,
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,

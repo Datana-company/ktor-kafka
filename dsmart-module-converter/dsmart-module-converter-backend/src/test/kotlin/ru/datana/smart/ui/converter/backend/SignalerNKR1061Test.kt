@@ -490,6 +490,12 @@ internal class SignalerNKR1061Test {
             )
 
             val converterFacade = converterFacadeTest(
+
+                roundingWeight = 0.1,
+                streamRateWarningPoint = 0.1,
+                streamRateCriticalPoint = 0.34,
+                reactionTime = 3000,
+                sirenLimitTime = 3000,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     avgSteelRate = 0.19

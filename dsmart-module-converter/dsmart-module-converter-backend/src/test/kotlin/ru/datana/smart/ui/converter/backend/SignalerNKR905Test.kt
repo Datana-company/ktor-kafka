@@ -32,8 +32,8 @@ internal class SignalerNKR905Test {
             val converterFacade = converterFacadeTest(
 
                 roundingWeight = 0.1,
-                metalRateWarningPoint = 0.1,
-                metalRateCriticalPoint = 0.34,
+                streamRateWarningPoint = 0.1,
+                streamRateCriticalPoint = 0.34,
                 reactionTime = 3000,
                 sirenLimitTime = 3000,
                 currentState = createCurrentStateForTest(
