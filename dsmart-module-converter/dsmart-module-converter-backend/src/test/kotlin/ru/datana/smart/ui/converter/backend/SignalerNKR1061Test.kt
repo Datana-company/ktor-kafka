@@ -8,7 +8,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-internal class SignalerTest {
+internal class SignalerNKR1061Test {
     // #1061 - Не успела выполниться Critical, содержание металла пришло в норму
     @Test
     fun signalerTestCase1NKR1061() {
@@ -514,59 +514,6 @@ internal class SignalerTest {
             assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
             assertEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
 
-        }
-    }
-
-    /**NKR-905
-     * [лимит на звуковой сигнал сирены] - в секундах - сколько по длительности должен продолжаться звуковой сигнал
-     * [время реакции на рекомендацию] - REACTION_TIME   - Уже проверено в EventsChainTest
-     * [допустимый % потери] - METAL_RATE_POINT_WARNING - Уже проверено в EventsChainTest
-     * [% критической потери металла] - METAL_RATE_POINT_CRITICAL - Уже проверено в EventsChainTest
-     */
-    @Test
-    fun isEventActiveAfterSirenLimitTimeNKR905() {
-        runBlocking {
-            val timeStart = Instant.now()
-
-            val repository = createRepositoryWithEventForTest(
-                eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                timeStart = timeStart.minusMillis(3000L),
-                metalRate = 0.16,
-                criticalPoint = 0.15,
-                angleStart = 66.0,
-                category = ModelEvent.Category.CRITICAL
-            )
-
-            val converterFacade = converterFacadeTest(
-
-                roundingWeight = 0.1,
-                metalRateWarningPoint = 0.1,
-                metalRateCriticalPoint = 0.34,
-                reactionTime = 3000,
-                sirenLimitTime = 3000,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgSteelRate = 0.16
-                ),
-                converterRepository = repository
-            )
-
-            val context = converterBeContextTest(
-                timeStart = timeStart,
-                meltInfo = defaultMeltInfoTest(),
-                slagRate = ModelSlagRate(
-                    slagRate = 0.001,
-                    steelRate = 0.16
-
-                ),
-                frame = ModelFrame(
-                    frameTime = timeStart
-                )
-            )
-
-            converterFacade.handleMath(context)
-            assertEquals(3000L, context.sirenLimitTime)
-            assertNotEquals(1000L, context.sirenLimitTime)
         }
     }
 }

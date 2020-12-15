@@ -6,7 +6,6 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelFrame
 import ru.datana.smart.ui.converter.common.models.ModelSlagRate
-import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.Test
