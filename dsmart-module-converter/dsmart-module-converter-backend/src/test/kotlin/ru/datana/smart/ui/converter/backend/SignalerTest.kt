@@ -3,10 +3,7 @@ package ru.datana.smart.ui.converter.backend
 import kotlinx.coroutines.runBlocking
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.time.Instant
-import java.util.*
-import java.util.concurrent.atomic.AtomicReference
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,44 +11,38 @@ internal class SignalerTest {
 
     // #1061 - Не успела выполниться Critical, содержание металла пришло в норму
     @Test
-    fun signalerTestCase9() {
+    fun signalerTestCase1NKR1061() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
-            repository.create(ModelEvent(
-                id = UUID.randomUUID().toString(),
-                meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                timeStart = Instant.now().minusMillis(1000L),
-                timeFinish = Instant.now().minusMillis(1000L),
+            val timeStart = Instant.now()
+
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
+                timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.16,
                 criticalPoint = 0.15,
+                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
-            ))
+            )
 
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = AtomicReference(
-                    CurrentState(
-                        currentMeltInfo = defaultMeltInfoTest(),
-                        lastAngles = ModelAngles(
-                            angle = 60.0
-                        ),
-                        avgSlagRate = ModelSlagRate(
-                            steelRate = 0.16
-                        )
-                    )
+                currentState = createCurrentStateForTest(
+                    lastAngle = 60.0,
+                    lastSteelRate = 0.16,
+                    avgSteelRate = 0.16
                 ),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -64,42 +55,36 @@ internal class SignalerTest {
 
     // #1061 - Не успела выполниться Warning, содержание металла пришло в норму
     @Test
-    fun signalerTestCase10() {
+    fun signalerTestCase2NKR1061() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
-            repository.create(ModelEvent(
-                id = UUID.randomUUID().toString(),
-                meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = Instant.now().minusMillis(1000L),
-                timeFinish = Instant.now().minusMillis(1000L),
+            val timeStart = Instant.now()
+
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.11,
+                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
-            ))
+            )
+
             val converterFacade = converterFacadeTest(
-                currentState = AtomicReference(
-                    CurrentState(
-                        currentMeltInfo = defaultMeltInfoTest(),
-                        lastAngles = ModelAngles(
-                            angle = 60.0
-                        ),
-                        avgSlagRate = ModelSlagRate(
-                            steelRate = 0.11
-                        )
-                    )
+                currentState = createCurrentStateForTest(
+                    lastAngle = 60.0,
+                    avgSteelRate = 0.11
                 ),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -112,43 +97,37 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Critical (статус Выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase13() {
+    fun signalerTestCase3NKR1061() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
-            repository.create(ModelEvent(
-                id = UUID.randomUUID().toString(),
-                meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                timeStart = Instant.now().minusMillis(3000L),
-                timeFinish = Instant.now().minusMillis(1000L),
+            val timeStart = Instant.now()
+
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
+                timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.16,
                 criticalPoint = 0.15,
+                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
-            ))
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = AtomicReference(
-                    CurrentState(
-                        currentMeltInfo = defaultMeltInfoTest(),
-                        lastAngles = ModelAngles(
-                            angle = 60.0
-                        ),
-                        avgSlagRate = ModelSlagRate(
-                            steelRate = 0.16
-                        )
-                    )
+                currentState = createCurrentStateForTest(
+                    lastAngle = 60.0,
+                    avgSteelRate = 0.16
                 ),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -161,42 +140,35 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Warning (статус Выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase14() {
+    fun signalerTestCase4NKR1061() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
-            repository.create(ModelEvent(
-                id = UUID.randomUUID().toString(),
-                meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = Instant.now().minusMillis(3000L),
-                timeFinish = Instant.now().minusMillis(1000L),
+            val timeStart = Instant.now()
+
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.11,
+                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
-            ))
+            )
             val converterFacade = converterFacadeTest(
-                currentState = AtomicReference(
-                    CurrentState(
-                        currentMeltInfo = defaultMeltInfoTest(),
-                        lastAngles = ModelAngles(
-                            angle = 60.0
-                        ),
-                        avgSlagRate = ModelSlagRate(
-                            steelRate = 0.11
-                        )
-                    )
+                currentState = createCurrentStateForTest(
+                    lastAngle = 60.0,
+                    avgSteelRate = 0.11
                 ),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -209,43 +181,37 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Critical (статус Не выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase15() {
+    fun signalerTestCase5NKR1061() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
-            repository.create(ModelEvent(
-                id = UUID.randomUUID().toString(),
-                meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                timeStart = Instant.now().minusMillis(3000L),
-                timeFinish = Instant.now().minusMillis(1000L),
+            val timeStart = Instant.now()
+
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
+                timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.16,
                 criticalPoint = 0.15,
+                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
-            ))
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = AtomicReference(
-                    CurrentState(
-                        currentMeltInfo = defaultMeltInfoTest(),
-                        lastAngles = ModelAngles(
-                            angle = 62.0
-                        ),
-                        avgSlagRate = ModelSlagRate(
-                            steelRate = 0.16
-                        )
-                    )
+                currentState = createCurrentStateForTest(
+                    lastAngle = 62.0,
+                    avgSteelRate = 0.16
                 ),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -258,42 +224,36 @@ internal class SignalerTest {
 
     // #1061 - Успела выполниться Warning (статус Не выполнено), содержание металла пришло в норму
     @Test
-    fun signalerTestCase16() {
+    fun signalerTestCase6NKR1061() {
         runBlocking {
-            val repository = EventRepositoryInMemory()
-            repository.create(ModelEvent(
-                id = UUID.randomUUID().toString(),
-                meltId = "211626-1606203458852",
-                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = Instant.now().minusMillis(3000L),
-                timeFinish = Instant.now().minusMillis(1000L),
+            val timeStart = Instant.now()
+
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+                timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.11,
+                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
-            ))
+            )
+
             val converterFacade = converterFacadeTest(
-                currentState = AtomicReference(
-                    CurrentState(
-                        currentMeltInfo = defaultMeltInfoTest(),
-                        lastAngles = ModelAngles(
-                            angle = 62.0
-                        ),
-                        avgSlagRate = ModelSlagRate(
-                            steelRate = 0.11
-                        )
-                    )
+                currentState = createCurrentStateForTest(
+                    lastAngle = 62.0,
+                    avgSteelRate = 0.11
                 ),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
@@ -301,6 +261,58 @@ internal class SignalerTest {
             assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
             assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
+        }
+    }
+
+    /**NKR-905
+     * [лимит на звуковой сигнал сирены] - в секундах - сколько по длительности должен продолжаться звуковой сигнал
+     * [время реакции на рекомендацию] - REACTION_TIME   - Уже проверено в EventsChainTest
+     * [допустимый % потери] - METAL_RATE_POINT_WARNING - Уже проверено в EventsChainTest
+     * [% критической потери металла] - METAL_RATE_POINT_CRITICAL - Уже проверено в EventsChainTest
+     */
+    @Test
+    fun isEventActiveAfterSirenLimitTimeNKR905() {
+        runBlocking {
+            val timeStart = Instant.now()
+
+            val repository = createRepositoryWithEventForTest(
+                eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
+                timeStart = timeStart.minusMillis(3000L),
+                metalRate = 0.16,
+                criticalPoint = 0.15,
+                angleStart = 66.0,
+                category = ModelEvent.Category.CRITICAL
+            )
+
+            val converterFacade = converterFacadeTest(
+
+                roundingWeight = 0.1,
+                metalRateWarningPoint = 0.1,
+                metalRateCriticalPoint = 0.34,
+                reactionTime = 3000,
+                sirenLimitTime = 3000,
+                currentState = createCurrentStateForTest(
+                    lastAngle = 66.0,
+                    avgSteelRate = 0.16
+                ),
+                converterRepository = repository
+            )
+
+            val context = converterBeContextTest(
+                timeStart = timeStart,
+                meltInfo = defaultMeltInfoTest(),
+                slagRate = ModelSlagRate(
+                    slagRate = 0.001,
+                    steelRate = 0.16
+
+                ),
+                frame = ModelFrame(
+                    frameTime = timeStart
+                )
+            )
+
+            converterFacade.handleMath(context)
+            assertEquals(3000L, context.sirenLimitTime)
         }
     }
 }
