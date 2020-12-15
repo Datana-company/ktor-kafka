@@ -1,6 +1,8 @@
 val konveyorVersion: String by project
 val dsmartLoggingVersion: String by project
 val coroutinesVersion: String by project
+val kafkaVersion: String by project
+val ktorVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -27,6 +29,11 @@ dependencies {
     testImplementation(kotlin("test-junit"))
     testImplementation(project(":dsmart-module-converter:dsmart-module-converter-repo-inmemory"))
     testImplementation(project(":dsmart-module-converter:dsmart-module-converter-app"))
+    testImplementation("org.apache.kafka:kafka-clients:$kafkaVersion")
+    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+    testImplementation("io.ktor:ktor-server-core:$ktorVersion")
+    testImplementation("io.ktor:ktor-server-host-common:$ktorVersion")
+    testImplementation("io.ktor:ktor-server-netty:$ktorVersion")
 }
 
 tasks {

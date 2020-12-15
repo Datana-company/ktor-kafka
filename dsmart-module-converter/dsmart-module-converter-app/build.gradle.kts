@@ -72,9 +72,14 @@ dependencies {
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
-    implementation(kotlin("test-junit"))
-    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 
+    implementation(kotlin("test-junit"))
+    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit"))
+    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+//    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+    testImplementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
+    testImplementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
