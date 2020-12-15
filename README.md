@@ -57,11 +57,12 @@ uoth  .left.> both
 
 ## Модули
 
-1. [`dmart-common`](dsmart-common/README.md) - главный компонент интерфейса пользователя, который управляет всеми 
+1. [`dsmart-common`](dsmart-common/README.md) - главный компонент интерфейса пользователя, который управляет всеми 
 компонентами UI.
-1. [`dmart-ui-main`](dsmart-ui-main/README.md) - корневой компонент (Home) интерфейса пользователя, который управляет всеми 
+1. [`dsmart-ui-main`](dsmart-ui-main/README.md) - корневой компонент (Home) интерфейса пользователя, который управляет всеми 
 компонентами UI.
-1. [`dmart-module-temperature`](dsmart-module-temperature/README.md) - модуль для датчика температуры
+1. [`dsmart-module-temperature`](dsmart-module-temperature/README.md) - модуль для датчика температуры
+1. [`dsmart-module-converter`](dsmart-module-converter/README.md) - модуль с АРМ конвертера
 
 ## Сборка и деплой проекта
 
