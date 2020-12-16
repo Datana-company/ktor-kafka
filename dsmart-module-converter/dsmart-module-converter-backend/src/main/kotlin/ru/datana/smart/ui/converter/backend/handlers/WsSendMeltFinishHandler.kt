@@ -37,12 +37,8 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 }
                 context.converterFacade.handleSignaler(context)
 
-//                val events = context.eventsRepository.getAllByMeltId(context.meltInfo.id)
-//                context.events = events
                 context.meltInfo = ModelMeltInfo.NONE
                 context.wsManager.sendFinish(context)
-//                context.wsManager.sendEvents(context)
-//                context.wsSignalerManager.sendSignaler(context)
                 println("jobMeltFinish done")
             }
         }
