@@ -13,26 +13,28 @@ import ru.datana.smart.ui.converter.common.utils.toPercent
 * */
 object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        context.activeEvent.takeIf { it == ModelEvent.NONE }?.let {
-            val meltId: String = context.meltInfo.id
-            val slagRateTime = context.timeStart
-            val currentAngle = context.currentAngle
-            val avgSlagRate = context.avgStreamRate
-            context.activeEvent = ModelEvent(
-                meltId = meltId,
-                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = slagRateTime,
-                timeFinish = slagRateTime,
-                angleStart = currentAngle,
-                title = "Предупреждение",
-                textMessage = """
-                          В потоке детектирован шлак – ${avgSlagRate.toPercent()}% сверх допустимой нормы ${context.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
-                          """.trimIndent(),
-                category = ModelEvent.Category.WARNING,
-                executionStatus = ModelEvent.ExecutionStatus.STATELESS
-            )
-            context.eventsRepository.create(context.activeEvent)
+        if (context.activeEvent != ModelEvent.NONE) {
+            return
         }
+
+        val meltId: String = context.currentMeltId
+        val slagRateTime = context.timeStart
+        val currentAngle = context.currentAngle
+        val avgSlagRate = context.avgStreamRate
+        context.activeEvent = ModelEvent(
+            meltId = meltId,
+            type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
+            timeStart = slagRateTime,
+            timeFinish = slagRateTime,
+            angleStart = currentAngle,
+            title = "Предупреждение",
+            textMessage = """
+                      В потоке детектирован шлак – ${avgSlagRate.toPercent()}% сверх допустимой нормы ${context.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
+                      """.trimIndent(),
+            category = ModelEvent.Category.WARNING,
+            executionStatus = ModelEvent.ExecutionStatus.STATELESS
+        )
+        context.eventsRepository.create(context.activeEvent)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

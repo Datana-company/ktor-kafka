@@ -5,11 +5,11 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.konveyor
 import ru.datana.smart.ui.converter.backend.common.ConverterChainSettings
 import ru.datana.smart.ui.converter.backend.common.setSettings
-import ru.datana.smart.ui.converter.backend.handlers.FinishHandler
+import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 
-class ExtEventsChain(
+class ExtendEventsChain(
     var chainSettings: ConverterChainSettings
 ) {
 
@@ -30,14 +30,38 @@ class ExtEventsChain(
 
             timeout { 1000 }
 
-            // Тут какие-то хэндлеры для обработки внешнего эвента (Какие, пока не понятно)
+            handler {
+                onEnv { status == CorStatus.STARTED && currentMeltId.isEmpty() }
+                exec {
+                    status = CorStatus.FINISHED
+                }
+            }
+
+            +GetActiveEventHandler
+            +SetStreamStatus
+
+            konveyor {
+                on { status == CorStatus.STARTED && extendEvent.alertRuleId.isNotBlank() }
+                +SetEventExecutionStatusHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
+                +CreateExtendEventHandler
+            }
 
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    converterFacade.handleSteelEvents(this)
+                    events = eventsRepository.getAllByMeltId(currentMeltId)
                 }
             }
+
+            handler {
+                onEnv { status == CorStatus.STARTED }
+                exec {
+                    wsManager.sendEvents(this)
+                }
+            }
+
             +FinishHandler
         }
     }

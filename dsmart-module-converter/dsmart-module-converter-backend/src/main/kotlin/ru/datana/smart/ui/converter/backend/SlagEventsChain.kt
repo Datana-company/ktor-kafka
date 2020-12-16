@@ -27,7 +27,7 @@ class SlagEventsChain(
         val konveyor = konveyor<ConverterBeContext> {
 
             +GetActiveEventHandler
-            +CalcStreamStatus
+            +SetStreamStatus
 
             konveyor {
                 on { streamStatus == ModelStreamStatus.CRITICAL }
@@ -43,13 +43,13 @@ class SlagEventsChain(
                 +UpdateEventHandler
                 +CreateWarningSlagEventHandler
             }
-//            konveyor {
-//                on { streamStatus == ModelStreamStatus.INFO }
-//                +SetEventExecutionStatusHandler
-//                +SetEventInactiveStatusHandler
-//                +UpdateEventHandler
-//                +CreateInfoSlagEventHandler
-//            }
+            konveyor {
+                on { streamStatus == ModelStreamStatus.INFO }
+                +SetEventExecutionStatusHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
+                +CreateInfoSlagEventHandler
+            }
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL }
                 +SetEventExecutionStatusHandler
@@ -57,22 +57,15 @@ class SlagEventsChain(
                 +UpdateEventHandler
             }
             konveyor {
-                on { currentMeltId.isEmpty() }
+                on { meltInfo.id.isEmpty() }
                 +SetEventInactiveStatusHandler
                 +UpdateEventHandler
                 +CreateSuccessMeltSlagEventHandler
             }
-            konveyor {
-                on { extEvent.alertRuleId.isNotBlank() }
-                +SetEventExecutionStatusHandler
-                +SetEventInactiveStatusHandler
-                +UpdateEventHandler
-                +CreateExtEventHandler
-            }
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    events = eventsRepository.getAllByMeltId(meltInfo.id)
+                    events = eventsRepository.getAllByMeltId(currentMeltId)
                 }
             }
             handler {

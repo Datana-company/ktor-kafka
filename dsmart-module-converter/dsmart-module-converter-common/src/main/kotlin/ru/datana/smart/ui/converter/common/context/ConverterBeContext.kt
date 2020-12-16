@@ -14,7 +14,7 @@ data class ConverterBeContext(
     var slagRate: ModelSlagRate = ModelSlagRate.NONE,
     var events: MutableList<ModelEvent> = mutableListOf(),
     var activeEvent: ModelEvent = ModelEvent.NONE,
-    var extEvent: ModelEvent = ModelEvent.NONE,
+    var extendEvent: ModelEvent = ModelEvent.NONE,
     var lastTimeAngles: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
     var lastTimeFrame: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
     var status: CorStatus = CorStatus.STARTED,

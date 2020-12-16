@@ -13,31 +13,33 @@ import ru.datana.smart.ui.converter.common.utils.toPercent
 * */
 object CreateSuccessMeltSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        context.activeEvent.takeIf { it == ModelEvent.NONE }?.let {
-            val meltId: String = context.meltInfo.id
-            val slagRateTime = context.timeStart
-            context.eventsRepository.getAllByMeltId(meltId).map {
-                if (it.type == ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT ||
-                    it.type == ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
-                ) {
-                    return
-                }
-            }
-            context.activeEvent = ModelEvent(
-                meltId = meltId,
-                type = ModelEvent.EventType.SUCCESS_MELT_EVENT,
-                timeStart = slagRateTime,
-                timeFinish = slagRateTime,
-                isActive = false,
-                title = "Информация",
-                textMessage = """
-                          Допустимая норма потерь металла ${context.streamRateWarningPoint.toPercent()}% не была превышена.
-                          """.trimIndent(),
-                category = ModelEvent.Category.INFO,
-                executionStatus = ModelEvent.ExecutionStatus.STATELESS
-            )
-            context.eventsRepository.create(context.activeEvent)
+        if (context.activeEvent != ModelEvent.NONE) {
+            return
         }
+
+        val meltId: String = context.currentMeltId
+        val slagRateTime = context.timeStart
+        context.eventsRepository.getAllByMeltId(meltId).map {
+            if (it.type == ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT ||
+                it.type == ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
+            ) {
+                return
+            }
+        }
+        context.activeEvent = ModelEvent(
+            meltId = meltId,
+            type = ModelEvent.EventType.SUCCESS_MELT_EVENT,
+            timeStart = slagRateTime,
+            timeFinish = slagRateTime,
+            isActive = false,
+            title = "Информация",
+            textMessage = """
+                      Допустимая норма потерь металла ${context.streamRateWarningPoint.toPercent()}% не была превышена.
+                      """.trimIndent(),
+            category = ModelEvent.Category.INFO,
+            executionStatus = ModelEvent.ExecutionStatus.STATELESS
+        )
+        context.eventsRepository.create(context.activeEvent)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

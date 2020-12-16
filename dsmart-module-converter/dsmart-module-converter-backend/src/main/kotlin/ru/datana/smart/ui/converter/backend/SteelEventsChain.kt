@@ -27,7 +27,7 @@ class SteelEventsChain(
         val konveyor = konveyor<ConverterBeContext> {
 
             +GetActiveEventHandler
-            +CalcStreamStatus
+            +SetStreamStatus
 
             konveyor {
                 on { streamStatus == ModelStreamStatus.CRITICAL }
@@ -43,13 +43,13 @@ class SteelEventsChain(
                 +UpdateEventHandler
                 +CreateWarningSteelEventHandler
             }
-//            konveyor {
-//                on { streamStatus == ModelStreamStatus.INFO }
-//                +SetEventExecutionStatusHandler
-//                +SetEventInactiveStatusHandler
-//                +UpdateEventHandler
-//                +CreateInfoSteelEventHandler
-//            }
+            konveyor {
+                on { streamStatus == ModelStreamStatus.INFO }
+                +SetEventExecutionStatusHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
+                +CreateInfoSteelEventHandler
+            }
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL }
                 +SetEventExecutionStatusHandler
@@ -57,22 +57,15 @@ class SteelEventsChain(
                 +UpdateEventHandler
             }
             konveyor {
-                on { currentMeltId.isEmpty() }
+                on { meltInfo.id.isEmpty() }
                 +SetEventInactiveStatusHandler
                 +UpdateEventHandler
                 +CreateSuccessMeltSteelEventHandler
             }
-            konveyor {
-                on { extEvent.alertRuleId.isNotBlank() }
-                +SetEventExecutionStatusHandler
-                +SetEventInactiveStatusHandler
-                +UpdateEventHandler
-                +CreateExtEventHandler
-            }
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    events = eventsRepository.getAllByMeltId(meltInfo.id)
+                    events = eventsRepository.getAllByMeltId(currentMeltId)
                 }
             }
             handler {

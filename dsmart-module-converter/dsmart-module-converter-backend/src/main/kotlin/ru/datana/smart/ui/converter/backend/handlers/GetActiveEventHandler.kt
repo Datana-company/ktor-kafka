@@ -8,7 +8,7 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 
 object GetActiveEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val meltId: String = context.meltInfo.id
+        val meltId: String = context.currentMeltId
         context.activeEvent = context.eventsRepository.getActiveByMeltId(meltId) ?: ModelEvent.NONE
     }
 

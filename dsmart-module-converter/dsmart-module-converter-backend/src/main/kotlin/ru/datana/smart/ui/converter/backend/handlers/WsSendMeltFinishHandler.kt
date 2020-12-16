@@ -27,7 +27,7 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
             }
             jobMeltFinish = GlobalScope.launch {
                 delay(context.meltTimeout)
-                context.currentState.set(CurrentState.NONE)
+                context.meltInfo = ModelMeltInfo.NONE
                 context.status = CorStatus.STARTED
 
                 if (context.eventMode == ModelEventMode.STEEL) {
@@ -37,7 +37,7 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 }
                 context.converterFacade.handleSignaler(context)
 
-                context.meltInfo = ModelMeltInfo.NONE
+                context.currentState.set(CurrentState.NONE)
                 context.wsManager.sendFinish(context)
                 println("jobMeltFinish done")
             }

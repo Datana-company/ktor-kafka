@@ -241,16 +241,16 @@ fun Application.module(testing: Boolean = false) {
                             // 1) Получаем данные из Кафки
                             topicEvents -> {
                                  // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
-                                val kafkaModel = toConverterTransportExtEvents(record)
+                                val kafkaModel = toConverterTransportExtendEvents(record)
                                  // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
                                  // 4) Запихиваем эту модель в контекст
-                                context.setExtEvent(kafkaModel)
+                                context.setExtendEvent(kafkaModel)
                                  // 5) Вызываем цепочку для обработки поступившего сообщения
                                 println("topic = events, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-                                converterFacade.handleExtEvents(context)
+                                converterFacade.handleExtendEvents(context)
                             }
                     }
                 }

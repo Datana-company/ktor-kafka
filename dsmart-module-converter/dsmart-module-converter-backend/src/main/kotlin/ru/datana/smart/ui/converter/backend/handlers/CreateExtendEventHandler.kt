@@ -5,32 +5,27 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelEvent
-import ru.datana.smart.ui.converter.common.utils.toPercent
 
-/*
-* CreateInfoEventHandler - создаётся событие типа "Информация",
-* и светофор переходит в информационный статус.
-* */
-object CreateInfoSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
+object CreateExtendEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         if (context.activeEvent != ModelEvent.NONE) {
             return
         }
 
         val meltId: String = context.currentMeltId
-        val slagRateTime = context.timeStart
-        val currentAngle = context.currentAngle
-        val avgSteelRate = context.avgStreamRate
+        val timeStart = context.timeStart
         context.activeEvent = ModelEvent(
             meltId = meltId,
-            type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT,
-            timeStart = slagRateTime,
-            timeFinish = slagRateTime,
-            angleStart = currentAngle,
-            title = "Информация",
-            textMessage = """
-                          Достигнут предел потерь металла в потоке – ${avgSteelRate.toPercent()}%.
-                          """.trimIndent(),
+            type = ModelEvent.EventType.EXT_EVENT,
+            timeStart = timeStart,
+            timeFinish = timeStart,
+            textMessage = context.extendEvent.textMessage,
+            alertRuleId = context.extendEvent.alertRuleId,
+            containerId = context.extendEvent.containerId,
+            component = context.extendEvent.component,
+            timestamp = context.extendEvent.timestamp,
+            level = context.extendEvent.level,
+            loggerName = context.extendEvent.loggerName,
             category = ModelEvent.Category.INFO,
             executionStatus = ModelEvent.ExecutionStatus.STATELESS
         )
