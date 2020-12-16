@@ -2,6 +2,7 @@ package ru.datana.smart.ui.converter.backend
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 
 import java.time.Instant
@@ -10,26 +11,27 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 internal class EventsChainNKR1041Test {
-    /**NKR-1041
-     * ui-converter. По окончанию скачивания шлака последняя рекомендация и световой сигнал не меняют статус (остаются активными)
+    /**
+     * NKR-1041
+     * По окончанию скачивания шлака (meltTimeout) последняя рекомендация и световой сигнал меняют статус (не остаются активными)
      */
+
     @Test
     fun isEventActiveAfterReactionTimeNKR1041() {
         runBlocking {
             val timeStart = Instant.now()
-
+            val meltTimeout = 5000L
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.11,
-                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
 
             val converterFacade = converterFacadeTest(
-                meltTimeout = 5000L,
+                meltTimeout = meltTimeout,
                 roundingWeight = 0.1,
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.34,
@@ -56,13 +58,15 @@ internal class EventsChainNKR1041Test {
             )
 
             converterFacade.handleMath(context)
-            delay(6000)
+            delay(meltTimeout + 1000L)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(false, context.events.first().isActive)
             assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
+            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
         }
     }
 
+    // Во время скачивания шлака, последняя рекомендация(Critical) и световой сигнал остаются активными
     @Test
     fun isEventActiveAfterReactionTimeNKR1041_WithFalseParameterTest() {
         runBlocking {
@@ -71,7 +75,6 @@ internal class EventsChainNKR1041Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.001,
-                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
@@ -92,6 +95,7 @@ internal class EventsChainNKR1041Test {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.018,
@@ -104,8 +108,13 @@ internal class EventsChainNKR1041Test {
             )
 
             converterFacade.handleMath(context)
+
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertNotEquals(false, context.events.first().isActive)
             assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
+            assertNotEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
+            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
+            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context.signaler.level)
         }
     }
 }

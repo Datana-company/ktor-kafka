@@ -1,6 +1,7 @@
 package ru.datana.smart.ui.converter.backend
 
 import kotlinx.coroutines.runBlocking
+import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 
 import java.time.Instant
@@ -50,6 +51,7 @@ internal class EventsChainNKR1031Test {
             )
             converterFacade.handleMath(context)
 
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(ModelEvent.Category.CRITICAL, context.events.first().category)
             assertEquals(false, context.events.first().isActive)
             assertNotEquals(ModelEvent.Category.WARNING, context.events.first().category)
@@ -81,6 +83,7 @@ internal class EventsChainNKR1031Test {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.16,
@@ -92,6 +95,7 @@ internal class EventsChainNKR1031Test {
             )
             converterFacade.handleMath(context)
 
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(true, context.events.first().isActive)
             assertNotEquals(false, context.events.first().isActive)
         }

@@ -1,6 +1,7 @@
 package ru.datana.smart.ui.converter.backend
 
 import kotlinx.coroutines.runBlocking
+import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 
 import java.time.Instant
@@ -21,7 +22,6 @@ internal class EventsChainNKR1055Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
                 metalRate = 0.11,
-                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 60.0,
                 category = ModelEvent.Category.WARNING
@@ -51,13 +51,16 @@ internal class EventsChainNKR1055Test {
             )
             converterFacade.handleMath(context)
 
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
 
         }
     }
 
-    //Не истекло время реакции (3 сек),а угол уменьшился
+    /**
+     * Не истекло время реакции (3 сек),а угол уменьшился
+     * */
     @Test
     fun isExecutionStatusFailedNKR1055_WithFalseParameterTest() {
         runBlocking {
@@ -95,6 +98,7 @@ internal class EventsChainNKR1055Test {
             )
             converterFacade.handleMath(context)
 
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
             assertNotEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
@@ -104,7 +108,7 @@ internal class EventsChainNKR1055Test {
     }
 
     /** NKR-1055  ModelEvent.ExecutionStatus.COMPLETED
-     *  Предупреждение "Выполнено" - т.к. истекло время реакции (3 сек), % металла не снизился,
+     *  Предупреждение "Выполнено" - т.к. истекло время реакции (3 сек), % металла снизился,
      *  угол уменьшился не менее, чем на 5 градусов
      */
     @Test
@@ -144,15 +148,17 @@ internal class EventsChainNKR1055Test {
             )
             converterFacade.handleMath(context)
 
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
 
         }
     }
-//    /** NKR-1055  ModelEvent.ExecutionStatus.COMPLETED
-//     *  Предупреждение "не Выполнено" - т.к.не истекло время реакции (3 сек), % металла не снизился,
-//     *  угол уменьшился не менее, чем на 5 градусов
-//     */
+
+    /** NKR-1055  ModelEvent.ExecutionStatus.FAILED
+     *  Предупреждение " не Выполнено" - т.к. истекло время реакции (3 сек), % металла не снизился,
+     *  угол уменьшился менее, чем на 5 градусов
+     */
 
     @Test
     fun isExecutionStatusComplitedNKR1055_WithFalseParameterTest() {
@@ -174,7 +180,7 @@ internal class EventsChainNKR1055Test {
                 streamRateCriticalPoint = 0.16,
                 reactionTime = 3000L,
                 currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
+                    lastAngle = 64.0,
                     avgSteelRate = 0.11
                 ),
                 converterRepository = repository
@@ -192,6 +198,7 @@ internal class EventsChainNKR1055Test {
             )
             converterFacade.handleMath(context)
 
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertNotEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
             assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
@@ -240,6 +247,7 @@ internal class EventsChainNKR1055Test {
             )
             converterFacade.handleMath(context)
 
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
 
@@ -247,7 +255,7 @@ internal class EventsChainNKR1055Test {
     }
 
     /** NKR-1055
-     * Предупреждение "без статуса" - т.к.  % металла не снизился до допустимой нормы, а время реакции истекло.
+     * Предупреждение "не Выполнено" - т.к.  % металла не снизился до допустимой нормы, а время реакции истекло.
      */
     @Test
     fun isExecutionStatusNoneNKR1055_WithFalseParameterTest() {
@@ -267,7 +275,7 @@ internal class EventsChainNKR1055Test {
                 currentState = createCurrentStateForTest(
                     lastSteelRate = 0.11,
                     lastAngle = 68.0,
-                    avgSteelRate = 0.01
+                    avgSteelRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -284,8 +292,9 @@ internal class EventsChainNKR1055Test {
             )
             converterFacade.handleMath(context)
 
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertNotEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
 
         }
     }

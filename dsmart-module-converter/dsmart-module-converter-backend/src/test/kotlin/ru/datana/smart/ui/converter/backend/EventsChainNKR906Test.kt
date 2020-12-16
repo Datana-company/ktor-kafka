@@ -1,6 +1,7 @@
 package ru.datana.smart.ui.converter.backend
 
 import kotlinx.coroutines.runBlocking
+import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 
 import java.time.Instant
@@ -19,7 +20,6 @@ internal class EventsChainNKR906Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.11,
-                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
@@ -52,6 +52,7 @@ internal class EventsChainNKR906Test {
                 )
             )
             converterFacade.handleMath(context)
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(0.1, context.streamRateWarningPoint)
             assertNotEquals(0.2, context.streamRateWarningPoint)

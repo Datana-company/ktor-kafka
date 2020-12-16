@@ -2,6 +2,7 @@ package ru.datana.smart.ui.converter.backend
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 
 import java.time.Instant
@@ -90,6 +91,7 @@ internal class EventsChainNKR1080Test {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.011,
@@ -100,6 +102,8 @@ internal class EventsChainNKR1080Test {
                 ),
             )
             converterFacade.handleMath(context)
+
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertNotEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
             assertNotEquals(true, context.events.first().isActive)
             assertNotEquals("", context.currentState.get().currentMeltInfo.id)

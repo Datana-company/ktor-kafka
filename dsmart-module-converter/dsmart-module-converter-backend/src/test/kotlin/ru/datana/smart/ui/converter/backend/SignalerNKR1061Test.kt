@@ -443,7 +443,6 @@ internal class SignalerNKR1061Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.11,
-                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
@@ -490,10 +489,8 @@ internal class SignalerNKR1061Test {
             )
 
             val converterFacade = converterFacadeTest(
-
                 roundingWeight = 0.1,
                 streamRateWarningPoint = 0.1,
-//                streamRateCriticalPoint = 0.16,
                 reactionTime = 3000,
                 sirenLimitTime = 3000,
                 currentState = createCurrentStateForTest(
@@ -503,6 +500,7 @@ internal class SignalerNKR1061Test {
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.11,

@@ -1,6 +1,7 @@
 package ru.datana.smart.ui.converter.backend
 
 import kotlinx.coroutines.runBlocking
+import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 import java.time.Instant
 import kotlin.test.Test
@@ -19,7 +20,6 @@ internal class SignalerNKR905Test {
     fun isEventActiveAfterSirenLimitTimeNKR905() {
         runBlocking {
             val timeStart = Instant.now()
-
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
@@ -57,6 +57,8 @@ internal class SignalerNKR905Test {
             )
 
             converterFacade.handleMath(context)
+
+            assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(3000L, context.sirenLimitTime)
             assertNotEquals(1000L, context.sirenLimitTime)
         }
