@@ -479,11 +479,11 @@ internal class SignalerNKR1061Test {
     @Test
     fun signalerTestCase16NKR1061_WithFalseParameterTest() {
         runBlocking {
+            val timeStart = Instant.now()
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = Instant.now().minusMillis(2000L),
+                timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.11,
-                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
@@ -493,12 +493,12 @@ internal class SignalerNKR1061Test {
 
                 roundingWeight = 0.1,
                 streamRateWarningPoint = 0.1,
-                streamRateCriticalPoint = 0.34,
+//                streamRateCriticalPoint = 0.16,
                 reactionTime = 3000,
                 sirenLimitTime = 3000,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.19
+                    avgSteelRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -506,17 +506,17 @@ internal class SignalerNKR1061Test {
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     slagRate = 0.11,
-                    steelRate = 0.19
+                    steelRate = 0.17
                 ),
                 frame = ModelFrame(
-                    frameTime = Instant.now()
+                    frameTime = timeStart
                 )
             )
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertNotEquals(SignalerSoundModel.NONE, context.signaler.sound)
+            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context.signaler.level)
+            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
             assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
             assertEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
 

@@ -1,6 +1,5 @@
 package ru.datana.smart.ui.converter.backend
 
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import ru.datana.smart.ui.converter.common.models.*
 
@@ -65,9 +64,8 @@ internal class EventsChainNKR1055Test {
             val timeStart = Instant.now()
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = timeStart.minusMillis(3000L),
+                timeStart = timeStart.minusMillis(2000L),
                 metalRate = 0.011,
-                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
@@ -81,11 +79,12 @@ internal class EventsChainNKR1055Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     lastSteelRate = 0.011,
-                    avgSteelRate = 0.011
+                    avgSteelRate = 0.11
                 ),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.011
@@ -98,7 +97,8 @@ internal class EventsChainNKR1055Test {
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
-            assertEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
+            assertNotEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
 
         }
     }
@@ -108,14 +108,13 @@ internal class EventsChainNKR1055Test {
      *  угол уменьшился не менее, чем на 5 градусов
      */
     @Test
-    fun isExecutionStatusCOMPLETEDNKR1055() {
+    fun isExecutionStatusComplitedNKR1055() {
         runBlocking {
             val timeStart = Instant.now()
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
                 metalRate = 0.11,
-                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
@@ -146,11 +145,14 @@ internal class EventsChainNKR1055Test {
             converterFacade.handleMath(context)
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            delay(4000)
             assertEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
 
         }
     }
+//    /** NKR-1055  ModelEvent.ExecutionStatus.COMPLETED
+//     *  Предупреждение "не Выполнено" - т.к.не истекло время реакции (3 сек), % металла не снизился,
+//     *  угол уменьшился не менее, чем на 5 градусов
+//     */
 
     @Test
     fun isExecutionStatusComplitedNKR1055_WithFalseParameterTest() {
@@ -161,7 +163,6 @@ internal class EventsChainNKR1055Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
                 metalRate = 0.11,
-                criticalPoint = null,
                 warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
@@ -180,9 +181,10 @@ internal class EventsChainNKR1055Test {
             )
 
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
-                    steelRate = 0.011
+                    steelRate = 0.12
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
@@ -191,8 +193,8 @@ internal class EventsChainNKR1055Test {
             converterFacade.handleMath(context)
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            delay(4000)
-            assertEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
+            assertNotEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
+            assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
 
         }
     }
@@ -244,8 +246,8 @@ internal class EventsChainNKR1055Test {
         }
     }
 
-    /** NKR-1055  ModelEvent.ExecutionStatus.None
-     * Предупреждение "без статуса" - т.к.  % металла не снизился до допустимой нормы, а время реакции еще не истекло.
+    /** NKR-1055
+     * Предупреждение "без статуса" - т.к.  % металла не снизился до допустимой нормы, а время реакции истекло.
      */
     @Test
     fun isExecutionStatusNoneNKR1055_WithFalseParameterTest() {
@@ -254,9 +256,6 @@ internal class EventsChainNKR1055Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(8000L),
-                metalRate = 0.01,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -266,18 +265,18 @@ internal class EventsChainNKR1055Test {
                 streamRateCriticalPoint = 0.34,
                 reactionTime = 3000,
                 currentState = createCurrentStateForTest(
-                    lastSteelRate = 0.01,
+                    lastSteelRate = 0.11,
                     lastAngle = 68.0,
                     avgSteelRate = 0.01
                 ),
                 converterRepository = repository
             )
             val context = converterBeContextTest(
+                timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
                     steelRate = 0.11,
                     slagRate = 0.11
-
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
