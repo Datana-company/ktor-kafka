@@ -31,34 +31,42 @@ class SteelEventsChain(
 
             konveyor {
                 on { streamStatus == ModelStreamStatus.CRITICAL }
-                +AddEventToHistoryHandler
-                +AddStatelessEventToHistoryHandler
+                +SetEventExecutionStatusHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
                 +CreateCriticalSteelEventHandler
             }
             konveyor {
                 on { streamStatus == ModelStreamStatus.WARNING }
-                +AddEventToHistoryHandler
-                +AddStatelessEventToHistoryHandler
+                +SetEventExecutionStatusHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
                 +CreateWarningSteelEventHandler
             }
 //            konveyor {
 //                on { streamStatus == ModelStreamStatus.INFO }
-//                +AddEventToHistoryHandler
-//                +AddStatelessEventToHistoryHandler
+//                +SetEventExecutionStatusHandler
+//                +SetEventInactiveStatusHandler
+//                +UpdateEventHandler
 //                +CreateInfoSteelEventHandler
 //            }
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL }
-                +AddEventToHistoryHandler
-                +AddStatelessEventToHistoryHandler
+                +SetEventExecutionStatusHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
             }
             konveyor {
                 on { currentMeltId.isEmpty() }
-                +AddStatelessEventToHistoryHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
                 +CreateSuccessMeltSteelEventHandler
             }
             konveyor {
                 on { extEvent.alertRuleId.isNotBlank() }
+                +SetEventExecutionStatusHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
                 +CreateExtEventHandler
             }
             handler {

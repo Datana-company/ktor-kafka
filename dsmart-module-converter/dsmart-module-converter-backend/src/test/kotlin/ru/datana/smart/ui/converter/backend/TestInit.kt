@@ -106,7 +106,6 @@ suspend fun createRepositoryWithEventForTest(
     val repositoryInMemory = EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES))
     repositoryInMemory.create(
         ModelEvent(
-            id = UUID.randomUUID().toString(),
             meltId = "211626-1606203458852",
             type = eventType,
             timeStart = timeStart,

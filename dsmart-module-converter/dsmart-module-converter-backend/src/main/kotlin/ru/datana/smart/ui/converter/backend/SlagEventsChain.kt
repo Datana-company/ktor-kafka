@@ -9,8 +9,6 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.utils.isNotEmpty
-import ru.datana.smart.ui.converter.common.utils.toPercent
 
 class SlagEventsChain(
     var chainSettings: ConverterChainSettings
@@ -33,34 +31,42 @@ class SlagEventsChain(
 
             konveyor {
                 on { streamStatus == ModelStreamStatus.CRITICAL }
-                +AddEventToHistoryHandler
-                +AddStatelessEventToHistoryHandler
+                +SetEventExecutionStatusHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
                 +CreateCriticalSlagEventHandler
             }
             konveyor {
                 on { streamStatus == ModelStreamStatus.WARNING }
-                +AddEventToHistoryHandler
-                +AddStatelessEventToHistoryHandler
+                +SetEventExecutionStatusHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
                 +CreateWarningSlagEventHandler
             }
 //            konveyor {
 //                on { streamStatus == ModelStreamStatus.INFO }
-//                +AddEventToHistoryHandler
-//                +AddStatelessEventToHistoryHandler
+//                +SetEventExecutionStatusHandler
+//                +SetEventInactiveStatusHandler
+//                +UpdateEventHandler
 //                +CreateInfoSlagEventHandler
 //            }
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL }
-                +AddEventToHistoryHandler
-                +AddStatelessEventToHistoryHandler
+                +SetEventExecutionStatusHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
             }
             konveyor {
                 on { currentMeltId.isEmpty() }
-                +AddStatelessEventToHistoryHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
                 +CreateSuccessMeltSlagEventHandler
             }
             konveyor {
                 on { extEvent.alertRuleId.isNotBlank() }
+                +SetEventExecutionStatusHandler
+                +SetEventInactiveStatusHandler
+                +UpdateEventHandler
                 +CreateExtEventHandler
             }
             handler {
