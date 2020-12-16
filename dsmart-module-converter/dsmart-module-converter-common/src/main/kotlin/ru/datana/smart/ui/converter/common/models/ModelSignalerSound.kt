@@ -1,14 +1,14 @@
 package ru.datana.smart.ui.converter.common.models
 
-data class SignalerSoundModel(
-    var type: SignalerSoundTypeModel = SignalerSoundTypeModel.NONE,
+data class ModelSignalerSound(
+    var type: ModelSignalerSoundType = ModelSignalerSoundType.NONE,
     var interval: Int = Int.MIN_VALUE
 ) {
     companion object {
-        val NONE = SignalerSoundModel()
+        val NONE = ModelSignalerSound()
     }
 
-    enum class SignalerSoundTypeModel {
+    enum class ModelSignalerSoundType {
         NONE,
         SOUND_1,
         SOUND_2,

@@ -35,13 +35,14 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 } else if (context.eventMode == ModelEventMode.SLAG) {
                     context.converterFacade.handleSlagEvents(context)
                 }
+                context.converterFacade.handleSignaler(context)
 
-                val events = context.eventsRepository.getAllByMeltId(context.meltInfo.id)
-                context.events = events
+//                val events = context.eventsRepository.getAllByMeltId(context.meltInfo.id)
+//                context.events = events
                 context.meltInfo = ModelMeltInfo.NONE
                 context.wsManager.sendFinish(context)
-                context.wsManager.sendEvents(context)
-                context.wsSignalerManager.sendSignaler(context)
+//                context.wsManager.sendEvents(context)
+//                context.wsSignalerManager.sendSignaler(context)
                 println("jobMeltFinish done")
             }
         }

@@ -5,35 +5,32 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelEvent
+import ru.datana.smart.ui.converter.common.models.ModelSignaler
+import ru.datana.smart.ui.converter.common.models.ModelSignalerSound
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
-* CreateSuccessMeltSlagEventHandler - создаётся событие типа "Информация" об успешном завершении плавки
-* и сразу записывается в историю.
+* CreateWarningSteelEventHandler - создаём событие типа "Предупреждение",
+* и светофор переходит в статус "Предупреждение".
 * */
-object CreateSuccessMeltSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
+object CreateWarningSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         context.activeEvent.takeIf { it == ModelEvent.NONE }?.let {
             val meltId: String = context.meltInfo.id
             val slagRateTime = context.timeStart
-            context.eventsRepository.getAllByMeltId(meltId).map {
-                if (it.type == ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT ||
-                    it.type == ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
-                ) {
-                    return
-                }
-            }
+            val currentAngle = context.currentAngle
+            val avgSteelRate = context.avgStreamRate
             context.activeEvent = ModelEvent(
                 meltId = meltId,
-                type = ModelEvent.EventType.SUCCESS_MELT_EVENT,
+                type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = slagRateTime,
                 timeFinish = slagRateTime,
-                isActive = false,
-                title = "Информация",
+                angleStart = currentAngle,
+                title = "Предупреждение",
                 textMessage = """
-                          Допустимая норма потерь шлака ${context.streamRateWarningPoint.toPercent()}% не была превышена.
+                          В потоке детектирован металл – ${avgSteelRate.toPercent()}% сверх допустимой нормы ${context.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                           """.trimIndent(),
-                category = ModelEvent.Category.INFO,
+                category = ModelEvent.Category.WARNING,
                 executionStatus = ModelEvent.ExecutionStatus.STATELESS
             )
             context.eventsRepository.create(context.activeEvent)

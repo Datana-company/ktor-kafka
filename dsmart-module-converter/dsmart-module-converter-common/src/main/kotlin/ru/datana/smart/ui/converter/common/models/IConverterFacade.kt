@@ -18,6 +18,8 @@ interface IConverterFacade {
 
     suspend fun handleExtEvents(context: ConverterBeContext)
 
+    suspend fun handleSignaler(context: ConverterBeContext)
+
     companion object {
         val NONE = object: IConverterFacade {
             override suspend fun handleMath(context: ConverterBeContext) {
@@ -45,6 +47,9 @@ interface IConverterFacade {
             }
 
             override suspend fun handleExtEvents(context: ConverterBeContext) {
+                TODO("Not yet implemented")
+            }
+            override suspend fun handleSignaler(context: ConverterBeContext) {
                 TODO("Not yet implemented")
             }
         }

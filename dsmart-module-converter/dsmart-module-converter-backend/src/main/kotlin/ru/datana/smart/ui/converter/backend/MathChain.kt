@@ -60,20 +60,12 @@ class MathChain(
 //                    res
 //                }
 
-                konveyor {
-                    on { status == CorStatus.STARTED && eventMode == ModelEventMode.STEEL }
-                    +CalcAvgSteelRateHandler
-                }
-                konveyor {
-                    on { status == CorStatus.STARTED && eventMode == ModelEventMode.SLAG }
-                    +CalcAvgSlagRateHandler
-                }
-
+                +CalcAvgStreamRateHandler
                 +WsSendMathSlagRateHandler
 
                 // Обновляем информацию о последнем значении slagRate
                 handler {
-                    on { status == CorStatus.STARTED}
+                    on { status == CorStatus.STARTED }
                     exec {
                         val curState = currentState.get()
                         curState.lastSlagRate = slagRate
@@ -94,9 +86,16 @@ class MathChain(
                     }
                 }
 
+                handler {
+                    onEnv { status == CorStatus.STARTED }
+                    exec {
+                        converterFacade.handleSignaler(this)
+                    }
+                }
+//            }
+
             //определение конца плавки и отправки завершающих значений на фронт
             +WsSendMeltFinishHandler
-
             +FinishHandler
         }
     }

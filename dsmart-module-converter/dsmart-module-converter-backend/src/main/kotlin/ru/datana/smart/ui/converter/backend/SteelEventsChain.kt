@@ -9,8 +9,6 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.utils.isNotEmpty
-import ru.datana.smart.ui.converter.common.utils.toPercent
 
 class SteelEventsChain(
     var chainSettings: ConverterChainSettings
@@ -28,58 +26,36 @@ class SteelEventsChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
+            +GetActiveEventHandler
+            +CalcStreamStatus
+
             konveyor {
-                on {
-                    avgSteelRate.isNotEmpty() && streamRateCriticalPoint.isNotEmpty()
-                        && avgSteelRate.toPercent() > streamRateCriticalPoint.toPercent()
-                }
-                +AddWarningEventToHistoryHandler
-                +AddStatelessWarningEventToHistoryHandler
-//                +AddStatelessInfoEventToHistoryHandler
-                +AddCriticalEventToHistoryHandler
-                +CreateCriticalEventHandler
+                on { streamStatus == ModelStreamStatus.CRITICAL }
+                +AddEventToHistoryHandler
+                +AddStatelessEventToHistoryHandler
+                +CreateCriticalSteelEventHandler
             }
             konveyor {
-                on {
-                    avgSteelRate.isNotEmpty() && streamRateCriticalPoint.isNotEmpty()
-                        && avgSteelRate.toPercent() > streamRateWarningPoint.toPercent()
-                        && avgSteelRate.toPercent() <= streamRateCriticalPoint.toPercent()
-                }
-                +AddCriticalEventToHistoryHandler
-                +AddStatelessCriticalEventToHistoryHandler
-//                +AddStatelessInfoEventToHistoryHandler
-                +AddWarningEventToHistoryHandler
-                +CreateWarningEventHandler
+                on { streamStatus == ModelStreamStatus.WARNING }
+                +AddEventToHistoryHandler
+                +AddStatelessEventToHistoryHandler
+                +CreateWarningSteelEventHandler
             }
 //            konveyor {
-//                on {
-//                    avgSteelRate.isNotEmpty() && streamRateWarningPoint.isNotEmpty()
-//                        && avgSteelRate.toPercent() == streamRateWarningPoint.toPercent()
-//                }
-//                +AddCriticalEventToHistoryHandler
-//                +AddStatelessCriticalEventToHistoryHandler
-//                +AddWarningEventToHistoryHandler
-//                +AddStatelessWarningEventToHistoryHandler
-//                +AddInfoEventToHistoryHandler
-//                +CreateInfoEventHandler
+//                on { streamStatus == ModelStreamStatus.INFO }
+//                +AddEventToHistoryHandler
+//                +AddStatelessEventToHistoryHandler
+//                +CreateInfoSteelEventHandler
 //            }
             konveyor {
-                on {
-                    avgSteelRate.isNotEmpty() && streamRateWarningPoint.isNotEmpty()
-                        && avgSteelRate.toPercent() <= streamRateWarningPoint.toPercent()
-                }
-                +AddCriticalEventToHistoryHandler
-                +AddStatelessCriticalEventToHistoryHandler
-                +AddWarningEventToHistoryHandler
-                +AddStatelessWarningEventToHistoryHandler
-//                +AddStatelessInfoEventToHistoryHandler
+                on { streamStatus == ModelStreamStatus.NORMAL }
+                +AddEventToHistoryHandler
+                +AddStatelessEventToHistoryHandler
             }
             konveyor {
                 on { currentMeltId.isEmpty() }
-                +AddStatelessCriticalEventToHistoryHandler
-                +AddStatelessWarningEventToHistoryHandler
-//                +AddStatelessInfoEventToHistoryHandler
-                +CreateSuccessMeltEventHandler
+                +AddStatelessEventToHistoryHandler
+                +CreateSuccessMeltSteelEventHandler
             }
             konveyor {
                 on { extEvent.alertRuleId.isNotBlank() }
@@ -88,20 +64,13 @@ class SteelEventsChain(
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    events = eventsRepository.getAllByMeltId(currentMeltId)
+                    events = eventsRepository.getAllByMeltId(meltInfo.id)
                 }
             }
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
                     wsManager.sendEvents(this)
-                }
-            }
-//            Цепочка обработки светофора от событий
-            handler {
-                onEnv { status == CorStatus.STARTED && signaler.level != SignalerModel.SignalerLevelModel.NONE }
-                exec {
-                    wsSignalerManager.sendSignaler(this)
                 }
             }
         }

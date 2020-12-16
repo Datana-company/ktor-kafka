@@ -3,7 +3,6 @@ package ru.datana.smart.ui.converter.backend
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import ru.datana.smart.ui.converter.common.models.*
-
 import java.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -23,7 +22,6 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
-                metalRate = 0.16,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -32,7 +30,7 @@ internal class EventsChainTest {
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -64,7 +62,6 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
-                metalRate = 0.16,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -73,7 +70,7 @@ internal class EventsChainTest {
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -106,7 +103,6 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(7000L),
-                metalRate = 0.011,
                 angleStart = 60.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -119,7 +115,7 @@ internal class EventsChainTest {
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     lastSteelRate = 0.011,
-                    avgSteelRate = 0.011
+                    avgStreamRate = 0.011
                 ),
                 converterRepository = repository
             )
@@ -149,20 +145,19 @@ internal class EventsChainTest {
         val repository = createRepositoryWithEventForTest(
             eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
             timeStart = Instant.now().minusMillis(3000L),
-            metalRate = 0.011,
             angleStart = 68.0,
             category = ModelEvent.Category.WARNING
         )
 
         val converterFacade = converterFacadeTest(
             roundingWeight = 0.1,
-            metalRateWarningPoint = 0.1,
-            metalRateCriticalPoint = 0.34,
+            streamRateWarningPoint = 0.1,
+            streamRateCriticalPoint = 0.34,
             reactionTime = 3000,
             currentState = createCurrentStateForTest(
                 lastAngle = 60.0,
                 lastSteelRate = 0.011,
-                avgSteelRate = 0.011
+                avgStreamRate = 0.011
             ),
             converterRepository = repository
         )
@@ -197,19 +192,18 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(5000L),
-                metalRate = 0.11,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
 
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
-                metalRateWarningPoint = 0.1,
-                metalRateCriticalPoint = 0.34,
+                streamRateWarningPoint = 0.1,
+                streamRateCriticalPoint = 0.34,
                 reactionTime = 3000,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -245,7 +239,6 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(5000L),
-                metalRate = 0.11,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -257,7 +250,7 @@ internal class EventsChainTest {
                 reactionTime = 3000,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -292,7 +285,6 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(2000L),
-                metalRate = 0.16,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -304,7 +296,7 @@ internal class EventsChainTest {
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     lastSteelRate = 0.16,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -337,19 +329,18 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(8000L),
-                metalRate = 0.01,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
-                metalRateWarningPoint = 0.1,
-                metalRateCriticalPoint = 0.16,
+                streamRateWarningPoint = 0.1,
+                streamRateCriticalPoint = 0.16,
                 reactionTime = 3000,
                 currentState = createCurrentStateForTest(
                     lastSteelRate = 0.01,
                     lastAngle = 68.0,
-                    avgSteelRate = 0.01
+                    avgStreamRate = 0.01
                 ),
                 converterRepository = repository
             )
@@ -386,7 +377,6 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
-                metalRate = 0.011,
                 angleStart = 60.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -400,7 +390,7 @@ internal class EventsChainTest {
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     lastSteelRate = 0.011,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -433,7 +423,6 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
-                metalRate = 0.011,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -441,13 +430,13 @@ internal class EventsChainTest {
             val converterFacade = converterFacadeTest(
                 meltTimeout = 3000L,
                 roundingWeight = 0.1,
-                metalRateWarningPoint = 0.1,
-                metalRateCriticalPoint = 0.16,
+                streamRateWarningPoint = 0.1,
+                streamRateCriticalPoint = 0.16,
                 reactionTime = 1000L,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     lastSteelRate = 0.011,
-                    avgSteelRate = 0.011
+                    avgStreamRate = 0.011
                 ),
                 converterRepository = repository
             )
@@ -481,7 +470,6 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
-                metalRate = 0.11,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -495,7 +483,7 @@ internal class EventsChainTest {
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     lastSteelRate =  0.14,
-                    avgSteelRate = 0.14
+                    avgStreamRate = 0.14
                 ),
                 converterRepository = repository
             )
@@ -517,7 +505,7 @@ internal class EventsChainTest {
             delay(6000)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(false, context.events.first().isActive)
-            assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
+            assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
         }
     }
 
@@ -529,7 +517,6 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
-                metalRate = 0.001,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -537,13 +524,13 @@ internal class EventsChainTest {
             val converterFacade = converterFacadeTest(
                 meltTimeout = 5000L,
                 roundingWeight = 0.1,
-                metalRateWarningPoint = 0.1,
-                metalRateCriticalPoint = 0.13,
+                streamRateWarningPoint = 0.1,
+                streamRateCriticalPoint = 0.13,
                 reactionTime = 3000,
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     lastSteelRate =  0.14,
-                    avgSteelRate = 0.18
+                    avgStreamRate = 0.18
                 ),
                 converterRepository = repository
             )
@@ -563,7 +550,7 @@ internal class EventsChainTest {
 
             converterFacade.handleMath(context)
             assertNotEquals(false, context.events.first().isActive)
-            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
+            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
         }
     }
     /** Допустимая доля на графике должна меняться в зависимости от значения "METAL_RATE_POINT_WARNING". */
@@ -575,7 +562,6 @@ internal class EventsChainTest {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(1000L),
-                metalRate = 0.11,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -589,7 +575,7 @@ internal class EventsChainTest {
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     lastSteelRate =  0.14,
-                    avgSteelRate = 0.14),
+                    avgStreamRate = 0.14),
                 converterRepository = repository
             )
 

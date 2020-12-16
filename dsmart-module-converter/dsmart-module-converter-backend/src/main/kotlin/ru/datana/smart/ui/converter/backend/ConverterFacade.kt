@@ -69,6 +69,9 @@ class ConverterFacade(
     private val extEventsChain = ExtEventsChain(
         chainSettings = chainSettings
     )
+    private val signalerChain = SignalerChain(
+        chainSettings = chainSettings
+    )
 
     override suspend fun handleMath(context: ConverterBeContext) = mathChain.exec(context)
     override suspend fun handleAngles(context: ConverterBeContext) = anglesChain.exec(context)
@@ -77,4 +80,5 @@ class ConverterFacade(
     override suspend fun handleSteelEvents(context: ConverterBeContext) = steelEventsChain.exec(context)
     override suspend fun handleSlagEvents(context: ConverterBeContext) = slagEventsChain.exec(context)
     override suspend fun handleExtEvents(context: ConverterBeContext) = extEventsChain.exec(context)
+    override suspend fun handleSignaler(context: ConverterBeContext) = signalerChain.exec(context)
 }

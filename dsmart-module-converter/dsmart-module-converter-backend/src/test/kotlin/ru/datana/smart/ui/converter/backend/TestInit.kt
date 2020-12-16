@@ -72,8 +72,7 @@ fun createCurrentStateForTest(
     lastSource: Double? = null,
     lastSteelRate: Double? = null,
     lastSlagRate: Double? = null,
-    avgSlagRate: Double? = null,
-    avgSteelRate: Double? = null
+    avgStreamRate: Double? = null
 )
     : AtomicReference<CurrentState> {
     val currentState = AtomicReference(
@@ -89,10 +88,7 @@ fun createCurrentStateForTest(
                 steelRate = lastSteelRate ?: Double.MIN_VALUE,
                 slagRate = lastSlagRate ?: Double.MIN_VALUE
             ),
-            avgSlagRate = ModelSlagRate(
-                steelRate = avgSteelRate ?: Double.MIN_VALUE,
-                slagRate = avgSlagRate ?: Double.MIN_VALUE
-            )
+            avgStreamRate = avgStreamRate ?: Double.MIN_VALUE
         )
     )
     return currentState
@@ -102,7 +98,6 @@ fun createCurrentStateForTest(
 suspend fun createRepositoryWithEventForTest(
     eventType: ModelEvent.EventType,
     timeStart: Instant,
-    metalRate: Double? = null,
     angleStart: Double? = null,
     category: ModelEvent.Category,
     executionStatus: ModelEvent.ExecutionStatus? = null,
@@ -116,7 +111,6 @@ suspend fun createRepositoryWithEventForTest(
             type = eventType,
             timeStart = timeStart,
             timeFinish = Instant.now().minusMillis(1000L),
-            metalRate = metalRate ?: 0.16,
             angleStart = angleStart ?: 0.60,
             category = category,
             executionStatus = executionStatus ?: ModelEvent.ExecutionStatus.STATELESS

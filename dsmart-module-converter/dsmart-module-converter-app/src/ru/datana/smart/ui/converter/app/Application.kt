@@ -244,8 +244,7 @@ fun Application.module(testing: Boolean = false) {
 //                                val kafkaModel = toConverterTransportExtEvents(record)
                                 // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
 //                                val context = ConverterBeContext(
-//                                    timeStart = Instant.now(),
-//                                    extEvents = conveyorModelExtEvents
+//                                    timeStart = Instant.now()
 //                                )
                                 // 4) Запихиваем эту модель в контекст
 //                                context.setExtEvent(kafkaModel)

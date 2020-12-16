@@ -13,6 +13,7 @@ data class ConverterBeContext(
     var frame: ModelFrame = ModelFrame.NONE,
     var slagRate: ModelSlagRate = ModelSlagRate.NONE,
     var events: MutableList<ModelEvent> = mutableListOf(),
+    var activeEvent: ModelEvent = ModelEvent.NONE,
     var extEvent: ModelEvent = ModelEvent.NONE,
     var lastTimeAngles: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
     var lastTimeFrame: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
@@ -33,7 +34,7 @@ data class ConverterBeContext(
     var eventsRepository: IEventRepository = IEventRepository.NONE,
     var currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE),
     var scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE),
-    var signaler: SignalerModel = SignalerModel.NONE,
+    var signaler: ModelSignaler = ModelSignaler.NONE,
     var converterId: String = "",
     var framesBasePath: String = "",
     var converterFacade: IConverterFacade = IConverterFacade.NONE
@@ -42,10 +43,10 @@ data class ConverterBeContext(
         get() = currentState.get().currentMeltInfo
     val currentMeltId: String
         get() = currentState.get().currentMeltInfo.id
-    val avgSteelRate: Double
-        get() = currentState.get().avgSlagRate.steelRate
-    val avgSlagRate: Double
-        get() = currentState.get().avgSlagRate.slagRate
+    val avgStreamRate: Double
+        get() = currentState.get().avgStreamRate
     val currentAngle: Double
         get() = currentState.get().lastAngles.angle
+    val streamStatus: ModelStreamStatus
+        get() = currentState.get().streamStatus
 }

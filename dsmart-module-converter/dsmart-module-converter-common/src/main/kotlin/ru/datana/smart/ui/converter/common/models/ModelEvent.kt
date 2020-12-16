@@ -13,8 +13,6 @@ data class ModelEvent(
     var category: Category = Category.NONE,
     var isActive: Boolean = true,
     var executionStatus: ExecutionStatus = ExecutionStatus.NONE,
-    var metalRate: Double = Double.MIN_VALUE,
-    var slagRate: Double = Double.MIN_VALUE,
     var angleStart: Double = Double.MIN_VALUE,
     var alertRuleId: String = "",
     var containerId: String = "",
@@ -31,7 +29,6 @@ data class ModelEvent(
         CRITICAL,
         WARNING,
         INFO,
-        HINT,
         NONE
     }
 

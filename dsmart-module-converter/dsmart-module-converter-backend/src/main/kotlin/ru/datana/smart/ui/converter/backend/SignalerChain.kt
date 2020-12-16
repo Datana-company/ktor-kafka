@@ -8,11 +8,9 @@ import ru.datana.smart.ui.converter.backend.common.setSettings
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.utils.isNotEmpty
-import ru.datana.smart.ui.converter.common.utils.toPercent
+import ru.datana.smart.ui.converter.common.models.ModelStreamStatus
 
-class SlagEventsChain(
+class SignalerChain(
     var chainSettings: ConverterChainSettings
 ) {
 
@@ -28,51 +26,28 @@ class SlagEventsChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            +GetActiveEventHandler
             +CalcStreamStatus
 
             konveyor {
                 on { streamStatus == ModelStreamStatus.CRITICAL }
-                +AddEventToHistoryHandler
-                +AddStatelessEventToHistoryHandler
-                +CreateCriticalSlagEventHandler
+                +CriticalSignalizationHandler
             }
             konveyor {
                 on { streamStatus == ModelStreamStatus.WARNING }
-                +AddEventToHistoryHandler
-                +AddStatelessEventToHistoryHandler
-                +CreateWarningSlagEventHandler
+                +WarningSignalizationHandler
             }
 //            konveyor {
 //                on { streamStatus == ModelStreamStatus.INFO }
-//                +AddEventToHistoryHandler
-//                +AddStatelessEventToHistoryHandler
-//                +CreateInfoSlagEventHandler
+//                +InfoSignalizationHandler
 //            }
             konveyor {
-                on { streamStatus == ModelStreamStatus.NORMAL }
-                +AddEventToHistoryHandler
-                +AddStatelessEventToHistoryHandler
-            }
-            konveyor {
-                on { currentMeltId.isEmpty() }
-                +AddStatelessEventToHistoryHandler
-                +CreateSuccessMeltSlagEventHandler
-            }
-            konveyor {
-                on { extEvent.alertRuleId.isNotBlank() }
-                +CreateExtEventHandler
+                on { streamStatus == ModelStreamStatus.NORMAL || streamStatus == ModelStreamStatus.NONE }
+                +NormalSignalizationHandler
             }
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    events = eventsRepository.getAllByMeltId(meltInfo.id)
-                }
-            }
-            handler {
-                onEnv { status == CorStatus.STARTED }
-                exec {
-                    wsManager.sendEvents(this)
+                    wsSignalerManager.sendSignaler(this)
                 }
             }
         }
