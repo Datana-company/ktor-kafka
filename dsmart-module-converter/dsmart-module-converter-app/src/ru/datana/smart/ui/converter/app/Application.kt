@@ -42,7 +42,6 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @OptIn(ExperimentalTime::class)
 @Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
 @KtorExperimentalAPI
 fun Application.module(testing: Boolean = false) {
     val logger = datanaLogger(::main::class.java)
@@ -239,20 +238,19 @@ fun Application.module(testing: Boolean = false) {
                                 converterFacade.handleAngles(context)
                             }
                             // 1) Получаем данные из Кафки
-//                            topicEvents -> {
+                            topicEvents -> {
                                 // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
-//                                val kafkaModel = toConverterTransportExtEvents(record)
+                                val kafkaModel = toConverterTransportExtEvents(record)
                                 // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
-//                                val context = ConverterBeContext(
-//                                    timeStart = Instant.now(),
-//                                    extEvents = conveyorModelExtEvents
-//                                )
+                                val context = ConverterBeContext(
+                                    timeStart = Instant.now()
+                                )
                                 // 4) Запихиваем эту модель в контекст
-//                                context.setExtEvent(kafkaModel)
+                                context.setExtEvent(kafkaModel)
                                 // 5) Вызываем цепочку для обработки поступившего сообщения
-//                                println("topic = events, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-//                                converterFacade.handleExtEvents(context)
-//                            }
+                                println("topic = events, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                converterFacade.handleExtEvents(context)
+                            }
                     }
                 }
             } catch(e: Throwable) {

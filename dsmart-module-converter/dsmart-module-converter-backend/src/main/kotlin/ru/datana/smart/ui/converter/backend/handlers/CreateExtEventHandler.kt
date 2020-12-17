@@ -5,8 +5,6 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelEvent
-import java.time.Instant
-import java.util.*
 
 object CreateExtEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
@@ -18,8 +16,8 @@ object CreateExtEventHandler : IKonveyorHandler<ConverterBeContext> {
             ModelEvent(
                 meltId = meltId,
                 type = ModelEvent.EventType.EXT_EVENT,
-                timeStart = Instant.now(),
-                timeFinish = Instant.now(),
+                timeStart = context.timeStart,
+                timeFinish = context.timeStart,
                 textMessage = context.extEvent.textMessage,
                 category = when (context.extEvent.level) {
                     "INFO" -> {
@@ -36,9 +34,9 @@ object CreateExtEventHandler : IKonveyorHandler<ConverterBeContext> {
                     }
                 },
                 executionStatus = ModelEvent.ExecutionStatus.STATELESS,
-                alertRuleId = context.extEvents.alertRuleId ?: "",
-                component = context.extEvents.component ?: "",
-                timestamp = context.extEvents.timestamp ?: ""
+                alertRuleId = context.extEvent.alertRuleId ?: "",
+                component = context.extEvent.component ?: "",
+                timestamp = context.extEvent.timestamp ?: ""
             )
         )
     }

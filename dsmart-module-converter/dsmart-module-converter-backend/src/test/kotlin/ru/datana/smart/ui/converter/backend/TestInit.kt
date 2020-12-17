@@ -56,7 +56,7 @@ fun converterBeContextTest(
     angles: ModelAngles? = null,
     frame: ModelFrame? = null,
     slagRate: ModelSlagRate? = null,
-    extEvents: ModelExtEvents? = null
+    extEvent: ModelEvent? = null
 ) =
     ConverterBeContext(
         timeStart = timeStart ?: Instant.now(),
@@ -65,7 +65,7 @@ fun converterBeContextTest(
         angles = angles ?: ModelAngles.NONE,
         frame = frame ?: ModelFrame.NONE,
         slagRate = slagRate ?: ModelSlagRate.NONE,
-        extEvents = extEvents ?: ModelExtEvents.NONE
+        extEvent = extEvent ?: ModelEvent.NONE
     )
 
 fun createCurrentStateForTest(

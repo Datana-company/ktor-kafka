@@ -8,7 +8,7 @@ import io.ktor.util.*
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.ProducerRecord
-import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
+import ru.datana.smart.ui.converter.app.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.ui.converter.angle.app.mappings.toInnerModel
 import ru.datana.smart.ui.converter.angle.app.models.AngleSchedule

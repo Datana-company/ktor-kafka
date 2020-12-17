@@ -1,11 +1,7 @@
 package ru.datana.smart.ui.converter.backend
 
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
-
-import java.time.Instant
+import ru.datana.smart.ui.converter.common.models.ModelEvent
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -20,7 +16,7 @@ internal class ExtEventsNKR899Test {
 
             val context = converterBeContextTest(
                 meltInfo = defaultMeltInfoTest(),
-                extEvents = ModelExtEvents(
+                extEvent = ModelEvent(
                     alertRuleId = "alertRuleId_234",
                     component = "component_123",
                     timestamp = "timestamp"

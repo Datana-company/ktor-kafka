@@ -77,7 +77,6 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
-//    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
     testImplementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 }

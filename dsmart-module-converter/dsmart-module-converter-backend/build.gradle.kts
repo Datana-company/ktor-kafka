@@ -31,9 +31,6 @@ dependencies {
     testImplementation(project(":dsmart-module-converter:dsmart-module-converter-app"))
     testImplementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
-    testImplementation("io.ktor:ktor-server-core:$ktorVersion")
-    testImplementation("io.ktor:ktor-server-host-common:$ktorVersion")
-    testImplementation("io.ktor:ktor-server-netty:$ktorVersion")
 }
 
 tasks {
