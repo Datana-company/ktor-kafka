@@ -28,6 +28,7 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
             jobMeltFinish = GlobalScope.launch {
                 delay(context.meltTimeout)
                 context.meltInfo = ModelMeltInfo.NONE
+                context.avgStreamRate = Double.MIN_VALUE
                 context.status = CorStatus.STARTED
 
                 if (context.eventMode == ModelEventMode.STEEL) {

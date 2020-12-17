@@ -16,7 +16,7 @@ interface IConverterFacade {
 
     suspend fun handleSlagEvents(context: ConverterBeContext)
 
-    suspend fun handleExtendEvents(context: ConverterBeContext)
+    suspend fun handleExternalEvents(context: ConverterBeContext)
 
     suspend fun handleSignaler(context: ConverterBeContext)
 
@@ -46,7 +46,7 @@ interface IConverterFacade {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun handleExtendEvents(context: ConverterBeContext) {
+            override suspend fun handleExternalEvents(context: ConverterBeContext) {
                 TODO("Not yet implemented")
             }
             override suspend fun handleSignaler(context: ConverterBeContext) {

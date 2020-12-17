@@ -14,7 +14,7 @@ data class ConverterBeContext(
     var slagRate: ModelSlagRate = ModelSlagRate.NONE,
     var events: MutableList<ModelEvent> = mutableListOf(),
     var activeEvent: ModelEvent = ModelEvent.NONE,
-    var extendEvent: ModelEvent = ModelEvent.NONE,
+    var externalEvent: ModelEvent = ModelEvent.NONE,
     var lastTimeAngles: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
     var lastTimeFrame: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
     var status: CorStatus = CorStatus.STARTED,
@@ -43,8 +43,11 @@ data class ConverterBeContext(
         get() = currentState.get().currentMeltInfo
     val currentMeltId: String
         get() = currentState.get().currentMeltInfo.id
-    val avgStreamRate: Double
+    var avgStreamRate: Double
         get() = currentState.get().avgStreamRate
+        set(value) {
+            currentState.get().avgStreamRate = value
+        }
     val currentAngle: Double
         get() = currentState.get().lastAngles.angle
     val streamStatus: ModelStreamStatus

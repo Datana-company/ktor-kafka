@@ -24,8 +24,7 @@ object CalcAvgStreamRateHandler: IKonveyorHandler<ConverterBeContext> {
         } else {
             currentStreamRate
         }
-        val curStatus = context.currentState.get()
-        curStatus.avgStreamRate = avgStreamRate
+        context.avgStreamRate = avgStreamRate
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

@@ -9,7 +9,7 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 
-class ExtendEventsChain(
+class ExternalEventsChain(
     var chainSettings: ConverterChainSettings
 ) {
 
@@ -41,11 +41,11 @@ class ExtendEventsChain(
             +SetStreamStatus
 
             konveyor {
-                on { status == CorStatus.STARTED && extendEvent.alertRuleId.isNotBlank() }
+                on { status == CorStatus.STARTED && externalEvent.alertRuleId.isNotBlank() }
                 +SetEventExecutionStatusHandler
                 +SetEventInactiveStatusHandler
                 +UpdateEventHandler
-                +CreateExtendEventHandler
+                +CreateExternalEventHandler
             }
 
             handler {

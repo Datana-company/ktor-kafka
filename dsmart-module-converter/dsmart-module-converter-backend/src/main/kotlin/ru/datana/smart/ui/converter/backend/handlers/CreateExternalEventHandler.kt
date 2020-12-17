@@ -6,7 +6,7 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelEvent
 
-object CreateExtendEventHandler : IKonveyorHandler<ConverterBeContext> {
+object CreateExternalEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         if (context.activeEvent != ModelEvent.NONE) {
             return
@@ -19,13 +19,14 @@ object CreateExtendEventHandler : IKonveyorHandler<ConverterBeContext> {
             type = ModelEvent.EventType.EXT_EVENT,
             timeStart = timeStart,
             timeFinish = timeStart,
-            textMessage = context.extendEvent.textMessage,
-            alertRuleId = context.extendEvent.alertRuleId,
-            containerId = context.extendEvent.containerId,
-            component = context.extendEvent.component,
-            timestamp = context.extendEvent.timestamp,
-            level = context.extendEvent.level,
-            loggerName = context.extendEvent.loggerName,
+            title = "Информация",
+            textMessage = context.externalEvent.textMessage,
+            alertRuleId = context.externalEvent.alertRuleId,
+            containerId = context.externalEvent.containerId,
+            component = context.externalEvent.component,
+            timestamp = context.externalEvent.timestamp,
+            level = context.externalEvent.level,
+            loggerName = context.externalEvent.loggerName,
             category = ModelEvent.Category.INFO,
             executionStatus = ModelEvent.ExecutionStatus.STATELESS
         )

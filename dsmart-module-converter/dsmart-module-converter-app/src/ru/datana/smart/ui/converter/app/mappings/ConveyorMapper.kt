@@ -8,7 +8,7 @@ import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import ru.datana.smart.ui.viml.models.ConverterTransportViMl
 import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
-import ru.datana.smart.ui.extevent.models.ConverterTransportExtendEvent
+import ru.datana.smart.ui.extevent.models.ConverterTransportExternalEvent
 import java.time.Instant
 
 fun ConverterBeContext.setMeltInfo(converterMeltInfo: ConverterMeltInfo) {
@@ -230,15 +230,15 @@ fun ConverterBeContext.setAngles(converterTransportAngle: ConverterTransportAngl
     )
 }
 
-fun ConverterBeContext.setExtendEvent(converterTransportExtendEvent: ConverterTransportExtendEvent) {
-    this.extendEvent = ModelEvent(
-        alertRuleId = converterTransportExtendEvent.alertRuleId ?: "",
-        containerId = converterTransportExtendEvent.containerId ?: "",
-        component = converterTransportExtendEvent.component ?: "",
-        timestamp = converterTransportExtendEvent.timestamp ?: "",
-        level = converterTransportExtendEvent.level ?: "",
-        loggerName = converterTransportExtendEvent.loggerName ?: "",
-        textMessage = converterTransportExtendEvent.message ?: ""
+fun ConverterBeContext.setExternalEvent(converterTransportExternalEvent: ConverterTransportExternalEvent) {
+    this.externalEvent = ModelEvent(
+        alertRuleId = converterTransportExternalEvent.alertRuleId ?: "",
+        containerId = converterTransportExternalEvent.containerId ?: "",
+        component = converterTransportExternalEvent.component ?: "",
+        timestamp = converterTransportExternalEvent.timestamp ?: "",
+        level = converterTransportExternalEvent.level ?: "",
+        loggerName = converterTransportExternalEvent.loggerName ?: "",
+        textMessage = converterTransportExternalEvent.message ?: ""
     )
 }
 

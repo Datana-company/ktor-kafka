@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 /**
  * Транспортная модель для передачи событий из внешних источников
  */
-data class ConverterTransportExtendEvent (
+data class ConverterTransportExternalEvent (
 
     @JsonProperty("alert-rule-id")
     val alertRuleId: kotlin.String? = null,
