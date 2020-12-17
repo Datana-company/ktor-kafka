@@ -15,7 +15,6 @@ internal class EventsChainNKR1041Test {
      * NKR-1041
      * По окончанию скачивания шлака (meltTimeout) последняя рекомендация и световой сигнал меняют статус (не остаются активными)
      */
-
     @Test
     fun isEventActiveAfterReactionTimeNKR1041() {
         runBlocking {

@@ -58,7 +58,10 @@ internal class EventsChainNKR1031Test {
             assertNotEquals(true, context.events.first().isActive)
         }
     }
-
+    /**  NKR-1031
+     *  Если нет активная рекомендация об изменении угла конвертера и при этом потери «металла»
+     *  сами по себе не вернулись в пределы допустимой нормы, такая рекомендация должна становиться активной
+     */
     @Test
     fun isEventActiveNKR1031_WithFalseParameterTest() {
         runBlocking {
