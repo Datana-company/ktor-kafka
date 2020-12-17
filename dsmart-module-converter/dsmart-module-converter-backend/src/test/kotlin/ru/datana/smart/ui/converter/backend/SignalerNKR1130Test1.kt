@@ -36,12 +36,12 @@ internal class SignalerNKR1130Test1 {
                 )
             )
             val context2 = converterBeContextTest(
-                meltInfo = meltInfoTest("211626-1606203452222"),
+                meltInfo = meltInfoTest("211626-1606203452222" , "converter1"),
             )
 
             val context3 = converterBeContextTest(
                 timeStart = timeStart.plusMillis(1000L),
-                meltInfo = meltInfoTest("211626-1606203452222"),
+                meltInfo = meltInfoTest("211626-1606203452222","converter1"),
                 slagRate = ModelSlagRate(
                     slagRate = 0.0,
                     steelRate = 0.0
@@ -63,9 +63,9 @@ internal class SignalerNKR1130Test1 {
             )
 
             converterFacade1.handleMath(context1)
-            delay(2000L)
+//            delay(2000L)
             converterFacade1.handleMeltInfo(context2)
-            delay(2000)
+//            delay(2000)
             converterFacade1.handleMath(context3)
 
             assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context1.signaler.level)
