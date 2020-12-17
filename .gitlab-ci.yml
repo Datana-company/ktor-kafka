@@ -3,7 +3,9 @@
 image: registry.datana.ru/alpine-java-docker
 
 services:
-    - docker:dind
+    - name: docker:19.03.14-dind
+      command: ["--tls=false"]
+
 
 variables:
     DOCKER_DRIVER: overlay2

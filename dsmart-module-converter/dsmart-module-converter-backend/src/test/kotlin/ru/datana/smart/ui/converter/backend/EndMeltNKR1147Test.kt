@@ -6,7 +6,6 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelFrame
 import ru.datana.smart.ui.converter.common.models.ModelSlagRate
-import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.Test
@@ -18,8 +17,7 @@ import kotlin.test.Test
 internal class EndMeltNKR1147Test {
 
     /**
-     * NKR-1147
-     * В репозитории уже есть активная рекомендация.
+     * NKR-1147 В репозитории уже есть активная рекомендация.
      * После окончания плавки рекомендация записывается в историю.
      * Установлен режим рекомендаций по металлу (EVENT_MODE = STEEL).
      */
@@ -65,9 +63,7 @@ internal class EndMeltNKR1147Test {
     }
 
     /**
-     * NKR-1147
-     * Репозиторий пуст.
-     * После окончания плавки создаётся рекомендация об успешной плавке.
+     * NKR-1147 Репозиторий пуст. После окончания плавки создаётся рекомендация об успешной плавке.
      * Установлен режим рекомендаций по металлу (EVENT_MODE = STEEL).
      */
     @Test
