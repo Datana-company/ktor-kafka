@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 internal class SignalerNKR1061Test {
-    // NKR-1061  Не успела выполниться Critical, содержание металла пришло в норму
+    /** NKR-1061  Не успела выполниться Critical, содержание металла пришло в норму*/
     @Test
     fun signalerTestCase1NKR1061() {
         runBlocking {
@@ -53,7 +53,7 @@ internal class SignalerNKR1061Test {
         }
     }
 
-    //  NKR-1061  Успела выполниться Critical (статус  Выполнено), содержание металла не пришло в норму
+    /** NKR-1061  Успела выполниться Critical (статус  Выполнено), содержание металла не пришло в норму */
     @Test
     fun signalerTestCase9NKR1061WithFalseParameterTest() {
         runBlocking {
@@ -96,7 +96,7 @@ internal class SignalerNKR1061Test {
         }
     }
 
-    // NKR-1061 Не успела выполниться Warning, содержание металла пришло в норму
+    /** NKR-1061 Не успела выполниться Warning, содержание металла пришло в норму */
     @Test
     fun signalerTestCase2NKR1061() {
         runBlocking {
@@ -137,7 +137,7 @@ internal class SignalerNKR1061Test {
         }
     }
 
-//   NKR-1061   успела выполниться Warning, содержание металла Не пришло в норму
+    /** NKR-1061   успела выполниться Warning, содержание металла Не пришло в норму*/
     @Test
     fun signalerTestCase10NKR1061WithFalseParameterTest() {
         runBlocking {
@@ -180,7 +180,7 @@ internal class SignalerNKR1061Test {
         }
     }
 
-    // NKR-1061 Успела выполниться Critical (статус Выполнено), содержание металла пришло в норму
+    /** NKR-1061 Успела выполниться Critical (статус Выполнено), содержание металла пришло в норму */
     @Test
     fun signalerTestCase3NKR1061() {
         runBlocking {
@@ -223,7 +223,7 @@ internal class SignalerNKR1061Test {
         }
     }
 
-    //NKR-1061 Успела выполниться Critical (статус не Выполнено), содержание металла не пришло в норму
+    /** NKR-1061 Успела выполниться Critical (статус не Выполнено), содержание металла не пришло в норму */
     @Test
     fun signalerTestCase13NKR1061WithFalseParameterTest() {
         runBlocking {
@@ -265,7 +265,7 @@ internal class SignalerNKR1061Test {
         }
     }
 
-    //NKR-1061 Успела выполниться Warning (статус Выполнено), содержание металла пришло в норму
+    /** NKR-1061 Успела выполниться Warning (статус Выполнено), содержание металла пришло в норму */
     @Test
     fun signalerTestCase4NKR1061() {
         runBlocking {
@@ -306,7 +306,7 @@ internal class SignalerNKR1061Test {
         }
     }
 
-    // NKR-1061 Успела выполниться Warning (статус не Выполнено), содержание металла нe пришло в норму
+    /** NKR-1061 Успела выполниться Warning (статус не Выполнено), содержание металла нe пришло в норму*/
     @Test
     fun signalerTestCase14NKR1061WithFalseParameterTest() {
         runBlocking {
@@ -347,7 +347,7 @@ internal class SignalerNKR1061Test {
         }
     }
 
-    // NKR-1061 - Успела выполниться Critical (статус Не выполнено), содержание металла пришло в норму
+    /** NKR-1061 - Успела выполниться Critical (статус Не выполнено), содержание металла пришло в норму */
     @Test
     fun signalerTestCase5NKR1061() {
         runBlocking {
@@ -390,7 +390,7 @@ internal class SignalerNKR1061Test {
         }
     }
 
-    // NKR-1061 Успела выполниться Critical (статус выполнено), содержание металла Не пришло в норму
+    /** NKR-1061 Успела выполниться Critical (статус выполнено), содержание металла Не пришло в норму*/
     @Test
     fun signalerTestCase15NKR1061_WithFalseParameterTest() {
         runBlocking {
@@ -431,7 +431,7 @@ internal class SignalerNKR1061Test {
         }
     }
 
-    //NKR-1061 Успела выполниться Warning (статус Не выполнено), содержание металла пришло в норму
+    /** NKR-1061 Успела выполниться Warning (статус Не выполнено), содержание металла пришло в норму */
     @Test
     fun signalerTestCase6NKR1061() {
         runBlocking {
@@ -472,7 +472,9 @@ internal class SignalerNKR1061Test {
         }
     }
 
-    // NKR-1061 Успела выполниться Warning (статус выполнено), содержание металла Не пришло в норму -> Critical
+    /** NKR-1061 Успела выполниться Warning (статус выполнено), содержание металла Не пришло в норму
+     * но перешло в статус Критично (Critical)
+     */
     @Test
     fun signalerTestCase16NKR1061_WithFalseParameterTest() {
         runBlocking {
