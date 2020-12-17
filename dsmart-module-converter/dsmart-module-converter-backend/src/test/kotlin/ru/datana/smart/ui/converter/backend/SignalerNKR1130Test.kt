@@ -8,7 +8,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class SignalerNKR1130Test {
-    /** NKR-1061  Не успела выполниться Critical, содержание металла пришло в норму*/
+
     @Test
     fun signalerTestCase1NKR1130() {
         runBlocking {
