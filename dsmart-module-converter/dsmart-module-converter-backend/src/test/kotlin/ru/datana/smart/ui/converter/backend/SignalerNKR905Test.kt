@@ -11,10 +11,10 @@ import kotlin.test.assertNotEquals
 internal class SignalerNKR905Test {
 
     /** NKR-905
+     * К сожалению  мы пока не имеем возможности проверить переменные  Environment variables  в рамках Junit testa в бекенде.
+     * Можно проверить не теряется ли в контексте переменная, но к задаче снизу тест относится косвенно,
+     * так он не покрывает задачу и вообще не ясно ли имеет смысл.
      * [лимит на звуковой сигнал сирены] - в секундах - сколько по длительности должен продолжаться звуковой сигнал
-     * [время реакции на рекомендацию] - REACTION_TIME   - Уже проверено в EventsChainTest
-     * [допустимый % потери] - METAL_RATE_POINT_WARNING - Уже проверено в EventsChainTest
-     * [% критической потери металла] - METAL_RATE_POINT_CRITICAL - Уже проверено в EventsChainTest
      */
     @Test
     fun isEventActiveAfterSirenLimitTimeNKR905() {

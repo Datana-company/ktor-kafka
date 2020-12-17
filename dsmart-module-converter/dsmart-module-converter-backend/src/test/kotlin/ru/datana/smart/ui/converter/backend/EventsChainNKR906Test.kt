@@ -10,7 +10,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 internal class EventsChainNKR906Test {
-    /** Допустимая доля на графике должна меняться в зависимости от значения "METAL_RATE_POINT_WARNING". */
+    /** NKR-906
+     * К сожалению  мы пока не имеем возможности проверить отрабатывает ли "METAL_RATE_POINT_WARNING" на графике на Фронте
+     * в рамках Junit testa в бекенде. Можно проверить не теряется ли в контексте переменная, но к задаче снизу тест относится косвенно,
+     * так он не покрывает задачу и вообще не ясно ли имеет смысл.
+     * Допустимая доля на графике должна меняться в зависимости от значения "METAL_RATE_POINT_WARNING".
+     * */
     @Test
     fun isMetalRatePointWarningRightNKR906() {
         runBlocking {
