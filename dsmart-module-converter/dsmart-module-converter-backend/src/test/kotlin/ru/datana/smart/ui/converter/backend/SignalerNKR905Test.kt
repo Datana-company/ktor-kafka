@@ -10,7 +10,7 @@ import kotlin.test.assertNotEquals
 
 internal class SignalerNKR905Test {
 
-    /**NKR-905
+    /** NKR-905
      * [лимит на звуковой сигнал сирены] - в секундах - сколько по длительности должен продолжаться звуковой сигнал
      * [время реакции на рекомендацию] - REACTION_TIME   - Уже проверено в EventsChainTest
      * [допустимый % потери] - METAL_RATE_POINT_WARNING - Уже проверено в EventsChainTest
