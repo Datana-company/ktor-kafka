@@ -1,6 +1,5 @@
 package ru.datana.smart.ui.converter.backend
 
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import ru.datana.smart.ui.converter.common.models.*
 import java.time.Instant
@@ -17,9 +16,6 @@ internal class SignalerNKR1130Test {
             val repository1 = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(4000L),
-                metalRate = 0.11,
-                criticalPoint = 0.15,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -57,7 +53,7 @@ internal class SignalerNKR1130Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     lastSteelRate = 0.16,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository1
             )
@@ -66,10 +62,8 @@ internal class SignalerNKR1130Test {
             converterFacade1.handleMeltInfo(context2)
             converterFacade1.handleMath(context3)
 
-            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context1.signaler.level)
-            //Этот тест "assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context3.signaler.level)"
-            //должен отработать в случае когда баг будет исправлен
-            //assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context3.signaler.level)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context1.signaler.level)
+            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context3.signaler.level)
         }
     }
 }
