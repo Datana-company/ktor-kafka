@@ -21,12 +21,12 @@ data class ModelEvent(
     var warningPoint: Double = Double.MIN_VALUE,
     var criticalPoint: Double = Double.MIN_VALUE
 ) {
-    enum class Category() {
-        CRITICAL,
-        WARNING,
-        INFO,
-        HINT,
-        NONE
+    enum class Category(val title: String) {
+        CRITICAL("Критическая ситуация"),
+        WARNING("Предупреждение"),
+        INFO("Информация"),
+        HINT(""),
+        NONE("")
     }
 
     enum class ExecutionStatus() {

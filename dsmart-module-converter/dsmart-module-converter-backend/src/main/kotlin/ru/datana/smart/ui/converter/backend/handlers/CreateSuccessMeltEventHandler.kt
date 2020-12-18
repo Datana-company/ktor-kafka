@@ -4,6 +4,7 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.extensions.eventMetalSuccessReached
 import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
@@ -31,20 +32,7 @@ object CreateSuccessMeltEventHandler : IKonveyorHandler<ConverterBeContext> {
             }
         }
         context.eventsRepository.create(
-            ModelEvent(
-                id = UUID.randomUUID().toString(),
-                meltId = meltId,
-                type = ModelEvent.EventType.SUCCESS_MELT_EVENT,
-                timeStart = slagRateTime,
-                timeFinish = slagRateTime,
-                warningPoint = context.streamRateWarningPoint,
-                isActive = false,
-                title = "Информация",
-                textMessage = """
-                              Допустимая норма потерь металла ${context.streamRateWarningPoint.toPercent()}% не была превышена.
-                              """.trimIndent(),
-                category = ModelEvent.Category.INFO
-            )
+            context.eventMetalSuccessReached()
         )
     }
 

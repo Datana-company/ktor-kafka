@@ -4,6 +4,7 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.extensions.eventMetalCriticalReached
 import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
@@ -26,21 +27,7 @@ object CreateCriticalEventHandler : IKonveyorHandler<ConverterBeContext> {
             return
         } ?: run {
             context.eventsRepository.create(
-                ModelEvent(
-                    id = UUID.randomUUID().toString(),
-                    meltId = meltId,
-                    type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
-                    timeStart = slagRateTime,
-                    timeFinish = slagRateTime,
-                    metalRate = avgSteelRate,
-                    criticalPoint = context.streamRateCriticalPoint,
-                    angleStart = currentAngle,
-                    title = "Критическая ситуация",
-                    textMessage = """
-                                  В потоке детектирован металл – ${avgSteelRate.toPercent()}%, процент потерь превышает критическое значение – ${context.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
-                                  """.trimIndent(),
-                    category = ModelEvent.Category.CRITICAL
-                )
+                context.eventMetalCriticalReached()
             )
             context.signaler = SignalerModel(
                 level = SignalerModel.SignalerLevelModel.CRITICAL,

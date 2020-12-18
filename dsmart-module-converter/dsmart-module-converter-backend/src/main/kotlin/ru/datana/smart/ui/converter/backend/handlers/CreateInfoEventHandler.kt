@@ -4,6 +4,7 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.extensions.eventMetalInfoReached
 import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.SignalerModel
 import ru.datana.smart.ui.converter.common.models.SignalerSoundModel
@@ -26,21 +27,7 @@ object CreateInfoEventHandler : IKonveyorHandler<ConverterBeContext> {
             return
         } ?: run {
             context.eventsRepository.create(
-                ModelEvent(
-                    id = UUID.randomUUID().toString(),
-                    meltId = meltId,
-                    type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT,
-                    timeStart = slagRateTime,
-                    timeFinish = slagRateTime,
-                    metalRate = avgSteelRate,
-                    warningPoint = context.streamRateWarningPoint,
-                    angleStart = currentAngle,
-                    title = "Информация",
-                    textMessage = """
-                                  Достигнут предел потерь металла в потоке – ${avgSteelRate.toPercent()}%.
-                                  """.trimIndent(),
-                    category = ModelEvent.Category.INFO
-                )
+                context.eventMetalInfoReached()
             )
             context.signaler = SignalerModel(
                 level = SignalerModel.SignalerLevelModel.INFO,

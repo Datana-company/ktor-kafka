@@ -10,9 +10,9 @@ import java.util.*
  *  Функции-расширения контекста конвертера для создания событий
  */
 
-fun ConverterBeContext.eventExternalReceived():ModelEvent = ModelEvent(
+fun ConverterBeContext.eventExternalReceived(meltId:String):ModelEvent = ModelEvent(
     id = UUID.randomUUID().toString(),
-    meltId = this.meltInfo.id,
+    meltId = meltId,
     type = ModelEvent.EventType.EXT_EVENT,
     timeStart = Instant.now(),
     timeFinish = Instant.now(),
@@ -89,27 +89,34 @@ fun ConverterBeContext.eventMetalSuccessReached():ModelEvent = this.eventSuccess
 
 private fun ConverterBeContext.eventInfo():ModelEvent = this.eventBase().also {
     it.type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT
-    it.title = "Информация"
+    it.title = ModelEvent.Category.INFO.title
     it.category = ModelEvent.Category.INFO
+    it.warningPoint = this.streamRateWarningPoint
+    it.angleStart = this.currentAngle
 }
 
 private fun ConverterBeContext.eventWarning():ModelEvent = this.eventBase().also {
     it.type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
-    it.title = "Предупреждение"
+    it.title = ModelEvent.Category.WARNING.title
     it.category = ModelEvent.Category.WARNING
+    it.warningPoint = this.streamRateWarningPoint
+    it.angleStart = this.currentAngle
 }
 
 private fun ConverterBeContext.eventCritical():ModelEvent = this.eventBase().also {
     it.type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT
-    it.title = "Критическая ситуация"
+    it.title = ModelEvent.Category.CRITICAL.title
     it.category = ModelEvent.Category.CRITICAL
+    it.criticalPoint = this.streamRateCriticalPoint
+    it.angleStart = this.currentAngle
 }
 
 private fun ConverterBeContext.eventSuccess():ModelEvent = this.eventBase().also {
     it.type = ModelEvent.EventType.SUCCESS_MELT_EVENT
     it.isActive = false
-    it.title = "Информация"
+    it.title = ModelEvent.Category.INFO.title
     it.category = ModelEvent.Category.INFO
+    it.warningPoint = this.streamRateWarningPoint
 }
 
 
@@ -118,6 +125,5 @@ private fun ConverterBeContext.eventBase():ModelEvent = ModelEvent(
     id = UUID.randomUUID().toString(),
     meltId = this.meltInfo.id,
     timeStart = this.timeStart,
-    timeFinish = this.timeStart,
-    angleStart = this.currentAngle
+    timeFinish = this.timeStart
 )
