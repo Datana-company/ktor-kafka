@@ -24,7 +24,6 @@ internal class SignalerNKR905Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )

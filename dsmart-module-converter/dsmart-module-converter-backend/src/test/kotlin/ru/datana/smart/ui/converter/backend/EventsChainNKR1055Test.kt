@@ -22,7 +22,6 @@ internal class EventsChainNKR1055Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
                 metalRate = 0.11,
-                warningPoint = 0.1,
                 angleStart = 60.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -69,7 +68,6 @@ internal class EventsChainNKR1055Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(2000L),
                 metalRate = 0.011,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -119,7 +117,6 @@ internal class EventsChainNKR1055Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
                 metalRate = 0.11,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -169,7 +166,6 @@ internal class EventsChainNKR1055Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
                 metalRate = 0.11,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -218,8 +214,6 @@ internal class EventsChainNKR1055Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(2000L),
                 metalRate = 0.16,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
