@@ -27,19 +27,18 @@ object CreateWarningEventHandler : IKonveyorHandler<ConverterBeContext> {
         } ?: run {
             context.eventsRepository.create(
                 ModelEvent(
-                    id = UUID.randomUUID().toString(),
                     meltId = meltId,
                     type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     metalRate = avgSteelRate,
-                    warningPoint = context.streamRateWarningPoint,
                     angleStart = currentAngle,
                     title = "Предупреждение",
                     textMessage = """
                                   В потоке детектирован металл – ${avgSteelRate.toPercent()}% сверх допустимой нормы ${context.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                                   """.trimIndent(),
-                    category = ModelEvent.Category.WARNING
+                    category = ModelEvent.Category.WARNING,
+                    executionStatus = ModelEvent.ExecutionStatus.STATELESS
                 )
             )
             context.signaler = SignalerModel(

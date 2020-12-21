@@ -23,8 +23,6 @@ internal class EventsChainNKR1031Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -70,8 +68,6 @@ internal class EventsChainNKR1031Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )

@@ -1,4 +1,4 @@
-val guavaVersion: String by project
+val cache2kVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -17,7 +17,7 @@ repositories {
 dependencies {
     implementation(project(":dsmart-module-converter:dsmart-module-converter-common"))
 
-    implementation("com.google.guava:guava:$guavaVersion")
+    implementation("org.cache2k:cache2k-core:$cache2kVersion")
     implementation(kotlin("stdlib-jdk8"))
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))

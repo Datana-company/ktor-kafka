@@ -24,7 +24,6 @@ internal class EventsChainNKR1080Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.011,
-                warningPoint = 0.1,
                 angleStart = 60.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -57,7 +56,7 @@ internal class EventsChainNKR1080Test {
             delay(6000)
 
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
             assertEquals(false, context.events.first().isActive)
             assertEquals("", context.currentState.get().currentMeltInfo.id)
         }
@@ -71,7 +70,6 @@ internal class EventsChainNKR1080Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart =timeStart.minusMillis(1000L),
                 metalRate = 0.011,
-                warningPoint = 0.1,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -104,7 +102,7 @@ internal class EventsChainNKR1080Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertNotEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
             assertNotEquals(true, context.events.first().isActive)
             assertNotEquals("", context.currentState.get().currentMeltInfo.id)
         }

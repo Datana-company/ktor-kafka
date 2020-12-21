@@ -34,10 +34,14 @@ import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
+
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+@OptIn(ExperimentalTime::class)
 @Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
 @KtorExperimentalAPI
 fun Application.module(testing: Boolean = false) {
     val logger = datanaLogger(::main::class.java)
@@ -73,7 +77,6 @@ fun Application.module(testing: Boolean = false) {
     val topicMath by lazy { environment.config.property("ktor.kafka.consumer.topic.math").getString().trim() }
     val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicAngles by lazy { environment.config.property("ktor.kafka.consumer.topic.angles").getString().trim() }
-    val topicAlerts by lazy { environment.config.property("ktor.kafka.consumer.topic.alerts").getString().trim() }
     val topicEvents by lazy { environment.config.property("ktor.kafka.consumer.topic.events").getString().trim() }
     val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
     val framesBasePath by lazy { environment.config.property("paths.base.frames").getString().trim() }
@@ -105,6 +108,9 @@ fun Application.module(testing: Boolean = false) {
     val roundingWeight: Double by lazy {
         environment.config.property("ktor.conveyor.roundingWeight").getString().trim().toDouble()
     }
+    val storageDuration: Int by lazy {
+        environment.config.property("ktor.repository.inmemory.storageDuration").getString().trim().toInt()
+    }
 
     // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
@@ -115,7 +121,7 @@ fun Application.module(testing: Boolean = false) {
 //    )
 //    metalRateEventGenerator.start()
 
-    val userEventsRepository = EventRepositoryInMemory()
+    val userEventsRepository = EventRepositoryInMemory(ttl = storageDuration.toDuration(DurationUnit.MINUTES))
 
     val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
     val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)
@@ -202,7 +208,7 @@ fun Application.module(testing: Boolean = false) {
                                 println("topic = math, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleMath(context)
                             }
-                            topicVideo -> {
+//                            topicVideo -> {
 //                                val kafkaModel = toConverterTransportViMl(record)
 //                                val context = ConverterBeContext(
 //                                    timeStart = Instant.now()
@@ -211,7 +217,7 @@ fun Application.module(testing: Boolean = false) {
 //                                context.setMeltInfo(kafkaModel)
 //                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
 //                                converterFacade.handleFrame(context)
-                            }
+//                            }
                             topicMeta -> {
                                 val kafkaModel = toConverterMeltInfo(record)
                                 val context = ConverterBeContext(
@@ -231,20 +237,20 @@ fun Application.module(testing: Boolean = false) {
                                 println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleAngles(context)
                             }
-//                            // 1) Получаем данные из Кафки
-//                            topicEvents -> {
-//                                // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
-//                                val kafkaModel = toConverterTransportExtEvents(record)
-//                                // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
-//                                val conveyorModelExtEvents = toModelExtEvents(kafkaModel)
-//                                // 4) Запихиваем эту модель в контекст
-//                                val context = ConverterBeContext(
-//                                    timeStart = Instant.now(),
-//                                    extEvents = conveyorModelExtEvents
-//                                )
-//                                // 5) Вызываем цепочку для обработки поступившего сообщения
-//                                converterFacade.handleExtEvents(context)
-//                            }
+                            // 1) Получаем данные из Кафки
+                            topicEvents -> {
+                                // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
+                                val kafkaModel = toConverterTransportExtEvents(record)
+                                // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
+                                val context = ConverterBeContext(
+                                    timeStart = Instant.now()
+                                )
+                                // 4) Запихиваем эту модель в контекст
+                                context.setExtEvent(kafkaModel)
+                                // 5) Вызываем цепочку для обработки поступившего сообщения
+                                println("topic = events, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                converterFacade.handleExtEvents(context)
+                            }
                     }
                 }
             } catch(e: Throwable) {

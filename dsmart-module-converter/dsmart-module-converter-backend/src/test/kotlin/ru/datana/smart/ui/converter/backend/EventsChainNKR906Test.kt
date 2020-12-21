@@ -26,7 +26,6 @@ internal class EventsChainNKR906Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 metalRate = 0.11,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )

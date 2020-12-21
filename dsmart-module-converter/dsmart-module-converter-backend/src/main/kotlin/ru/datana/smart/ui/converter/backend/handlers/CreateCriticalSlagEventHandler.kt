@@ -27,19 +27,18 @@ object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
         } ?: run {
             context.eventsRepository.create(
                 ModelEvent(
-                    id = UUID.randomUUID().toString(),
                     meltId = meltId,
                     type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                     timeStart = slagRateTime,
                     timeFinish = slagRateTime,
                     slagRate = avgSlagRate,
-                    criticalPoint = context.streamRateCriticalPoint,
                     angleStart = currentAngle,
                     title = "Критическая ситуация",
                     textMessage = """
                                   В потоке детектирован шлак – ${avgSlagRate.toPercent()}%, процент потерь превышает критическое значение – ${context.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
                                   """.trimIndent(),
-                    category = ModelEvent.Category.CRITICAL
+                    category = ModelEvent.Category.CRITICAL,
+                    executionStatus = ModelEvent.ExecutionStatus.STATELESS
                 )
             )
             context.signaler = SignalerModel(

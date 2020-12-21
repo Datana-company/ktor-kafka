@@ -4,8 +4,8 @@ import {ExecutionStatusModel} from "./event-execution-status.model";
 export class EventModel {
   constructor(
     public id: string,
-    public dateStart: Date,
-    public dateFinish: Date,
+    public timeStart: Date,
+    public timeFinish: Date,
     public title: string,
     public textMessage: string,
     public category: EventCategoryModel,

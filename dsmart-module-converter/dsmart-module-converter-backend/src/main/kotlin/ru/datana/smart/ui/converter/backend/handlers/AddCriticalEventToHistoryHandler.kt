@@ -28,7 +28,7 @@ object AddCriticalEventToHistoryHandler: IKonveyorHandler<ConverterBeContext> {
             val executionStatus = when {
                 isReactionTimeUp && isUserReacted -> ModelEvent.ExecutionStatus.COMPLETED
                 isReactionTimeUp && !isUserReacted -> ModelEvent.ExecutionStatus.FAILED
-                else -> ModelEvent.ExecutionStatus.NONE
+                else -> ModelEvent.ExecutionStatus.STATELESS
             }
             it.timeFinish = slagRateTime
             it.isActive = isActive

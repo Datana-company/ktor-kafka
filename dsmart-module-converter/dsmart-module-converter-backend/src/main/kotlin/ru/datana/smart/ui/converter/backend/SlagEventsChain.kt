@@ -82,7 +82,7 @@ class SlagEventsChain(
                 +CreateSuccessMeltSlagEventHandler
             }
             konveyor {
-                on { extEvents.alertRuleId != null }
+                on { extEvent.alertRuleId.isNotBlank() }
                 +CreateExtEventHandler
             }
             handler {

@@ -82,7 +82,7 @@ class SteelEventsChain(
                 +CreateSuccessMeltEventHandler
             }
             konveyor {
-                on { extEvents.alertRuleId != null }
+                on { extEvent.alertRuleId.isNotBlank() }
                 +CreateExtEventHandler
             }
             handler {
