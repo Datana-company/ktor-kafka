@@ -4,7 +4,7 @@ plugins {
     java
     `maven-publish`
     kotlin("jvm")
-    id("org.jetbrains.dokka") version "0.10.0"
+    id("org.jetbrains.dokka")
     maven
 }
 
