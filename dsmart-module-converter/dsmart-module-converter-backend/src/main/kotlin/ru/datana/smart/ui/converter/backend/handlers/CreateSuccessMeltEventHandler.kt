@@ -23,7 +23,7 @@ object CreateSuccessMeltEventHandler : IKonveyorHandler<ConverterBeContext> {
         )
         context.status = CorStatus.FINISHED
         val meltId: String = context.meltInfo.id
-        val slagRateTime = context.timeStart
+        //val slagRateTime = context.timeStart
         context.eventsRepository.getAllByMeltId(meltId).map {
             if (it.type == ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT ||
                 it.type == ModelEvent.EventType.STREAM_RATE_WARNING_EVENT

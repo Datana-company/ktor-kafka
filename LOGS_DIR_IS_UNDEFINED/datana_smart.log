@@ -1,104 +1,80 @@
-2020-12-18 15:43:16,437 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- No ktor.deployment.watch patterns specified, automatic reload is not active
+2020-12-21 11:28:33,984 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- No ktor.deployment.watch patterns specified, automatic reload is not active
 
-2020-12-18 15:48:05,645 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- No ktor.deployment.watch patterns specified, automatic reload is not active
+2020-12-21 11:33:36,176 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- No ktor.deployment.watch patterns specified, automatic reload is not active
 
-2020-12-18 15:55:27,008 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- No ktor.deployment.watch patterns specified, automatic reload is not active
+2020-12-21 11:33:36,570 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- Responding at http://0.0.0.0:8080
 
-2020-12-18 15:55:27,472 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- Responding at http://0.0.0.0:8080
+2020-12-21 11:33:36,570 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- Application started: io.ktor.application.Application@1237e0be
 
-2020-12-18 15:55:27,472 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- Application started: io.ktor.application.Application@73ad4ecc
+2020-12-21 11:33:55,082 INFO [] [nioEventLoopGroup-4-1 @call-handler#4] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /
 
-2020-12-18 16:01:27,441 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- No ktor.deployment.watch patterns specified, automatic reload is not active
+2020-12-21 11:33:55,134 INFO [] [nioEventLoopGroup-4-1 @call-handler#6] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /runtime-es2015.js
 
-2020-12-18 16:01:27,975 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- Responding at http://0.0.0.0:8080
+2020-12-21 11:33:55,157 INFO [] [nioEventLoopGroup-4-3 @call-handler#16] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /polyfills-es2015.js
 
-2020-12-18 16:01:27,975 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- Application started: io.ktor.application.Application@73fc518f
+2020-12-21 11:33:55,160 INFO [] [nioEventLoopGroup-4-4 @call-handler#20] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /main-es2015.js
 
-2020-12-18 16:02:09,614 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- No ktor.deployment.watch patterns specified, automatic reload is not active
+2020-12-21 11:33:55,166 INFO [] [nioEventLoopGroup-4-2 @call-handler#18] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /styles-es2015.js
 
-2020-12-18 16:02:10,100 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- Responding at http://0.0.0.0:8080
+2020-12-21 11:33:55,266 INFO [] [nioEventLoopGroup-4-5 @call-handler#21] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /vendor-es2015.js
 
-2020-12-18 16:02:10,101 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- Application started: io.ktor.application.Application@73fc518f
+2020-12-21 11:33:55,270 INFO [] [nioEventLoopGroup-4-5 @call-handler#24] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Regular.woff2
 
-2020-12-18 16:02:33,021 INFO [] [nioEventLoopGroup-4-1 @call-handler#4] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /
+2020-12-21 11:33:55,451 INFO [] [nioEventLoopGroup-4-5 @call-handler#26] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /datana-smart-converter-widget-es2015.js
 
-2020-12-18 16:02:33,363 INFO [] [nioEventLoopGroup-4-1 @call-handler#6] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /runtime-es2015.js
+2020-12-21 11:33:55,640 INFO [] [nioEventLoopGroup-4-2 @call-handler#41] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/Exit1.png
 
-2020-12-18 16:02:33,407 INFO [] [nioEventLoopGroup-4-5 @call-handler#22] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /main-es2015.js
+2020-12-21 11:33:55,641 INFO [] [nioEventLoopGroup-4-5 @call-handler#42] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/VectorSmartObject1.png
 
-2020-12-18 16:02:33,419 INFO [] [nioEventLoopGroup-4-4 @call-handler#18] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /styles-es2015.js
+2020-12-21 11:33:55,643 INFO [] [nioEventLoopGroup-4-4 @call-handler#40] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/mmk.png
 
-2020-12-18 16:02:33,421 INFO [] [nioEventLoopGroup-4-2 @call-handler#16] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /polyfills-es2015.js
+2020-12-21 11:33:55,651 INFO [] [nioEventLoopGroup-4-3 @call-handler#46] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Bold.woff2
 
-2020-12-18 16:02:33,562 INFO [] [nioEventLoopGroup-4-3 @call-handler#17] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /vendor-es2015.js
+2020-12-21 11:33:55,651 INFO [] [nioEventLoopGroup-4-2 @call-handler#47] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Semibold.woff2
 
-2020-12-18 16:02:33,958 INFO [] [nioEventLoopGroup-4-2 @call-handler#26] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Regular.woff2
+2020-12-21 11:34:03,473 INFO [] [nioEventLoopGroup-4-3 @call-handler#53] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/critical_active.svg
 
-2020-12-18 16:02:34,000 INFO [] [nioEventLoopGroup-4-3 @call-handler#24] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /datana-smart-converter-widget-es2015.js
+2020-12-21 11:34:04,493 INFO [] [nioEventLoopGroup-4-3 @call-handler#88] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/sounds/sound-1.wav
 
-2020-12-18 16:02:34,010 INFO [] [nioEventLoopGroup-4-3 @call-handler#28] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /favicon.ico
+2020-12-21 11:34:06,583 INFO [] [nioEventLoopGroup-4-3 @call-handler#157] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/critical_not_active.svg
 
-2020-12-18 16:02:34,102 INFO [] [nioEventLoopGroup-4-2 @call-handler#32] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/VectorSmartObject1.png
+2020-12-21 11:41:10,645 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- No ktor.deployment.watch patterns specified, automatic reload is not active
 
-2020-12-18 16:02:34,105 INFO [] [nioEventLoopGroup-4-4 @call-handler#35] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/Exit1.png
+2020-12-21 11:41:11,038 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- Responding at http://0.0.0.0:8080
 
-2020-12-18 16:02:34,123 INFO [] [nioEventLoopGroup-4-2 @call-handler#38] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/mmk.png
+2020-12-21 11:41:11,039 INFO [] [main] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- Application started: io.ktor.application.Application@1237e0be
 
-2020-12-18 16:02:34,236 INFO [] [nioEventLoopGroup-4-2 @call-handler#48] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Semibold.woff2
+2020-12-21 11:41:18,571 INFO [] [nioEventLoopGroup-4-1 @call-handler#4] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /
 
-2020-12-18 16:02:34,239 INFO [] [nioEventLoopGroup-4-4 @call-handler#50] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Bold.woff2
+2020-12-21 11:41:18,617 INFO [] [nioEventLoopGroup-4-1 @call-handler#10] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /runtime-es2015.js
 
-2020-12-18 16:02:51,185 INFO [] [nioEventLoopGroup-4-6 @call-handler#33] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 101 Switching Protocols: GET - ///ws
+2020-12-21 11:41:18,632 INFO [] [nioEventLoopGroup-4-5 @call-handler#20] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /main-es2015.js
 
-2020-12-18 16:02:57,845 INFO [] [nioEventLoopGroup-4-7 @call-handler#54] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /
+2020-12-21 11:41:18,644 INFO [] [nioEventLoopGroup-4-3 @call-handler#17] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /styles-es2015.js
 
-2020-12-18 16:02:57,896 INFO [] [nioEventLoopGroup-4-1 @call-handler#65] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /main-es2015.js
+2020-12-21 11:41:18,647 INFO [] [nioEventLoopGroup-4-2 @call-handler#16] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /polyfills-es2015.js
 
-2020-12-18 16:02:57,896 INFO [] [nioEventLoopGroup-4-7 @call-handler#59] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /runtime-es2015.js
+2020-12-21 11:41:18,700 INFO [] [nioEventLoopGroup-4-2 @call-handler#24] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Regular.woff2
 
-2020-12-18 16:02:57,901 INFO [] [nioEventLoopGroup-4-8 @call-handler#67] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /polyfills-es2015.js
+2020-12-21 11:41:18,751 INFO [] [nioEventLoopGroup-4-4 @call-handler#21] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /vendor-es2015.js
 
-2020-12-18 16:02:57,903 INFO [] [nioEventLoopGroup-4-3 @call-handler#70] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /styles-es2015.js
+2020-12-21 11:41:18,933 INFO [] [nioEventLoopGroup-4-4 @call-handler#26] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /datana-smart-converter-widget-es2015.js
 
-2020-12-18 16:02:57,943 INFO [] [nioEventLoopGroup-4-2 @call-handler#66] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /vendor-es2015.js
+2020-12-21 11:41:19,010 INFO [] [nioEventLoopGroup-4-4 @call-handler#30] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/VectorSmartObject1.png
 
-2020-12-18 16:02:58,072 INFO [] [nioEventLoopGroup-4-2 @call-handler#74] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Regular.woff2
+2020-12-21 11:41:19,012 INFO [] [nioEventLoopGroup-4-2 @call-handler#33] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/Exit1.png
 
-2020-12-18 16:02:58,260 INFO [] [nioEventLoopGroup-4-2 @call-handler#76] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /datana-smart-converter-widget-es2015.js
+2020-12-21 11:41:19,023 INFO [] [nioEventLoopGroup-4-2 @call-handler#36] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/mmk.png
 
-2020-12-18 16:02:58,516 INFO [] [nioEventLoopGroup-4-2 @call-handler#90] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/VectorSmartObject1.png
+2020-12-21 11:41:19,074 INFO [] [nioEventLoopGroup-4-4 @call-handler#46] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Bold.woff2
 
-2020-12-18 16:02:58,522 INFO [] [nioEventLoopGroup-4-3 @call-handler#92] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/Exit1.png
+2020-12-21 11:41:19,075 INFO [] [nioEventLoopGroup-4-2 @call-handler#47] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Semibold.woff2
 
-2020-12-18 16:02:58,525 INFO [] [nioEventLoopGroup-4-8 @call-handler#93] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/mmk.png
+2020-12-21 11:41:19,138 INFO [] [nioEventLoopGroup-4-2 @call-handler#50] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /favicon.ico
 
-2020-12-18 16:02:58,535 INFO [] [nioEventLoopGroup-4-3 @call-handler#97] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Semibold.woff2
+2020-12-21 11:41:24,499 INFO [] [nioEventLoopGroup-4-2 @call-handler#55] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/critical_active.svg
 
-2020-12-18 16:02:58,535 INFO [] [nioEventLoopGroup-4-2 @call-handler#96] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /OpenSans-Bold.woff2
+2020-12-21 11:41:25,519 INFO [] [nioEventLoopGroup-4-2 @call-handler#90] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/sounds/sound-1.wav
 
-2020-12-18 16:02:58,611 INFO [] [nioEventLoopGroup-4-3 @call-handler#100] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /favicon.ico
-
-2020-12-18 16:03:24,973 INFO [] [nioEventLoopGroup-4-3 @call-handler#113] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/critical_active.svg
-
-2020-12-18 16:03:25,910 INFO [] [nioEventLoopGroup-4-3 @call-handler#143] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/sounds/sound-1.wav
-
-2020-12-18 16:03:25,942 INFO [] [nioEventLoopGroup-4-3 @call-handler#145] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /favicon.ico
-
-2020-12-18 16:03:27,975 INFO [] [nioEventLoopGroup-4-3 @call-handler#215] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/critical_not_active.svg
-
-2020-12-18 16:03:27,981 INFO [] [nioEventLoopGroup-4-3 @call-handler#217] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /favicon.ico
-
-2020-12-18 16:04:14,486 INFO [] [nioEventLoopGroup-4-3 @call-handler#1100] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/sounds/sound-1.wav
-
-2020-12-18 16:04:14,499 INFO [] [nioEventLoopGroup-4-3 @call-handler#1102] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /favicon.ico
-
-2020-12-18 16:04:17,484 INFO [] [nioEventLoopGroup-4-3 @call-handler#1201] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /favicon.ico
-
-2020-12-18 16:05:28,418 ERROR[] [DefaultDispatcher-worker-1 @coroutine#1] -  - [org.apache.kafka.clients.consumer.internals.ConsumerCoordinator]- [Consumer clientId=ui-client-kafka, groupId=ui-converter] Offset commit failed on partition dev-converter-meta-0 at offset 152: The coordinator is not aware of this member.
-
-2020-12-18 16:18:54,572 ERROR[] [DefaultDispatcher-worker-1 @coroutine#1] -  - [org.apache.kafka.clients.consumer.internals.ConsumerCoordinator]- [Consumer clientId=ui-client-kafka, groupId=ui-converter] Offset commit failed on partition dev-converter-meta-0 at offset 152: The coordinator is not aware of this member.
-
-2020-12-18 16:29:17,758 ERROR[] [DefaultDispatcher-worker-1 @coroutine#1] -  - [org.apache.kafka.clients.consumer.internals.ConsumerCoordinator]- [Consumer clientId=ui-client-kafka, groupId=ui-converter] Offset commit failed on partition dev-converter-meta-0 at offset 152: The coordinator is not aware of this member.
-
-2020-12-18 16:39:36,845 ERROR[] [DefaultDispatcher-worker-1 @coroutine#1] -  - [org.apache.kafka.clients.consumer.internals.ConsumerCoordinator]- [Consumer clientId=ui-client-kafka, groupId=ui-converter] Offset commit failed on partition dev-converter-meta-0 at offset 152: The coordinator is not aware of this member.
+2020-12-21 11:41:27,593 INFO [] [nioEventLoopGroup-4-2 @call-handler#156] -  - [ru.datana.smart.ui.converter.app.ApplicationKt]- 200 OK: GET - /assets/image/critical_not_active.svg
 

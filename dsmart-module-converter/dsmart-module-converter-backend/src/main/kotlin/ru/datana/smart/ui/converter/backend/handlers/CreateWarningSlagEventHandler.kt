@@ -18,11 +18,15 @@ import java.util.*
 object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.meltInfo.id
-        val slagRateTime = context.timeStart
-        val currentAngle = context.currentAngle
+        /**
+         * NKR-1062:
+         *  Нужно ли здесь брать значения из контекста, может ли другой поток вмешаться?
+         */
+        //val slagRateTime = context.timeStart
+        //val currentAngle = context.currentAngle
         val activeEvent: ModelEvent? = context.eventsRepository
             .getActiveByMeltIdAndEventType(meltId, ModelEvent.EventType.STREAM_RATE_WARNING_EVENT)
-        val avgSlagRate = context.avgSlagRate
+        //val avgSlagRate = context.avgSlagRate
         activeEvent?.let {
             return
         } ?: run {

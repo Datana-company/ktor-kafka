@@ -33,90 +33,90 @@ fun ConverterBeContext.eventExternalReceived(meltId:String):ModelEvent = ModelEv
     }
 )
 
-fun ConverterBeContext.eventSlagInfoReached():ModelEvent = this.eventInfo().also {
-    it.slagRate = this.avgSlagRate
-    it.textMessage = """
+fun ConverterBeContext.eventSlagInfoReached():ModelEvent = this.eventInfo().also { model ->
+    model.slagRate = this.avgSlagRate
+    model.textMessage = """
                      Достигнут предел потерь шлака в потоке – ${this.avgSlagRate.toPercent()}%.
                      """.trimIndent()
 }
 
-fun ConverterBeContext.eventMetalInfoReached():ModelEvent = this.eventInfo().also {
-    it.metalRate = this.avgSteelRate
-    it.textMessage = """
+fun ConverterBeContext.eventMetalInfoReached():ModelEvent = this.eventInfo().also { model ->
+    model.metalRate = this.avgSteelRate
+    model.textMessage = """
                      Достигнут предел потерь металла в потоке – ${this.avgSteelRate.toPercent()}%.
                      """.trimIndent()
 }
 
-fun ConverterBeContext.eventSlagWarningReached():ModelEvent = this.eventWarning().also {
-    it.slagRate = this.avgSlagRate
-    it.textMessage = """
+fun ConverterBeContext.eventSlagWarningReached():ModelEvent = this.eventWarning().also { model ->
+    model.slagRate = this.avgSlagRate
+    model.textMessage = """
                     В потоке детектирован шлак – ${this.avgSlagRate.toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                     """.trimIndent()
 }
 
-fun ConverterBeContext.eventMetalWarningReached():ModelEvent = this.eventWarning().also {
-    it.metalRate = this.avgSteelRate
-    it.textMessage = """
+fun ConverterBeContext.eventMetalWarningReached():ModelEvent = this.eventWarning().also { model ->
+    model.metalRate = this.avgSteelRate
+    model.textMessage = """
                     В потоке детектирован металл – ${this.avgSteelRate.toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                     """.trimIndent()
 }
 
-fun ConverterBeContext.eventSlagCriticalReached():ModelEvent = this.eventCritical().also {
-    it.slagRate = this.avgSlagRate
-    it.textMessage = """
+fun ConverterBeContext.eventSlagCriticalReached():ModelEvent = this.eventCritical().also { model ->
+    model.slagRate = this.avgSlagRate
+    model.textMessage = """
                     В потоке детектирован шлак – ${this.avgSlagRate.toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
                     """.trimIndent()
 }
 
-fun ConverterBeContext.eventMetalCriticalReached():ModelEvent = this.eventCritical().also {
-    it.metalRate = this.avgSteelRate
-    it.textMessage = """
+fun ConverterBeContext.eventMetalCriticalReached():ModelEvent = this.eventCritical().also { model ->
+    model.metalRate = this.avgSteelRate
+    model.textMessage = """
                     В потоке детектирован металл – ${this.avgSteelRate.toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
                     """.trimIndent()
 }
 
-fun ConverterBeContext.eventSlagSuccessReached():ModelEvent = this.eventSuccess().also {
-    it.textMessage = """
+fun ConverterBeContext.eventSlagSuccessReached():ModelEvent = this.eventSuccess().also { model ->
+    model.textMessage = """
                     Допустимая норма потерь шлака ${this.streamRateWarningPoint.toPercent()}% не была превышена.
                     """.trimIndent()
 }
 
-fun ConverterBeContext.eventMetalSuccessReached():ModelEvent = this.eventSuccess().also {
-    it.textMessage = """
+fun ConverterBeContext.eventMetalSuccessReached():ModelEvent = this.eventSuccess().also { model ->
+    model.textMessage = """
                     Допустимая норма потерь металла ${this.streamRateWarningPoint.toPercent()}% не была превышена.
                     """.trimIndent()
 }
 
-private fun ConverterBeContext.eventInfo():ModelEvent = this.eventBase().also {
-    it.type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT
-    it.title = ModelEvent.Category.INFO.title
-    it.category = ModelEvent.Category.INFO
-    it.warningPoint = this.streamRateWarningPoint
-    it.angleStart = this.currentAngle
+private fun ConverterBeContext.eventInfo():ModelEvent = this.eventBase().also { model ->
+    model.type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT
+    model.title = ModelEvent.Category.INFO.title
+    model.category = ModelEvent.Category.INFO
+    model.warningPoint = this.streamRateWarningPoint
+    model.angleStart = this.currentAngle
 }
 
-private fun ConverterBeContext.eventWarning():ModelEvent = this.eventBase().also {
-    it.type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
-    it.title = ModelEvent.Category.WARNING.title
-    it.category = ModelEvent.Category.WARNING
-    it.warningPoint = this.streamRateWarningPoint
-    it.angleStart = this.currentAngle
+private fun ConverterBeContext.eventWarning():ModelEvent = this.eventBase().also { model ->
+    model.type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
+    model.title = ModelEvent.Category.WARNING.title
+    model.category = ModelEvent.Category.WARNING
+    model.warningPoint = this.streamRateWarningPoint
+    model.angleStart = this.currentAngle
 }
 
-private fun ConverterBeContext.eventCritical():ModelEvent = this.eventBase().also {
-    it.type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT
-    it.title = ModelEvent.Category.CRITICAL.title
-    it.category = ModelEvent.Category.CRITICAL
-    it.criticalPoint = this.streamRateCriticalPoint
-    it.angleStart = this.currentAngle
+private fun ConverterBeContext.eventCritical():ModelEvent = this.eventBase().also { model ->
+    model.type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT
+    model.title = ModelEvent.Category.CRITICAL.title
+    model.category = ModelEvent.Category.CRITICAL
+    model.criticalPoint = this.streamRateCriticalPoint
+    model.angleStart = this.currentAngle
 }
 
-private fun ConverterBeContext.eventSuccess():ModelEvent = this.eventBase().also {
-    it.type = ModelEvent.EventType.SUCCESS_MELT_EVENT
-    it.isActive = false
-    it.title = ModelEvent.Category.INFO.title
-    it.category = ModelEvent.Category.INFO
-    it.warningPoint = this.streamRateWarningPoint
+private fun ConverterBeContext.eventSuccess():ModelEvent = this.eventBase().also { model ->
+    model.type = ModelEvent.EventType.SUCCESS_MELT_EVENT
+    model.isActive = false
+    model.title = ModelEvent.Category.INFO.title
+    model.category = ModelEvent.Category.INFO
+    model.warningPoint = this.streamRateWarningPoint
 }
 
 
