@@ -12,6 +12,7 @@ group = "ru.datana.smart.common.ktor.kafka"
 version = "0.6.0"
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
@@ -25,6 +26,9 @@ dependencies {
 
     testImplementation("io.ktor:ktor-server-netty:$ktorVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+}
+
+kotlin {
 }
 
 val sourcesJar by tasks.creating(Jar::class) {
