@@ -17,6 +17,7 @@ data class ConverterBeContext(
     var externalEvent: ModelEvent = ModelEvent.NONE,
     var lastTimeAngles: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
     var lastTimeFrame: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
+    var streamStatus: ModelStreamStatus = ModelStreamStatus.NONE,
     var status: CorStatus = CorStatus.STARTED,
     var errors: MutableList<CorError> = mutableListOf(),
     var timeStart: Instant = Instant.MIN,
@@ -50,6 +51,4 @@ data class ConverterBeContext(
         }
     val currentAngle: Double
         get() = currentState.get().lastAngles.angle
-    val streamStatus: ModelStreamStatus
-        get() = currentState.get().streamStatus
 }

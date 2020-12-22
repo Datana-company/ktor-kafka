@@ -98,7 +98,7 @@ internal class EventsChainNKR1055Test {
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
             assertNotEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
-            assertEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
 
         }
     }
@@ -198,7 +198,7 @@ internal class EventsChainNKR1055Test {
         }
     }
 
-    /** NKR-1055  ModelEvent.ExecutionStatus.Stateless
+    /** NKR-1055  ModelEvent.ExecutionStatus.None
      * Предупреждение "без статуса" - т.к.  % металла снизился до допустимой нормы, а время реакции еще не истекло.
      */
     @Test
@@ -238,7 +238,7 @@ internal class EventsChainNKR1055Test {
 
             assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
 
         }
     }

@@ -43,13 +43,13 @@ class SlagEventsChain(
                 +UpdateEventHandler
                 +CreateWarningSlagEventHandler
             }
-            konveyor {
-                on { streamStatus == ModelStreamStatus.INFO }
-                +SetEventExecutionStatusHandler
-                +SetEventInactiveStatusHandler
-                +UpdateEventHandler
-                +CreateInfoSlagEventHandler
-            }
+//            konveyor {
+//                on { streamStatus == ModelStreamStatus.INFO }
+//                +SetEventExecutionStatusHandler
+//                +SetEventInactiveStatusHandler
+//                +UpdateEventHandler
+//                +CreateInfoSlagEventHandler
+//            }
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL }
                 +SetEventExecutionStatusHandler

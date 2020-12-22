@@ -36,10 +36,10 @@ class SignalerChain(
                 on { streamStatus == ModelStreamStatus.WARNING }
                 +WarningSignalizationHandler
             }
-            konveyor {
-                on { streamStatus == ModelStreamStatus.INFO }
-                +InfoSignalizationHandler
-            }
+//            konveyor {
+//                on { streamStatus == ModelStreamStatus.INFO }
+//                +InfoSignalizationHandler
+//            }
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL || streamStatus == ModelStreamStatus.NONE }
                 +NormalSignalizationHandler

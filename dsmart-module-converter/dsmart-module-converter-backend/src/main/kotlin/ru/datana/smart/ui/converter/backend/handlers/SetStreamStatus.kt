@@ -12,8 +12,7 @@ import ru.datana.smart.ui.converter.common.utils.toPercent
 object SetStreamStatus: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         with(context) {
-            val curState = currentState.get()
-            curState.streamStatus = if (slagRate != ModelSlagRate.NONE && avgStreamRate.isNotEmpty()
+            context.streamStatus = if (slagRate != ModelSlagRate.NONE && avgStreamRate.isNotEmpty()
                 && streamRateCriticalPoint.isNotEmpty() && streamRateWarningPoint.isNotEmpty()) {
                     if (avgStreamRate.toPercent() > streamRateCriticalPoint.toPercent()) ModelStreamStatus.CRITICAL
                     else if (avgStreamRate.toPercent() > streamRateWarningPoint.toPercent()
