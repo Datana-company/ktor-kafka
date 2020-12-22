@@ -51,7 +51,9 @@ fun converterBeContextTest(
     meltInfo: ModelMeltInfo? = null,
     angles: ModelAngles? = null,
     frame: ModelFrame? = null,
-    slagRate: ModelSlagRate? = null
+    slagRate: ModelSlagRate? = null,
+    signalerLevel: SignalerModel.SignalerLevelModel? = null,
+    signalerSoundType: SignalerSoundModel.SignalerSoundTypeModel? = null
 ) =
     ConverterBeContext(
         timeStart = timeStart ?: Instant.now(),
@@ -59,8 +61,19 @@ fun converterBeContextTest(
         meltInfo = meltInfo ?: defaultMeltInfoTest(),
         angles = angles ?: ModelAngles.NONE,
         frame = frame ?: ModelFrame.NONE,
-        slagRate = slagRate ?: ModelSlagRate.NONE
+        slagRate = slagRate ?: ModelSlagRate.NONE,
+        signaler = signalerTest(signalerLevel, signalerSoundType)
     )
+
+fun signalerTest(
+    signalerLevel: SignalerModel.SignalerLevelModel? = null,
+    signalerSoundType: SignalerSoundModel.SignalerSoundTypeModel? = null
+) = SignalerModel(
+    level = signalerLevel?:SignalerModel.SignalerLevelModel.NONE,
+    sound = SignalerSoundModel(
+        type = signalerSoundType?: SignalerSoundModel.SignalerSoundTypeModel.NONE
+    )
+)
 
 fun createCurrentStateForTest(
     lastAngleTime: Instant? = null,
