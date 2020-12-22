@@ -8,7 +8,6 @@ import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
 import java.time.Instant
-import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
@@ -56,7 +55,7 @@ fun converterBeContextTest(
     angles: ModelAngles? = null,
     frame: ModelFrame? = null,
     slagRate: ModelSlagRate? = null,
-    extEvent: ModelEvent? = null
+    externalEvent: ModelEvent? = null
 ) =
     ConverterBeContext(
         timeStart = timeStart ?: Instant.now(),
@@ -65,7 +64,7 @@ fun converterBeContextTest(
         angles = angles ?: ModelAngles.NONE,
         frame = frame ?: ModelFrame.NONE,
         slagRate = slagRate ?: ModelSlagRate.NONE,
-        extEvent = extEvent ?: ModelEvent.NONE
+        externalEvent = externalEvent ?: ModelEvent.NONE
     )
 
 fun createCurrentStateForTest(

@@ -16,7 +16,7 @@ object CreateExternalEventHandler : IKonveyorHandler<ConverterBeContext> {
         val timeStart = context.timeStart
         context.activeEvent = ModelEvent(
             meltId = meltId,
-            type = ModelEvent.EventType.EXT_EVENT,
+            type = ModelEvent.EventType.EXTERNAL_EVENT,
             timeStart = timeStart,
             timeFinish = timeStart,
             title = "Информация",

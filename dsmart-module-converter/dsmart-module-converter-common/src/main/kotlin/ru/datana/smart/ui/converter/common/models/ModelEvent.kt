@@ -44,7 +44,7 @@ data class ModelEvent(
         STREAM_RATE_INFO_EVENT,
         STREAM_RATE_CRITICAL_EVENT,
         SUCCESS_MELT_EVENT,
-        EXT_EVENT,
+        EXTERNAL_EVENT,
         NONE
     }
 }

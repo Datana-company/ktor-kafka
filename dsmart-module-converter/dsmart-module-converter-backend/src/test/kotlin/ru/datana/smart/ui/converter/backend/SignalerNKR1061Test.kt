@@ -257,7 +257,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
-                metalRate = 0.11,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -294,7 +293,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
-                metalRate = 0.11,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
