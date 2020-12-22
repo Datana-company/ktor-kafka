@@ -23,7 +23,6 @@ data class WsDsmartEvent (
     @Serializable
     enum class ExecutionStatus(val value: String) {
         COMPLETED("COMPLETED"),
-        FAILED("FAILED"),
-        STATELESS("STATELESS")
+        FAILED("FAILED")
     }
 }

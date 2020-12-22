@@ -43,13 +43,13 @@ class SteelEventsChain(
                 +UpdateEventHandler
                 +CreateWarningSteelEventHandler
             }
-            konveyor {
-                on { streamStatus == ModelStreamStatus.INFO }
-                +SetEventExecutionStatusHandler
-                +SetEventInactiveStatusHandler
-                +UpdateEventHandler
-                +CreateInfoSteelEventHandler
-            }
+//            konveyor {
+//                on { streamStatus == ModelStreamStatus.INFO }
+//                +SetEventExecutionStatusHandler
+//                +SetEventInactiveStatusHandler
+//                +UpdateEventHandler
+//                +CreateInfoSteelEventHandler
+//            }
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL }
                 +SetEventExecutionStatusHandler

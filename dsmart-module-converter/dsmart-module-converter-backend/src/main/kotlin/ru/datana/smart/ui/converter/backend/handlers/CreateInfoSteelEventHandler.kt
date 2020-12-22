@@ -31,8 +31,7 @@ object CreateInfoSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
             textMessage = """
                           Достигнут предел потерь металла в потоке – ${avgSteelRate.toPercent()}%.
                           """.trimIndent(),
-            category = ModelEvent.Category.INFO,
-            executionStatus = ModelEvent.ExecutionStatus.STATELESS
+            category = ModelEvent.Category.INFO
         )
         context.eventsRepository.create(context.activeEvent)
     }
