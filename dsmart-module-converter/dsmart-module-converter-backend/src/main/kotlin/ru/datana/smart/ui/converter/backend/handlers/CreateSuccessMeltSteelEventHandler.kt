@@ -8,8 +8,8 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
-* CreateSuccessMeltEventHandler - создаётся событие типа "Информация" об успешном завершении плавки
-* и сразу записывается в историю.
+* CreateSuccessMeltSteelEventHandler - создаётся событие типа "Информация" по содержанию металла
+* об успешном завершении плавки и сразу записывается в историю.
 * */
 object CreateSuccessMeltSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {

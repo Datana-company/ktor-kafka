@@ -7,6 +7,9 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelSignaler
 import ru.datana.smart.ui.converter.common.models.ModelSignalerSound
 
+/*
+* WarningSignalizationHandler - светофор переходит в статус "Предупреждение" (лампочка становится жёлтой).
+* */
 object WarningSignalizationHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         context.signaler = ModelSignaler(

@@ -8,8 +8,7 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
-* CreateInfoEventHandler - создаётся событие типа "Информация",
-* и светофор переходит в информационный статус.
+* CreateInfoSteelEventHandler - создаётся событие типа "Информация" по содержанию металла.
 * */
 object CreateInfoSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {

@@ -6,6 +6,9 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelEvent
 
+/*
+* UpdateEventHandler - записывает текущее событие в репозиторий.
+* */
 object UpdateEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         with(context.activeEvent) {

@@ -9,30 +9,41 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 
+/*
+* WsSendMathSlagRateHandler - происходит отправка данных о содержании потока на фронтенд через web-socket.
+* Если данные о содержании потока не проходили в течении заданного времени (DATA_TIMEOUT),
+* то на фронтенд отправляются пустые значения.
+* */
 object WsSendMathSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
+        // отправка данных о содержании потока по web-socket
         context.wsManager.sendSlagRate(context)
 
         val schedule = context.scheduleCleaner.get()
         with(schedule) {
             jobSlagRate?.let {
-                if (it.isActive) {
+                // если текущая джоба актива, то отменяем её выполнение
+                if (it.isActive)
                     it.cancel()
-                    println("cancel jobMath")
-                }
             }
+            // отправка пустых данных о содержании потока по истечению времени (DATA_TIMEOUT)
             jobSlagRate = GlobalScope.launch {
+                // происходит ожидание в течение заданного времени (DATA_TIMEOUT)
                 delay(context.dataTimeout)
+                // содержание потока в контексте заполняется значением по умолчанию
                 context.slagRate = ModelSlagRate.NONE
 
+                // задаётся текущее содержание потока в репозиторий текущего состояния
                 val curState = context.currentState.get()
                 curState.lastSlagRate = context.slagRate
 
+                // отправка пустых данных о содержании потока по web-socket
                 context.wsManager.sendSlagRate(context)
                 println("jobMath done")
             }
         }
 
+        // задаётся текущее содержание потока в репозиторий текущего состояния
         val curState = context.currentState.get()
         curState.lastSlagRate = context.slagRate
     }

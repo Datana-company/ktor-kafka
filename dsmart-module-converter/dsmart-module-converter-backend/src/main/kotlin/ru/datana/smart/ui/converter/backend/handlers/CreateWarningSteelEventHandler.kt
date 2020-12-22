@@ -8,8 +8,7 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
-* CreateWarningSteelEventHandler - создаём событие типа "Предупреждение",
-* и светофор переходит в статус "Предупреждение".
+* CreateWarningSteelEventHandler - создаём событие типа "Предупреждение" по содержанию металла.
 * */
 object CreateWarningSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {

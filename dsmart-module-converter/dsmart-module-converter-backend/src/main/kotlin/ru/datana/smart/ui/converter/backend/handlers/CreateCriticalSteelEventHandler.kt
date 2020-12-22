@@ -8,8 +8,7 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
-* CreateCriticalEventHandler - создаётся событие типа "Критическая ситуация",
-* и светофор переходит в критический статус.
+* CreateCriticalSteelEventHandler - создаётся событие типа "Критическая ситуация" по содержанию металла.
 * */
 object CreateCriticalSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {

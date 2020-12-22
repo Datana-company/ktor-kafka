@@ -7,6 +7,9 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelSignaler
 import ru.datana.smart.ui.converter.common.models.ModelSignalerSound
 
+/*
+* NormalSignalizationHandler - светофор переходит в обычный статус (лампочка становится серой).
+* */
 object NormalSignalizationHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         context.signaler = ModelSignaler(

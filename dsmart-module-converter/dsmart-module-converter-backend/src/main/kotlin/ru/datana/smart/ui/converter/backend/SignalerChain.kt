@@ -10,6 +10,9 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelStreamStatus
 
+/*
+* SignalerChain - цепочка обработки светофора.
+* */
 class SignalerChain(
     var chainSettings: ConverterChainSettings
 ) {
@@ -26,24 +29,30 @@ class SignalerChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            +SetStreamStatus
+            +SetStreamStatus // устанавливаем статус содержания потока
 
+            // конвейер обработки критического статуса светофора
             konveyor {
                 on { streamStatus == ModelStreamStatus.CRITICAL }
-                +CriticalSignalizationHandler
+                +CriticalSignalizationHandler // включается красная лампочка и сирена
             }
+            // конвейер обработки статуса светофора "Предупреждение"
             konveyor {
                 on { streamStatus == ModelStreamStatus.WARNING }
-                +WarningSignalizationHandler
+                +WarningSignalizationHandler // включается жёлтая лампочка
             }
+            // конвейер обработки информационного статуса светофора
             konveyor {
                 on { streamStatus == ModelStreamStatus.INFO }
-                +InfoSignalizationHandler
+                +InfoSignalizationHandler // включается синяя лампочка
             }
+            // конвейер обработки обычного статуса светофора
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL || streamStatus == ModelStreamStatus.NONE }
-                +NormalSignalizationHandler
+                +NormalSignalizationHandler // включается серая лампочка
             }
+
+            // отправка данных о светофоре на фронтенд по web-socket
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {

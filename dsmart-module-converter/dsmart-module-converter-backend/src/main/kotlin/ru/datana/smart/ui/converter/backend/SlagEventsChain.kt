@@ -10,6 +10,9 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 
+/*
+* SlagEventsChain - цепочка обработки по шлаку.
+* */
 class SlagEventsChain(
     var chainSettings: ConverterChainSettings
 ) {
@@ -26,48 +29,57 @@ class SlagEventsChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            +GetActiveEventHandler
-            +SetStreamStatus
+            +GetActiveEventHandler // из репозитория извлекается активное событие
+            +SetStreamStatus // устанавливается статус содержания потока
 
+            // конвейер обработки события "Критическая ситуация"
             konveyor {
                 on { streamStatus == ModelStreamStatus.CRITICAL }
-                +SetEventExecutionStatusHandler
-                +SetEventInactiveStatusHandler
-                +UpdateEventHandler
-                +CreateCriticalSlagEventHandler
+                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
+                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+                +UpdateEventHandler // обновление текущего события
+                +CreateCriticalSlagEventHandler // создание события "Критическая ситуация"
             }
+            // конвейер обработки события "Предупреждения"
             konveyor {
                 on { streamStatus == ModelStreamStatus.WARNING }
-                +SetEventExecutionStatusHandler
-                +SetEventInactiveStatusHandler
-                +UpdateEventHandler
-                +CreateWarningSlagEventHandler
+                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
+                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+                +UpdateEventHandler // обновление текущего события
+                +CreateWarningSlagEventHandler // создание события "Предупреждение"
             }
+            // конвейер обработки события "Информация"
             konveyor {
                 on { streamStatus == ModelStreamStatus.INFO }
-                +SetEventExecutionStatusHandler
-                +SetEventInactiveStatusHandler
-                +UpdateEventHandler
-                +CreateInfoSlagEventHandler
+                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
+                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+                +UpdateEventHandler // обновление текущего события
+                +CreateInfoSlagEventHandler // создание события "Информация"
             }
+            // конвейер событий, когда шлак в потоке не превышает или равен норме
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL }
-                +SetEventExecutionStatusHandler
-                +SetEventInactiveStatusHandler
-                +UpdateEventHandler
+                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
+                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+                +UpdateEventHandler // обновление текущего события
             }
+            // конвейер событий при завершении плавки
             konveyor {
                 on { meltInfo.id.isEmpty() }
-                +SetEventInactiveStatusHandler
-                +UpdateEventHandler
-                +CreateSuccessMeltSlagEventHandler
+                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+                +UpdateEventHandler // обновление текущего события
+                +CreateSuccessMeltSlagEventHandler // создание события об успешном завершении плавки
             }
+
+            // достаются все события, касающиеся текущей плавки
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
                     events = eventsRepository.getAllByMeltId(currentMeltId)
                 }
             }
+
+            // отправка событий на фронтенд по web-socket
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {

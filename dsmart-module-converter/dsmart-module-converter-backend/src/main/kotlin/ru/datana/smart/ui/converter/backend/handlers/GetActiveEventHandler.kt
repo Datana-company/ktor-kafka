@@ -6,6 +6,10 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelEvent
 
+/*
+* GetActiveEventHandler - выполняется запрос к репозиторию.
+* По текущему идентификатору плавки находим активное событие.
+* */
 object GetActiveEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val meltId: String = context.currentMeltId

@@ -8,8 +8,7 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
-* CreateInfoSlagEventHandler - создаётся событие типа "Информация",
-* и светофор переходит в информационный статус.
+* CreateInfoSlagEventHandler - создаётся событие типа "Информация" по содержанию шлака.
 * */
 object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {

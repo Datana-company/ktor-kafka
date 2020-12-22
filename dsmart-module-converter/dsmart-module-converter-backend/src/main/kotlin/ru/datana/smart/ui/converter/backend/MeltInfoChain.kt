@@ -9,6 +9,9 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.CorStatus
 
+/*
+* MeltInfoChain - цепочка обработки данных о начале плавки.
+* */
 class MeltInfoChain(
     var chainSettings: ConverterChainSettings
 ) {
@@ -25,16 +28,18 @@ class MeltInfoChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            +DevicesFilterHandler
-            +SetCurrentMeltInfoHandler
+            +DevicesFilterHandler // фильтр данных по идетификатору устройства
+            +SetCurrentMeltInfoHandler // задаём текущие данные о плавке
 
+            // отправка данных о плавке на фронтенд по web-socket
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
                     wsManager.sendMeltInfo(this)
                 }
             }
-            +FinishHandler
+
+            +FinishHandler // обработчик завершения цепочки
         }
     }
 }

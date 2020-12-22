@@ -12,33 +12,39 @@ import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 
 /*
-* WsSendMeltFinishHandler - происходит завершение плавки через заданное время (MELT_TIMEOUT),
-* если не приходят данные из видеопотока.
+* WsSendMeltFinishHandler - конец плавки.
+* Если данные из видеопотока не проходили в течении заданного времени (MELT_TIMEOUT),
+* то на фронтенд отправляются данные об окончании плавки и сбрасывается репозиторий.
 * */
 object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val schedule = context.scheduleCleaner.get()
         with(schedule) {
             jobMeltFinish?.let {
-                if (it.isActive) {
+                // если текущая джоба актива, то отменяем её выполнение
+                if (it.isActive)
                     it.cancel()
-                    println("cancel jobMeltFinish")
-                }
             }
+            // отправка пустых данных по истечению времени (MELT_TIMEOUT)
             jobMeltFinish = GlobalScope.launch {
+                // происходит ожидание в течение заданного времени (MELT_TIMEOUT)
                 delay(context.meltTimeout)
+                // сбор контекста перед вызовом цепочек с обработкой событий и светофора
                 context.meltInfo = ModelMeltInfo.NONE
                 context.avgStreamRate = Double.MIN_VALUE
                 context.status = CorStatus.STARTED
 
+                // вызов цепочки обработки событий по шлаку или по металлу
                 if (context.eventMode == ModelEventMode.STEEL) {
                     context.converterFacade.handleSteelEvents(context)
                 } else if (context.eventMode == ModelEventMode.SLAG) {
                     context.converterFacade.handleSlagEvents(context)
                 }
+                // вызов цепочки обработки светофора
                 context.converterFacade.handleSignaler(context)
-
+                // сброс данных в репозитории текущего состояния
                 context.currentState.set(CurrentState.NONE)
+                // отправка данных об окончании плавки
                 context.wsManager.sendFinish(context)
                 println("jobMeltFinish done")
             }

@@ -9,6 +9,9 @@ import ru.datana.smart.ui.converter.common.models.ModelStreamStatus
 import ru.datana.smart.ui.converter.common.utils.isNotEmpty
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
+/*
+* SetStreamStatus - задаём значение статуса потока на основе усреднённого значения содержания в потоке (металла или шлака).
+* */
 object SetStreamStatus: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         with(context) {

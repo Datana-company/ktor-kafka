@@ -10,10 +10,12 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent.ExecutionStatus
 import ru.datana.smart.ui.converter.common.models.ModelStreamStatus
 
 /*
-* SetEventInactiveStatusHandler - записывает текущее событие в историю без изменения статуса.
+* SetEventInactiveStatusHandler - записывает текущее событие в историю.
 * */
 object SetEventInactiveStatusHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
+        // сначала определяется, какая категория события является актульаной,
+        // это зависит от статуса потока
         val actualEventCategory = when (context.streamStatus) {
             ModelStreamStatus.CRITICAL -> Category.CRITICAL
             ModelStreamStatus.WARNING -> Category.WARNING
@@ -22,6 +24,7 @@ object SetEventInactiveStatusHandler: IKonveyorHandler<ConverterBeContext> {
             ModelStreamStatus.NONE -> Category.NONE
         }
         with(context.activeEvent) {
+            // в историю отправляем событие, если оно неактуальной категории, или у него статус выполнения
             if (this == ModelEvent.NONE || (category == actualEventCategory
                     && executionStatus != ExecutionStatus.COMPLETED
                     && executionStatus != ExecutionStatus.FAILED))

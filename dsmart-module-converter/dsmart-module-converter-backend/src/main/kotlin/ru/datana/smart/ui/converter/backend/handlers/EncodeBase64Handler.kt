@@ -11,7 +11,9 @@ import java.io.File
 import java.util.*
 import kotlin.random.Random
 
-
+/*
+* EncodeBase64Handler - происходит кодирование кадра в формат base64.
+* */
 object EncodeBase64Handler : IKonveyorHandler<ConverterBeContext> {
 
 //    val logger = datanaLogger(EncodeBase64Handler::class.java)

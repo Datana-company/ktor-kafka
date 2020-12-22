@@ -9,6 +9,9 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 
+/*
+* ExternalEventsChain - цепочка обработки внешних событий.
+* */
 class ExternalEventsChain(
     var chainSettings: ConverterChainSettings
 ) {
@@ -30,6 +33,7 @@ class ExternalEventsChain(
 
             timeout { 1000 }
 
+            // если текущий идентификатор плавки пустой, то завершаем обработку внешних событий
             handler {
                 onEnv { status == CorStatus.STARTED && currentMeltId.isEmpty() }
                 exec {
@@ -37,17 +41,19 @@ class ExternalEventsChain(
                 }
             }
 
-            +GetActiveEventHandler
-            +SetStreamStatus
+            +GetActiveEventHandler // из репозитория извлекается активное событие
+            +SetStreamStatus // устанавливается статус содержания потока
 
+            // конвейер создания внешнего события
             konveyor {
                 on { status == CorStatus.STARTED && externalEvent.alertRuleId.isNotBlank() }
-                +SetEventExecutionStatusHandler
-                +SetEventInactiveStatusHandler
-                +UpdateEventHandler
-                +CreateExternalEventHandler
+                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
+                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+                +UpdateEventHandler // обновление текущего события
+                +CreateExternalEventHandler // создание внешнего события
             }
 
+            // достаются все события, касающиеся текущей плавки
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
@@ -55,6 +61,7 @@ class ExternalEventsChain(
                 }
             }
 
+            // отправка событий на фронтенд по web-socket
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
@@ -62,7 +69,7 @@ class ExternalEventsChain(
                 }
             }
 
-            +FinishHandler
+            +FinishHandler // обработчик завершения цепочки
         }
     }
 }

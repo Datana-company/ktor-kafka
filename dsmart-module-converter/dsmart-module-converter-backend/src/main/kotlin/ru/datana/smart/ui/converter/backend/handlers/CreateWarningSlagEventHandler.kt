@@ -8,8 +8,7 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
-* CreateWarningSlagEventHandler - создаём событие типа "Предупреждение",
-* и светофор переходит в статус "Предупреждение".
+* CreateWarningSlagEventHandler - создаём событие типа "Предупреждение" по содержанию шлака.
 * */
 object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {

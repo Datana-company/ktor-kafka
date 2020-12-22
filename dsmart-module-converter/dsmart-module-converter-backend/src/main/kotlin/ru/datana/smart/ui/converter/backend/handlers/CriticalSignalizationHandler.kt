@@ -8,6 +8,10 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.models.ModelSignaler
 import ru.datana.smart.ui.converter.common.models.ModelSignalerSound
 
+/*
+* CriticalSignalizationHandler - светофор переходит в Критический статус (лампочка становится красной)
+* и включается сирена.
+* */
 object CriticalSignalizationHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         context.signaler = ModelSignaler(
