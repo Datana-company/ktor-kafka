@@ -42,7 +42,6 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @OptIn(ExperimentalTime::class)
 @Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
 @KtorExperimentalAPI
 fun Application.module(testing: Boolean = false) {
     val logger = datanaLogger(::main::class.java)

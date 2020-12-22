@@ -55,7 +55,8 @@ fun converterBeContextTest(
     meltInfo: ModelMeltInfo? = null,
     angles: ModelAngles? = null,
     frame: ModelFrame? = null,
-    slagRate: ModelSlagRate? = null
+    slagRate: ModelSlagRate? = null,
+    extEvent: ModelEvent? = null
 ) =
     ConverterBeContext(
         timeStart = timeStart ?: Instant.now(),
@@ -63,7 +64,8 @@ fun converterBeContextTest(
         meltInfo = meltInfo ?: defaultMeltInfoTest(),
         angles = angles ?: ModelAngles.NONE,
         frame = frame ?: ModelFrame.NONE,
-        slagRate = slagRate ?: ModelSlagRate.NONE
+        slagRate = slagRate ?: ModelSlagRate.NONE,
+        extEvent = extEvent ?: ModelEvent.NONE
     )
 
 fun createCurrentStateForTest(
