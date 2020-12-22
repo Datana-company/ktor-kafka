@@ -8,22 +8,22 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
-internal class EventsChainNKR1210c4Test {
+internal class EventsChainNKR1210c5Test {
 
     /**
      * NKR-1210
-     * Проверка, что при снижении  среднего значения % металла (шлака) ниже streamRateWarningPoint,
-     * текущая рекомендация становится неактивной.
+     * Проверка, что, если по истечении времени реакции ReactionTime угол наклона уменьшился больше, чем на 5 градусов,
+     * и снизился % металла, то рекомендация помечается как выполненная, а лампочка гаснет.
      */
     @Test
-    fun `event inactive after steel decrease`(){
+    fun `event is done after angle and steelRate decrease`(){
         runBlocking {
             val timeStart = Instant.now()
             val meltTimeout = 10000L
 
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = timeStart.minusMillis(2000L),
+                timeStart = timeStart.minusMillis(3000L),
                 metalRate = 0.12,
                 warningPoint = 0.1,
                 angleStart = 66.0,
@@ -38,7 +38,7 @@ internal class EventsChainNKR1210c4Test {
                 streamRateCriticalPoint = 0.15,
                 reactionTime = 3000L,
                 currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
+                    lastAngle = 60.0,
                     avgSteelRate = 0.12
                 ),
                 converterRepository = repository
@@ -62,7 +62,7 @@ internal class EventsChainNKR1210c4Test {
 
             assertEquals(ModelEvent.Category.WARNING, event.category)
             assertFalse { event.isActive }
-            assertEquals(ModelEvent.ExecutionStatus.NONE, event.executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.COMPLETED, event.executionStatus)
             assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
             assertEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
         }

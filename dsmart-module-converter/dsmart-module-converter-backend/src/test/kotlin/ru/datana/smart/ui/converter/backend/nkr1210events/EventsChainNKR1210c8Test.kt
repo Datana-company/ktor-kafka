@@ -7,16 +7,17 @@ import java.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-internal class EventsChainNKR1210c4Test {
+internal class EventsChainNKR1210c8Test {
 
     /**
      * NKR-1210
-     * Проверка, что при снижении  среднего значения % металла (шлака) ниже streamRateWarningPoint,
-     * текущая рекомендация становится неактивной.
+     * Проверка, что рекомендация "Критическая ситуация" выдается при привышении streamRateCriticalPoint
+     * вне зависимости от параметра времени реакции ReactionTime
      */
     @Test
-    fun `event inactive after steel decrease`(){
+    fun `critical event raised independent of reactionTime`(){
         runBlocking {
             val timeStart = Instant.now()
             val meltTimeout = 10000L
@@ -48,7 +49,7 @@ internal class EventsChainNKR1210c4Test {
                 timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
-                    steelRate = 0.06
+                    steelRate = 0.19
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
@@ -58,13 +59,18 @@ internal class EventsChainNKR1210c4Test {
             )
 
             converterFacade.handleMath(context)
-            val event = context.events.first()
+            val newEvent = context.events.first()
+            val oldEvent = context.events.last()
 
-            assertEquals(ModelEvent.Category.WARNING, event.category)
-            assertFalse { event.isActive }
-            assertEquals(ModelEvent.ExecutionStatus.NONE, event.executionStatus)
-            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
+            assertEquals(ModelEvent.Category.WARNING, oldEvent.category)
+            assertFalse { oldEvent.isActive }
+            assertEquals(ModelEvent.ExecutionStatus.NONE, oldEvent.executionStatus)
+            assertEquals(ModelEvent.Category.CRITICAL, newEvent.category)
+            assertTrue { newEvent.isActive }
+            assertEquals(ModelEvent.ExecutionStatus.NONE, newEvent.executionStatus)
+
+            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context.signaler.level)
+            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
         }
     }
 }

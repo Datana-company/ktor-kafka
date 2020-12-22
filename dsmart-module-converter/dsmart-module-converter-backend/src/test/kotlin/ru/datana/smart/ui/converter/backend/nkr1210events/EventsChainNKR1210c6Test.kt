@@ -6,17 +6,18 @@ import ru.datana.smart.ui.converter.common.models.*
 import java.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-internal class EventsChainNKR1210c4Test {
+internal class EventsChainNKR1210c6Test {
 
     /**
      * NKR-1210
-     * Проверка, что при снижении  среднего значения % металла (шлака) ниже streamRateWarningPoint,
-     * текущая рекомендация становится неактивной.
+     * Проверка, что статус рекомендации не меняется, если угол наклона уменьшился больше, чем на 5 градусов,
+     * но время реакции еще не истекло
+     * FAIL: рекомендация становится неактивной
      */
     @Test
-    fun `event inactive after steel decrease`(){
+    fun `event status is still the same after angle decrease but reaction time is no wasted`(){
         runBlocking {
             val timeStart = Instant.now()
             val meltTimeout = 10000L
@@ -38,7 +39,7 @@ internal class EventsChainNKR1210c4Test {
                 streamRateCriticalPoint = 0.15,
                 reactionTime = 3000L,
                 currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
+                    lastAngle = 60.0,
                     avgSteelRate = 0.12
                 ),
                 converterRepository = repository
@@ -61,9 +62,9 @@ internal class EventsChainNKR1210c4Test {
             val event = context.events.first()
 
             assertEquals(ModelEvent.Category.WARNING, event.category)
-            assertFalse { event.isActive }
+            assertTrue { event.isActive }
             assertEquals(ModelEvent.ExecutionStatus.NONE, event.executionStatus)
-            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
+            assertEquals(SignalerModel.SignalerLevelModel.WARNING, context.signaler.level)
             assertEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
         }
     }
