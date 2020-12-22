@@ -1,6 +1,5 @@
 package ru.datana.smart.ui.converter.backend
 
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import ru.datana.smart.ui.converter.common.models.*
 import java.time.Instant
@@ -8,7 +7,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class SignalerNKR1130Test {
-
+    /** NKR-1130
+     * Сохраняется состояние лампочки из прерванного кейса.
+     * Если мы прерываем плавку и была критичная рекомендация в этот момент, а потом мы запускаем новую плавку где
+     * рекомендация не критична допустим ИНФО, лампочка не меняет цвет назад на серый а остаётся красной из старой плавки.
+     * Как мы видим, из теста , эта ошибка уже была исправлена.
+     */
     @Test
     fun signalerTestCase1NKR1130() {
         runBlocking {
@@ -18,8 +22,6 @@ internal class SignalerNKR1130Test {
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(4000L),
                 metalRate = 0.11,
-                criticalPoint = 0.15,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -67,9 +69,8 @@ internal class SignalerNKR1130Test {
             converterFacade1.handleMath(context3)
 
             assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context1.signaler.level)
-            //Этот тест "assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context3.signaler.level)"
-            //должен отработать в случае когда баг будет исправлен
-            //assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context3.signaler.level)
+            println("context3.signaler.level123456" + context3.signaler.level )
+            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context3.signaler.level)
         }
     }
 }
