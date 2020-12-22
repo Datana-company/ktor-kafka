@@ -35,7 +35,6 @@ data class ModelEvent(
     enum class ExecutionStatus {
         COMPLETED,
         FAILED,
-        STATELESS,
         NONE
     }
 

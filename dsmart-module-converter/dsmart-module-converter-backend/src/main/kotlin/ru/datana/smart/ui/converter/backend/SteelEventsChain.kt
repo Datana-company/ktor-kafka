@@ -48,14 +48,14 @@ class SteelEventsChain(
                 +UpdateEventHandler // обновление текущего события
                 +CreateWarningSteelEventHandler // создание события "Предупреждение"
             }
-            // конвейер обработки события "Информация"
-            konveyor {
-                on { streamStatus == ModelStreamStatus.INFO }
-                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
-                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
-                +UpdateEventHandler // обновление текущего события
-                +CreateInfoSteelEventHandler // создание события "Информация"
-            }
+//            // конвейер обработки события "Информация"
+//            konveyor {
+//                on { streamStatus == ModelStreamStatus.INFO }
+//                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
+//                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+//                +UpdateEventHandler // обновление текущего события
+//                +CreateInfoSteelEventHandler // создание события "Информация"
+//            }
             // конвейер событий, когда металл в потоке не превышает или равен норме
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL }

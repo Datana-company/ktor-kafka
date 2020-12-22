@@ -30,8 +30,7 @@ object CreateExternalEventHandler : IKonveyorHandler<ConverterBeContext> {
             timestamp = context.externalEvent.timestamp,
             level = context.externalEvent.level,
             loggerName = context.externalEvent.loggerName,
-            category = ModelEvent.Category.INFO,
-            executionStatus = ModelEvent.ExecutionStatus.STATELESS
+            category = ModelEvent.Category.INFO
         )
         context.eventsRepository.create(context.activeEvent)
     }

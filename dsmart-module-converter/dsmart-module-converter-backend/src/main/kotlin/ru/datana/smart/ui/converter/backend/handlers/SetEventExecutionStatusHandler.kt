@@ -33,7 +33,7 @@ object SetEventExecutionStatusHandler: IKonveyorHandler<ConverterBeContext> {
             executionStatus = when {
                 isReactionTimeUp && isUserReacted -> ExecutionStatus.COMPLETED
                 isReactionTimeUp && !isUserReacted -> ExecutionStatus.FAILED
-                else -> ExecutionStatus.STATELESS
+                else -> ExecutionStatus.NONE
             }
         }
     }

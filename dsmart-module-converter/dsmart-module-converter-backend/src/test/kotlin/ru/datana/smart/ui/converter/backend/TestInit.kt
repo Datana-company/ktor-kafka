@@ -113,7 +113,7 @@ suspend fun createRepositoryWithEventForTest(
             timeFinish = Instant.now().minusMillis(1000L),
             angleStart = angleStart ?: 0.60,
             category = category,
-            executionStatus = executionStatus ?: ModelEvent.ExecutionStatus.STATELESS
+            executionStatus = executionStatus ?: ModelEvent.ExecutionStatus.NONE
         )
     )
     return repositoryInMemory

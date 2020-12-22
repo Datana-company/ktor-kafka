@@ -30,8 +30,7 @@ object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
             textMessage = """
                           Достигнут предел потерь шлака в потоке – ${avgSlagRate.toPercent()}%.
                           """.trimIndent(),
-            category = ModelEvent.Category.INFO,
-            executionStatus = ModelEvent.ExecutionStatus.STATELESS
+            category = ModelEvent.Category.INFO
         )
         context.eventsRepository.create(context.activeEvent)
     }

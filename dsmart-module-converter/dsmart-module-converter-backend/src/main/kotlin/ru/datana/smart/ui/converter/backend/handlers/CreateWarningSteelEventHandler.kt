@@ -30,8 +30,7 @@ object CreateWarningSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
             textMessage = """
                       В потоке детектирован металл – ${avgSteelRate.toPercent()}% сверх допустимой нормы ${context.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                       """.trimIndent(),
-            category = ModelEvent.Category.WARNING,
-            executionStatus = ModelEvent.ExecutionStatus.STATELESS
+            category = ModelEvent.Category.WARNING
         )
         context.eventsRepository.create(context.activeEvent)
     }

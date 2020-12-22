@@ -48,14 +48,14 @@ class SlagEventsChain(
                 +UpdateEventHandler // обновление текущего события
                 +CreateWarningSlagEventHandler // создание события "Предупреждение"
             }
-            // конвейер обработки события "Информация"
-            konveyor {
-                on { streamStatus == ModelStreamStatus.INFO }
-                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
-                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
-                +UpdateEventHandler // обновление текущего события
-                +CreateInfoSlagEventHandler // создание события "Информация"
-            }
+//            // конвейер обработки события "Информация"
+//            konveyor {
+//                on { streamStatus == ModelStreamStatus.INFO }
+//                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
+//                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+//                +UpdateEventHandler // обновление текущего события
+//                +CreateInfoSlagEventHandler // создание события "Информация"
+//            }
             // конвейер событий, когда шлак в потоке не превышает или равен норме
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL }

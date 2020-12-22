@@ -36,8 +36,7 @@ object CreateSuccessMeltSlagEventHandler : IKonveyorHandler<ConverterBeContext> 
             textMessage = """
                       Допустимая норма потерь шлака ${context.streamRateWarningPoint.toPercent()}% не была превышена.
                       """.trimIndent(),
-            category = ModelEvent.Category.INFO,
-            executionStatus = ModelEvent.ExecutionStatus.STATELESS
+            category = ModelEvent.Category.INFO
         )
         context.eventsRepository.create(context.activeEvent)
     }

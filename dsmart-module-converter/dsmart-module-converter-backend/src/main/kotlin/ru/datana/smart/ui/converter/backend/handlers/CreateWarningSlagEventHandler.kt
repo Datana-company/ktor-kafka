@@ -30,8 +30,7 @@ object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
             textMessage = """
                       В потоке детектирован шлак – ${avgSlagRate.toPercent()}% сверх допустимой нормы ${context.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                       """.trimIndent(),
-            category = ModelEvent.Category.WARNING,
-            executionStatus = ModelEvent.ExecutionStatus.STATELESS
+            category = ModelEvent.Category.WARNING
         )
         context.eventsRepository.create(context.activeEvent)
     }

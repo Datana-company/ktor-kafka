@@ -41,11 +41,11 @@ class SignalerChain(
                 on { streamStatus == ModelStreamStatus.WARNING }
                 +WarningSignalizationHandler // включается жёлтая лампочка
             }
-            // конвейер обработки информационного статуса светофора
-            konveyor {
-                on { streamStatus == ModelStreamStatus.INFO }
-                +InfoSignalizationHandler // включается синяя лампочка
-            }
+//            // конвейер обработки информационного статуса светофора
+//            konveyor {
+//                on { streamStatus == ModelStreamStatus.INFO }
+//                +InfoSignalizationHandler // включается синяя лампочка
+//            }
             // конвейер обработки обычного статуса светофора
             konveyor {
                 on { streamStatus == ModelStreamStatus.NORMAL || streamStatus == ModelStreamStatus.NONE }
