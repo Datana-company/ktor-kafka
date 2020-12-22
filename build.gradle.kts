@@ -71,3 +71,11 @@ publishing {
         }
     }
 }
+
+tasks {
+    create("deploy") {
+        group = "build"
+        dependsOn(build)
+        dependsOn(publish)
+    }
+}
