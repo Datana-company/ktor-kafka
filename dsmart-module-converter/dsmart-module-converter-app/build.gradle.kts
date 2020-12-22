@@ -4,6 +4,7 @@ val projectMaintainer: String by project
 val kafkaVersion: String by project
 val dsmartLoggingVersion: String by project
 val serializationVersion: String by project
+val converterTransportVersion: String by project
 
 plugins {
     application
@@ -57,10 +58,10 @@ dependencies {
     implementation(project(":dsmart-module-converter:dsmart-module-converter-backend"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-repo-inmemory"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-ws-models"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-mlui"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-viml"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-angle"))
+//    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-mlui"))
+//    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-viml"))
+//    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
+//    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-angle"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-extevent"))
     implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
@@ -70,7 +71,13 @@ dependencies {
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
+
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
+    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-angle:$converterTransportVersion")
+    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-meta:$converterTransportVersion")
+    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-mlui:$converterTransportVersion")
+    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-viml:$converterTransportVersion")
+
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
 
     implementation(kotlin("test-junit"))

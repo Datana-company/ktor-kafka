@@ -10,11 +10,11 @@ import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.ProducerRecord
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
+import ru.datana.smart.converter.transport.mlui.models.ConverterMeltInfo
+import ru.datana.smart.converter.transport.mlui.models.ConverterTransportAngle
+import ru.datana.smart.converter.transport.mlui.models.ConverterTransportMlUi
 import ru.datana.smart.ui.converter.angle.app.mappings.toInnerModel
 import ru.datana.smart.ui.converter.angle.app.models.AngleSchedule
-import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
-import ru.datana.smart.ui.mlui.models.ConverterMeltInfo
-import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
 import java.io.File
 import java.util.*
 import kotlin.math.abs

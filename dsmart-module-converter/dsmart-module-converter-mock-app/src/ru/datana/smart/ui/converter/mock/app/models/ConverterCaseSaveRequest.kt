@@ -2,7 +2,6 @@ package ru.datana.smart.ui.converter.mock.app.models
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.ktor.http.content.*
-import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 
 data class ConverterCaseSaveRequest(
 

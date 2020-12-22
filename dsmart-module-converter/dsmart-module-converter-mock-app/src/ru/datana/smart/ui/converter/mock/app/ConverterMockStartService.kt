@@ -6,8 +6,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
+import ru.datana.smart.converter.transport.meta.models.*
 import ru.datana.smart.logger.datanaLogger
-import ru.datana.smart.ui.meta.models.*
 import java.io.File
 import java.time.Instant
 

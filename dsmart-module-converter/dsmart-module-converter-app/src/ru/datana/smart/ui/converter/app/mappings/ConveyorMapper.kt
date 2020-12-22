@@ -1,13 +1,13 @@
 package ru.datana.smart.ui.converter.app.mappings
 
+import ru.datana.smart.converter.transport.meta.models.ConverterMeltInfo
+import ru.datana.smart.converter.transport.mlui.models.ConverterTransportAngle
+import ru.datana.smart.converter.transport.mlui.models.ConverterTransportMlUi
+import ru.datana.smart.converter.transport.viml.models.ConverterTransportViMl
 import ru.datana.smart.ui.converter.app.common.EventMode
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.meta.models.ConverterMeltInfo
-import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
-import ru.datana.smart.ui.viml.models.ConverterTransportViMl
-import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
 import ru.datana.smart.ui.extevent.models.ConverterTransportExtEvent
 import java.time.Instant
 

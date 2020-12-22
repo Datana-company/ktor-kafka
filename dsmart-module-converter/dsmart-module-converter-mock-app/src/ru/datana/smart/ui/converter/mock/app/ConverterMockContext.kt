@@ -1,10 +1,10 @@
 package ru.datana.smart.ui.converter.mock.app
 
+import ru.datana.smart.converter.transport.meta.models.ConverterMeltInfo
 import ru.datana.smart.ui.converter.mock.app.models.ConverterCaseListModel
 import ru.datana.smart.ui.converter.mock.app.models.ConverterCaseSaveRequest
 import ru.datana.smart.ui.converter.mock.app.models.ConverterCaseSaveResponse
 import ru.datana.smart.ui.converter.mock.app.models.UploadDataModel
-import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import java.io.File
 
 data class ConverterMockContext(
