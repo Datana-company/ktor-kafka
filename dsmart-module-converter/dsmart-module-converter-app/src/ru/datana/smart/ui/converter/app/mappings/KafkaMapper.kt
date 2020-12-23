@@ -10,7 +10,7 @@ import ru.datana.smart.ui.meta.models.ConverterMeltInfo
 import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
 import ru.datana.smart.ui.viml.models.ConverterTransportViMl
 import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
-import ru.datana.smart.ui.extevent.models.ConverterTransportExtEvent
+import ru.datana.smart.ui.extevent.models.ConverterTransportExternalEvent
 
 fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     topic = topic(),
@@ -59,9 +59,9 @@ fun toConverterTransportAngle(record: InnerRecord<String, String>): ConverterTra
     }
 }
 
-fun toConverterTransportExtEvents(record: InnerRecord<String, String>): ConverterTransportExtEvent {
+fun toConverterTransportExternalEvents(record: InnerRecord<String, String>): ConverterTransportExternalEvent {
     try {
-        return jacksonSerializer.readValue(record.value, ConverterTransportExtEvent::class.java)!!
+        return jacksonSerializer.readValue(record.value, ConverterTransportExternalEvent::class.java)!!
     } catch (e: Exception) {
         throw ConverterDeserializationException(e.message, e.cause)
     }

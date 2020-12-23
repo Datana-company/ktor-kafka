@@ -197,59 +197,79 @@ fun Application.module(testing: Boolean = false) {
                     .map { it.toInnerModel() }
                     .forEach { record ->
                         when (record.topic) {
+                            // получаем данные из топика с данными из матмодели
                             topicMath -> {
+                                // десериализация данных из кафки
                                 val kafkaModel = toConverterTransportMlUi(record)
+                                // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
+                                // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
                                 context.setSlagRate(kafkaModel)
                                 context.setFrame(kafkaModel)
                                 context.setMeltInfo(kafkaModel)
                                 println("topic = math, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                // вызов цепочки обработки данных из матмодели
                                 converterFacade.handleMath(context)
                             }
+//                            // получаем данные из топика с данными из видеоадаптера
 //                            topicVideo -> {
+//                                // десериализация данных из кафки
 //                                val kafkaModel = toConverterTransportViMl(record)
+//                                // инициализация контекста
 //                                val context = ConverterBeContext(
 //                                    timeStart = Instant.now()
 //                                )
+//                                // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
 //                                context.setFrame(kafkaModel)
 //                                context.setMeltInfo(kafkaModel)
 //                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+//                                // вызов цепочки обработки данных из видеоадаптера
 //                                converterFacade.handleFrame(context)
 //                            }
+                            // получаем данные из топика мета
                             topicMeta -> {
+                                // десериализация данных из кафки
                                 val kafkaModel = toConverterMeltInfo(record)
+                                // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
+                                // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
                                 context.setMeltInfo(kafkaModel)
                                 println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                // вызов цепочки обработки меты
                                 converterFacade.handleMeltInfo(context)
                             }
+                            // получаем данные из топика углов
                             topicAngles -> {
+                                // десериализация данных из кафки
                                 val kafkaModel = toConverterTransportAngle(record)
+                                // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
+                                // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
                                 context.setAngles(kafkaModel)
                                 context.setMeltInfo(kafkaModel)
                                 println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                // вызов цепочки обработки углов
                                 converterFacade.handleAngles(context)
                             }
-                            // 1) Получаем данные из Кафки
+                            // получаем данные из топика с внешними событиями
                             topicEvents -> {
-                                // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
-                                val kafkaModel = toConverterTransportExtEvents(record)
-                                // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
+                                 // десериализация данных из кафки
+                                val kafkaModel = toConverterTransportExternalEvents(record)
+                                 // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
-                                // 4) Запихиваем эту модель в контекст
-                                context.setExtEvent(kafkaModel)
-                                // 5) Вызываем цепочку для обработки поступившего сообщения
+                                 // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
+                                context.setExternalEvent(kafkaModel)
                                 println("topic = events, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-                                converterFacade.handleExtEvents(context)
+                                // вызов цепочки обработки внешних событий
+                                converterFacade.handleExternalEvents(context)
                             }
                     }
                 }

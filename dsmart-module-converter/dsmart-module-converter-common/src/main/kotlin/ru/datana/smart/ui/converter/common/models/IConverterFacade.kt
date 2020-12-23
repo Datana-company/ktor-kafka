@@ -16,7 +16,9 @@ interface IConverterFacade {
 
     suspend fun handleSlagEvents(context: ConverterBeContext)
 
-    suspend fun handleExtEvents(context: ConverterBeContext)
+    suspend fun handleExternalEvents(context: ConverterBeContext)
+
+    suspend fun handleSignaler(context: ConverterBeContext)
 
     companion object {
         val NONE = object: IConverterFacade {
@@ -44,7 +46,10 @@ interface IConverterFacade {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun handleExtEvents(context: ConverterBeContext) {
+            override suspend fun handleExternalEvents(context: ConverterBeContext) {
+                TODO("Not yet implemented")
+            }
+            override suspend fun handleSignaler(context: ConverterBeContext) {
                 TODO("Not yet implemented")
             }
         }
