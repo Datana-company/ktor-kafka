@@ -9,9 +9,10 @@ import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
-import ru.datana.smart.ui.converter.common.utils.isNotEmpty
-import ru.datana.smart.ui.converter.common.utils.toPercent
 
+/*
+* SlagEventsChain - цепочка обработки по шлаку.
+* */
 class SlagEventsChain(
     var chainSettings: ConverterChainSettings
 ) {
@@ -28,80 +29,61 @@ class SlagEventsChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
+            +GetActiveEventHandler // из репозитория извлекается активное событие
+            +SetStreamStatus // устанавливается статус содержания потока
+
+            // конвейер обработки события "Критическая ситуация"
             konveyor {
-                on {
-                    avgSlagRate.isNotEmpty() && streamRateCriticalPoint.isNotEmpty()
-                        && avgSlagRate.toPercent() > streamRateCriticalPoint.toPercent()
-                }
-                +AddWarningEventToHistoryHandler
-                +AddStatelessWarningEventToHistoryHandler
-//                +AddStatelessInfoEventToHistoryHandler
-                +AddCriticalEventToHistoryHandler
-                +CreateCriticalSlagEventHandler
+                on { streamStatus == ModelStreamStatus.CRITICAL }
+                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
+                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+                +UpdateEventHandler // обновление текущего события
+                +CreateCriticalSlagEventHandler // создание события "Критическая ситуация"
             }
+            // конвейер обработки события "Предупреждения"
             konveyor {
-                on {
-                    avgSlagRate.isNotEmpty() && streamRateCriticalPoint.isNotEmpty()
-                        && avgSlagRate.toPercent() > streamRateWarningPoint.toPercent()
-                        && avgSlagRate.toPercent() <= streamRateCriticalPoint.toPercent()
-                }
-                +AddCriticalEventToHistoryHandler
-                +AddStatelessCriticalEventToHistoryHandler
-//                +AddStatelessInfoEventToHistoryHandler
-                +AddWarningEventToHistoryHandler
-                +CreateWarningSlagEventHandler
+                on { streamStatus == ModelStreamStatus.WARNING }
+                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
+                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+                +UpdateEventHandler // обновление текущего события
+                +CreateWarningSlagEventHandler // создание события "Предупреждение"
             }
+//            // конвейер обработки события "Информация"
 //            konveyor {
-//                on {
-//                    avgSlagRate.isNotEmpty() && streamRateWarningPoint.isNotEmpty()
-//                        && avgSlagRate.toPercent() == streamRateWarningPoint.toPercent()
-//                }
-//                +AddCriticalEventToHistoryHandler
-//                +AddStatelessCriticalEventToHistoryHandler
-//                +AddWarningEventToHistoryHandler
-//                +AddStatelessWarningEventToHistoryHandler
-//                +AddInfoEventToHistoryHandler
-//                +CreateInfoSlagEventHandler
+//                on { streamStatus == ModelStreamStatus.INFO }
+//                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
+//                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+//                +UpdateEventHandler // обновление текущего события
+//                +CreateInfoSlagEventHandler // создание события "Информация"
 //            }
+            // конвейер событий, когда шлак в потоке не превышает или равен норме
             konveyor {
-                on {
-                    avgSlagRate.isNotEmpty() && streamRateWarningPoint.isNotEmpty()
-                        && avgSlagRate.toPercent() <= streamRateWarningPoint.toPercent()
-                }
-                +AddCriticalEventToHistoryHandler
-                +AddStatelessCriticalEventToHistoryHandler
-                +AddWarningEventToHistoryHandler
-                +AddStatelessWarningEventToHistoryHandler
-//                +AddStatelessInfoEventToHistoryHandler
+                on { streamStatus == ModelStreamStatus.NORMAL }
+                +SetEventExecutionStatusHandler // задаётся статус выполнения у текущего события
+                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+                +UpdateEventHandler // обновление текущего события
             }
+            // конвейер событий при завершении плавки
             konveyor {
-                on { currentMeltId.isEmpty() }
-                +AddStatelessCriticalEventToHistoryHandler
-                +AddStatelessWarningEventToHistoryHandler
-//                +AddStatelessInfoEventToHistoryHandler
-                +CreateSuccessMeltSlagEventHandler
+                on { meltInfo.id.isEmpty() }
+                +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
+                +UpdateEventHandler // обновление текущего события
+                +CreateSuccessMeltSlagEventHandler // создание события об успешном завершении плавки
             }
-            konveyor {
-                on { extEvents.alertRuleId != null }
-                +CreateExtEventHandler
-            }
+
+            // достаются все события, касающиеся текущей плавки
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
                     events = eventsRepository.getAllByMeltId(currentMeltId)
                 }
             }
+
+            // отправка событий на фронтенд по web-socket
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
                     wsManager.sendEvents(this)
-                }
-            }
-//            Цепочка обработки светофора от событий
-            handler {
-                onEnv { status == CorStatus.STARTED && signaler.level != SignalerModel.SignalerLevelModel.NONE }
-                exec {
-                    wsSignalerManager.sendSignaler(this)
                 }
             }
         }
