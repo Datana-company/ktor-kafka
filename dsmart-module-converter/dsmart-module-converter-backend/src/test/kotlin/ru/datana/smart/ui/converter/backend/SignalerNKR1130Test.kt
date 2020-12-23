@@ -8,10 +8,10 @@ import kotlin.test.assertEquals
 
 internal class SignalerNKR1130Test {
     /** NKR-1130
-     * Сохраняется состояние лампочки из прерванного кейса.
-     * Если мы прерываем плавку и была критичная рекомендация в этот момент, а потом мы запускаем новую плавку где
-     * рекомендация не критична допустим ИНФО, лампочка не меняет цвет назад на серый а остаётся красной из старой плавки.
-     * Как мы видим, из теста , эта ошибка уже была исправлена.
+     * ����������� ��������� �������� �� ����������� �����.
+     * ���� �� ��������� ������ � ���� ��������� ������������ � ���� ������, � ����� �� ��������� ����� ������ ���
+     * ������������ �� �������� �������� ����, �������� �� ������ ���� ����� �� ����� � ������� ������� �� ������ ������.
+     * ��� �� �����, �� ����� , ��� ������ ��� ���� ����������.
      */
     @Test
     fun signalerTestCase1NKR1130() {
@@ -21,7 +21,6 @@ internal class SignalerNKR1130Test {
             val repository1 = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(4000L),
-                metalRate = 0.11,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -59,7 +58,7 @@ internal class SignalerNKR1130Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     lastSteelRate = 0.16,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository1
             )
@@ -68,9 +67,8 @@ internal class SignalerNKR1130Test {
             converterFacade1.handleMeltInfo(context2)
             converterFacade1.handleMath(context3)
 
-            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context1.signaler.level)
-//            println("context3.signaler.level123456" + context3.signaler.level )
-//            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context3.signaler.level)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context1.signaler.level)
+            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context3.signaler.level)
         }
     }
 }

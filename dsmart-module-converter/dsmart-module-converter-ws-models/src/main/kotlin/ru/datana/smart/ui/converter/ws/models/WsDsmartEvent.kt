@@ -10,10 +10,10 @@ data class WsDsmartEvent (
     val textMessage: String? = null,
     val category: WsDsmartEvent.Category? = null,
     val isActive: Boolean? = false,
-    val executionStatus: WsDsmartEvent.ExecutionStatus = WsDsmartEvent.ExecutionStatus.NONE
+    val executionStatus: WsDsmartEvent.ExecutionStatus? = null
 ) {
     @Serializable
-    enum class Category(val value: String){
+    enum class Category(val value: String) {
         CRITICAL("CRITICAL"),
         WARNING("WARNING"),
         INFO("INFO"),
@@ -21,9 +21,8 @@ data class WsDsmartEvent (
     }
 
     @Serializable
-    enum class ExecutionStatus(val value: String){
+    enum class ExecutionStatus(val value: String) {
         COMPLETED("COMPLETED"),
-        FAILED("FAILED"),
-        NONE("NONE")
+        FAILED("FAILED")
     }
 }

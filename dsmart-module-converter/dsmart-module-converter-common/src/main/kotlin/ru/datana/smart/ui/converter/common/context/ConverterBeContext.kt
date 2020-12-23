@@ -13,10 +13,11 @@ data class ConverterBeContext(
     var frame: ModelFrame = ModelFrame.NONE,
     var slagRate: ModelSlagRate = ModelSlagRate.NONE,
     var events: MutableList<ModelEvent> = mutableListOf(),
-    // внутренняя модель (dsmart-module-converter-common.models)
-    var extEvents: ModelExtEvents = ModelExtEvents.NONE,
+    var activeEvent: ModelEvent = ModelEvent.NONE,
+    var externalEvent: ModelEvent = ModelEvent.NONE,
     var lastTimeAngles: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
     var lastTimeFrame: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
+    var streamStatus: ModelStreamStatus = ModelStreamStatus.NONE,
     var status: CorStatus = CorStatus.STARTED,
     var errors: MutableList<CorError> = mutableListOf(),
     var timeStart: Instant = Instant.MIN,
@@ -34,7 +35,7 @@ data class ConverterBeContext(
     var eventsRepository: IEventRepository = IEventRepository.NONE,
     var currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE),
     var scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE),
-    var signaler: SignalerModel = SignalerModel.NONE,
+    var signaler: ModelSignaler = ModelSignaler.NONE,
     var converterId: String = "",
     var framesBasePath: String = "",
     var converterFacade: IConverterFacade = IConverterFacade.NONE
@@ -43,10 +44,11 @@ data class ConverterBeContext(
         get() = currentState.get().currentMeltInfo
     val currentMeltId: String
         get() = currentState.get().currentMeltInfo.id
-    val avgSteelRate: Double
-        get() = currentState.get().avgSlagRate.steelRate
-    val avgSlagRate: Double
-        get() = currentState.get().avgSlagRate.slagRate
+    var avgStreamRate: Double
+        get() = currentState.get().avgStreamRate
+        set(value) {
+            currentState.get().avgStreamRate = value
+        }
     val currentAngle: Double
         get() = currentState.get().lastAngles.angle
 }

@@ -7,7 +7,7 @@ interface IEventRepository {
     suspend fun create(event: ModelEvent): ModelEvent?
     suspend fun update(event: ModelEvent): ModelEvent?
     fun getAllByMeltId(meltId: String): MutableList<ModelEvent>
-    fun getAllActiveByMeltId(meltId: String): MutableList<ModelEvent>
+    fun getActiveByMeltId(meltId: String): ModelEvent?
     fun getActiveByMeltIdAndEventType(meltId: String, eventType: ModelEvent.EventType): ModelEvent?
 
     companion object {
@@ -28,7 +28,7 @@ interface IEventRepository {
                 TODO("Not yet implemented")
             }
 
-            override fun getAllActiveByMeltId(meltId: String): MutableList<ModelEvent> {
+            override fun getActiveByMeltId(meltId: String): ModelEvent? {
                 TODO("Not yet implemented")
             }
 
