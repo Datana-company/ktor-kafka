@@ -5,28 +5,28 @@ import ru.datana.smart.ui.converter.backend.*
 import ru.datana.smart.ui.converter.common.models.*
 import java.time.Instant
 import kotlin.test.*
-import kotlin.test.assertEquals
 
-internal class EventsChainNKR1210c8Test {
+internal class EventsChainNKR1210c13Test {
 
     /**
      * NKR-1210
-     * Проверка, что рекомендация "Критическая ситуация" выдается при привышении streamRateCriticalPoint
-     * вне зависимости от параметра времени реакции ReactionTime
+     * Проверка, что повляется новая критическая рекомендация, если % металла не упал ниже streamRateCriticalPoint
+     * и истекло время реакции reactionTime
      */
     @Test
-    fun `critical event raised independent of reactionTime`(){
+    fun `new critical event after reaction time`(){
         runBlocking {
             val timeStart = Instant.now()
             val meltTimeout = 10000L
 
             val repository = createRepositoryWithEventForTest(
-                eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
-                timeStart = timeStart.minusMillis(2000L),
-                metalRate = 0.12,
+                eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
+                timeStart = timeStart.minusMillis(3000L),
+                metalRate = 0.16,
+                criticalPoint = 0.15,
                 warningPoint = 0.1,
                 angleStart = 66.0,
-                category = ModelEvent.Category.WARNING
+                category = ModelEvent.Category.CRITICAL
             )
 
             val converterFacade = converterFacadeTest(
@@ -38,7 +38,7 @@ internal class EventsChainNKR1210c8Test {
                 reactionTime = 3000L,
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
-                    avgSteelRate = 0.12
+                    avgSteelRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -47,22 +47,24 @@ internal class EventsChainNKR1210c8Test {
                 timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
-                    steelRate = 0.19
+                    steelRate = 0.18
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
                 ),
-                signalerLevel = SignalerModel.SignalerLevelModel.WARNING,
-                signalerSoundType = SignalerSoundModel.SignalerSoundTypeModel.NONE
+                signalerLevel = SignalerModel.SignalerLevelModel.CRITICAL,
+                signalerSoundType = SignalerSoundModel.SignalerSoundTypeModel.SOUND_1
             )
 
             converterFacade.handleMath(context)
+            assertEquals(2, context.events.size)
+
             val newEvent = context.events.first()
             val oldEvent = context.events.last()
 
-            assertEquals(ModelEvent.Category.WARNING, oldEvent.category)
+            assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertFalse { oldEvent.isActive }
-            assertEquals(ModelEvent.ExecutionStatus.NONE, oldEvent.executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.FAILED, oldEvent.executionStatus)
             assertEquals(ModelEvent.Category.CRITICAL, newEvent.category)
             assertTrue { newEvent.isActive }
             assertEquals(ModelEvent.ExecutionStatus.NONE, newEvent.executionStatus)

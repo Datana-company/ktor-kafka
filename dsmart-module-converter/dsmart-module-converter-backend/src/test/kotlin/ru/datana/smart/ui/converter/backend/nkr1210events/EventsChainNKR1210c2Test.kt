@@ -6,6 +6,7 @@ import ru.datana.smart.ui.converter.backend.*
 import ru.datana.smart.ui.converter.common.models.*
 import java.time.Instant
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 internal class EventsChainNKR1210c2Test {
@@ -20,15 +21,6 @@ internal class EventsChainNKR1210c2Test {
         runBlocking {
             val timeStart = Instant.now()
 
-            val repository = createRepositoryWithEventForTest(
-                eventType = ModelEvent.EventType.STREAM_RATE_INFO_EVENT,
-                timeStart = timeStart.minusMillis(5000L),
-                metalRate = 0.09,
-                warningPoint = 0.1,
-                angleStart = 66.0,
-                category = ModelEvent.Category.INFO
-            )
-
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 streamRateWarningPoint = 0.1,
@@ -37,8 +29,7 @@ internal class EventsChainNKR1210c2Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     avgSteelRate = 0.09
-                ),
-                converterRepository = repository
+                )
             )
 
             val context = converterBeContextTest(
@@ -61,7 +52,7 @@ internal class EventsChainNKR1210c2Test {
             assertTrue { event.isActive}
             assertEquals(ModelEvent.ExecutionStatus.NONE, event.executionStatus)
             assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context.signaler.level )
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
+            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
         }
     }
 }

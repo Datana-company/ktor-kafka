@@ -20,15 +20,6 @@ internal class EventsChainNKR1210c1Test {
         runBlocking {
             val timeStart = Instant.now()
 
-            val repository = createRepositoryWithEventForTest(
-                eventType = ModelEvent.EventType.STREAM_RATE_INFO_EVENT,
-                timeStart = timeStart.minusMillis(5000L),
-                metalRate = 0.09,
-                warningPoint = 0.1,
-                angleStart = 66.0,
-                category = ModelEvent.Category.INFO
-            )
-
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 streamRateWarningPoint = 0.1,
@@ -37,8 +28,7 @@ internal class EventsChainNKR1210c1Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     avgSteelRate = 0.09
-                ),
-                converterRepository = repository
+                )
             )
 
             val context = converterBeContextTest(
