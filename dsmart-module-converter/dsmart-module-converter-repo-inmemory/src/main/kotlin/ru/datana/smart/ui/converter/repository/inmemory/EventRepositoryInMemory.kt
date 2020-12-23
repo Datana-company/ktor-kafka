@@ -55,6 +55,15 @@ class EventRepositoryInMemory@OptIn(ExperimentalTime::class) constructor(
             .toMutableList()
     }
 
+    override fun getActiveByMeltId(meltId: String): ModelEvent? {
+        return cache.asMap().values.asSequence()
+            .map { event -> event.toModel() }
+            .filter { event -> event.isActive }
+            .filter { event -> event.meltId == meltId }
+            .sortedByDescending { it.timeStart }
+            .firstOrNull()
+    }
+
     override fun getActiveByMeltIdAndEventType(meltId: String, eventType: ModelEvent.EventType): ModelEvent? {
         return cache.asMap().values.asSequence()
             .map { event -> event.toModel() }

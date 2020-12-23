@@ -23,7 +23,6 @@ internal class SignalerNKR905Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
-                metalRate = 0.16,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -37,7 +36,7 @@ internal class SignalerNKR905Test {
                 sirenLimitTime = 3000,
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )

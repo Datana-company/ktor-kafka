@@ -16,14 +16,14 @@ internal class ExtEventsNKR899Test {
 
             val context = converterBeContextTest(
                 meltInfo = defaultMeltInfoTest(),
-                extEvent = ModelEvent(
+                externalEvent = ModelEvent(
                     alertRuleId = "alertRuleId_234",
                     component = "component_123",
                     timestamp = "timestamp"
                 )
             )
 
-            converterFacade.handleExtEvents(context)
+            converterFacade.handleExternalEvents(context)
             assertEquals("alertRuleId_234", context.events.first().alertRuleId)
             assertEquals("component_123", context.events.first().component)
             assertEquals("timestamp", context.events.first().timestamp)

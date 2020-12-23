@@ -10,6 +10,9 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 
+/*
+* FrameChain - цепочка обработки кадров из видеоадаптера.
+* */
 class FrameChain(
     var chainSettings: ConverterChainSettings
 ) {
@@ -26,10 +29,11 @@ class FrameChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            +DevicesFilterHandler
-            +MeltFilterHandler
-            +FrameTimeFilterHandler
+            +DevicesFilterHandler // фильтр данных по идетификатору устройства
+            +MeltFilterHandler // фильтр данных по идентификатору плавки
+            +FrameTimeFilterHandler // фильтр данных по времени кадра из видеоадаптера
 
+            // задаётся канал (источник) кадра
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
@@ -37,11 +41,12 @@ class FrameChain(
                 }
             }
 
-            +EncodeBase64Handler
-            +WsSendFrameHandler
-            // определение конца плавки и отправки завершающих значений на фронт
-            +WsSendMeltFinishHandler
-            +FinishHandler
+            +EncodeBase64Handler // кодирование кадра в base64
+
+            +WsSendFrameHandler // отправка кадра по web-socket и отправка пустых данных
+            +WsSendMeltFinishHandler // определение конца плавки и отправки завершающих значений на фронт
+
+            +FinishHandler // обработчик завершения цепочки
         }
     }
 }

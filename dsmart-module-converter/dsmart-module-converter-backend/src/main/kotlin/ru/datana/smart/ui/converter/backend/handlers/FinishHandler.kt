@@ -6,6 +6,9 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import java.time.Instant
 
+/*
+* FinishHandler - обработчик завершения цепочек.
+* */
 object FinishHandler : IKonveyorHandler<ConverterBeContext> {
 
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {

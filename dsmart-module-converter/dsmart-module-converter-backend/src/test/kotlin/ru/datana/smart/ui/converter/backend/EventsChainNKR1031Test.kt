@@ -22,7 +22,6 @@ internal class EventsChainNKR1031Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
-                metalRate = 0.16,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -31,7 +30,7 @@ internal class EventsChainNKR1031Test {
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -67,7 +66,6 @@ internal class EventsChainNKR1031Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
-                metalRate = 0.16,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -76,7 +74,7 @@ internal class EventsChainNKR1031Test {
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )

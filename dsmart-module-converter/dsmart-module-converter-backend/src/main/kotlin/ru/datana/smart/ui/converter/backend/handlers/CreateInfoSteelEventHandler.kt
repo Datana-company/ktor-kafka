@@ -8,9 +8,9 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
-* CreateInfoSlagEventHandler - создаётся событие типа "Информация" по содержанию шлака.
+* CreateInfoSteelEventHandler - создаётся событие типа "Информация" по содержанию металла.
 * */
-object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
+object CreateInfoSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         if (context.activeEvent != ModelEvent.NONE) {
             return
@@ -19,7 +19,7 @@ object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
         val meltId: String = context.currentMeltId
         val slagRateTime = context.timeStart
         val currentAngle = context.currentAngle
-        val avgSlagRate = context.avgStreamRate
+        val avgSteelRate = context.avgStreamRate
         context.activeEvent = ModelEvent(
             meltId = meltId,
             type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT,
@@ -28,7 +28,7 @@ object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
             angleStart = currentAngle,
             title = "Информация",
             textMessage = """
-                          Достигнут предел потерь шлака в потоке – ${avgSlagRate.toPercent()}%.
+                          Достигнут предел потерь металла в потоке – ${avgSteelRate.toPercent()}%.
                           """.trimIndent(),
             category = ModelEvent.Category.INFO
         )
