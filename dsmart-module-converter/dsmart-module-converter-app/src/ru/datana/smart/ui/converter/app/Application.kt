@@ -20,6 +20,7 @@ import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
+import ru.datana.smart.logger.DatanaLogContext
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.app.common.EventMode
 //import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
@@ -28,6 +29,7 @@ import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.app.websocket.WsSignalerManager
 import ru.datana.smart.ui.converter.backend.ConverterFacade
+import ru.datana.smart.ui.converter.common.context.InnerRecord
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import java.time.Duration
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
@@ -196,9 +198,16 @@ fun Application.module(testing: Boolean = false) {
                     .distinctBy { it.topic() }
                     .map { it.toInnerModel() }
                     .forEach { record ->
-                        when (record.topic) {
+                        when (val topic = record.topic) {
                             topicMath -> {
                                 val kafkaModel = toConverterTransportMlUi(record)
+                                logGetTopicRecord(
+                                    logger = logger,
+                                    msg = "Math model object got",
+                                    logTypeId = "converter-backend-KafkaController-mathobj-got",
+                                    kafkaModel = kafkaModel,
+                                    topic = topic
+                                )
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
@@ -220,6 +229,13 @@ fun Application.module(testing: Boolean = false) {
 //                            }
                             topicMeta -> {
                                 val kafkaModel = toConverterMeltInfo(record)
+                                logGetTopicRecord(
+                                    logger = logger,
+                                    msg = "Meta model object got",
+                                    logTypeId = "converter-backend-KafkaController-mathobj-got",
+                                    kafkaModel = kafkaModel,
+                                    topic = topic
+                                )
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
@@ -229,6 +245,13 @@ fun Application.module(testing: Boolean = false) {
                             }
                             topicAngles -> {
                                 val kafkaModel = toConverterTransportAngle(record)
+                                logGetTopicRecord(
+                                    logger = logger,
+                                    msg = "Angles model object got",
+                                    logTypeId = "converter-backend-KafkaController-anglobj-got",
+                                    kafkaModel = kafkaModel,
+                                    topic = topic
+                                )
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
@@ -241,6 +264,13 @@ fun Application.module(testing: Boolean = false) {
                             topicEvents -> {
                                 // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
                                 val kafkaModel = toConverterTransportExtEvents(record)
+                                logGetTopicRecord(
+                                    logger = logger,
+                                    msg = "Events model object got",
+                                    logTypeId = "converter-backend-KafkaController-eventsobj-got",
+                                    kafkaModel = kafkaModel,
+                                    topic = topic
+                                )
                                 // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
@@ -251,9 +281,9 @@ fun Application.module(testing: Boolean = false) {
                                 println("topic = events, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 converterFacade.handleExtEvents(context)
                             }
+                        }
                     }
-                }
-            } catch(e: Throwable) {
+            } catch (e: Throwable) {
                 val msg = e.message ?: ""
                 logger.error(msg)
             } finally {
@@ -261,6 +291,20 @@ fun Application.module(testing: Boolean = false) {
             }
         }
     }
+}
+
+/**
+ *  Метод логирования получения записей из кафки
+ */
+fun logGetTopicRecord(logger: DatanaLogContext, msg: String, logTypeId: String, kafkaModel: Any, topic: String){
+    logger.biz(
+        msg = msg,
+        data = object {
+            val logTypeId = logTypeId
+            val data = kafkaModel
+            val topic = topic
+        },
+    )
 }
 
 // TODO: дописать метод
