@@ -59,6 +59,12 @@ class WsManager : IWsManager {
         send(eventsSerializedString)
     }
 
+    override suspend fun sendStreamStatus(context: ConverterBeContext) {
+        val wsStreamStatus = context.toWsResponseConverterStreamStatus()
+        val wsStreamStatusSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterStreamStatus.serializer(), wsStreamStatus)
+        send(wsStreamStatusSerializedString)
+    }
+
     private suspend fun send(serializedString: String) {
         val wsSessionsIterator = wsSessions.iterator()
         while (wsSessionsIterator.hasNext()) {
