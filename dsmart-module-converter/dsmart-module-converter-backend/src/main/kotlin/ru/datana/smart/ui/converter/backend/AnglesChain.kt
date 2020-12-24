@@ -8,6 +8,9 @@ import ru.datana.smart.ui.converter.backend.common.setSettings
 import ru.datana.smart.ui.converter.backend.handlers.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 
+/*
+* AnglesChain - цепочка обработки углов.
+* */
 class AnglesChain(
     var chainSettings: ConverterChainSettings
 ) {
@@ -24,13 +27,13 @@ class AnglesChain(
     companion object {
         val konveyor = konveyor<ConverterBeContext> {
 
-            +DevicesFilterHandler
-            +MeltFilterHandler
-            +AngleTimeFilterHandler
+            +DevicesFilterHandler // фильтр данных по идетификатору устройства
+            +MeltFilterHandler // фильтр данных по идентификатору плавки
+            +AngleTimeFilterHandler // фильтр данных по времени угла
 
-            +WsSendAnglesHandler
+            +WsSendAnglesHandler // отправка угла на фронтенд по web-socker
 
-            +FinishHandler
+            +FinishHandler // обработчик завершения цепочки
         }
     }
 }

@@ -12,6 +12,9 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelFrame
 
+/*
+* MathChain - цепочка обработки данных из матмодели (кадры и содержание потока).
+* */
 class MathChain(
     var chainSettings: ConverterChainSettings
 ) {
@@ -30,10 +33,11 @@ class MathChain(
         val logger = datanaLogger(this::class.java)
         val konveyor = konveyor<ConverterBeContext> {
 
-            +DevicesFilterHandler
-            +MeltFilterHandler
-            +FrameTimeFilterHandler
+            +DevicesFilterHandler // фильтр данных по идетификатору устройства
+            +MeltFilterHandler // фильтр данных по идентификатору плавки
+            +FrameTimeFilterHandler // фильтр данных по времени кадра из матмодели
 
+            // задаётся канал (источник) кадра
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
@@ -41,8 +45,9 @@ class MathChain(
                 }
             }
 
-            +EncodeBase64Handler
-            +WsSendMathFrameHandler
+            +EncodeBase64Handler // кодирование кадра в base64
+
+            +WsSendMathFrameHandler // отправка кадра по web-socket и отправка пустых данных
 //            konveyor {
                 // Временный фильтр на выбросы матмодели по содержанию металла из-за капель металла
                 // в начале и в конце слива
@@ -60,26 +65,19 @@ class MathChain(
 //                    res
 //                }
 
-                konveyor {
-                    on { status == CorStatus.STARTED && eventMode == ModelEventMode.STEEL }
-                    +CalcAvgSteelRateHandler
-                }
-                konveyor {
-                    on { status == CorStatus.STARTED && eventMode == ModelEventMode.SLAG }
-                    +CalcAvgSlagRateHandler
-                }
+                +CalcAvgStreamRateHandler // вычисление усреднённого значения
+                +WsSendMathSlagRateHandler // отправка данных о содержании потока по web-socket и отправка пустых данных
 
-                +WsSendMathSlagRateHandler
-
-                // Обновляем информацию о последнем значении slagRate
+                // обновление информации о последнем значении содержания потока
                 handler {
-                    on { status == CorStatus.STARTED}
+                    on { status == CorStatus.STARTED }
                     exec {
                         val curState = currentState.get()
                         curState.lastSlagRate = slagRate
                     }
                 }
 
+                // вызов цепочки обработки событий по металлу
                 handler {
                     onEnv { status == CorStatus.STARTED && eventMode == ModelEventMode.STEEL }
                     exec {
@@ -87,6 +85,7 @@ class MathChain(
                     }
                 }
 
+                // вызов цепочки обработки событий по металлу
                 handler {
                     onEnv { status == CorStatus.STARTED && eventMode == ModelEventMode.SLAG }
                     exec {
@@ -94,10 +93,18 @@ class MathChain(
                     }
                 }
 
-            //определение конца плавки и отправки завершающих значений на фронт
-            +WsSendMeltFinishHandler
+                // вызов цепочки обработки светофора
+                handler {
+                    onEnv { status == CorStatus.STARTED }
+                    exec {
+                        converterFacade.handleSignaler(this)
+                    }
+                }
+//            }
 
-            +FinishHandler
+            +WsSendMeltFinishHandler //определение конца плавки и отправки завершающих значений на фронт
+
+            +FinishHandler // обработчик завершения цепочки
         }
     }
 }

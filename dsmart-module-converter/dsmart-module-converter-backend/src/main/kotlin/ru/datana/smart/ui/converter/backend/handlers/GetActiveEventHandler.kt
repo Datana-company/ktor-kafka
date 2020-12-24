@@ -4,21 +4,20 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.models.ModelEvent
 
 /*
-* MeltFilterHandler - происходит фильтрация данных о плавке.
-* Сравнивается идентификатор текущей плавки с идентификатором
+* GetActiveEventHandler - выполняется запрос к репозиторию.
+* По текущему идентификатору плавки находим активное событие.
 * */
-object MeltFilterHandler: IKonveyorHandler<ConverterBeContext> {
+object GetActiveEventHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        with (context) {
-            if (currentMeltId != meltInfo.id || currentMeltId.isEmpty()) {
-                status = CorStatus.FINISHED
-            }
-        }
+        val meltId: String = context.currentMeltId
+        context.activeEvent = context.eventsRepository.getActiveByMeltId(meltId) ?: ModelEvent.NONE
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {
         return context.status == CorStatus.STARTED
     }
+
 }

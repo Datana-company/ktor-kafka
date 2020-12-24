@@ -13,8 +13,6 @@ data class ModelEvent(
     var category: Category = Category.NONE,
     var isActive: Boolean = true,
     var executionStatus: ExecutionStatus = ExecutionStatus.NONE,
-    var metalRate: Double = Double.MIN_VALUE,
-    var slagRate: Double = Double.MIN_VALUE,
     var angleStart: Double = Double.MIN_VALUE,
     var alertRuleId: String = "",
     var containerId: String = "",
@@ -31,14 +29,12 @@ data class ModelEvent(
         CRITICAL,
         WARNING,
         INFO,
-        HINT,
         NONE
     }
 
     enum class ExecutionStatus {
         COMPLETED,
         FAILED,
-        STATELESS,
         NONE
     }
 
@@ -47,7 +43,7 @@ data class ModelEvent(
         STREAM_RATE_INFO_EVENT,
         STREAM_RATE_CRITICAL_EVENT,
         SUCCESS_MELT_EVENT,
-        EXT_EVENT,
+        EXTERNAL_EVENT,
         NONE
     }
 }

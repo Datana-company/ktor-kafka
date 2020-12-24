@@ -8,9 +8,10 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
-* CreateInfoSlagEventHandler - создаётся событие типа "Информация" по содержанию шлака.
+* CreateSuccessMeltSteelEventHandler - создаётся событие типа "Информация" по содержанию металла
+* об успешном завершении плавки и сразу записывается в историю.
 * */
-object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
+object CreateSuccessMeltSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         if (context.activeEvent != ModelEvent.NONE) {
             return
@@ -18,18 +19,23 @@ object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
 
         val meltId: String = context.currentMeltId
         val slagRateTime = context.timeStart
-        val currentAngle = context.currentAngle
-        val avgSlagRate = context.avgStreamRate
+        context.eventsRepository.getAllByMeltId(meltId).map {
+            if (it.type == ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT ||
+                it.type == ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
+            ) {
+                return
+            }
+        }
         context.activeEvent = ModelEvent(
             meltId = meltId,
-            type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT,
+            type = ModelEvent.EventType.SUCCESS_MELT_EVENT,
             timeStart = slagRateTime,
             timeFinish = slagRateTime,
-            angleStart = currentAngle,
+            isActive = false,
             title = "Информация",
             textMessage = """
-                          Достигнут предел потерь шлака в потоке – ${avgSlagRate.toPercent()}%.
-                          """.trimIndent(),
+                      Допустимая норма потерь металла ${context.streamRateWarningPoint.toPercent()}% не была превышена.
+                      """.trimIndent(),
             category = ModelEvent.Category.INFO
         )
         context.eventsRepository.create(context.activeEvent)

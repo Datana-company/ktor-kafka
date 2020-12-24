@@ -4,17 +4,18 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.CurrentState
+import ru.datana.smart.ui.converter.common.models.ModelSignaler
+import ru.datana.smart.ui.converter.common.models.ModelSignalerSound
 
-object AddCurrentMeltInfoHandler: IKonveyorHandler<ConverterBeContext> {
+/*
+* WarningSignalizationHandler - светофор переходит в статус "Предупреждение" (лампочка становится жёлтой).
+* */
+object WarningSignalizationHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        if (context.meltInfo.id == "") return
-        val currentState = CurrentState(
-            currentMeltInfo = context.meltInfo
+        context.signaler = ModelSignaler(
+            level = ModelSignaler.ModelSignalerLevel.WARNING,
+            sound = ModelSignalerSound.NONE
         )
-        context.currentState.set(currentState)
-        println("added topic = meta, meltId = ${context.meltInfo.id}")
-        println("added topic = meta, currentMeltId = ${context.currentMeltId}")
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

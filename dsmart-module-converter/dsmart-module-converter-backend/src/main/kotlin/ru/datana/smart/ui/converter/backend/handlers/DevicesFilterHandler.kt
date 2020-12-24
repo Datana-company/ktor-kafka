@@ -5,6 +5,11 @@ import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 
+/*
+* DevicesFilterHandler - происходит фильтрация по идентификатору устройства converterId.
+* Если текущий идентификатор устройства не совпадает с заданным в конфигурации,
+* то дальше chain не занимается обработкой данных.
+* */
 object DevicesFilterHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         if (context.converterId != context.meltInfo.devices.converter.id) {
