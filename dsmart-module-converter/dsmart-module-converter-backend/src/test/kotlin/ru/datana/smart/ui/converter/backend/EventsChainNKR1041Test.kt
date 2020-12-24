@@ -23,7 +23,6 @@ internal class EventsChainNKR1041Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
-                metalRate = 0.11,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -37,7 +36,7 @@ internal class EventsChainNKR1041Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     lastSteelRate = 0.14,
-                    avgSteelRate = 0.14
+                    avgStreamRate = 0.14
                 ),
                 converterRepository = repository
             )
@@ -59,8 +58,8 @@ internal class EventsChainNKR1041Test {
             delay(meltTimeout + 1000L)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(false, context.events.first().isActive)
-            assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
-            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
+            assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
+            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
         }
     }
 
@@ -72,7 +71,6 @@ internal class EventsChainNKR1041Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
-                metalRate = 0.001,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -86,7 +84,7 @@ internal class EventsChainNKR1041Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     lastSteelRate = 0.14,
-                    avgSteelRate = 0.18
+                    avgStreamRate = 0.18
                 ),
                 converterRepository = repository
             )
@@ -108,10 +106,10 @@ internal class EventsChainNKR1041Test {
 
             assertEquals(CorStatus.SUCCESS, context.status)
             assertNotEquals(false, context.events.first().isActive)
-            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
-            assertNotEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
-            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context.signaler.level)
+            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
+            assertNotEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.SOUND_1, context.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context.signaler.level)
         }
     }
 }

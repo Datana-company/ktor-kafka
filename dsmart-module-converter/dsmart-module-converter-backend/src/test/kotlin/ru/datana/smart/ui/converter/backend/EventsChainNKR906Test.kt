@@ -25,7 +25,6 @@ internal class EventsChainNKR906Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
-                metalRate = 0.11,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -39,7 +38,7 @@ internal class EventsChainNKR906Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
                     lastSteelRate = 0.14,
-                    avgSteelRate = 0.14
+                    avgStreamRate = 0.14
                 ),
                 converterRepository = repository
             )

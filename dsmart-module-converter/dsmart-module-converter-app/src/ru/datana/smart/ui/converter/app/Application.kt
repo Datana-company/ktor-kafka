@@ -1,15 +1,21 @@
 package ru.datana.smart.ui.converter.app
 
-//import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.http.*
-import io.ktor.http.cio.websocket.*
-import io.ktor.http.content.*
-import io.ktor.request.*
+import io.ktor.application.Application
+import io.ktor.application.install
+import io.ktor.features.CORS
+import io.ktor.features.CallLogging
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.cio.websocket.pingPeriod
+import io.ktor.http.cio.websocket.timeout
+import io.ktor.http.content.defaultResource
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
+import io.ktor.request.path
 import io.ktor.routing.*
-import io.ktor.util.*
-import io.ktor.websocket.*
+import io.ktor.util.KtorExperimentalAPI
+import io.ktor.websocket.WebSockets
+import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
@@ -191,7 +197,9 @@ fun Application.module(testing: Boolean = false) {
                     .map { it.toInnerModel() }
                     .forEach { record ->
                         when (val topic = record.topic) {
+                            // получаем данные из топика с данными из матмодели
                             topicMath -> {
+                                // десериализация данных из кафки
                                 val kafkaModel = toConverterTransportMlUi(record)
                                 logger.biz(
                                     msg = "Math model object got",
@@ -201,26 +209,36 @@ fun Application.module(testing: Boolean = false) {
                                         val topic = topic
                                     },
                                 )
+                                // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
+                                // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
                                 context.setSlagRate(kafkaModel)
                                 context.setFrame(kafkaModel)
                                 context.setMeltInfo(kafkaModel)
                                 println("topic = math, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                // вызов цепочки обработки данных из матмодели
                                 converterFacade.handleMath(context)
                             }
+//                            // получаем данные из топика с данными из видеоадаптера
 //                            topicVideo -> {
+//                                // десериализация данных из кафки
 //                                val kafkaModel = toConverterTransportViMl(record)
+//                                // инициализация контекста
 //                                val context = ConverterBeContext(
 //                                    timeStart = Instant.now()
 //                                )
+//                                // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
 //                                context.setFrame(kafkaModel)
 //                                context.setMeltInfo(kafkaModel)
 //                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+//                                // вызов цепочки обработки данных из видеоадаптера
 //                                converterFacade.handleFrame(context)
 //                            }
+                            // получаем данные из топика мета
                             topicMeta -> {
+                                // десериализация данных из кафки
                                 val kafkaModel = toConverterMeltInfo(record)
                                 logger.biz(
                                     msg = "Meta model object got",
@@ -230,14 +248,19 @@ fun Application.module(testing: Boolean = false) {
                                         val topic = topic
                                     },
                                 )
+                                // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
+                                // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
                                 context.setMeltInfo(kafkaModel)
                                 println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                // вызов цепочки обработки меты
                                 converterFacade.handleMeltInfo(context)
                             }
+                            // получаем данные из топика углов
                             topicAngles -> {
+                                // десериализация данных из кафки
                                 val kafkaModel = toConverterTransportAngle(record)
                                 logger.biz(
                                     msg = "Angles model object got",
@@ -247,18 +270,21 @@ fun Application.module(testing: Boolean = false) {
                                         val topic = topic
                                     },
                                 )
+                                // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
+                                // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
                                 context.setAngles(kafkaModel)
                                 context.setMeltInfo(kafkaModel)
                                 println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                // вызов цепочки обработки углов
                                 converterFacade.handleAngles(context)
                             }
-                            // 1) Получаем данные из Кафки
+                            // получаем данные из топика с внешними событиями
                             topicEvents -> {
-                                // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
-                                val kafkaModel = toConverterTransportExtEvents(record)
+                                 // десериализация данных из кафки
+                                val kafkaModel = toConverterTransportExternalEvents(record)
                                 logger.biz(
                                     msg = "Events model object got",
                                     data = object {
@@ -267,15 +293,15 @@ fun Application.module(testing: Boolean = false) {
                                         val topic = topic
                                     },
                                 )
-                                // 3) Конвертируем модель во внутреннюю модель (dsmart-module-converter-common.models)
+                                // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
-                                // 4) Запихиваем эту модель в контекст
-                                context.setExtEvent(kafkaModel)
-                                // 5) Вызываем цепочку для обработки поступившего сообщения
+                                 // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
+                                context.setExternalEvent(kafkaModel)
                                 println("topic = events, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-                                converterFacade.handleExtEvents(context)
+                                // вызов цепочки обработки внешних событий
+                                converterFacade.handleExternalEvents(context)
                             }
                         }
                     }

@@ -8,29 +8,29 @@ import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
-* CreateInfoSlagEventHandler - создаётся событие типа "Информация" по содержанию шлака.
+* CreateCriticalSteelEventHandler - создаётся событие типа "Критическая ситуация" по содержанию металла.
 * */
-object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
+object CreateCriticalSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         if (context.activeEvent != ModelEvent.NONE) {
             return
         }
 
         val meltId: String = context.currentMeltId
-        val slagRateTime = context.timeStart
         val currentAngle = context.currentAngle
-        val avgSlagRate = context.avgStreamRate
+        val slagRateTime = context.timeStart
+        val avgSteelRate = context.avgStreamRate
         context.activeEvent = ModelEvent(
             meltId = meltId,
-            type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT,
+            type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
             timeStart = slagRateTime,
             timeFinish = slagRateTime,
             angleStart = currentAngle,
-            title = "Информация",
+            title = "Критическая ситуация",
             textMessage = """
-                          Достигнут предел потерь шлака в потоке – ${avgSlagRate.toPercent()}%.
+                          В потоке детектирован металл – ${avgSteelRate.toPercent()}%, процент потерь превышает критическое значение – ${context.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
                           """.trimIndent(),
-            category = ModelEvent.Category.INFO
+            category = ModelEvent.Category.CRITICAL
         )
         context.eventsRepository.create(context.activeEvent)
     }

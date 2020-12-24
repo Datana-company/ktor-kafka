@@ -66,7 +66,10 @@ class ConverterFacade(
     private val slagEventsChain = SlagEventsChain(
         chainSettings = chainSettings
     )
-    private val extEventsChain = ExtEventsChain(
+    private val externalEventsChain = ExternalEventsChain(
+        chainSettings = chainSettings
+    )
+    private val signalerChain = SignalerChain(
         chainSettings = chainSettings
     )
 
@@ -76,5 +79,6 @@ class ConverterFacade(
     override suspend fun handleMeltInfo(context: ConverterBeContext) = meltInfoChain.exec(context)
     override suspend fun handleSteelEvents(context: ConverterBeContext) = steelEventsChain.exec(context)
     override suspend fun handleSlagEvents(context: ConverterBeContext) = slagEventsChain.exec(context)
-    override suspend fun handleExtEvents(context: ConverterBeContext) = extEventsChain.exec(context)
+    override suspend fun handleExternalEvents(context: ConverterBeContext) = externalEventsChain.exec(context)
+    override suspend fun handleSignaler(context: ConverterBeContext) = signalerChain.exec(context)
 }

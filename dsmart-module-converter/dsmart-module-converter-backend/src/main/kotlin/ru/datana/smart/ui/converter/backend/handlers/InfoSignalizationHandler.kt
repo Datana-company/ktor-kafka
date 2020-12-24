@@ -4,18 +4,18 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.models.ModelSignaler
+import ru.datana.smart.ui.converter.common.models.ModelSignalerSound
 
 /*
-* MeltFilterHandler - происходит фильтрация данных о плавке.
-* Сравнивается идентификатор текущей плавки с идентификатором
+* InfoSignalizationHandler - светофор переходит в Информационный статус (лампочка становится синей).
 * */
-object MeltFilterHandler: IKonveyorHandler<ConverterBeContext> {
+object InfoSignalizationHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        with (context) {
-            if (currentMeltId != meltInfo.id || currentMeltId.isEmpty()) {
-                status = CorStatus.FINISHED
-            }
-        }
+        context.signaler = ModelSignaler(
+            level = ModelSignaler.ModelSignalerLevel.INFO,
+            sound = ModelSignalerSound.NONE
+        )
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

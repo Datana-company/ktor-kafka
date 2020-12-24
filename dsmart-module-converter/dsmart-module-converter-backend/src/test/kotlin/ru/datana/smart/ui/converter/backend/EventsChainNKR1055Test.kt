@@ -21,7 +21,6 @@ internal class EventsChainNKR1055Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
-                metalRate = 0.11,
                 angleStart = 60.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -34,7 +33,7 @@ internal class EventsChainNKR1055Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     lastSteelRate = 0.011,
-                    avgSteelRate = 0.011
+                    avgStreamRate = 0.011
                 ),
                 converterRepository = repository
             )
@@ -67,7 +66,6 @@ internal class EventsChainNKR1055Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(2000L),
-                metalRate = 0.011,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -80,7 +78,7 @@ internal class EventsChainNKR1055Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     lastSteelRate = 0.011,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -100,7 +98,7 @@ internal class EventsChainNKR1055Test {
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
             assertNotEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
-            assertEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
 
         }
     }
@@ -116,7 +114,6 @@ internal class EventsChainNKR1055Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
-                metalRate = 0.11,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -128,7 +125,7 @@ internal class EventsChainNKR1055Test {
                 reactionTime = 3000,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -165,7 +162,6 @@ internal class EventsChainNKR1055Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(5000L),
-                metalRate = 0.11,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -177,7 +173,7 @@ internal class EventsChainNKR1055Test {
                 reactionTime = 3000L,
                 currentState = createCurrentStateForTest(
                     lastAngle = 64.0,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -213,7 +209,6 @@ internal class EventsChainNKR1055Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(2000L),
-                metalRate = 0.16,
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -225,7 +220,7 @@ internal class EventsChainNKR1055Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     lastSteelRate = 0.16,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -243,7 +238,7 @@ internal class EventsChainNKR1055Test {
 
             assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.STATELESS, context.events.first().executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
 
         }
     }
@@ -269,7 +264,7 @@ internal class EventsChainNKR1055Test {
                 currentState = createCurrentStateForTest(
                     lastSteelRate = 0.11,
                     lastAngle = 68.0,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
