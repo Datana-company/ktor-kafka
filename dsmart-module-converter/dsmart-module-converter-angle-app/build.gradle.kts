@@ -6,6 +6,7 @@ val dsmartLoggingVersion: String by project
 val konveyorVersion: String by project
 val serializationVersion: String by project
 val guavaVersion: String by project
+val converterTransportVersion: String by project
 
 plugins {
     application
@@ -53,9 +54,6 @@ repositories {
 
 dependencies {
 
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-mlui"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-angle"))
     implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
@@ -63,7 +61,12 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
+
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
+    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-angle:$converterTransportVersion")
+//    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-meta:$converterTransportVersion")
+    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-mlui:$converterTransportVersion")
+
     implementation("codes.spectrum:konveyor:$konveyorVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
     implementation("com.google.guava:guava:$guavaVersion")
