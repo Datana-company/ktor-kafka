@@ -1,12 +1,39 @@
 package ru.datana.smart.ui.converter.repository.inmemory.currentstate
 
+import ru.datana.smart.ui.converter.common.models.ModelDeviceType
+import ru.datana.smart.ui.converter.common.models.ModelDevicesConverter
+
 
 data class CurrentStateInMemoryDevicesConverter(
-    val id: String? = null,
-    val name: String? = null,
-    val uri: String? = null,
-    val deviceType: String? = null,
-    val type: CurrentStateInMemoryDeviceType? = null
+    override val id: String? = null,
+    override val name: String? = null,
+    override val uri: String? = null,
+    override val deviceType: String? = null,
+    override val type: CurrentStateInMemoryDeviceType? = null
+): CurrentStateInMemoryDevicesBase(
+    id = id,
+    name = name,
+    uri = uri,
+    deviceType = deviceType,
+    type = type
 ) {
 
+ //   fun toModel() = toModelBase<ModelDevicesConverter>()
+    fun toModel() = ModelDevicesConverter(
+        id = id?: "",
+        name = name?: "",
+        uri = uri?: "",
+        deviceType = deviceType?: "",
+        type = type?.let { ModelDeviceType.valueOf(it.name) }?: ModelDeviceType.NONE
+    )
+
+    companion object {
+        fun of(model: ModelDevicesConverter) = CurrentStateInMemoryDevicesConverter(
+            id = model.id.takeIf { it.isNotBlank() },
+            name = model.name.takeIf { it.isNotBlank() },
+            uri = model.uri.takeIf { it.isNotBlank() },
+            deviceType = model.deviceType.takeIf { it.isNotBlank() },
+            type = model.type.takeIf { it != ModelDeviceType.NONE }?.let { CurrentStateInMemoryDeviceType.valueOf(it.name) }
+        )
+    }
 }

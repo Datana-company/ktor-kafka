@@ -8,7 +8,7 @@ data class CurrentStateInMemoryDto(
     val meltInfo: CurrentStateInMemoryMeltInfo? = null,
     val lastAngles: CurrentStateInMemoryAngles? = null,
     val lastSlagRate: CurrentStateInMemorySlagRate? = null,
-    val avgSlagRate: CurrentStateInMemorySlagRate? = null,
+    val avgStreamRate: Double? = null,
     val lastTimeAngles: Instant? = null,
     val lastTimeFrame: Instant? = null
 ) {
