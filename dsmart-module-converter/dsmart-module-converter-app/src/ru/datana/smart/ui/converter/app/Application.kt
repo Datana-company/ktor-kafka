@@ -193,8 +193,7 @@ fun Application.module(testing: Boolean = false) {
                         when (val topic = record.topic) {
                             topicMath -> {
                                 val kafkaModel = toConverterTransportMlUi(record)
-                                logBiz(
-                                    logger = logger,
+                                logger.biz(
                                     msg = "Math model object got",
                                     data = object {
                                         val logTypeId = "converter-backend-KafkaController-mathobj-got"
@@ -223,8 +222,7 @@ fun Application.module(testing: Boolean = false) {
 //                            }
                             topicMeta -> {
                                 val kafkaModel = toConverterMeltInfo(record)
-                                logBiz(
-                                    logger = logger,
+                                logger.biz(
                                     msg = "Meta model object got",
                                     data = object {
                                         val logTypeId = "converter-backend-KafkaController-metahobj-got"
@@ -241,8 +239,7 @@ fun Application.module(testing: Boolean = false) {
                             }
                             topicAngles -> {
                                 val kafkaModel = toConverterTransportAngle(record)
-                                logBiz(
-                                    logger = logger,
+                                logger.biz(
                                     msg = "Angles model object got",
                                     data = object {
                                         val logTypeId = "converter-backend-KafkaController-anglobj-got"
@@ -262,8 +259,7 @@ fun Application.module(testing: Boolean = false) {
                             topicEvents -> {
                                 // 2) Мапим полученные данные на модель (dsmart-module-converter-models-...) с помощью jackson.databind
                                 val kafkaModel = toConverterTransportExtEvents(record)
-                                logBiz(
-                                    logger = logger,
+                                logger.biz(
                                     msg = "Events model object got",
                                     data = object {
                                         val logTypeId = "converter-backend-KafkaController-eventsobj-got"
@@ -291,16 +287,6 @@ fun Application.module(testing: Boolean = false) {
             }
         }
     }
-}
-
-/**
- *  Метод логирования получения записей из кафки
- */
-fun logBiz(logger: DatanaLogContext, msg: String, data: Any) {
-    logger.biz(
-        msg = msg,
-        data = data
-    )
 }
 
 // TODO: дописать метод
