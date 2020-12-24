@@ -10,68 +10,55 @@ import java.util.*
  *  Функции-расширения контекста конвертера для создания событий
  */
 
-fun ConverterBeContext.eventExternalReceived(meltId:String):ModelEvent = ModelEvent(
-    id = UUID.randomUUID().toString(),
-    meltId = meltId,
-    type = ModelEvent.EventType.EXT_EVENT,
-    timeStart = Instant.now(),
-    timeFinish = Instant.now(),
-    textMessage = this.extEvents.message ?: "",
-    category = when (this.extEvents.level) {
-        "INFO" -> {
-            ModelEvent.Category.INFO
-        }
-        "WARNING" -> {
-            ModelEvent.Category.WARNING
-        }
-        "CRITICAL" -> {
-            ModelEvent.Category.CRITICAL
-        }
-        else -> {
-            ModelEvent.Category.INFO
-        }
-    }
+fun ConverterBeContext.eventExternalReceived():ModelEvent = ModelEvent(
+    meltId = currentMeltId,
+    type = ModelEvent.EventType.EXTERNAL_EVENT,
+    timeStart = timeStart,
+    timeFinish = timeStart,
+    title = ModelEvent.Category.INFO.title,
+    textMessage = externalEvent.textMessage,
+    alertRuleId = externalEvent.alertRuleId,
+    containerId = externalEvent.containerId,
+    component = externalEvent.component,
+    timestamp = externalEvent.timestamp,
+    level = externalEvent.level,
+    loggerName = externalEvent.loggerName,
+    category = ModelEvent.Category.INFO
 )
 
 fun ConverterBeContext.eventSlagInfoReached():ModelEvent = this.eventInfo().also { model ->
-    model.slagRate = this.avgSlagRate
     model.textMessage = """
-                     Достигнут предел потерь шлака в потоке – ${this.avgSlagRate.toPercent()}%.
+                     Достигнут предел потерь шлака в потоке – ${this.avgStreamRate.toPercent()}%.
                      """.trimIndent()
 }
 
 fun ConverterBeContext.eventMetalInfoReached():ModelEvent = this.eventInfo().also { model ->
-    model.metalRate = this.avgSteelRate
     model.textMessage = """
-                     Достигнут предел потерь металла в потоке – ${this.avgSteelRate.toPercent()}%.
+                     Достигнут предел потерь металла в потоке – ${this.avgStreamRate.toPercent()}%.
                      """.trimIndent()
 }
 
 fun ConverterBeContext.eventSlagWarningReached():ModelEvent = this.eventWarning().also { model ->
-    model.slagRate = this.avgSlagRate
     model.textMessage = """
-                    В потоке детектирован шлак – ${this.avgSlagRate.toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
+                    В потоке детектирован шлак – ${this.avgStreamRate.toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                     """.trimIndent()
 }
 
 fun ConverterBeContext.eventMetalWarningReached():ModelEvent = this.eventWarning().also { model ->
-    model.metalRate = this.avgSteelRate
     model.textMessage = """
-                    В потоке детектирован металл – ${this.avgSteelRate.toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
+                    В потоке детектирован металл – ${this.avgStreamRate.toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                     """.trimIndent()
 }
 
 fun ConverterBeContext.eventSlagCriticalReached():ModelEvent = this.eventCritical().also { model ->
-    model.slagRate = this.avgSlagRate
     model.textMessage = """
-                    В потоке детектирован шлак – ${this.avgSlagRate.toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
+                    В потоке детектирован шлак – ${this.avgStreamRate.toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
                     """.trimIndent()
 }
 
 fun ConverterBeContext.eventMetalCriticalReached():ModelEvent = this.eventCritical().also { model ->
-    model.metalRate = this.avgSteelRate
     model.textMessage = """
-                    В потоке детектирован металл – ${this.avgSteelRate.toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
+                    В потоке детектирован металл – ${this.avgStreamRate.toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
                     """.trimIndent()
 }
 
@@ -91,7 +78,6 @@ private fun ConverterBeContext.eventInfo():ModelEvent = this.eventBase().also { 
     model.type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT
     model.title = ModelEvent.Category.INFO.title
     model.category = ModelEvent.Category.INFO
-    model.warningPoint = this.streamRateWarningPoint
     model.angleStart = this.currentAngle
 }
 
@@ -99,7 +85,6 @@ private fun ConverterBeContext.eventWarning():ModelEvent = this.eventBase().also
     model.type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
     model.title = ModelEvent.Category.WARNING.title
     model.category = ModelEvent.Category.WARNING
-    model.warningPoint = this.streamRateWarningPoint
     model.angleStart = this.currentAngle
 }
 
@@ -107,7 +92,6 @@ private fun ConverterBeContext.eventCritical():ModelEvent = this.eventBase().als
     model.type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT
     model.title = ModelEvent.Category.CRITICAL.title
     model.category = ModelEvent.Category.CRITICAL
-    model.criticalPoint = this.streamRateCriticalPoint
     model.angleStart = this.currentAngle
 }
 
@@ -116,14 +100,12 @@ private fun ConverterBeContext.eventSuccess():ModelEvent = this.eventBase().also
     model.isActive = false
     model.title = ModelEvent.Category.INFO.title
     model.category = ModelEvent.Category.INFO
-    model.warningPoint = this.streamRateWarningPoint
 }
 
 
 
 private fun ConverterBeContext.eventBase():ModelEvent = ModelEvent(
-    id = UUID.randomUUID().toString(),
-    meltId = this.meltInfo.id,
+    meltId = this.currentMeltId,
     timeStart = this.timeStart,
     timeFinish = this.timeStart
 )

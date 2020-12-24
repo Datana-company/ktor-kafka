@@ -22,7 +22,7 @@ internal class EventsCreateExtensionsNKR1062Test {
         angles = ModelAngles(angle = 50.0)
         slagRate = ModelSlagRate(steelRate = 0.7, slagRate = 0.3)
         meltInfo = ModelMeltInfo(id = "test-melt-id")
-        currentState = CurrentState( avgSlagRate = slagRate, lastAngles = angles)
+        currentState = CurrentState( avgStreamRate = slagRate.slagRate, lastAngles = angles, currentMeltInfo = meltInfo)
         context = ConverterBeContext(
             meltInfo = meltInfo,
             streamRateWarningPoint = 0.23,
@@ -42,39 +42,33 @@ internal class EventsCreateExtensionsNKR1062Test {
         assertEquals(50.0, event.angleStart)
         assertEquals("2020-12-20T18:35:24.010Z", event.timeStart.toString())
         assertEquals("test-melt-id", event.meltId)
-        assertEquals(0.3, event.slagRate)
         assertEquals(ModelEvent.Category.WARNING, event.category)
-        assertEquals(0.23, event.warningPoint)
     }
 
     @Test
     fun eventMetalWarningReachedCreateTest(){
         val event = context.eventMetalWarningReached()
         //println(event)
-        assertEquals("В потоке детектирован металл – 70% сверх допустимой нормы 23%. Верните конвертер в вертикальное положение.", event.textMessage)
+        assertEquals("В потоке детектирован металл – 30% сверх допустимой нормы 23%. Верните конвертер в вертикальное положение.", event.textMessage)
         assertEquals("Предупреждение", event.title)
         assertEquals(ModelEvent.EventType.STREAM_RATE_WARNING_EVENT, event.type)
         assertEquals(50.0, event.angleStart)
         assertEquals("2020-12-20T18:35:24.010Z", event.timeStart.toString())
         assertEquals("test-melt-id", event.meltId)
-        assertEquals(0.7, event.metalRate)
         assertEquals(ModelEvent.Category.WARNING, event.category)
-        assertEquals(0.23, event.warningPoint)
     }
 
     @Test
     fun eventMetalCriticalReachedCreateTest(){
         val event = context.eventMetalCriticalReached()
         //println(event)
-        assertEquals("В потоке детектирован металл – 70%, процент потерь превышает критическое значение – 29%. Верните конвертер в вертикальное положение!", event.textMessage)
+        assertEquals("В потоке детектирован металл – 30%, процент потерь превышает критическое значение – 29%. Верните конвертер в вертикальное положение!", event.textMessage)
         assertEquals("Критическая ситуация", event.title)
         assertEquals(ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT, event.type)
         assertEquals(50.0, event.angleStart)
         assertEquals("2020-12-20T18:35:24.010Z", event.timeStart.toString())
         assertEquals("test-melt-id", event.meltId)
-        assertEquals(0.7, event.metalRate)
         assertEquals(ModelEvent.Category.CRITICAL, event.category)
-        assertEquals(0.29, event.criticalPoint)
     }
 
     @Test
@@ -87,9 +81,7 @@ internal class EventsCreateExtensionsNKR1062Test {
         assertEquals(50.0, event.angleStart)
         assertEquals("2020-12-20T18:35:24.010Z", event.timeStart.toString())
         assertEquals("test-melt-id", event.meltId)
-        assertEquals(0.3, event.slagRate)
         assertEquals(ModelEvent.Category.CRITICAL, event.category)
-        assertEquals(0.29, event.criticalPoint)
     }
 
     @Test
@@ -102,24 +94,20 @@ internal class EventsCreateExtensionsNKR1062Test {
         assertEquals(50.0, event.angleStart)
         assertEquals("2020-12-20T18:35:24.010Z", event.timeStart.toString())
         assertEquals("test-melt-id", event.meltId)
-        assertEquals(0.3, event.slagRate)
         assertEquals(ModelEvent.Category.INFO, event.category)
-        assertEquals(0.23, event.warningPoint)
     }
 
     @Test
     fun eventMetalInfoReachedCreateTest(){
         val event = context.eventMetalInfoReached()
         //println(event)
-        assertEquals("Достигнут предел потерь металла в потоке – 70%.", event.textMessage)
+        assertEquals("Достигнут предел потерь металла в потоке – 30%.", event.textMessage)
         assertEquals("Информация", event.title)
         assertEquals(ModelEvent.EventType.STREAM_RATE_INFO_EVENT, event.type)
         assertEquals(50.0, event.angleStart)
         assertEquals("2020-12-20T18:35:24.010Z", event.timeStart.toString())
         assertEquals("test-melt-id", event.meltId)
-        assertEquals(0.7, event.metalRate)
         assertEquals(ModelEvent.Category.INFO, event.category)
-        assertEquals(0.23, event.warningPoint)
     }
 
     @Test
@@ -132,7 +120,6 @@ internal class EventsCreateExtensionsNKR1062Test {
         assertFalse { event.isActive }
         assertEquals("2020-12-20T18:35:24.010Z", event.timeStart.toString())
         assertEquals("test-melt-id", event.meltId)
-        assertEquals(0.23, event.warningPoint)
     }
 
     @Test
@@ -145,6 +132,5 @@ internal class EventsCreateExtensionsNKR1062Test {
         assertFalse { event.isActive }
         assertEquals("2020-12-20T18:35:24.010Z", event.timeStart.toString())
         assertEquals("test-melt-id", event.meltId)
-        assertEquals(0.23, event.warningPoint)
     }
 }
