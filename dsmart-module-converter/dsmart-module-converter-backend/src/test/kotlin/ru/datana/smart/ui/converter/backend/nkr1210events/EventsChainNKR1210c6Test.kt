@@ -25,8 +25,6 @@ internal class EventsChainNKR1210c6Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(2000L),
-                metalRate = 0.12,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -40,7 +38,7 @@ internal class EventsChainNKR1210c6Test {
                 reactionTime = 3000L,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.12
+                    avgStreamRate = 0.12
                 ),
                 converterRepository = repository
             )
@@ -54,8 +52,7 @@ internal class EventsChainNKR1210c6Test {
                 frame = ModelFrame(
                     frameTime = timeStart
                 ),
-                signalerLevel = SignalerModel.SignalerLevelModel.WARNING,
-                signalerSoundType = SignalerSoundModel.SignalerSoundTypeModel.NONE
+                signalerLevel = ModelSignaler.ModelSignalerLevel.WARNING
             )
 
             converterFacade.handleMath(context)
@@ -64,8 +61,8 @@ internal class EventsChainNKR1210c6Test {
             assertEquals(ModelEvent.Category.WARNING, event.category)
             assertTrue { event.isActive }
             assertEquals(ModelEvent.ExecutionStatus.NONE, event.executionStatus)
-            assertEquals(SignalerModel.SignalerLevelModel.WARNING, context.signaler.level)
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, context.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
         }
     }
 }

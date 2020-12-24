@@ -28,8 +28,6 @@ internal class EventsChainNKR1210c3Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(2000L),
-                metalRate = 0.12,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -43,7 +41,7 @@ internal class EventsChainNKR1210c3Test {
                 reactionTime = 3000L,
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
-                    avgSteelRate = 0.12
+                    avgStreamRate = 0.12
                 ),
                 converterRepository = repository
             )
@@ -57,8 +55,7 @@ internal class EventsChainNKR1210c3Test {
                 frame = ModelFrame(
                     frameTime = timeStart
                 ),
-                signalerLevel = SignalerModel.SignalerLevelModel.WARNING,
-                signalerSoundType = SignalerSoundModel.SignalerSoundTypeModel.NONE
+                signalerLevel = ModelSignaler.ModelSignalerLevel.WARNING
             )
 
             val context2 = converterBeContextTest(
@@ -78,8 +75,8 @@ internal class EventsChainNKR1210c3Test {
             assertEquals(ModelEvent.Category.WARNING, oldEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, oldEvent.executionStatus)
             assertTrue { oldEvent.isActive }
-            assertEquals(SignalerModel.SignalerLevelModel.WARNING, context1.signaler.level)
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context1.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, context1.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context1.signaler.sound.type)
 
 
             converterFacade.handleMath(context2)
@@ -89,8 +86,8 @@ internal class EventsChainNKR1210c3Test {
             assertEquals(ModelEvent.Category.WARNING, oldEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.FAILED, oldEvent.executionStatus)
             assertFalse { oldEvent.isActive }
-            assertEquals(SignalerModel.SignalerLevelModel.WARNING, context2.signaler.level)
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context2.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, context2.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context2.signaler.sound.type)
             assertEquals(ModelEvent.Category.WARNING, newEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, newEvent.executionStatus)
             assertTrue { newEvent.isActive }

@@ -22,9 +22,6 @@ internal class EventsChainNKR1210c14Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
-                metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -38,7 +35,7 @@ internal class EventsChainNKR1210c14Test {
                 reactionTime = 3000L,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -52,8 +49,8 @@ internal class EventsChainNKR1210c14Test {
                 frame = ModelFrame(
                     frameTime = timeStart
                 ),
-                signalerLevel = SignalerModel.SignalerLevelModel.CRITICAL,
-                signalerSoundType = SignalerSoundModel.SignalerSoundTypeModel.SOUND_1
+                signalerLevel = ModelSignaler.ModelSignalerLevel.CRITICAL,
+                signalerSoundType = ModelSignalerSound.ModelSignalerSoundType.SOUND_1
             )
 
             converterFacade.handleMath(context)
@@ -69,8 +66,8 @@ internal class EventsChainNKR1210c14Test {
             assertTrue { newEvent.isActive }
             assertEquals(ModelEvent.ExecutionStatus.NONE, newEvent.executionStatus)
 
-            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context.signaler.level)
-            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context.signaler.level)
+            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
         }
     }
 }

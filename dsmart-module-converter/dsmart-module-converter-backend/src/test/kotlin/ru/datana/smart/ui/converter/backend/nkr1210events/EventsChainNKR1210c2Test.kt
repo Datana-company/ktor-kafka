@@ -28,7 +28,7 @@ internal class EventsChainNKR1210c2Test {
                 reactionTime = 3000L,
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
-                    avgSteelRate = 0.09
+                    avgStreamRate = 0.09
                 )
             )
 
@@ -51,8 +51,8 @@ internal class EventsChainNKR1210c2Test {
             assertEquals(ModelEvent.Category.CRITICAL, event.category)
             assertTrue { event.isActive}
             assertEquals(ModelEvent.ExecutionStatus.NONE, event.executionStatus)
-            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context.signaler.level )
-            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context.signaler.level )
+            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
         }
     }
 }

@@ -26,9 +26,6 @@ internal class EventsChainNKR1210c10Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
-                metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -42,7 +39,7 @@ internal class EventsChainNKR1210c10Test {
                 reactionTime = 3000L,
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -56,8 +53,8 @@ internal class EventsChainNKR1210c10Test {
                 frame = ModelFrame(
                     frameTime = timeStart
                 ),
-                signalerLevel = SignalerModel.SignalerLevelModel.CRITICAL,
-                signalerSoundType = SignalerSoundModel.SignalerSoundTypeModel.SOUND_1
+                signalerLevel = ModelSignaler.ModelSignalerLevel.CRITICAL,
+                signalerSoundType = ModelSignalerSound.ModelSignalerSoundType.SOUND_1
             )
 
             val context2 = converterBeContextTest(
@@ -77,8 +74,8 @@ internal class EventsChainNKR1210c10Test {
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, oldEvent.executionStatus)
             assertTrue { oldEvent.isActive }
-            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context1.signaler.level)
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context1.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context1.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.SOUND_1, context1.signaler.sound.type)
 
 
             converterFacade.handleMath(context2)
@@ -88,8 +85,8 @@ internal class EventsChainNKR1210c10Test {
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, oldEvent.executionStatus)
             assertFalse { oldEvent.isActive }
-            assertEquals(SignalerModel.SignalerLevelModel.WARNING, context2.signaler.level)
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context2.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, context2.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context2.signaler.sound.type)
             assertEquals(ModelEvent.Category.WARNING, newEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, newEvent.executionStatus)
             assertTrue { newEvent.isActive }

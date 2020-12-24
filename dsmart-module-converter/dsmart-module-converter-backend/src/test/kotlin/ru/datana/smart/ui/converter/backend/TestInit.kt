@@ -55,8 +55,8 @@ fun converterBeContextTest(
     angles: ModelAngles? = null,
     frame: ModelFrame? = null,
     slagRate: ModelSlagRate? = null,
-    signalerLevel: SignalerModel.SignalerLevelModel? = null,
-    signalerSoundType: SignalerSoundModel.SignalerSoundTypeModel? = null,
+    signalerLevel: ModelSignaler.ModelSignalerLevel? = null,
+    signalerSoundType: ModelSignalerSound.ModelSignalerSoundType? = null,
     externalEvent: ModelEvent? = null
 ) =
     ConverterBeContext(
@@ -71,12 +71,12 @@ fun converterBeContextTest(
     )
 
 fun signalerTest(
-    signalerLevel: SignalerModel.SignalerLevelModel? = null,
-    signalerSoundType: SignalerSoundModel.SignalerSoundTypeModel? = null
-) = SignalerModel(
-    level = signalerLevel?:SignalerModel.SignalerLevelModel.NONE,
-    sound = SignalerSoundModel(
-        type = signalerSoundType?: SignalerSoundModel.SignalerSoundTypeModel.NONE
+    signalerLevel: ModelSignaler.ModelSignalerLevel? = null,
+    signalerSoundType: ModelSignalerSound.ModelSignalerSoundType? = null
+) = ModelSignaler(
+    level = signalerLevel?: ModelSignaler.ModelSignalerLevel.NONE,
+    sound = ModelSignalerSound(
+        type = signalerSoundType?: ModelSignalerSound.ModelSignalerSoundType.NONE
     )
 )
 
