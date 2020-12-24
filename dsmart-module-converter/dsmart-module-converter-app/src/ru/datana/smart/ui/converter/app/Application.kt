@@ -196,7 +196,7 @@ fun Application.module(testing: Boolean = false) {
                                 logger.biz(
                                     msg = "Math model object got",
                                     data = object {
-                                        val logTypeId = "converter-backend-KafkaController-mathobj-got"
+                                        val logTypeId = "converter-backend-KafkaController-got-math"
                                         val mathModel = kafkaModel
                                         val topic = topic
                                     },
@@ -225,7 +225,7 @@ fun Application.module(testing: Boolean = false) {
                                 logger.biz(
                                     msg = "Meta model object got",
                                     data = object {
-                                        val logTypeId = "converter-backend-KafkaController-metahobj-got"
+                                        val logTypeId = "converter-backend-KafkaController-got-meta"
                                         val metaModel = kafkaModel
                                         val topic = topic
                                     },
@@ -242,7 +242,7 @@ fun Application.module(testing: Boolean = false) {
                                 logger.biz(
                                     msg = "Angles model object got",
                                     data = object {
-                                        val logTypeId = "converter-backend-KafkaController-anglobj-got"
+                                        val logTypeId = "converter-backend-KafkaController-got-angle"
                                         val anglesModel = kafkaModel
                                         val topic = topic
                                     },
@@ -262,7 +262,7 @@ fun Application.module(testing: Boolean = false) {
                                 logger.biz(
                                     msg = "Events model object got",
                                     data = object {
-                                        val logTypeId = "converter-backend-KafkaController-eventsobj-got"
+                                        val logTypeId = "converter-backend-KafkaController-got-event"
                                         val eventsModel = kafkaModel
                                         val topic = topic
                                     },

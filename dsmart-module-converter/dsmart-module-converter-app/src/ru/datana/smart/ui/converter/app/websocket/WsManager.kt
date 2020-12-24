@@ -23,8 +23,7 @@ class WsManager : IWsManager {
         val wsConverterState = context.toWsResponseConverterState()
         val converterStateSerializedString =
             kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
-        logBiz(
-            logger = logger,
+        logger.biz(
             msg = "Add Session",
             data = object {
                 val logTypeId = "converter-backend-WsManager-addSession"
@@ -37,8 +36,7 @@ class WsManager : IWsManager {
         val wsConverterState = context.toWsResponseConverterState()
         val converterStateSerializedString =
             kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
-        logBiz(
-            logger = logger,
+        logger.biz(
             msg = "Send Finish",
             data = object {
                 val logTypeId = "converter-backend-WsManager-sendFinish"
@@ -52,8 +50,7 @@ class WsManager : IWsManager {
         val wsAngles = context.toWsConverterResponseAngles()
         val meltInfoSerializedString =
             kotlinxSerializer.encodeToString(WsDsmartResponseConverterAngles.serializer(), wsAngles)
-        logBiz(
-            logger = logger,
+        logger.biz(
             msg = "Send Angles",
             data = object {
                 val logTypeId = "converter-backend-WsManager-sendAngles"
@@ -67,8 +64,7 @@ class WsManager : IWsManager {
         val wsMeltInfo = context.toWsConverterResponseMeltInfo()
         val meltInfoSerializedString =
             kotlinxSerializer.encodeToString(WsDsmartResponseConverterMeltInfo.serializer(), wsMeltInfo)
-        logBiz(
-            logger = logger,
+        logger.biz(
             msg = "Send Melt Info",
             data = object {
                 val logTypeId = "converter-backend-WsManager-sendMeltInfo"
@@ -82,8 +78,7 @@ class WsManager : IWsManager {
         val wsSlagRate = context.toWsConverterResponseSlagRate()
         val slagRateSerializedString =
             kotlinxSerializer.encodeToString(WsDsmartResponseConverterSlagRate.serializer(), wsSlagRate)
-        logBiz(
-            logger = logger,
+        logger.biz(
             msg = "Send SlagRate",
             data = object {
                 val logTypeId = "converter-backend-WsManager-sendSlagRate"
@@ -97,8 +92,7 @@ class WsManager : IWsManager {
         val wsFrame = context.toWsConverterResponseFrame()
         val frameSerializedString =
             kotlinxSerializer.encodeToString(WsDsmartResponseConverterFrame.serializer(), wsFrame)
-        logBiz(
-            logger = logger,
+        logger.biz(
             msg = "Send Frames",
             data = object {
                 val logTypeId = "converter-backend-WsManager-addSession"
@@ -112,8 +106,7 @@ class WsManager : IWsManager {
         val wsEvents = context.toWsResponseConverterEvent()
         val eventsSerializedString =
             kotlinxSerializer.encodeToString(WsDsmartResponseConverterEvents.serializer(), wsEvents)
-        logBiz(
-            logger = logger,
+        logger.biz(
             msg = "Send Events",
             data = object {
                 val logTypeId = "converter-backend-WsManager-addSession"
@@ -138,12 +131,5 @@ class WsManager : IWsManager {
 
     fun delSession(session: DefaultWebSocketSession) {
         wsSessions -= session
-    }
-
-    private fun logBiz(logger: DatanaLogContext, msg: String, data: Any) {
-        logger.biz(
-            msg = msg,
-            data = data
-        )
     }
 }
