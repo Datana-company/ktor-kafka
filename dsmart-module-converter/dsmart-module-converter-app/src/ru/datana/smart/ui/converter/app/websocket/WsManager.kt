@@ -2,7 +2,6 @@ package ru.datana.smart.ui.converter.app.websocket
 
 import io.ktor.http.cio.websocket.*
 import kotlinx.serialization.json.Json
-import ru.datana.smart.logger.DatanaLogContext
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
@@ -26,7 +25,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Add Session",
             data = object {
-                val logTypeId = "converter-backend-WsManager-addSession"
+                val logTypeId = "converter-backend-WsManager-send-addsession"
                 val wsAddSession = wsSessions
             })
         session.send(converterStateSerializedString)
@@ -39,7 +38,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Finish",
             data = object {
-                val logTypeId = "converter-backend-WsManager-sendFinish"
+                val logTypeId = "converter-backend-WsManager-send-finish"
                 val wsConverterState = wsConverterState
             }
         )
@@ -53,7 +52,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Angles",
             data = object {
-                val logTypeId = "converter-backend-WsManager-sendAngles"
+                val logTypeId = "converter-backend-WsManager-send-angles"
                 val wsAngles = wsAngles
             }
         )
@@ -67,7 +66,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Melt Info",
             data = object {
-                val logTypeId = "converter-backend-WsManager-sendMeltInfo"
+                val logTypeId = "converter-backend-WsManager-send-meltinfo"
                 val wsMeltInfo = wsMeltInfo
             }
         )
@@ -81,7 +80,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send SlagRate",
             data = object {
-                val logTypeId = "converter-backend-WsManager-sendSlagRate"
+                val logTypeId = "converter-backend-WsManager-send-slagrate"
                 val wsSlagRate = wsSlagRate
             }
         )
@@ -95,7 +94,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Frames",
             data = object {
-                val logTypeId = "converter-backend-WsManager-addSession"
+                val logTypeId = "converter-backend-WsManager-send-frames"
                 val wsFrame = wsFrame
             }
         )
@@ -109,7 +108,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Events",
             data = object {
-                val logTypeId = "converter-backend-WsManager-addSession"
+                val logTypeId = "converter-backend-WsManager-send-events"
                 val wsEvents = wsEvents
             }
         )
