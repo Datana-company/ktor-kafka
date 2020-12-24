@@ -18,9 +18,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
-                metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -30,7 +27,7 @@ internal class SignalerNKR1061Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     lastSteelRate = 0.16,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -48,8 +45,8 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
+            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
         }
     }
 
@@ -60,9 +57,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
-                metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -72,7 +66,7 @@ internal class SignalerNKR1061Test {
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
                     lastSteelRate = 0.16,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -89,10 +83,10 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertNotEquals(SignalerSoundModel.NONE, context.signaler.sound)
-            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context.signaler.level)
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
+            assertNotEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertNotEquals(ModelSignalerSound.NONE, context.signaler.sound)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.SOUND_1, context.signaler.sound.type)
         }
     }
 
@@ -105,8 +99,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
-                metalRate = 0.11,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -114,7 +106,7 @@ internal class SignalerNKR1061Test {
             val converterFacade = converterFacadeTest(
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -132,8 +124,8 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
+            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
         }
     }
 
@@ -144,9 +136,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(4000L),
-                metalRate = 0.11,
-                criticalPoint = 0.15,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -155,7 +144,7 @@ internal class SignalerNKR1061Test {
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.13,
+                    avgStreamRate = 0.13,
                     lastSteelRate = 0.13
                 ),
                 converterRepository = repository
@@ -173,10 +162,10 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
-            assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
-            assertNotEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertEquals(SignalerModel.SignalerLevelModel.WARNING, context.signaler.level)
+            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.SOUND_1, context.signaler.sound.type)
+            assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
+            assertNotEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, context.signaler.level)
         }
     }
 
@@ -189,9 +178,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
-                metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -200,7 +186,7 @@ internal class SignalerNKR1061Test {
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -218,8 +204,8 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
+            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
         }
     }
 
@@ -230,9 +216,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
-                metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -241,7 +224,7 @@ internal class SignalerNKR1061Test {
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -258,10 +241,10 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context.signaler.level)
-            assertNotEquals(SignalerSoundModel.NONE, context.signaler.sound)
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
+            assertNotEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context.signaler.level)
+            assertNotEquals(ModelSignalerSound.NONE, context.signaler.sound)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.SOUND_1, context.signaler.sound.type)
         }
     }
 
@@ -274,16 +257,13 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
-                metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
             val converterFacade = converterFacadeTest(
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -301,8 +281,8 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
+            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
         }
     }
 
@@ -313,16 +293,13 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
-                metalRate = 0.11,
-                criticalPoint = null,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
             val converterFacade = converterFacadeTest(
                 currentState = createCurrentStateForTest(
                     lastAngle = 66.0,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -340,10 +317,10 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertEquals(SignalerModel.SignalerLevelModel.WARNING, context.signaler.level)
-            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
-            assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
+            assertNotEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, context.signaler.level)
+            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.SOUND_1, context.signaler.sound.type)
+            assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
         }
     }
 
@@ -356,9 +333,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
-                metalRate = 0.16,
-                criticalPoint = 0.15,
-                warningPoint = null,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -367,7 +341,7 @@ internal class SignalerNKR1061Test {
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
                     lastAngle = 62.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -385,8 +359,8 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
+            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
         }
     }
 
@@ -397,8 +371,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
-                metalRate = 0.16,
-                criticalPoint = 0.15,
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
@@ -407,7 +379,7 @@ internal class SignalerNKR1061Test {
                 roundingWeight = 0.5,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -424,10 +396,10 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertNotEquals(SignalerSoundModel.NONE, context.signaler.sound)
-            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
+            assertNotEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertNotEquals(ModelSignalerSound.NONE, context.signaler.sound)
+            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.SOUND_1, context.signaler.sound.type)
         }
     }
 
@@ -440,8 +412,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
-                metalRate = 0.11,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -449,7 +419,7 @@ internal class SignalerNKR1061Test {
             val converterFacade = converterFacadeTest(
                 currentState = createCurrentStateForTest(
                     lastAngle = 62.0,
-                    avgSteelRate = 0.11
+                    avgStreamRate = 0.11
                 ),
                 converterRepository = repository
             )
@@ -467,8 +437,8 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(SignalerModel.SignalerLevelModel.NO_SIGNAL, context.signaler.level)
-            assertEquals(SignalerSoundModel.NONE, context.signaler.sound)
+            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
+            assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
         }
     }
 
@@ -482,8 +452,6 @@ internal class SignalerNKR1061Test {
             val repository = createRepositoryWithEventForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
-                metalRate = 0.11,
-                warningPoint = 0.1,
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
@@ -495,7 +463,7 @@ internal class SignalerNKR1061Test {
                 sirenLimitTime = 3000,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.16
+                    avgStreamRate = 0.16
                 ),
                 converterRepository = repository
             )
@@ -513,10 +481,10 @@ internal class SignalerNKR1061Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(SignalerModel.SignalerLevelModel.CRITICAL, context.signaler.level)
-            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
-            assertNotEquals(SignalerSoundModel.SignalerSoundTypeModel.NONE, context.signaler.sound.type)
-            assertEquals(SignalerSoundModel.SignalerSoundTypeModel.SOUND_1, context.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context.signaler.level)
+            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
+            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.SOUND_1, context.signaler.sound.type)
 
         }
     }

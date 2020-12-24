@@ -13,34 +13,37 @@ data class ModelEvent(
     var category: Category = Category.NONE,
     var isActive: Boolean = true,
     var executionStatus: ExecutionStatus = ExecutionStatus.NONE,
-    var metalRate: Double = Double.MIN_VALUE,
-    var slagRate: Double = Double.MIN_VALUE,
     var angleStart: Double = Double.MIN_VALUE,
-    var angleFinish: Double = Double.MIN_VALUE,
-    var angleMax: Double = Double.MIN_VALUE,
-    var warningPoint: Double = Double.MIN_VALUE,
-    var criticalPoint: Double = Double.MIN_VALUE
+    var alertRuleId: String = "",
+    var containerId: String = "",
+    var component: String = "",
+    var timestamp: String = "",
+    var level: String = "",
+    var loggerName: String = ""
 ) {
-    enum class Category(val title: String) {
-        CRITICAL("Критическая ситуация"),
-        WARNING("Предупреждение"),
-        INFO("Информация"),
-        HINT(""),
-        NONE("")
+    companion object {
+        val NONE = ModelEvent()
     }
 
-    enum class ExecutionStatus() {
+    enum class Category {
+        CRITICAL,
+        WARNING,
+        INFO,
+        NONE
+    }
+
+    enum class ExecutionStatus {
         COMPLETED,
         FAILED,
         NONE
     }
 
-    enum class EventType() {
+    enum class EventType {
         STREAM_RATE_WARNING_EVENT,
         STREAM_RATE_INFO_EVENT,
         STREAM_RATE_CRITICAL_EVENT,
         SUCCESS_MELT_EVENT,
-        EXT_EVENT,
+        EXTERNAL_EVENT,
         NONE
     }
 }

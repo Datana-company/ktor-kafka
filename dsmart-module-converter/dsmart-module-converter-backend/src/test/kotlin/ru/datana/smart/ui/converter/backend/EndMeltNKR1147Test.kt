@@ -38,7 +38,7 @@ internal class EndMeltNKR1147Test {
                 meltTimeout = meltTimeout,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.2
+                    avgStreamRate = 0.2
                 ),
                 converterRepository = repository
             )
@@ -77,7 +77,7 @@ internal class EndMeltNKR1147Test {
                 meltTimeout = meltTimeout,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSteelRate = 0.01
+                    avgStreamRate = 0.01
                 )
             )
 
@@ -124,7 +124,7 @@ internal class EndMeltNKR1147Test {
                 eventMode = ModelEventMode.SLAG,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSlagRate = 0.2
+                    avgStreamRate = 0.2
                 ),
                 converterRepository = repository
             )
@@ -166,7 +166,7 @@ internal class EndMeltNKR1147Test {
                 eventMode = ModelEventMode.SLAG,
                 currentState = createCurrentStateForTest(
                     lastAngle = 60.0,
-                    avgSlagRate = 0.01
+                    avgStreamRate = 0.01
                 )
             )
 

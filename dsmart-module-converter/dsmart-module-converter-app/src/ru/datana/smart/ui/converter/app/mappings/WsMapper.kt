@@ -105,14 +105,14 @@ private fun toWsEventListModel(modelEvents: MutableList<ModelEvent>) =
 
 private fun toWsEventModel(event: ModelEvent) =
     WsDsmartEvent(
-        id = event.id,
-        timeStart = event.timeStart.toEpochMilli(),
-        timeFinish = event.timeFinish.toEpochMilli(),
-        title = event.title,
-        textMessage = event.textMessage,
-        category = WsDsmartEvent.Category.valueOf(event.category.name),
+        id = event.id.takeIf { it.isNotBlank() },
+        timeStart = event.timeStart.takeIf { it != Instant.MIN }?.toEpochMilli(),
+        timeFinish = event.timeFinish.takeIf { it != Instant.MAX }?.toEpochMilli(),
+        title = event.title.takeIf { it.isNotBlank() },
+        textMessage = event.textMessage.takeIf { it.isNotBlank() },
+        category = event.category.takeIf { it != ModelEvent.Category.NONE }?.let { WsDsmartEvent.Category.valueOf(it.name) },
         isActive = event.isActive,
-        executionStatus = WsDsmartEvent.ExecutionStatus.valueOf(event.executionStatus.name)
+        executionStatus = event.executionStatus.takeIf { it != ModelEvent.ExecutionStatus.NONE }?.let { WsDsmartEvent.ExecutionStatus.valueOf(it.name) }
     )
 
 private fun toWsConverterStateModel(context: ConverterBeContext) =
