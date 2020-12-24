@@ -52,7 +52,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Angles",
             data = object {
-                val logTypeId = "converter-backend-WsManager-send-angles"
+                val logTypeId = "converter-backend-WsManager-send-angle"
                 val wsAngles = wsAngles
             }
         )
@@ -94,7 +94,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Frames",
             data = object {
-                val logTypeId = "converter-backend-WsManager-send-frames"
+                val logTypeId = "converter-backend-WsManager-send-frame"
                 val wsFrame = wsFrame
             }
         )
@@ -108,7 +108,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Events",
             data = object {
-                val logTypeId = "converter-backend-WsManager-send-events"
+                val logTypeId = "converter-backend-WsManager-send-event"
                 val wsEvents = wsEvents
             }
         )
