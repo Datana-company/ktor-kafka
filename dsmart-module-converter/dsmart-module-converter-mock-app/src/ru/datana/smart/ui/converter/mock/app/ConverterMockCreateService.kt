@@ -8,11 +8,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import ru.datana.smart.converter.transport.meta.models.*
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.mock.app.ConverterMockContext.Companion.EMPTY_FILE
 import ru.datana.smart.ui.converter.mock.app.models.ConverterCaseSaveResponse
 import ru.datana.smart.ui.converter.mock.app.models.ConverterMockError
-import ru.datana.smart.ui.meta.models.*
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream

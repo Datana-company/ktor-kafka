@@ -1,33 +1,25 @@
 package ru.datana.smart.ui.converter.app
 
-import io.ktor.application.Application
-import io.ktor.application.install
-import io.ktor.features.CORS
-import io.ktor.features.CallLogging
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.cio.websocket.pingPeriod
-import io.ktor.http.cio.websocket.timeout
-import io.ktor.http.content.defaultResource
-import io.ktor.http.content.resources
-import io.ktor.http.content.static
-import io.ktor.request.path
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.http.cio.websocket.*
+import io.ktor.http.content.*
+import io.ktor.request.*
 import io.ktor.routing.*
-import io.ktor.util.KtorExperimentalAPI
-import io.ktor.websocket.WebSockets
-import io.ktor.websocket.webSocket
+import io.ktor.util.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.app.common.EventMode
-//import ru.datana.smart.ui.converter.app.common.MetalRateEventGenerator
-import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.app.mappings.*
 import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.app.websocket.WsSignalerManager
 import ru.datana.smart.ui.converter.backend.ConverterFacade
+import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import java.time.Duration
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
@@ -199,11 +191,20 @@ fun Application.module(testing: Boolean = false) {
                     .distinctBy { it.topic() }
                     .map { it.toInnerModel() }
                     .forEach { record ->
-                        when (record.topic) {
+                        when (val topic = record.topic) {
                             // получаем данные из топика с данными из матмодели
                             topicMath -> {
                                 // десериализация данных из кафки
                                 val kafkaModel = toConverterTransportMlUi(record)
+                                // логирование
+                                logger.biz(
+                                    msg = "Math model object got",
+                                    data = object {
+                                        val logTypeId = "converter-backend-KafkaController-got-math"
+                                        val mathModel = kafkaModel
+                                        val topic = topic
+                                    },
+                                )
                                 // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
@@ -235,6 +236,15 @@ fun Application.module(testing: Boolean = false) {
                             topicMeta -> {
                                 // десериализация данных из кафки
                                 val kafkaModel = toConverterMeltInfo(record)
+                                // логирование
+                                logger.biz(
+                                    msg = "Meta model object got",
+                                    data = object {
+                                        val logTypeId = "converter-backend-KafkaController-got-meta"
+                                        val metaModel = kafkaModel
+                                        val topic = topic
+                                    },
+                                )
                                 // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
@@ -249,6 +259,15 @@ fun Application.module(testing: Boolean = false) {
                             topicAngles -> {
                                 // десериализация данных из кафки
                                 val kafkaModel = toConverterTransportAngle(record)
+                                // логирование
+                                logger.biz(
+                                    msg = "Angles model object got",
+                                    data = object {
+                                        val logTypeId = "converter-backend-KafkaController-got-angle"
+                                        val anglesModel = kafkaModel
+                                        val topic = topic
+                                    },
+                                )
                                 // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
@@ -264,7 +283,16 @@ fun Application.module(testing: Boolean = false) {
                             topicEvents -> {
                                  // десериализация данных из кафки
                                 val kafkaModel = toConverterTransportExternalEvents(record)
-                                 // инициализация контекста
+                                // логирование
+                                logger.biz(
+                                    msg = "Events model object got",
+                                    data = object {
+                                        val logTypeId = "converter-backend-KafkaController-got-event"
+                                        val eventsModel = kafkaModel
+                                        val topic = topic
+                                    },
+                                )
+                                // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now()
                                 )
@@ -274,9 +302,9 @@ fun Application.module(testing: Boolean = false) {
                                 // вызов цепочки обработки внешних событий
                                 converterFacade.handleExternalEvents(context)
                             }
+                        }
                     }
-                }
-            } catch(e: Throwable) {
+            } catch (e: Throwable) {
                 val msg = e.message ?: ""
                 logger.error(msg)
             } finally {
