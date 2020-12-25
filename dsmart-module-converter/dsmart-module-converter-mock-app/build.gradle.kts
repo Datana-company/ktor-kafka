@@ -8,6 +8,7 @@ val kafkaVersion: String by project
 val dsmartLoggingVersion: String by project
 val konveyorVersion: String by project
 val jacksonVersion: String by project
+val converterTransportVersion: String by project
 
 plugins {
     application
@@ -59,10 +60,12 @@ repositories {
 dependencies {
 
     implementation(project(":dsmart-module-converter:dsmart-module-converter-common"))
-    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
 
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
+
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
+    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-meta:$converterTransportVersion")
+
     implementation("codes.spectrum:konveyor:$konveyorVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")

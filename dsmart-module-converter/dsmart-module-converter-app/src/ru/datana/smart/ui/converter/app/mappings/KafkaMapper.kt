@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import ru.datana.smart.converter.transport.meta.models.ConverterMeltInfo
+import ru.datana.smart.converter.transport.mlui.models.ConverterTransportAngle
+import ru.datana.smart.converter.transport.mlui.models.ConverterTransportMlUi
+import ru.datana.smart.converter.transport.viml.models.ConverterTransportViMl
 import ru.datana.smart.ui.converter.common.exceptions.ConverterDeserializationException
 import ru.datana.smart.ui.converter.common.context.InnerRecord
-import ru.datana.smart.ui.meta.models.ConverterMeltInfo
-import ru.datana.smart.ui.mlui.models.ConverterTransportMlUi
-import ru.datana.smart.ui.viml.models.ConverterTransportViMl
-import ru.datana.smart.ui.mlui.models.ConverterTransportAngle
 import ru.datana.smart.ui.extevent.models.ConverterTransportExternalEvent
 
 fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
