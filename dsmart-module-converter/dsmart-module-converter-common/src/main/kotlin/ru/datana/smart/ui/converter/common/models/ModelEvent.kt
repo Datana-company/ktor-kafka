@@ -25,12 +25,13 @@ data class ModelEvent(
         val NONE = ModelEvent()
     }
 
-    enum class Category {
-        CRITICAL,
-        WARNING,
-        INFO,
-        NONE
+    enum class Category(val title: String) {
+        CRITICAL("Критическая ситуация"),
+        WARNING("Предупреждение"),
+        INFO("Информация"),
+        NONE("")
     }
+
 
     enum class ExecutionStatus {
         COMPLETED,

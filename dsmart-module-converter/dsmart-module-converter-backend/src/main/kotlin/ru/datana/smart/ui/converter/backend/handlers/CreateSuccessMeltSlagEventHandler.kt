@@ -4,6 +4,7 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.extensions.eventSlagSuccessReached
 import ru.datana.smart.ui.converter.common.models.ModelEvent
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
@@ -18,7 +19,6 @@ object CreateSuccessMeltSlagEventHandler : IKonveyorHandler<ConverterBeContext> 
         }
 
         val meltId: String = context.currentMeltId
-        val slagRateTime = context.timeStart
         context.eventsRepository.getAllByMeltId(meltId).map {
             if (it.type == ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT ||
                 it.type == ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
@@ -26,18 +26,7 @@ object CreateSuccessMeltSlagEventHandler : IKonveyorHandler<ConverterBeContext> 
                 return
             }
         }
-        context.activeEvent = ModelEvent(
-            meltId = meltId,
-            type = ModelEvent.EventType.SUCCESS_MELT_EVENT,
-            timeStart = slagRateTime,
-            timeFinish = slagRateTime,
-            isActive = false,
-            title = "Информация",
-            textMessage = """
-                      Допустимая норма потерь шлака ${context.streamRateWarningPoint.toPercent()}% не была превышена.
-                      """.trimIndent(),
-            category = ModelEvent.Category.INFO
-        )
+        context.eventSlagSuccessReached()
         context.eventsRepository.create(context.activeEvent)
     }
 
