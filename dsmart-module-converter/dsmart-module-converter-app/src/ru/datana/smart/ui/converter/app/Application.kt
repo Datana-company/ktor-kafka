@@ -32,6 +32,7 @@ import ru.datana.smart.ui.converter.common.models.CurrentState
 import java.time.Duration
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
+import ru.datana.smart.ui.converter.repository.inmemory.currentstate.CurrentStateRepositoryInMemory
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.DurationUnit
@@ -122,6 +123,7 @@ fun Application.module(testing: Boolean = false) {
 //    metalRateEventGenerator.start()
 
     val userEventsRepository = EventRepositoryInMemory(ttl = storageDuration.toDuration(DurationUnit.MINUTES))
+    val currentStateRepository = CurrentStateRepositoryInMemory(ttl = 2.toDuration(DurationUnit.HOURS)) //TODO изменить на значение из конфига
 
     val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
     val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)
@@ -134,6 +136,7 @@ fun Application.module(testing: Boolean = false) {
     )
 
     val converterFacade = ConverterFacade(
+        currentStateRepository = currentStateRepository,
         converterRepository = userEventsRepository,
         wsManager = wsManager,
         wsSignalerManager = wsSignalerManager,

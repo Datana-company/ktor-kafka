@@ -72,8 +72,9 @@ class MathChain(
                 handler {
                     on { status == CorStatus.STARTED }
                     exec {
-                        val curState = currentState.get()
-                        curState.lastSlagRate = slagRate
+                        val curState = currentState.get() //TODO remove
+                        curState.lastSlagRate = slagRate  //
+                        currentStateRepository.updateSlagRate(meltInfo.id, slagRate)
                     }
                 }
 
@@ -85,7 +86,7 @@ class MathChain(
                     }
                 }
 
-                // вызов цепочки обработки событий по металлу
+                // вызов цепочки обработки событий по шлаку
                 handler {
                     onEnv { status == CorStatus.STARTED && eventMode == ModelEventMode.SLAG }
                     exec {

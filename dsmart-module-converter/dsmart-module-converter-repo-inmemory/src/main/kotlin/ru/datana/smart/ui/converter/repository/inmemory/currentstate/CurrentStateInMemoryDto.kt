@@ -21,8 +21,8 @@ data class CurrentStateInMemoryDto(
         lastAngles = lastAngles?.toModel()?: ModelAngles.NONE,
         lastSlagRate = lastSlagRate?.toModel()?: ModelSlagRate.NONE,
         avgStreamRate = avgStreamRate?: Double.MIN_VALUE,
-        lastTimeAngles = lastTimeAngles?.let { Instant.ofEpochMilli(it) }?: Instant.MIN,
-        lastTimeFrame = lastTimeFrame?.let { Instant.ofEpochMilli(it) }?: Instant.MIN
+        lastTimeAngles = lastTimeAngles?.let { Instant.ofEpochMilli(it) }?: Instant.EPOCH,
+        lastTimeFrame = lastTimeFrame?.let { Instant.ofEpochMilli(it) }?: Instant.EPOCH
     )
 
     companion object {
@@ -34,8 +34,8 @@ data class CurrentStateInMemoryDto(
             lastAngles = model.lastAngles.takeIf { it != ModelAngles.NONE }?.let { CurrentStateInMemoryAngles.of(it) },
             lastSlagRate = model.lastSlagRate.takeIf { it != ModelSlagRate.NONE }?.let { CurrentStateInMemorySlagRate.of(it) },
             avgStreamRate = model.avgStreamRate.takeIf { it != Double.MIN_VALUE },
-            lastTimeAngles = model.lastTimeAngles.takeIf { it != Instant.MIN }?.toEpochMilli(),
-            lastTimeFrame = model.lastTimeFrame.takeIf { it != Instant.MIN }?.toEpochMilli()
+            lastTimeAngles = model.lastTimeAngles.takeIf { it != Instant.EPOCH }?.toEpochMilli(),
+            lastTimeFrame = model.lastTimeFrame.takeIf { it != Instant.EPOCH }?.toEpochMilli()
         )
     }
 }

@@ -7,11 +7,13 @@ import ru.datana.smart.ui.converter.common.models.IConverterFacade
 import ru.datana.smart.ui.converter.common.models.IWsManager
 import ru.datana.smart.ui.converter.common.models.IWsSignalerManager
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
+import ru.datana.smart.ui.converter.common.repositories.ICurrentStateRepository
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import java.util.concurrent.atomic.AtomicReference
 
 class ConverterChainSettings(
     var eventsRepository: IEventRepository = IEventRepository.NONE,
+    var currentStateRepository: ICurrentStateRepository = ICurrentStateRepository.NONE,
     var wsManager: IWsManager = IWsManager.NONE,
     var wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     var dataTimeout: Long = Long.MIN_VALUE,
@@ -30,6 +32,7 @@ class ConverterChainSettings(
 )
 
 fun ConverterBeContext.setSettings(converterChainSettings: ConverterChainSettings) {
+    this.currentStateRepository = converterChainSettings.currentStateRepository
     this.eventsRepository = converterChainSettings.eventsRepository
     this.wsManager = converterChainSettings.wsManager
     this.wsSignalerManager = converterChainSettings.wsSignalerManager

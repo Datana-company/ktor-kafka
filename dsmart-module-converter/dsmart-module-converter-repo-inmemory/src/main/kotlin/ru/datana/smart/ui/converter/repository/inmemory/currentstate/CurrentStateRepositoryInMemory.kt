@@ -5,7 +5,11 @@ import org.cache2k.Cache2kBuilder
 import ru.datana.smart.ui.converter.common.exceptions.CurrentStateRepoNotFoundException
 import ru.datana.smart.ui.converter.common.exceptions.CurrentStateRepoWrongIdException
 import ru.datana.smart.ui.converter.common.models.CurrentState
+import ru.datana.smart.ui.converter.common.models.ModelAngles
+import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
+import ru.datana.smart.ui.converter.common.models.ModelSlagRate
 import ru.datana.smart.ui.converter.common.repositories.ICurrentStateRepository
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -37,6 +41,34 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
     }
 
     override suspend fun update(currentState: CurrentState) = create(currentState)
+
+    override suspend fun delete(id: String): CurrentState? {
+       return cache.peekAndRemove(id)?.toModel()
+    }
+
+    override suspend fun updateMeltInfo(meltInfo: ModelMeltInfo): CurrentState? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateAngles(id: String, lastAngles: ModelAngles): CurrentState? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateSlagRate(id: String, lastSlagRate: ModelSlagRate): CurrentState? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateStreamRate(id: String, avgStreamRate: ModelSlagRate): CurrentState? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateLastTimeAngles(id: String, lastTimeAngles: Instant): CurrentState? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateLastTimeFrame(id: String, lastTimeFrame: Instant): CurrentState? {
+        TODO("Not yet implemented")
+    }
 
     private fun save(dto: CurrentStateInMemoryDto): CurrentStateInMemoryDto{
         cache.put(dto.id, dto)

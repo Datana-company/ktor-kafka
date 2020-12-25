@@ -2,6 +2,7 @@ package ru.datana.smart.ui.converter.common.context
 
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.*
+import ru.datana.smart.ui.converter.common.repositories.ICurrentStateRepository
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
@@ -15,8 +16,10 @@ data class ConverterBeContext(
     var events: MutableList<ModelEvent> = mutableListOf(),
     var activeEvent: ModelEvent = ModelEvent.NONE,
     var externalEvent: ModelEvent = ModelEvent.NONE,
+    // удалить
     var lastTimeAngles: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
     var lastTimeFrame: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
+    //-------------------------------------------
     var streamStatus: ModelStreamStatus = ModelStreamStatus.NONE,
     var status: CorStatus = CorStatus.STARTED,
     var errors: MutableList<CorError> = mutableListOf(),
@@ -33,7 +36,10 @@ data class ConverterBeContext(
     var dataTimeout: Long = Long.MIN_VALUE,
     var meltTimeout: Long = Long.MIN_VALUE,
     var eventsRepository: IEventRepository = IEventRepository.NONE,
+    var currentStateRepository: ICurrentStateRepository = ICurrentStateRepository.NONE,
+    // пока оставить без атомик
     var currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE),
+    //------------------------------------------
     var scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE),
     var signaler: ModelSignaler = ModelSignaler.NONE,
     var converterId: String = "",
