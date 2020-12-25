@@ -4,9 +4,8 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.extensions.eventMetalWarningReached
+import ru.datana.smart.ui.converter.common.extensions.eventSteelWarningReached
 import ru.datana.smart.ui.converter.common.models.ModelEvent
-import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
 * CreateWarningSteelEventHandler - создаём событие типа "Предупреждение" по содержанию металла.
@@ -17,7 +16,7 @@ object CreateWarningSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
             return
         }
 
-        context.activeEvent = context.eventMetalWarningReached()
+        context.eventSteelWarningReached()
         context.eventsRepository.create(context.activeEvent)
     }
 

@@ -17,7 +17,7 @@ object CreateWarningSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
             return
         }
 
-        context.activeEvent = context.eventSlagWarningReached()
+        context.eventSlagWarningReached()
         context.eventsRepository.create(context.activeEvent)
     }
 
