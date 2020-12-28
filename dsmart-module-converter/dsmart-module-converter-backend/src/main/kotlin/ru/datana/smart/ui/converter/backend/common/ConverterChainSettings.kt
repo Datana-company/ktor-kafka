@@ -44,7 +44,7 @@ fun ConverterBeContext.setSettings(converterChainSettings: ConverterChainSetting
     this.reactionTime = converterChainSettings.reactionTime
     this.sirenLimitTime = converterChainSettings.sirenLimitTime
     this.roundingWeight = converterChainSettings.roundingWeight
-    this.currentState = converterChainSettings.currentState
+    //this.currentState = converterChainSettings.currentState
     this.scheduleCleaner = converterChainSettings.scheduleCleaner
     this.converterId = converterChainSettings.converterId
     this.framesBasePath = converterChainSettings.framesBasePath

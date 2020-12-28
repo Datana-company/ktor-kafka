@@ -17,8 +17,8 @@ data class ConverterBeContext(
     var activeEvent: ModelEvent = ModelEvent.NONE,
     var externalEvent: ModelEvent = ModelEvent.NONE,
     // удалить
-    var lastTimeAngles: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
-    var lastTimeFrame: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
+    //var lastTimeAngles: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
+    //var lastTimeFrame: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
     //-------------------------------------------
     var streamStatus: ModelStreamStatus = ModelStreamStatus.NONE,
     var status: CorStatus = CorStatus.STARTED,
@@ -37,8 +37,8 @@ data class ConverterBeContext(
     var meltTimeout: Long = Long.MIN_VALUE,
     var eventsRepository: IEventRepository = IEventRepository.NONE,
     var currentStateRepository: ICurrentStateRepository = ICurrentStateRepository.NONE,
-    // пока оставить без атомик
-    var currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE),
+    // remove
+    //var currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE),
     //------------------------------------------
     var scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE),
     var signaler: ModelSignaler = ModelSignaler.NONE,
@@ -46,15 +46,15 @@ data class ConverterBeContext(
     var framesBasePath: String = "",
     var converterFacade: IConverterFacade = IConverterFacade.NONE
 ) {
-    val currentMeltInfo: ModelMeltInfo
-        get() = currentState.get().currentMeltInfo
-    val currentMeltId: String
-        get() = currentState.get().currentMeltInfo.id
-    var avgStreamRate: Double
-        get() = currentState.get().avgStreamRate
-        set(value) {
-            currentState.get().avgStreamRate = value
-        }
-    val currentAngle: Double
-        get() = currentState.get().lastAngles.angle
+//    val currentMeltInfo: ModelMeltInfo
+//        get() = currentState.get().currentMeltInfo
+//    val currentMeltId: String
+//        get() = currentState.get().currentMeltInfo.id
+//    var avgStreamRate: Double
+//        get() = currentState.get().avgStreamRate
+//        set(value) {
+//            currentState.get().avgStreamRate = value
+//        }
+//    val currentAngle: Double
+//        get() = currentState.get().lastAngles.angle
 }

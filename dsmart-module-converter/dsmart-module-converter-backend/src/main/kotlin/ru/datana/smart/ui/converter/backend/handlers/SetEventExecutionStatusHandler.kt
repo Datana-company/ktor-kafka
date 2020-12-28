@@ -19,7 +19,7 @@ object SetEventExecutionStatusHandler: IKonveyorHandler<ConverterBeContext> {
                 return
 
             val slagRateTime = context.timeStart
-            val currentAngle = context.currentAngle
+            val currentAngle = context.currentStateRepository.currentAngle(null)
             val timeStartWithShift = timeStart.plusMillis(context.reactionTime)
             // сравнивается текущее время со временем стартовым + время реакции,
             // если текущее время больше, то время реакции пользователя истекло

@@ -18,7 +18,7 @@ object CreateSuccessMeltSlagEventHandler : IKonveyorHandler<ConverterBeContext> 
             return
         }
 
-        val meltId: String = context.currentMeltId
+        val meltId: String = context.currentStateRepository.currentMeltId(null)
         context.eventsRepository.getAllByMeltId(meltId).map {
             if (it.type == ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT ||
                 it.type == ModelEvent.EventType.STREAM_RATE_WARNING_EVENT

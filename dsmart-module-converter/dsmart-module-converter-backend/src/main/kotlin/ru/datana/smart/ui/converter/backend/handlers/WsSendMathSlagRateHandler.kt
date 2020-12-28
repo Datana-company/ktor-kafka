@@ -34,8 +34,7 @@ object WsSendMathSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
                 context.slagRate = ModelSlagRate.NONE
 
                 // задаётся текущее содержание потока в репозиторий текущего состояния
-                val curState = context.currentState.get()
-                curState.lastSlagRate = context.slagRate
+                context.currentStateRepository.updateSlagRate(null, context.slagRate)
 
                 // отправка пустых данных о содержании потока по web-socket
                 context.wsManager.sendSlagRate(context)
@@ -44,8 +43,7 @@ object WsSendMathSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
         }
 
         // задаётся текущее содержание потока в репозиторий текущего состояния
-        val curState = context.currentState.get()
-        curState.lastSlagRate = context.slagRate
+        context.currentStateRepository.updateSlagRate(null, context.slagRate)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

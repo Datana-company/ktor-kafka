@@ -121,8 +121,9 @@ fun Application.module(testing: Boolean = false) {
     val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)
 
     val websocketContext = ConverterBeContext(
-        currentState = currentState,
+        //currentState = currentState,
         eventsRepository = userEventsRepository,
+        currentStateRepository = currentStateRepository,
         streamRateWarningPoint = streamRateWarningPoint,
         sirenLimitTime = sirenLimitTime
     )
