@@ -35,6 +35,11 @@ fun ConverterBeContext.toWsResponseConverterState() =
         data = toWsConverterStateModel(this)
     )
 
+fun ConverterBeContext.toWsResponseConverterStreamStatus() =
+    WsDsmartResponseConverterStreamStatus(
+        data = toWsConverterStreamStatus(this)
+    )
+
 private fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
     WsDsmartConverterSlagRate(
         steelRate = modelSlagRate.steelRate.takeIf { it != Double.MIN_VALUE },
@@ -120,4 +125,9 @@ private fun toWsConverterStateModel(context: ConverterBeContext) =
         meltInfo = toWsConverterMeltInfoModel(context.currentMeltInfo),
         events = toWsEventListModel(context.events),
         warningPoint = context.streamRateWarningPoint
+    )
+
+private fun toWsConverterStreamStatus(context: ConverterBeContext) =
+    WsDsmartConverterStreamStatus(
+        status = context.streamStatus.takeIf { it != ModelStreamStatus.NONE }?.let { WsDsmartConverterStreamStatus.StreamStatus.valueOf(it.name) }
     )

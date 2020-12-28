@@ -44,6 +44,8 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 context.converterFacade.handleSignaler(context)
                 // сброс данных в репозитории текущего состояния
                 context.currentState.set(CurrentState.NONE)
+                // отправка данных о статусе потока
+                context.wsManager.sendStreamStatus(context)
                 // отправка данных об окончании плавки
                 context.wsManager.sendFinish(context)
                 println("jobMeltFinish done")
