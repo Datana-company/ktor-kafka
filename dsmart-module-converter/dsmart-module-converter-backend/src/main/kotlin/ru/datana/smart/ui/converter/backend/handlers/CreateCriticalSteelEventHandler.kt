@@ -4,9 +4,8 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.extensions.eventMetalCriticalReached
+import ru.datana.smart.ui.converter.common.extensions.eventSteelCriticalReached
 import ru.datana.smart.ui.converter.common.models.ModelEvent
-import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
 * CreateCriticalSteelEventHandler - создаётся событие типа "Критическая ситуация" по содержанию металла.
@@ -17,7 +16,7 @@ object CreateCriticalSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
             return
         }
 
-        context.activeEvent = context.eventMetalCriticalReached()
+        context.eventSteelCriticalReached()
         context.eventsRepository.create(context.activeEvent)
     }
 

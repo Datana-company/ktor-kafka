@@ -4,9 +4,8 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.extensions.eventMetalSuccessReached
+import ru.datana.smart.ui.converter.common.extensions.eventSteelSuccessReached
 import ru.datana.smart.ui.converter.common.models.ModelEvent
-import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
 * CreateSuccessMeltSteelEventHandler - создаётся событие типа "Информация" по содержанию металла
@@ -26,7 +25,7 @@ object CreateSuccessMeltSteelEventHandler : IKonveyorHandler<ConverterBeContext>
                 return
             }
         }
-        context.activeEvent = context.eventMetalSuccessReached()
+        context.eventSteelSuccessReached()
         context.eventsRepository.create(context.activeEvent)
     }
 

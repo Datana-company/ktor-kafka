@@ -47,7 +47,7 @@ internal class EventsCreateExtensionsNKR1062Test {
 
     @Test
     fun eventMetalWarningReachedCreateTest(){
-        val event = context.eventMetalWarningReached()
+        val event = context.eventSteelWarningReached()
         //println(event)
         assertEquals("В потоке детектирован металл – 30% сверх допустимой нормы 23%. Верните конвертер в вертикальное положение.", event.textMessage)
         assertEquals("Предупреждение", event.title)
@@ -60,7 +60,7 @@ internal class EventsCreateExtensionsNKR1062Test {
 
     @Test
     fun eventMetalCriticalReachedCreateTest(){
-        val event = context.eventMetalCriticalReached()
+        val event = context.eventSteelCriticalReached()
         //println(event)
         assertEquals("В потоке детектирован металл – 30%, процент потерь превышает критическое значение – 29%. Верните конвертер в вертикальное положение!", event.textMessage)
         assertEquals("Критическая ситуация", event.title)
@@ -99,7 +99,7 @@ internal class EventsCreateExtensionsNKR1062Test {
 
     @Test
     fun eventMetalInfoReachedCreateTest(){
-        val event = context.eventMetalInfoReached()
+        val event = context.eventSteelInfoReached()
         //println(event)
         assertEquals("Достигнут предел потерь металла в потоке – 30%.", event.textMessage)
         assertEquals("Информация", event.title)
@@ -112,7 +112,7 @@ internal class EventsCreateExtensionsNKR1062Test {
 
     @Test
     fun eventMetalSuccessReachedCreateTest(){
-        val event = context.eventMetalSuccessReached()
+        val event = context.eventSteelSuccessReached()
         assertEquals("Информация", event.title)
         assertEquals(ModelEvent.Category.INFO, event.category)
         assertEquals(ModelEvent.EventType.SUCCESS_MELT_EVENT, event.type)

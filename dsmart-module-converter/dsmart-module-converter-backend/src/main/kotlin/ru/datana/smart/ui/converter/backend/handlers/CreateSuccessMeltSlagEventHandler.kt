@@ -26,7 +26,7 @@ object CreateSuccessMeltSlagEventHandler : IKonveyorHandler<ConverterBeContext> 
                 return
             }
         }
-        context.activeEvent = context.eventSlagSuccessReached()
+        context.eventSlagSuccessReached()
         context.eventsRepository.create(context.activeEvent)
     }
 

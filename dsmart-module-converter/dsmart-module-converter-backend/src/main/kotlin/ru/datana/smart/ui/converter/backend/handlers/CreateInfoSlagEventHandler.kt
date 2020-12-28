@@ -17,7 +17,7 @@ object CreateInfoSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
             return
         }
 
-        context.activeEvent = context.eventSlagInfoReached()
+        context.eventSlagInfoReached()
         context.eventsRepository.create(context.activeEvent)
     }
 
