@@ -17,7 +17,7 @@ object SetCurrentMeltInfoHandler: IKonveyorHandler<ConverterBeContext> {
             currentMeltInfo = context.meltInfo
         )
         context.currentStateRepository.create(currentState)
-        println("added topic = meta, currentMeltId = ${context.currentStateRepository.currentMeltId(null)}")
+        println("added topic = meta, currentMeltId = ${context.meltInfo.id}")
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

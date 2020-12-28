@@ -31,7 +31,7 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 delay(context.meltTimeout)
                 // сбор контекста перед вызовом цепочек с обработкой событий и светофора
                 context.meltInfo = ModelMeltInfo.NONE
-                context.currentStateRepository.updateStreamRate(null, Double.MIN_VALUE)
+                context.currentStateRepository.updateStreamRate(context.converterId, Double.MIN_VALUE)
                 context.status = CorStatus.STARTED
 
                 // вызов цепочки обработки событий по шлаку или по металлу

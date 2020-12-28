@@ -18,7 +18,7 @@ object CalcAvgStreamRateHandler: IKonveyorHandler<ConverterBeContext> {
         } else {
             context.slagRate.slagRate
         }
-        val lastAvgStreamRate = context.currentStateRepository.avgStreamRate(null)
+        val lastAvgStreamRate = context.currentStateRepository.avgStreamRate(context.converterId)
         val roundingWeight = context.roundingWeight
         // если усреднённое значение ещё не было высчитано,
         // то берётся текущее значение процента содержания
@@ -28,7 +28,7 @@ object CalcAvgStreamRateHandler: IKonveyorHandler<ConverterBeContext> {
         } else {
             currentStreamRate
         }
-        context.currentStateRepository.updateStreamRate(null, avgStreamRate)
+        context.currentStateRepository.updateStreamRate(context.converterId, avgStreamRate)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

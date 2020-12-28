@@ -27,7 +27,7 @@ data class CurrentStateInMemoryDto(
     )
 
     companion object {
-        fun of(model: CurrentState) = Companion.of(model, model.currentMeltInfo.id)
+        fun of(model: CurrentState) = Companion.of(model, model.currentMeltInfo.devices.converter.id)
 
         fun of(model: CurrentState, id: String) = CurrentStateInMemoryDto(
             id = id.takeIf { it.isNotBlank() },

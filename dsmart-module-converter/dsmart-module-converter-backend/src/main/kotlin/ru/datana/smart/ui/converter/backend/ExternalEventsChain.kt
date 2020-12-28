@@ -35,7 +35,7 @@ class ExternalEventsChain(
 
             // если текущий идентификатор плавки пустой, то завершаем обработку внешних событий
             handler {
-                onEnv { status == CorStatus.STARTED && currentMeltId.isEmpty() }
+                onEnv { status == CorStatus.STARTED && meltInfo.id.isEmpty() }
                 exec {
                     status = CorStatus.FINISHED
                 }
@@ -57,7 +57,7 @@ class ExternalEventsChain(
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    events = eventsRepository.getAllByMeltId(currentMeltId)
+                    events = eventsRepository.getAllByMeltId(meltInfo.id)
                 }
             }
 
