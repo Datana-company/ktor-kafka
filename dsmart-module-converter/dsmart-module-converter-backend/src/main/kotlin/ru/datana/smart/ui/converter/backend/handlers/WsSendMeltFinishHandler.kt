@@ -42,6 +42,8 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 }
                 // вызов цепочки обработки светофора
                 context.converterFacade.handleSignaler(context)
+                // отправка данных о статусе потока
+                context.wsManager.sendStreamStatus(context)
                 // отправка данных об окончании плавки
                 context.wsManager.sendFinish(context)
                 println("jobMeltFinish done")
