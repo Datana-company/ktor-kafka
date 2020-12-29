@@ -13,7 +13,8 @@ data class ConverterBeContext(
     var meltInfo: ModelMeltInfo = ModelMeltInfo.NONE,
     var frame: ModelFrame = ModelFrame.NONE,
     var slagRate: ModelSlagRate = ModelSlagRate.NONE,
-    var events: MutableList<ModelEvent> = mutableListOf(),
+    var slagRateList: MutableList<ModelSlagRate> = mutableListOf(),
+    var eventList: MutableList<ModelEvent> = mutableListOf(),
     var activeEvent: ModelEvent = ModelEvent.NONE,
     var externalEvent: ModelEvent = ModelEvent.NONE,
     // удалить

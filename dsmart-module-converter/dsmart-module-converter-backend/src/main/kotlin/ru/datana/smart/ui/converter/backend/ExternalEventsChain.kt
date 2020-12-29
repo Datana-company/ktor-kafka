@@ -57,7 +57,7 @@ class ExternalEventsChain(
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    events = eventsRepository.getAllByMeltId(meltInfo.id)
+                    eventList = eventsRepository.getAllByMeltId(meltInfo.id)
                 }
             }
 

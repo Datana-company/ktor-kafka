@@ -10,6 +10,7 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
+import ru.datana.smart.ui.converter.common.models.ModelStreamStatus
 
 /*
 * WsSendMeltFinishHandler - конец плавки.
@@ -29,11 +30,10 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
             jobMeltFinish = GlobalScope.launch {
                 // происходит ожидание в течение заданного времени (MELT_TIMEOUT)
                 delay(context.meltTimeout)
-                // сбор контекста перед вызовом цепочек с обработкой событий и светофора
-                context.meltInfo = ModelMeltInfo.NONE
-                context.currentStateRepository.updateStreamRate(context.converterId, Double.MIN_VALUE)
+                // сброс статуса контекста перед вызовом цепочек с обработкой событий и светофора
                 context.status = CorStatus.STARTED
-
+                // сброс данных в репозитории текущего состояния
+                context.currentStateRepository.update(CurrentState.NONE)
                 // вызов цепочки обработки событий по шлаку или по металлу
                 if (context.eventMode == ModelEventMode.STEEL) {
                     context.converterFacade.handleSteelEvents(context)
@@ -42,8 +42,6 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 }
                 // вызов цепочки обработки светофора
                 context.converterFacade.handleSignaler(context)
-                // сброс данных в репозитории текущего состояния
-                context.currentStateRepository.update(CurrentState.NONE)
                 // отправка данных об окончании плавки
                 context.wsManager.sendFinish(context)
                 println("jobMeltFinish done")

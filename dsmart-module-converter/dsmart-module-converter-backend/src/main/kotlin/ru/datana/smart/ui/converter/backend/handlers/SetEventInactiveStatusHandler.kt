@@ -20,6 +20,7 @@ object SetEventInactiveStatusHandler: IKonveyorHandler<ConverterBeContext> {
             ModelStreamStatus.CRITICAL -> Category.CRITICAL
             ModelStreamStatus.WARNING -> Category.WARNING
             ModelStreamStatus.INFO -> Category.INFO
+            ModelStreamStatus.END -> Category.INFO
             ModelStreamStatus.NORMAL -> Category.NONE
             ModelStreamStatus.NONE -> Category.NONE
         }
