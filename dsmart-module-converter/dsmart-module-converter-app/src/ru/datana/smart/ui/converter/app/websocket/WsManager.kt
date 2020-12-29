@@ -17,15 +17,17 @@ class WsManager : IWsManager {
     suspend fun addSession(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
         val currentMeltId = context.currentStateRepository.currentMeltId(context.converterId) // что-то здесь не так
-        val events = context.eventRepository.getAllByMeltId(currentMeltId)
-        context.eventList = events
+        val eventList = context.eventRepository.getAllByMeltId(currentMeltId)
+        val slagRateList = context.currentStateRepository.getAllSlagRates(currentMeltId)
+        context.eventList = eventList
+        context.slagRateList = slagRateList
         val wsConverterState = context.toWsResponseConverterState()
         val converterStateSerializedString =
             kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
         logger.biz(
             msg = "Add Session",
             data = object {
-                val logTypeId = "converter-backend-WsManager-send-addsession"
+                val metricType = "converter-backend-WsManager-send-addsession"
                 val wsAddSession = wsSessions
             })
         session.send(converterStateSerializedString)
@@ -38,7 +40,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Finish",
             data = object {
-                val logTypeId = "converter-backend-WsManager-send-finish"
+                val metricType = "converter-backend-WsManager-send-finish"
                 val wsConverterState = wsConverterState
             }
         )
@@ -52,7 +54,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Angles",
             data = object {
-                val logTypeId = "converter-backend-WsManager-send-angle"
+                val metricType = "converter-backend-WsManager-send-angle"
                 val wsAngles = wsAngles
             }
         )
@@ -66,7 +68,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Melt Info",
             data = object {
-                val logTypeId = "converter-backend-WsManager-send-meltinfo"
+                val metricType = "converter-backend-WsManager-send-meltinfo"
                 val wsMeltInfo = wsMeltInfo
             }
         )
@@ -80,7 +82,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send SlagRate",
             data = object {
-                val logTypeId = "converter-backend-WsManager-send-slagrate"
+                val metricType = "converter-backend-WsManager-send-slagrate"
                 val wsSlagRate = wsSlagRate
             }
         )
@@ -94,7 +96,7 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Frames",
             data = object {
-                val logTypeId = "converter-backend-WsManager-send-frame"
+                val metricType = "converter-backend-WsManager-send-frame"
                 val wsFrame = wsFrame
             }
         )
@@ -108,11 +110,17 @@ class WsManager : IWsManager {
         logger.biz(
             msg = "Send Events",
             data = object {
-                val logTypeId = "converter-backend-WsManager-send-event"
+                val metricType = "converter-backend-WsManager-send-event"
                 val wsEvents = wsEvents
             }
         )
         send(eventsSerializedString)
+    }
+
+    override suspend fun sendStreamStatus(context: ConverterBeContext) {
+        val wsStreamStatus = context.toWsResponseConverterStreamStatus()
+        val wsStreamStatusSerializedString = kotlinxSerializer.encodeToString(WsDsmartResponseConverterStreamStatus.serializer(), wsStreamStatus)
+        send(wsStreamStatusSerializedString)
     }
 
     private suspend fun send(serializedString: String) {

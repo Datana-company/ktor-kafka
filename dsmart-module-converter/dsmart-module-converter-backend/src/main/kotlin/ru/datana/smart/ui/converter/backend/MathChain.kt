@@ -102,6 +102,14 @@ class MathChain(
                         converterFacade.handleSignaler(this)
                     }
                 }
+
+                // отправка данных о статусе потока на фронтенд по web-socket
+                handler {
+                    onEnv { status == CorStatus.STARTED }
+                    exec {
+                        wsManager.sendStreamStatus(this)
+                    }
+                }
 //            }
 
             +WsSendMeltFinishHandler //определение конца плавки и отправки завершающих значений на фронт

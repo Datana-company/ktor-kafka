@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WsDsmartConverterState(
     val meltInfo: WsDsmartConverterMeltInfo? = null,
-    val events: WsDsmartEventList? = null,
+    val eventList: WsDsmartEventList? = null,
+    val slagRateList: WsDsmartConverterSlagRateList? = null,
     val warningPoint: Double? = null
 )
