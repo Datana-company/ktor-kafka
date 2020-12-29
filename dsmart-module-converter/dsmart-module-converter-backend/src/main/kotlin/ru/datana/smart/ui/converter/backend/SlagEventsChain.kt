@@ -75,7 +75,7 @@ class SlagEventsChain(
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    eventList = eventsRepository.getAllByMeltId(meltInfo.id)
+                    eventList = eventRepository.getAllByMeltId(meltInfo.id)
                 }
             }
 

@@ -36,7 +36,7 @@ data class ConverterBeContext(
     var roundingWeight: Double = Double.MIN_VALUE,
     var dataTimeout: Long = Long.MIN_VALUE,
     var meltTimeout: Long = Long.MIN_VALUE,
-    var eventsRepository: IEventRepository = IEventRepository.NONE,
+    var eventRepository: IEventRepository = IEventRepository.NONE,
     var currentStateRepository: ICurrentStateRepository = ICurrentStateRepository.NONE,
     // remove
     //var currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE),

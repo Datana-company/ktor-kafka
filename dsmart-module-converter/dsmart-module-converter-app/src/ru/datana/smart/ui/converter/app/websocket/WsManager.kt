@@ -17,7 +17,7 @@ class WsManager : IWsManager {
     suspend fun addSession(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
         val currentMeltId = context.currentStateRepository.currentMeltId(context.converterId) // что-то здесь не так
-        val events = context.eventsRepository.getAllByMeltId(currentMeltId)
+        val events = context.eventRepository.getAllByMeltId(currentMeltId)
         context.eventList = events
         val wsConverterState = context.toWsResponseConverterState()
         val converterStateSerializedString =

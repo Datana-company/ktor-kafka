@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 class ConverterFacade(
     currentStateRepository: ICurrentStateRepository = ICurrentStateRepository.NONE,
-    converterRepository: IEventRepository = IEventRepository.NONE,
+    eventRepository: IEventRepository = IEventRepository.NONE,
     wsManager: IWsManager = IWsManager.NONE,
     wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     dataTimeout: Long = Long.MIN_VALUE,
@@ -33,7 +33,7 @@ class ConverterFacade(
 ): IConverterFacade {
     private val chainSettings = ConverterChainSettings(
         currentStateRepository = currentStateRepository,
-        eventsRepository = converterRepository,
+        eventRepository = eventRepository,
         wsManager = wsManager,
         wsSignalerManager= wsSignalerManager,
         dataTimeout = dataTimeout,

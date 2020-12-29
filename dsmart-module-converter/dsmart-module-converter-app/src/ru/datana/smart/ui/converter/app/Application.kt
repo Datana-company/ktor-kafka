@@ -114,7 +114,7 @@ fun Application.module(testing: Boolean = false) {
 //    )
 //    metalRateEventGenerator.start()
 
-    val userEventsRepository = EventRepositoryInMemory(ttl = storageDuration.toDuration(DurationUnit.MINUTES))
+    val eventRepository = EventRepositoryInMemory(ttl = storageDuration.toDuration(DurationUnit.MINUTES))
     val currentStateRepository = CurrentStateRepositoryInMemory(ttl = 2.toDuration(DurationUnit.HOURS)) //TODO изменить на значение из конфига
 
     val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
@@ -122,7 +122,7 @@ fun Application.module(testing: Boolean = false) {
 
     val websocketContext = ConverterBeContext(
         converterId = converterId,
-        eventsRepository = userEventsRepository,
+        eventRepository = eventRepository,
         currentStateRepository = currentStateRepository,
         streamRateWarningPoint = streamRateWarningPoint,
         sirenLimitTime = sirenLimitTime
@@ -130,7 +130,7 @@ fun Application.module(testing: Boolean = false) {
 
     val converterFacade = ConverterFacade(
         currentStateRepository = currentStateRepository,
-        converterRepository = userEventsRepository,
+        eventRepository = eventRepository,
         wsManager = wsManager,
         wsSignalerManager = wsSignalerManager,
         dataTimeout = dataTimeout,

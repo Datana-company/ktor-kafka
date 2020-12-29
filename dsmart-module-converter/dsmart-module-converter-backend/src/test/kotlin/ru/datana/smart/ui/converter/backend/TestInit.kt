@@ -35,7 +35,7 @@ fun converterFacadeTest(
 ) =
     ConverterFacade(
         currentStateRepository = currentStateRepository?: CurrentStateRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
-        converterRepository = converterRepository ?: EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
+        eventRepository = converterRepository ?: EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
         wsManager = wsManager ?: WsManager(),
         wsSignalerManager = wsSignalerManager ?: WsSignalerManager(),
         dataTimeout = dataTimeout ?: 3000L,

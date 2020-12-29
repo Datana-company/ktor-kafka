@@ -18,7 +18,7 @@ object CreateSuccessMeltSlagEventHandler : IKonveyorHandler<ConverterBeContext> 
         }
 
         val meltId: String = context.meltInfo.id
-        context.eventsRepository.getAllByMeltId(meltId).map {
+        context.eventRepository.getAllByMeltId(meltId).map {
             if (it.type == ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT ||
                 it.type == ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
             ) {
@@ -26,7 +26,7 @@ object CreateSuccessMeltSlagEventHandler : IKonveyorHandler<ConverterBeContext> 
             }
         }
         context.eventSlagSuccessReached()
-        context.eventsRepository.create(context.activeEvent)
+        context.eventRepository.create(context.activeEvent)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {
