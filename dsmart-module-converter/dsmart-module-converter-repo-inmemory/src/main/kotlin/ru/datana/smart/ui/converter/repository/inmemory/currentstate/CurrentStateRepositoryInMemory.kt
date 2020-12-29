@@ -24,11 +24,6 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
         .expireAfterWrite(ttl.toLongMilliseconds(), TimeUnit.MILLISECONDS)
         .suppressExceptions(false)
         .build()
-//        .also { cache ->
-//            initObjects.forEach {
-//                cache.put(it.currentMeltInfo.id, CurrentStateInMemoryDto.of(it))
-//            }
-//        }
 
     override suspend fun get(id: String): CurrentState? {
         //if (converterId.isBlank()) throw CurrentStateRepoWrongIdException(id)
@@ -78,7 +73,6 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
 //        if (currentState.currentMeltInfo.devices.converter.id.isBlank())
 //            throw CurrentStateRepoWrongIdException(currentState.currentMeltInfo.devices.converter.id)
         val dto = CurrentStateInMemoryDto.of(currentState, converterId) // временная реализация
-        println("CREATE_UPDATE: $dto")
         return save(dto).toModel()
     }
 

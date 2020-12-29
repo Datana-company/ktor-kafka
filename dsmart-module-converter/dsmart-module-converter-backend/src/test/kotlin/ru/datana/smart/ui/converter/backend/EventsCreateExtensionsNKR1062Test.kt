@@ -49,7 +49,6 @@ internal class EventsCreateExtensionsNKR1062Test {
     fun eventSlagWarningReachedCreateTest(){
         runBlocking {
             val event = context.eventSlagWarningReached()
-            println(context.currentStateRepository.lastAvgSlagRate(context.converterId))
             assertEquals(
                 "В потоке детектирован шлак – 30% сверх допустимой нормы 23%. Верните конвертер в вертикальное положение.",
                 event.textMessage

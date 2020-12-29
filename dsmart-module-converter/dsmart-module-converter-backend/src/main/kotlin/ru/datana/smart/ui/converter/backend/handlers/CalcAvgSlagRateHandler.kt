@@ -29,7 +29,7 @@ object CalcAvgSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
         } else {
             currentSlagRate
         }
-        context.currentStateRepository.updateLastAvgSlagRate(context.converterId, lastAvgSlagRate)
+        context.currentStateRepository.updateLastAvgSlagRate(context.converterId, avgSlagRate)
         context.slagRate = ModelSlagRate(
             slagRateTime = context.timeStart,
             steelRate = context.slagRate.steelRate,
