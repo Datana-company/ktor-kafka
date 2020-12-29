@@ -41,7 +41,8 @@ data class CurrentStateInMemoryDto(
             lastAngles = model.lastAngles.takeIf { it != ModelAngles.NONE }?.let { CurrentStateInMemoryAngles.of(it) },
             slagRateList = model.slagRateList.takeIf { it.isNotEmpty() }?.map { slagRate -> CurrentStateInMemorySlagRate.of(slagRate) }?.toMutableList(),
             lastTimeAngles = model.lastTimeAngles.takeIf { it != Instant.EPOCH }?.toEpochMilli(),
-            lastTimeFrame = model.lastTimeFrame.takeIf { it != Instant.EPOCH }?.toEpochMilli()
+            lastTimeFrame = model.lastTimeFrame.takeIf { it != Instant.EPOCH }?.toEpochMilli(),
+            lastAvgSlagRate = model.lastAvgSlagRate.takeIf { it != Double.MIN_VALUE }
         )
     }
 }
