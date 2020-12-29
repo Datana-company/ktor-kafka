@@ -5,9 +5,9 @@ import ru.datana.smart.ui.converter.common.models.*
 import ru.datana.smart.ui.converter.ws.models.*
 import java.time.Instant
 
-fun ConverterBeContext.toWsConverterResponseSlagRate() =
-    WsDsmartResponseConverterSlagRate(
-        data = toWsConverterSlagRateModel(this.slagRate)
+fun ConverterBeContext.toWsConverterResponseSlagRates() =
+    WsDsmartResponseConverterSlagRates(
+        data = toWsConverterSlagRateListModel(this.slagRateList)
     )
 
 fun ConverterBeContext.toWsConverterResponseAngles() =
@@ -27,7 +27,7 @@ fun ConverterBeContext.toWsConverterResponseMeltInfo() =
 
 fun ConverterBeContext.toWsResponseConverterEvent() =
     WsDsmartResponseConverterEvents(
-        data = toWsEventListModel(this.events)
+        data = toWsEventListModel(this.eventList)
     )
 
 fun ConverterBeContext.toWsResponseConverterState() =
@@ -35,10 +35,17 @@ fun ConverterBeContext.toWsResponseConverterState() =
         data = toWsConverterStateModel(this)
     )
 
+private fun toWsConverterSlagRateListModel(modelSlagRates: MutableList<ModelSlagRate>) =
+    WsDsmartConverterSlagRateList(
+        list = modelSlagRates.map { slagRate -> toWsConverterSlagRateModel(slagRate) }.toMutableList()
+    )
+
 private fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
     WsDsmartConverterSlagRate(
+        slagRateTime = modelSlagRate.slagRateTime.takeIf { it != Instant.MIN }?.toEpochMilli(),
         steelRate = modelSlagRate.steelRate.takeIf { it != Double.MIN_VALUE },
-        slagRate = modelSlagRate.slagRate.takeIf { it != Double.MIN_VALUE }
+        slagRate = modelSlagRate.slagRate.takeIf { it != Double.MIN_VALUE },
+        avgSlagRate = modelSlagRate.avgSlagRate.takeIf { it != Double.MIN_VALUE }
     )
 
 private fun toWsConverterAnglesModel(modelAngles: ModelAngles) =
@@ -118,6 +125,6 @@ private fun toWsEventModel(event: ModelEvent) =
 private fun toWsConverterStateModel(context: ConverterBeContext) =
     WsDsmartConverterState(
         meltInfo = toWsConverterMeltInfoModel(context.meltInfo), // из репозитария брать
-        events = toWsEventListModel(context.events),
+        events = toWsEventListModel(context.eventList),
         warningPoint = context.streamRateWarningPoint
     )

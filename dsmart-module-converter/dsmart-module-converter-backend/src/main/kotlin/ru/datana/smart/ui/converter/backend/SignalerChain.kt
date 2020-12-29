@@ -48,7 +48,9 @@ class SignalerChain(
 //            }
             // конвейер обработки обычного статуса светофора
             konveyor {
-                on { streamStatus == ModelStreamStatus.NORMAL || streamStatus == ModelStreamStatus.NONE }
+                on { streamStatus == ModelStreamStatus.NORMAL
+                    || streamStatus == ModelStreamStatus.END
+                    || streamStatus == ModelStreamStatus.NONE }
                 +NormalSignalizationHandler // включается серая лампочка
             }
 

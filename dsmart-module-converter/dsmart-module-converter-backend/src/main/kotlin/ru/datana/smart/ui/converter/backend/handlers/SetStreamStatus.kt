@@ -4,7 +4,7 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.ModelSlagRate
+import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.models.ModelStreamStatus
 import ru.datana.smart.ui.converter.common.utils.isNotEmpty
 import ru.datana.smart.ui.converter.common.utils.toPercent
@@ -15,15 +15,18 @@ import ru.datana.smart.ui.converter.common.utils.toPercent
 object SetStreamStatus: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         with(context) {
-            val avgStreamRate = currentStateRepository.avgStreamRate(converterId)
-            context.streamStatus = if (slagRate != ModelSlagRate.NONE && avgStreamRate.isNotEmpty()
+            val avgSlagRate = currentStateRepository.lastAvgSlagRate(converterId)
+            val currentMeltInfo = currentStateRepository.currentMeltInfo(converterId)
+            context.streamStatus = if (meltInfo != ModelMeltInfo.NONE && avgSlagRate.isNotEmpty()
                 && streamRateCriticalPoint.isNotEmpty() && streamRateWarningPoint.isNotEmpty()) {
-                    if (avgStreamRate.toPercent() > streamRateCriticalPoint.toPercent()) ModelStreamStatus.CRITICAL
-                    else if (avgStreamRate.toPercent() > streamRateWarningPoint.toPercent()
-                        && avgStreamRate.toPercent() <= streamRateCriticalPoint.toPercent()) ModelStreamStatus.WARNING
-//                    else if (avgStreamRate.toPercent() == streamRateWarningPoint.toPercent()) ModelStreamStatus.INFO
-                    else if (avgStreamRate.toPercent() <= streamRateWarningPoint.toPercent()) ModelStreamStatus.NORMAL
+                    if (avgSlagRate.toPercent() > streamRateCriticalPoint.toPercent()) ModelStreamStatus.CRITICAL
+                    else if (avgSlagRate.toPercent() > streamRateWarningPoint.toPercent()
+                        && avgSlagRate.toPercent() <= streamRateCriticalPoint.toPercent()) ModelStreamStatus.WARNING
+//                    else if (avgSlagRate.toPercent() == streamRateWarningPoint.toPercent()) ModelStreamStatus.INFO
+                    else if (avgSlagRate.toPercent() <= streamRateWarningPoint.toPercent()) ModelStreamStatus.NORMAL
                     else ModelStreamStatus.NONE
+            } else if (currentMeltInfo == ModelMeltInfo.NONE) {
+                ModelStreamStatus.END
             } else {
                ModelStreamStatus.NONE
             }

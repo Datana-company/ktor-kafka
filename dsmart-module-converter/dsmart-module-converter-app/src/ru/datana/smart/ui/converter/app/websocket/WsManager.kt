@@ -18,7 +18,7 @@ class WsManager : IWsManager {
         wsSessions += session
         val currentMeltId = context.currentStateRepository.currentMeltId(context.converterId) // что-то здесь не так
         val events = context.eventsRepository.getAllByMeltId(currentMeltId)
-        context.events = events
+        context.eventList = events
         val wsConverterState = context.toWsResponseConverterState()
         val converterStateSerializedString =
             kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
@@ -73,10 +73,10 @@ class WsManager : IWsManager {
         send(meltInfoSerializedString)
     }
 
-    override suspend fun sendSlagRate(context: ConverterBeContext) {
-        val wsSlagRate = context.toWsConverterResponseSlagRate()
+    override suspend fun sendSlagRates(context: ConverterBeContext) {
+        val wsSlagRate = context.toWsConverterResponseSlagRates()
         val slagRateSerializedString =
-            kotlinxSerializer.encodeToString(WsDsmartResponseConverterSlagRate.serializer(), wsSlagRate)
+            kotlinxSerializer.encodeToString(WsDsmartResponseConverterSlagRates.serializer(), wsSlagRate)
         logger.biz(
             msg = "Send SlagRate",
             data = object {

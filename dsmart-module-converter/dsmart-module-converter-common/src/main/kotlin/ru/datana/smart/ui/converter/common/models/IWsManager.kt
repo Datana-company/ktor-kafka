@@ -10,7 +10,7 @@ interface IWsManager {
 
     suspend fun sendMeltInfo(context: ConverterBeContext)
 
-    suspend fun sendSlagRate(context: ConverterBeContext)
+    suspend fun sendSlagRates(context: ConverterBeContext)
 
     suspend fun sendFrames(context: ConverterBeContext)
 
@@ -30,7 +30,7 @@ interface IWsManager {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun sendSlagRate(context: ConverterBeContext) {
+            override suspend fun sendSlagRates(context: ConverterBeContext) {
                 TODO("Not yet implemented")
             }
 

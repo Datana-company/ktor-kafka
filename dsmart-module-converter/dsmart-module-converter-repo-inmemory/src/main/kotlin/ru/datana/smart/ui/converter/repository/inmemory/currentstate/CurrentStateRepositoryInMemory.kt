@@ -37,7 +37,7 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
 
     override suspend fun getAllSlagRates(id: String): MutableList<ModelSlagRate> {
         if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        return cache.get(id)?.toModel()?.slagRates?: throw CurrentStateRepoNotFoundException(id)
+        return cache.get(id)?.toModel()?.slagRateList ?: throw CurrentStateRepoNotFoundException(id)
     }
 
     override suspend fun currentMeltInfo(id: String): ModelMeltInfo {
@@ -57,10 +57,10 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
         return dto.lastAngles?.angle?: Double.MIN_VALUE
     }
 
-    override suspend fun avgStreamRate(id: String): Double {
+    override suspend fun lastAvgSlagRate(id: String): Double {
         if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
         val dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        return dto.avgStreamRate?: Double.MIN_VALUE
+        return dto.lastAvgSlagRate ?: Double.MIN_VALUE
     }
 
     override suspend fun create(currentState: CurrentState): CurrentState {
@@ -89,18 +89,19 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
         return save(dto.copy(lastAngles = CurrentStateInMemoryAngles.of(lastAngles))).lastAngles?.toModel()?: ModelAngles.NONE
     }
 
-    override suspend fun updateStreamRate(id: String, avgStreamRate: Double): Double {
-        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        val dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        return save(dto.copy(avgStreamRate = avgStreamRate)).avgStreamRate?: Double.MIN_VALUE
-    }
-
     override suspend fun addSlagRate(id: String, slagRate: ModelSlagRate): CurrentState {
         if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
         var dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        if (dto.slagRates == null) dto = dto.copy(slagRates = mutableListOf())
-        dto.slagRates!!.add(CurrentStateInMemorySlagRate.of(slagRate))
+        if (dto.slagRateList == null) dto = dto.copy(slagRateList = mutableListOf())
+        dto.slagRateList!!.add(CurrentStateInMemorySlagRate.of(slagRate))
         return save(dto).toModel()
+    }
+
+    override suspend fun updateLastAvgSlagRate(id: String, avgSlagRate: Double): Double {
+        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        val dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
+        dto.copy(lastAvgSlagRate = avgSlagRate)
+        return save(dto).lastAvgSlagRate ?: Double.MIN_VALUE
     }
 
     override suspend fun compareAndUpdateLastTimeAngles(id: String, lastTimeAngles: Instant): Instant {

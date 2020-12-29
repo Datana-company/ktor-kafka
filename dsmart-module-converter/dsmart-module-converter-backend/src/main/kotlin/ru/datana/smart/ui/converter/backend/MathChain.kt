@@ -65,19 +65,19 @@ class MathChain(
 //                    res
 //                }
 
-                +CalcAvgStreamRateHandler // вычисление усреднённого значения
-                +WsSendMathSlagRateHandler // отправка данных о содержании потока по web-socket и отправка пустых данных
+                +CalcAvgSlagRateHandler // вычисление усреднённого значения
 
-                // обновление информации о последнем значении содержания потока
+                // обновление информации о последнем значении содержания потока,
+                // а затем достаются все данные по содержанию потока, касающиеся текущей плавки
                 handler {
                     on { status == CorStatus.STARTED }
                     exec {
-//                        val curState = currentState.get() //TODO remove
-//                        curState.lastSlagRate = slagRate  //
-                        //currentStateRepository.updateSlagRate(meltInfo.id, slagRate)
-                        currentStateRepository.addSlagRate(converterId, slagRate)
+                        currentStateRepository.addSlagRate(meltInfo.id, slagRate)
+                        slagRateList = currentStateRepository.getAllSlagRates(meltInfo.id)
                     }
                 }
+
+                +WsSendMathSlagRatesHandler // отправка данных о содержании потока по web-socket и отправка пустых данных
 
                 // вызов цепочки обработки событий по металлу
                 handler {

@@ -10,14 +10,14 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.*
 
 /*
-* WsSendMathSlagRateHandler - происходит отправка данных о содержании потока на фронтенд через web-socket.
+* WsSendMathSlagRatesHandler - происходит отправка данных о содержании потока на фронтенд через web-socket.
 * Если данные о содержании потока не проходили в течении заданного времени (DATA_TIMEOUT),
 * то на фронтенд отправляются пустые значения.
 * */
-object WsSendMathSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
+object WsSendMathSlagRatesHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         // отправка данных о содержании потока по web-socket
-        context.wsManager.sendSlagRate(context)
+        context.wsManager.sendSlagRates(context)
 
         val schedule = context.scheduleCleaner.get()
         with(schedule) {
@@ -38,7 +38,7 @@ object WsSendMathSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
                 context.currentStateRepository.addSlagRate(context.converterId, context.slagRate)
 
                 // отправка пустых данных о содержании потока по web-socket
-                context.wsManager.sendSlagRate(context)
+                context.wsManager.sendSlagRates(context)
                 println("jobMath done")
             }
         }
