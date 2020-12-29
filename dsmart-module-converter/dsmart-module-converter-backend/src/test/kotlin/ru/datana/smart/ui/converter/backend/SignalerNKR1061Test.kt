@@ -295,8 +295,6 @@ internal class SignalerNKR1061Test {
             )
             converterFacade.handleMath(context)
 
-            println("STREAM_STATUS: ${context.streamStatus}")
-            println("AVG_SLAGRATE: ${context.currentStateRepository.lastAvgSlagRate(context.converterId)}")
             assertEquals(CorStatus.SUCCESS, context.status)
             assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
             assertEquals(ModelSignalerSound.NONE, context.signaler.sound)

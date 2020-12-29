@@ -18,7 +18,6 @@ object SetStreamStatus: IKonveyorHandler<ConverterBeContext> {
         with(context) {
             val avgSlagRate = currentStateRepository.lastAvgSlagRate(converterId)
             val currentMeltInfo = currentStateRepository.currentMeltInfo(converterId)
-            println("MELTINFO: $currentMeltInfo")
             context.streamStatus = if (currentMeltInfo.isNotEmpty() && avgSlagRate.isNotEmpty()
                 && streamRateCriticalPoint.isNotEmpty() && streamRateWarningPoint.isNotEmpty()) {
                     if (avgSlagRate.toPercent() > streamRateCriticalPoint.toPercent()) ModelStreamStatus.CRITICAL

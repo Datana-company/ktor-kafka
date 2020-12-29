@@ -71,33 +71,6 @@ fun converterBeContextTest(
         externalEvent = externalEvent ?: ModelEvent.NONE
     )
 
-//fun createCurrentStateForTest(
-//    lastAngleTime: Instant? = null,
-//    lastAngle: Double? = null,
-//    lastSource: Double? = null,
-//    lastSteelRate: Double? = null,
-//    lastSlagRate: Double? = null,
-//    avgStreamRate: Double? = null
-//)
-//    : AtomicReference<CurrentState> {
-//    val currentState = AtomicReference(
-//        CurrentState(
-//            currentMeltInfo = defaultMeltInfoTest(),
-//            lastAngles = ModelAngles(
-//                angleTime = lastAngleTime ?: Instant.MIN,
-//                angle = lastAngle ?: Double.MIN_VALUE,
-//                source = lastSource ?: Double.MIN_VALUE
-//            ),
-//
-//            lastSlagRate = ModelSlagRate(
-//                steelRate = lastSteelRate ?: Double.MIN_VALUE,
-//                slagRate = lastSlagRate ?: Double.MIN_VALUE
-//            ),
-//            avgStreamRate = avgStreamRate ?: Double.MIN_VALUE
-//        )
-//    )
-//    return currentState
-//}
 
 @OptIn(ExperimentalTime::class)
 suspend fun createCurrentStateRepositoryForTest(

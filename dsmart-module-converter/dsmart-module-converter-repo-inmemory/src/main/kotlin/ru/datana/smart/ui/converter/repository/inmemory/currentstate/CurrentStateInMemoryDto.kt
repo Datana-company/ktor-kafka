@@ -20,8 +20,8 @@ data class CurrentStateInMemoryDto(
         currentMeltInfo = meltInfo?.toModel() ?: ModelMeltInfo.NONE,
         lastAngles = lastAngles?.toModel() ?: ModelAngles.NONE,
         lastAvgSlagRate = lastAvgSlagRate ?: Double.MIN_VALUE,
-        lastTimeAngles = lastTimeAngles?.let { Instant.ofEpochMilli(it) } ?: Instant.EPOCH,
-        lastTimeFrame = lastTimeFrame?.let { Instant.ofEpochMilli(it) } ?: Instant.EPOCH,
+        lastTimeAngles = lastTimeAngles?.let { Instant.ofEpochMilli(it) } ?: Instant.MIN,
+        lastTimeFrame = lastTimeFrame?.let { Instant.ofEpochMilli(it) } ?: Instant.MIN,
         slagRateList = slagRateList?.map { slagRate ->
             ModelSlagRate(
                 slagRateTime = slagRate.slagRateTime?.let { Instant.ofEpochMilli(it) } ?: Instant.MIN,
@@ -40,8 +40,8 @@ data class CurrentStateInMemoryDto(
             meltInfo = model.currentMeltInfo.takeIf { it != ModelMeltInfo.NONE }?.let { CurrentStateInMemoryMeltInfo.of(it) },
             lastAngles = model.lastAngles.takeIf { it != ModelAngles.NONE }?.let { CurrentStateInMemoryAngles.of(it) },
             slagRateList = model.slagRateList.takeIf { it.isNotEmpty() }?.map { slagRate -> CurrentStateInMemorySlagRate.of(slagRate) }?.toMutableList(),
-            lastTimeAngles = model.lastTimeAngles.takeIf { it != Instant.EPOCH }?.toEpochMilli(),
-            lastTimeFrame = model.lastTimeFrame.takeIf { it != Instant.EPOCH }?.toEpochMilli(),
+            lastTimeAngles = model.lastTimeAngles.takeIf { it != Instant.MIN }?.toEpochMilli(),
+            lastTimeFrame = model.lastTimeFrame.takeIf { it != Instant.MIN }?.toEpochMilli(),
             lastAvgSlagRate = model.lastAvgSlagRate.takeIf { it != Double.MIN_VALUE }
         )
     }

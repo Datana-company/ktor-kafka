@@ -10,7 +10,7 @@ import ru.datana.smart.ui.converter.common.utils.toPercent
 
 suspend fun ConverterBeContext.eventExternalReceived(setActive: Boolean = true):ModelEvent {
     val event = ModelEvent(
-        meltId = currentStateRepository.currentMeltId(converterId),
+        meltId = meltInfo.id,
         type = ModelEvent.EventType.EXTERNAL_EVENT,
         timeStart = timeStart,
         timeFinish = timeStart,
@@ -134,7 +134,7 @@ private suspend fun ConverterBeContext.eventSuccess():ModelEvent = this.eventBas
 
 
 private suspend fun ConverterBeContext.eventBase():ModelEvent = ModelEvent(
-    meltId = currentStateRepository.currentMeltId(converterId),
+    meltId = meltInfo.id,
     timeStart = this.timeStart,
     timeFinish = this.timeStart
 )

@@ -7,8 +7,8 @@ data class CurrentState(
     var lastAngles: ModelAngles = ModelAngles.NONE,
     var slagRateList: MutableList<ModelSlagRate> = mutableListOf(),
     var lastAvgSlagRate: Double = Double.MIN_VALUE,
-    var lastTimeAngles: Instant = Instant.EPOCH,
-    var lastTimeFrame: Instant = Instant.EPOCH
+    var lastTimeAngles: Instant = Instant.MIN,
+    var lastTimeFrame: Instant = Instant.MIN
 ) {
     companion object {
         val NONE = CurrentState()
