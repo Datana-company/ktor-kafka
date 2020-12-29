@@ -130,7 +130,8 @@ private fun toWsEventModel(event: ModelEvent) =
 private fun toWsConverterStateModel(context: ConverterBeContext) =
     WsDsmartConverterState(
         meltInfo = toWsConverterMeltInfoModel(context.meltInfo), // из репозитария брать
-        events = toWsEventListModel(context.eventList),
+        eventList = toWsEventListModel(context.eventList),
+        slagRateList = toWsConverterSlagRateListModel(context.slagRateList),
         warningPoint = context.streamRateWarningPoint
     )
 
