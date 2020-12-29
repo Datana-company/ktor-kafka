@@ -35,7 +35,9 @@ internal class EventsCreateExtensionsNKR1062Test {
                 meltInfo = meltInfo,
                 streamRateWarningPoint = 0.23,
                 streamRateCriticalPoint = 0.29,
-                currentStateRepository = CurrentStateRepositoryInMemory(30.toDuration(DurationUnit.SECONDS)).apply {
+                currentStateRepository = CurrentStateRepositoryInMemory(
+                    ttl = 30.toDuration(DurationUnit.SECONDS),
+                    converterId = "converter1").apply {
                     create(currentState)
                 },
                 timeStart = Instant.parse("2020-12-20T18:35:24.010Z")

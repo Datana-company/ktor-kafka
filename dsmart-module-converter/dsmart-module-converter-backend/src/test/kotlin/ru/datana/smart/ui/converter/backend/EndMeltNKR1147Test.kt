@@ -58,6 +58,7 @@ internal class EndMeltNKR1147Test {
             converterFacade.handleMath(context)
             delay(meltTimeout + 1000L)
 
+            println(context.eventList.first())
             assertEquals(1, context.eventList.size)
             assertEquals(ModelEvent.Category.CRITICAL, context.eventList.first().category)
             assertEquals(false, context.eventList.first().isActive)

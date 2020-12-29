@@ -34,7 +34,9 @@ fun converterFacadeTest(
     scheduleCleaner: AtomicReference<ScheduleCleaner>? = null,
 ) =
     ConverterFacade(
-        currentStateRepository = currentStateRepository?: CurrentStateRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
+        currentStateRepository = currentStateRepository?: CurrentStateRepositoryInMemory(
+            ttl = 10.toDuration(DurationUnit.MINUTES),
+            converterId = defaultMeltInfoTest().devices.converter.id),
         eventRepository = eventRepository ?: EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
         wsManager = wsManager ?: WsManager(),
         wsSignalerManager = wsSignalerManager ?: WsSignalerManager(),
@@ -99,6 +101,7 @@ fun converterBeContextTest(
 
 @OptIn(ExperimentalTime::class)
 suspend fun createCurrentStateRepositoryForTest(
+    converterId: String? = null,
     meltInfo: ModelMeltInfo? = null,
     lastAngleTime: Instant? = null,
     lastAngle: Double? = null,
@@ -109,7 +112,8 @@ suspend fun createCurrentStateRepositoryForTest(
     lastTimeAngles: Instant? = null,
     lastTimeFrame: Instant? = null
 ): CurrentStateRepositoryInMemory = CurrentStateRepositoryInMemory(
-    ttl = 10.toDuration(DurationUnit.MINUTES)
+    ttl = 10.toDuration(DurationUnit.MINUTES),
+    converterId = converterId?: defaultMeltInfoTest().devices.converter.id
 ).apply {
     create(
         CurrentState(

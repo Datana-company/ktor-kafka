@@ -12,10 +12,12 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 object AngleTimeFilterHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val angleTime = context.angles.angleTime
-        val newAngleTime = context.currentStateRepository.compareAndUpdateLastTimeAngles(context.converterId, angleTime)
+        val lastTime = context.currentStateRepository.lastTimeAngles(context.converterId)
 
-        if (newAngleTime != angleTime) {
+        if (lastTime > angleTime) {
             context.status = CorStatus.FINISHED
+        } else {
+            context.currentStateRepository.updateLastTimeAngles(context.converterId, angleTime)
         }
 
     }

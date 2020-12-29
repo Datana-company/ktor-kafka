@@ -115,7 +115,9 @@ fun Application.module(testing: Boolean = false) {
 //    metalRateEventGenerator.start()
 
     val eventRepository = EventRepositoryInMemory(ttl = storageDuration.toDuration(DurationUnit.MINUTES))
-    val currentStateRepository = CurrentStateRepositoryInMemory(ttl = 2.toDuration(DurationUnit.HOURS)) //TODO изменить на значение из конфига
+    val currentStateRepository = CurrentStateRepositoryInMemory(
+        ttl = 2.toDuration(DurationUnit.HOURS),
+        converterId = converterId) //TODO изменить на значение из конфига
 
     val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
     val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)

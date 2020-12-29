@@ -10,14 +10,14 @@ import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.models.ModelSlagRate
 import ru.datana.smart.ui.converter.common.repositories.ICurrentStateRepository
 import java.time.Instant
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor(
     ttl: Duration,
-    initObjects: Collection<CurrentState> = emptyList()
+    initObjects: Collection<CurrentState> = emptyList(),
+    val converterId: String
 ): ICurrentStateRepository {
     @OptIn(ExperimentalTime::class)
     private var cache: Cache<String, CurrentStateInMemoryDto> = object : Cache2kBuilder<String, CurrentStateInMemoryDto>() {}
@@ -30,96 +30,106 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
 //            }
 //        }
 
-    override suspend fun get(id: String): CurrentState {
-        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        return cache.get(id)?.toModel()?: throw CurrentStateRepoNotFoundException(id)
+    override suspend fun get(id: String): CurrentState? {
+        //if (converterId.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        return cache.get(converterId)?.toModel()
     }
 
-    override suspend fun getAllSlagRates(id: String): MutableList<ModelSlagRate> {
-        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        return cache.get(id)?.toModel()?.slagRateList ?: throw CurrentStateRepoNotFoundException(id)
+    override suspend fun getAllSlagRates(id: String): MutableList<ModelSlagRate>? {
+        //if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        return cache.get(converterId)?.toModel()?.slagRateList
     }
 
-    override suspend fun currentMeltInfo(id: String): ModelMeltInfo {
-        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        return cache.get(id)?.meltInfo?.toModel()?: throw CurrentStateRepoNotFoundException(id)
+    override suspend fun currentMeltInfo(id: String): ModelMeltInfo? {
+        //if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        return cache.get(converterId)?.meltInfo?.toModel()
     }
 
     override suspend fun currentMeltId(id: String): String {
-        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        val dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        return dto.meltInfo?.id?: ""
+        //if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        return cache.get(converterId)?.meltInfo?.id?: ""
     }
 
     override suspend fun currentAngle(id: String): Double {
-        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        val dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        return dto.lastAngles?.angle?: Double.MIN_VALUE
+        //if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        return cache.get(converterId)?.lastAngles?.angle?: Double.MIN_VALUE
     }
 
     override suspend fun lastAvgSlagRate(id: String): Double {
-        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        val dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        return dto.lastAvgSlagRate ?: Double.MIN_VALUE
+        //if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        return cache.get(converterId)?.lastAvgSlagRate ?: Double.MIN_VALUE
+    }
+
+    override suspend fun lastTimeAngles(id: String): Instant {
+        //if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        return cache.get(converterId)?.let {
+            Instant.ofEpochMilli(it.lastTimeAngles?: Long.MIN_VALUE)
+        }?: Instant.MIN
+    }
+
+    override suspend fun lastTimeFrame(id: String): Instant {
+        //if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        return cache.get(converterId)?.let {
+            Instant.ofEpochMilli(it.lastTimeAngles?: Long.MIN_VALUE)
+        }?: Instant.MIN
     }
 
     override suspend fun create(currentState: CurrentState): CurrentState {
-        if (currentState.currentMeltInfo.devices.converter.id.isBlank())
-            throw CurrentStateRepoWrongIdException(currentState.currentMeltInfo.devices.converter.id)
-        val dto = CurrentStateInMemoryDto.of(currentState) // временная реализация
+//        if (currentState.currentMeltInfo.devices.converter.id.isBlank())
+//            throw CurrentStateRepoWrongIdException(currentState.currentMeltInfo.devices.converter.id)
+        val dto = CurrentStateInMemoryDto.of(currentState, converterId) // временная реализация
         return save(dto).toModel()
     }
 
     override suspend fun update(currentState: CurrentState) = create(currentState)
 
     override suspend fun delete(id: String): CurrentState {
-        return cache.peekAndRemove(id)?.toModel()?: CurrentState.NONE
+        return cache.peekAndRemove(converterId)?.toModel()?: CurrentState.NONE
     }
 
-    override suspend fun updateMeltInfo(meltInfo: ModelMeltInfo): ModelMeltInfo {
-        val  id = meltInfo.devices.converter.id
-        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        val dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        return save(dto.copy(meltInfo = CurrentStateInMemoryMeltInfo.of(meltInfo))).meltInfo?.toModel()?: ModelMeltInfo.NONE
+    override suspend fun updateMeltInfo(meltInfo: ModelMeltInfo): ModelMeltInfo? {
+//        val  id = meltInfo.devices.converter.id
+//        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        val dto = cache.get(converterId)?: return null
+        return save(dto.copy(meltInfo = CurrentStateInMemoryMeltInfo.of(meltInfo))).meltInfo?.toModel()
     }
 
-    override suspend fun updateAngles(id: String, lastAngles: ModelAngles): ModelAngles {
-        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        val dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        return save(dto.copy(lastAngles = CurrentStateInMemoryAngles.of(lastAngles))).lastAngles?.toModel()?: ModelAngles.NONE
+    override suspend fun updateAngles(id: String, lastAngles: ModelAngles): ModelAngles? {
+        //if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        val dto = cache.get(converterId)?: return null
+        return save(dto.copy(lastAngles = CurrentStateInMemoryAngles.of(lastAngles))).lastAngles?.toModel()
     }
 
-    override suspend fun addSlagRate(id: String, slagRate: ModelSlagRate): CurrentState {
-        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        var dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
+    override suspend fun addSlagRate(id: String, slagRate: ModelSlagRate): CurrentState? {
+        //if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        var dto = cache.get(converterId)?: return null
         if (dto.slagRateList == null) dto = dto.copy(slagRateList = mutableListOf())
         dto.slagRateList!!.add(CurrentStateInMemorySlagRate.of(slagRate))
         return save(dto).toModel()
     }
 
-    override suspend fun updateLastAvgSlagRate(id: String, avgSlagRate: Double): Double {
-        if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
-        val dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        dto.copy(lastAvgSlagRate = avgSlagRate)
-        return save(dto).lastAvgSlagRate ?: Double.MIN_VALUE
+    override suspend fun updateLastAvgSlagRate(id: String, avgSlagRate: Double): Double? {
+        //if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
+        val dto = cache.get(converterId)?: return null
+        return save(dto.copy(lastAvgSlagRate = avgSlagRate)).lastAvgSlagRate
     }
 
-    override suspend fun compareAndUpdateLastTimeAngles(id: String, lastTimeAngles: Instant): Instant {
-        val dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        return save(dto.copy(lastTimeAngles = maxOf(dto.lastTimeAngles?: 0, lastTimeAngles.toEpochMilli())))
+    override suspend fun updateLastTimeAngles(id: String, lastTimeAngles: Instant): Instant? {
+        val dto = cache.get(converterId)?: return null
+        return save(dto.copy(lastTimeAngles = lastTimeAngles.toEpochMilli()))
             .lastTimeAngles
             ?.let {
                 Instant.ofEpochMilli(it)
-            }?: Instant.EPOCH
+            }
     }
 
-    override suspend fun compareAndUpdateLastTimeFrame(id: String, lastTimeFrame: Instant): Instant {
-        val dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        return save(dto.copy(lastTimeFrame = maxOf(dto.lastTimeFrame?: 0, lastTimeFrame.toEpochMilli())))
+    override suspend fun updateLastTimeFrame(id: String, lastTimeFrame: Instant): Instant? {
+        val dto = cache.get(converterId)?: return null
+        return save(dto.copy(lastTimeFrame = lastTimeFrame.toEpochMilli()))
             .lastTimeFrame
             ?.let {
                 Instant.ofEpochMilli(it)
-            }?: Instant.EPOCH
+            }
     }
 
     private fun save(dto: CurrentStateInMemoryDto): CurrentStateInMemoryDto{

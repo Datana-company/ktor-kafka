@@ -2,38 +2,39 @@ package ru.datana.smart.ui.converter.common.repositories
 
 import ru.datana.smart.ui.converter.common.models.*
 import java.time.Instant
-import java.util.concurrent.ConcurrentHashMap
 
 interface ICurrentStateRepository {
-    suspend fun get(id: String): CurrentState
-    suspend fun getAllSlagRates(id: String): MutableList<ModelSlagRate>
-    suspend fun currentMeltInfo(id: String): ModelMeltInfo
+    suspend fun get(id: String): CurrentState?
+    suspend fun getAllSlagRates(id: String): MutableList<ModelSlagRate>?
+    suspend fun currentMeltInfo(id: String): ModelMeltInfo?
     suspend fun currentMeltId(id: String): String
     suspend fun currentAngle(id: String): Double
     suspend fun lastAvgSlagRate(id: String): Double
+    suspend fun lastTimeAngles(id: String): Instant
+    suspend fun lastTimeFrame(id: String): Instant
     suspend fun create(currentState: CurrentState): CurrentState
     suspend fun update(currentState: CurrentState): CurrentState
     suspend fun delete(id: String): CurrentState
-    suspend fun updateMeltInfo(meltInfo: ModelMeltInfo): ModelMeltInfo
-    suspend fun updateAngles(id: String, lastAngles: ModelAngles): ModelAngles
-    suspend fun addSlagRate(id: String, slagRate: ModelSlagRate): CurrentState
-    suspend fun updateLastAvgSlagRate(id: String, avgSlagRate: Double): Double
-    suspend fun compareAndUpdateLastTimeAngles(id: String, lastTimeAngles: Instant): Instant
-    suspend fun compareAndUpdateLastTimeFrame(id: String, lastTimeFrame: Instant): Instant
+    suspend fun updateMeltInfo(meltInfo: ModelMeltInfo): ModelMeltInfo?
+    suspend fun updateAngles(id: String, lastAngles: ModelAngles): ModelAngles?
+    suspend fun addSlagRate(id: String, slagRate: ModelSlagRate): CurrentState?
+    suspend fun updateLastAvgSlagRate(id: String, avgSlagRate: Double): Double?
+    suspend fun updateLastTimeAngles(id: String, lastTimeAngles: Instant): Instant?
+    suspend fun updateLastTimeFrame(id: String, lastTimeFrame: Instant): Instant?
 
 
     companion object {
         val NONE = object : ICurrentStateRepository{
 
-            override suspend fun get(id: String): CurrentState {
+            override suspend fun get(id: String): CurrentState? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun getAllSlagRates(id: String): MutableList<ModelSlagRate> {
+            override suspend fun getAllSlagRates(id: String): MutableList<ModelSlagRate>? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun currentMeltInfo(id: String): ModelMeltInfo {
+            override suspend fun currentMeltInfo(id: String): ModelMeltInfo? {
                 TODO("Not yet implemented")
             }
 
@@ -49,6 +50,14 @@ interface ICurrentStateRepository {
                 TODO("Not yet implemented")
             }
 
+            override suspend fun lastTimeAngles(id: String): Instant {
+                TODO("Not yet implemented")
+            }
+
+            override suspend fun lastTimeFrame(id: String): Instant {
+                TODO("Not yet implemented")
+            }
+
             override suspend fun create(currentState: CurrentState): CurrentState {
                 TODO("Not yet implemented")
             }
@@ -61,27 +70,27 @@ interface ICurrentStateRepository {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun updateMeltInfo(meltInfo: ModelMeltInfo): ModelMeltInfo {
+            override suspend fun updateMeltInfo(meltInfo: ModelMeltInfo): ModelMeltInfo? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun updateAngles(id: String, lastAngles: ModelAngles): ModelAngles {
+            override suspend fun updateAngles(id: String, lastAngles: ModelAngles): ModelAngles? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun updateLastAvgSlagRate(id: String, avgSlagRate: Double): Double {
+            override suspend fun updateLastAvgSlagRate(id: String, avgSlagRate: Double): Double? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun addSlagRate(id: String, slagRate: ModelSlagRate): CurrentState {
+            override suspend fun addSlagRate(id: String, slagRate: ModelSlagRate): CurrentState? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun compareAndUpdateLastTimeAngles(id: String, lastTimeAngles: Instant): Instant {
+            override suspend fun updateLastTimeAngles(id: String, lastTimeAngles: Instant): Instant? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun compareAndUpdateLastTimeFrame(id: String, lastTimeFrame: Instant): Instant {
+            override suspend fun updateLastTimeFrame(id: String, lastTimeFrame: Instant): Instant? {
                 TODO("Not yet implemented")
             }
 

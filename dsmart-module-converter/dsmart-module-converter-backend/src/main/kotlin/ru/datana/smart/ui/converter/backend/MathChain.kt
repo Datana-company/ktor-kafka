@@ -72,8 +72,8 @@ class MathChain(
                 handler {
                     on { status == CorStatus.STARTED }
                     exec {
-                        currentStateRepository.addSlagRate(meltInfo.id, slagRate)
-                        slagRateList = currentStateRepository.getAllSlagRates(meltInfo.id)
+                        currentStateRepository.addSlagRate(converterId, slagRate)
+                        slagRateList = currentStateRepository.getAllSlagRates(converterId)?: mutableListOf()
                     }
                 }
 
