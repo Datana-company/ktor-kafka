@@ -30,8 +30,9 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
             jobMeltFinish = GlobalScope.launch {
                 // происходит ожидание в течение заданного времени (MELT_TIMEOUT)
                 delay(context.meltTimeout)
-                // сброс статуса контекста перед вызовом цепочек с обработкой событий и светофора
+                // сброс контекста перед вызовом цепочек с обработкой событий и светофора
                 context.status = CorStatus.STARTED
+                context.slagRateList = mutableListOf()
                 // сброс данных в репозитории текущего состояния
                 context.currentStateRepository.update(CurrentState.NONE)
                 // вызов цепочки обработки событий по шлаку или по металлу

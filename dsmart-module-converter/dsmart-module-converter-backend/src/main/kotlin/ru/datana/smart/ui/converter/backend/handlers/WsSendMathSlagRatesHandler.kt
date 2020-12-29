@@ -30,8 +30,8 @@ object WsSendMathSlagRatesHandler: IKonveyorHandler<ConverterBeContext> {
             jobSlagRate = GlobalScope.launch {
                 // происходит ожидание в течение заданного времени (DATA_TIMEOUT)
                 delay(context.dataTimeout)
-                // содержание потока в контексте заполняется значением по умолчанию
-                context.slagRate = ModelSlagRate.NONE
+                // лист данных о содержании потока в контексте заполняется значением по умолчанию
+                context.slagRateList = mutableListOf()
 
                 // задаётся текущее содержание потока в репозиторий текущего состояния
                 //context.currentStateRepository.updateSlagRate(null, context.slagRate)
