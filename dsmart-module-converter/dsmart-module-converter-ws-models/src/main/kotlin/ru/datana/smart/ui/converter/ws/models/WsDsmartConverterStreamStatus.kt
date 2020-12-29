@@ -11,6 +11,7 @@ data class WsDsmartConverterStreamStatus(
         CRITICAL("CRITICAL"),
         WARNING("WARNING"),
         INFO("INFO"),
-        NORMAL("NORMAL")
+        NORMAL("NORMAL"),
+        END("END")
     }
 }
