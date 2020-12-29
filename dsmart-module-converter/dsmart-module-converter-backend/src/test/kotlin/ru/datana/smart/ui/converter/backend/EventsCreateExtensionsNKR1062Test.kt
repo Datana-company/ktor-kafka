@@ -30,13 +30,13 @@ internal class EventsCreateExtensionsNKR1062Test {
             angles = ModelAngles(angle = 50.0)
             slagRate = ModelSlagRate(steelRate = 0.7, slagRate = 0.3)
             meltInfo = ModelMeltInfo(id = "test-melt-id")
-            currentState = CurrentState(lastAvgSlagRate = slagRate.slagRate, lastAngles = angles, currentMeltInfo = meltInfo)
+            currentState = CurrentState(lastAvgSlagRate = slagRate.slagRate, slagRateList = mutableListOf(slagRate), lastAngles = angles, currentMeltInfo = meltInfo)
             context = ConverterBeContext(
                 meltInfo = meltInfo,
                 streamRateWarningPoint = 0.23,
                 streamRateCriticalPoint = 0.29,
                 currentStateRepository = CurrentStateRepositoryInMemory(
-                    ttl = 30.toDuration(DurationUnit.SECONDS),
+                    ttl = 60.toDuration(DurationUnit.SECONDS),
                     converterId = "converter1").apply {
                     create(currentState)
                 },
@@ -49,7 +49,7 @@ internal class EventsCreateExtensionsNKR1062Test {
     fun eventSlagWarningReachedCreateTest(){
         runBlocking {
             val event = context.eventSlagWarningReached()
-            //println(event)
+            println(context.currentStateRepository.lastAvgSlagRate(context.converterId))
             assertEquals(
                 "В потоке детектирован шлак – 30% сверх допустимой нормы 23%. Верните конвертер в вертикальное положение.",
                 event.textMessage

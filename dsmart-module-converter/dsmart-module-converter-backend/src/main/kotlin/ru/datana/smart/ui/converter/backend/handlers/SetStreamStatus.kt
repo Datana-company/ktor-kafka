@@ -6,6 +6,7 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.models.ModelStreamStatus
+import ru.datana.smart.ui.converter.common.utils.isEmpty
 import ru.datana.smart.ui.converter.common.utils.isNotEmpty
 import ru.datana.smart.ui.converter.common.utils.toPercent
 
@@ -17,7 +18,8 @@ object SetStreamStatus: IKonveyorHandler<ConverterBeContext> {
         with(context) {
             val avgSlagRate = currentStateRepository.lastAvgSlagRate(converterId)
             val currentMeltInfo = currentStateRepository.currentMeltInfo(converterId)
-            context.streamStatus = if (meltInfo != ModelMeltInfo.NONE && avgSlagRate.isNotEmpty()
+            println("MELTINFO: $currentMeltInfo")
+            context.streamStatus = if (currentMeltInfo.isNotEmpty() && avgSlagRate.isNotEmpty()
                 && streamRateCriticalPoint.isNotEmpty() && streamRateWarningPoint.isNotEmpty()) {
                     if (avgSlagRate.toPercent() > streamRateCriticalPoint.toPercent()) ModelStreamStatus.CRITICAL
                     else if (avgSlagRate.toPercent() > streamRateWarningPoint.toPercent()
@@ -25,7 +27,7 @@ object SetStreamStatus: IKonveyorHandler<ConverterBeContext> {
 //                    else if (avgSlagRate.toPercent() == streamRateWarningPoint.toPercent()) ModelStreamStatus.INFO
                     else if (avgSlagRate.toPercent() <= streamRateWarningPoint.toPercent()) ModelStreamStatus.NORMAL
                     else ModelStreamStatus.NONE
-            } else if (currentMeltInfo == ModelMeltInfo.NONE) {
+            } else if (currentMeltInfo.isEmpty()) {
                 ModelStreamStatus.END
             } else {
                ModelStreamStatus.NONE

@@ -78,6 +78,7 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
 //        if (currentState.currentMeltInfo.devices.converter.id.isBlank())
 //            throw CurrentStateRepoWrongIdException(currentState.currentMeltInfo.devices.converter.id)
         val dto = CurrentStateInMemoryDto.of(currentState, converterId) // временная реализация
+        println("CREATE_UPDATE: $dto")
         return save(dto).toModel()
     }
 

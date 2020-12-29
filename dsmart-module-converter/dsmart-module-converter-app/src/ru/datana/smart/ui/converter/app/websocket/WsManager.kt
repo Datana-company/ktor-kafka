@@ -20,7 +20,7 @@ class WsManager : IWsManager {
         val eventList = context.eventRepository.getAllByMeltId(currentMeltId)
         val slagRateList = context.currentStateRepository.getAllSlagRates(currentMeltId)
         context.eventList = eventList
-        context.slagRateList = slagRateList
+        context.slagRateList = slagRateList?: mutableListOf()
         val wsConverterState = context.toWsResponseConverterState()
         val converterStateSerializedString =
             kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
