@@ -11,7 +11,7 @@ internal class ExtEventsNKR899Test {
     fun testExtEvent() {
         runBlocking {
             val converterFacade = converterFacadeTest(
-                currentState = createCurrentStateForTest()
+                currentStateRepository = createCurrentStateRepositoryForTest()
             )
 
             val context = converterBeContextTest(
@@ -24,9 +24,9 @@ internal class ExtEventsNKR899Test {
             )
 
             converterFacade.handleExternalEvents(context)
-            assertEquals("alertRuleId_234", context.events.first().alertRuleId)
-            assertEquals("component_123", context.events.first().component)
-            assertEquals("timestamp", context.events.first().timestamp)
+            assertEquals("alertRuleId_234", context.eventList.first().alertRuleId)
+            assertEquals("component_123", context.eventList.first().component)
+            assertEquals("timestamp", context.eventList.first().timestamp)
         }
     }
 }

@@ -51,10 +51,10 @@ internal class EventsChainNKR1031Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(ModelEvent.Category.CRITICAL, context.events.first().category)
-            assertEquals(false, context.events.first().isActive)
-            assertNotEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertNotEquals(true, context.events.first().isActive)
+            assertEquals(ModelEvent.Category.CRITICAL, context.eventList.first().category)
+            assertEquals(false, context.eventList.first().isActive)
+            assertNotEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertNotEquals(true, context.eventList.first().isActive)
         }
     }
     /**  NKR-1031
@@ -97,8 +97,8 @@ internal class EventsChainNKR1031Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(true, context.events.first().isActive)
-            assertNotEquals(false, context.events.first().isActive)
+            assertEquals(true, context.eventList.first().isActive)
+            assertNotEquals(false, context.eventList.first().isActive)
         }
     }
 

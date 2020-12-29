@@ -29,7 +29,6 @@ fun converterFacadeTest(
     reactionTime: Long? = null,
     sirenLimitTime: Long? = null,
     roundingWeight: Double? = null,
-    currentState: AtomicReference<CurrentState>? = null,
     converterId: String? = null,
     framesBasePath: String? = null,
     scheduleCleaner: AtomicReference<ScheduleCleaner>? = null,
@@ -47,7 +46,6 @@ fun converterFacadeTest(
         reactionTime = reactionTime ?: 3000L,
         sirenLimitTime = sirenLimitTime ?: 10000L,
         roundingWeight = roundingWeight ?: 0.1,
-        currentState = currentState ?: AtomicReference(CurrentState.NONE),
         converterId = converterId ?: "converter1",
         framesBasePath = framesBasePath ?: "123",
         scheduleCleaner = scheduleCleaner ?: AtomicReference(ScheduleCleaner.NONE)
@@ -101,6 +99,7 @@ fun converterBeContextTest(
 
 @OptIn(ExperimentalTime::class)
 suspend fun createCurrentStateRepositoryForTest(
+    meltInfo: ModelMeltInfo? = null,
     lastAngleTime: Instant? = null,
     lastAngle: Double? = null,
     lastSource: Double? = null,
@@ -114,18 +113,18 @@ suspend fun createCurrentStateRepositoryForTest(
 ).apply {
     create(
         CurrentState(
-            currentMeltInfo = defaultMeltInfoTest(),
+            currentMeltInfo = meltInfo?: defaultMeltInfoTest(),
             lastAngles = ModelAngles(
                 angleTime = lastAngleTime ?: Instant.MIN,
                 angle = lastAngle ?: Double.MIN_VALUE,
                 source = lastSource ?: Double.MIN_VALUE
             ),
-            slagRates = mutableListOf(
+            slagRateList = mutableListOf(
                 ModelSlagRate(
                     steelRate = lastSteelRate?: Double.MIN_VALUE,
                     slagRate = lastSlagRate?: Double.MIN_VALUE
             )),
-            avgStreamRate = avgStreamRate ?: Double.MIN_VALUE,
+            lastAvgSlagRate = avgStreamRate ?: Double.MIN_VALUE,
             lastTimeAngles = lastTimeAngles?: Instant.EPOCH,
             lastTimeFrame = lastTimeFrame?: Instant.EPOCH
         )

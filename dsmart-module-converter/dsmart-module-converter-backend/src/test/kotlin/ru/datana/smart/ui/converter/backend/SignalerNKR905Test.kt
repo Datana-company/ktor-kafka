@@ -27,6 +27,11 @@ internal class SignalerNKR905Test {
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgStreamRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
 
                 roundingWeight = 0.1,
@@ -34,10 +39,7 @@ internal class SignalerNKR905Test {
                 streamRateCriticalPoint = 0.34,
                 reactionTime = 3000,
                 sirenLimitTime = 3000,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.16
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
 

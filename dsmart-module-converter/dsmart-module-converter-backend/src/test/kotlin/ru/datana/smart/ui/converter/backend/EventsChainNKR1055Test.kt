@@ -52,8 +52,8 @@ internal class EventsChainNKR1055Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
+            assertEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertEquals(ModelEvent.ExecutionStatus.FAILED, context.eventList.first().executionStatus)
 
         }
     }
@@ -99,10 +99,10 @@ internal class EventsChainNKR1055Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
-            assertNotEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
-            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.eventList.first().executionStatus)
+            assertNotEquals(ModelEvent.ExecutionStatus.COMPLETED, context.eventList.first().executionStatus)
+            assertEquals(ModelEvent.ExecutionStatus.NONE, context.eventList.first().executionStatus)
 
         }
     }
@@ -149,8 +149,8 @@ internal class EventsChainNKR1055Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
+            assertEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertEquals(ModelEvent.ExecutionStatus.COMPLETED, context.eventList.first().executionStatus)
 
         }
     }
@@ -199,9 +199,9 @@ internal class EventsChainNKR1055Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertNotEquals(ModelEvent.ExecutionStatus.COMPLETED, context.events.first().executionStatus)
-            assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
+            assertEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertNotEquals(ModelEvent.ExecutionStatus.COMPLETED, context.eventList.first().executionStatus)
+            assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.eventList.first().executionStatus)
 
         }
     }
@@ -248,8 +248,8 @@ internal class EventsChainNKR1055Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
+            assertEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertEquals(ModelEvent.ExecutionStatus.NONE, context.eventList.first().executionStatus)
 
         }
     }
@@ -296,8 +296,8 @@ internal class EventsChainNKR1055Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.events.first().executionStatus)
+            assertEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertNotEquals(ModelEvent.ExecutionStatus.FAILED, context.eventList.first().executionStatus)
 
         }
     }

@@ -25,15 +25,18 @@ internal class MeltInfoChainTest {
                 irCameraName = "IR camera for Converter",
                 irCameraId = "ir-cam-25",
             )
-            converterFacade = converterFacadeTest()
+            converterFacade = converterFacadeTest(
+                currentStateRepository = createCurrentStateRepositoryForTest()
+            )
             context = converterBeContextTest(
-                meltInfo = meltInfo,
-                currentStateRepository = CurrentStateRepositoryInMemory(30.toDuration(DurationUnit.SECONDS)).apply {
-                    create(CurrentState(currentMeltInfo = meltInfo))
-                }
-            ) }
+                meltInfo = meltInfo
+            )
+        }
     }
 
+    /**
+     * В таком виде не работает, что проверяется в данном тесте?
+     */
     @Test
     fun metaTest() {
         runBlocking {

@@ -58,8 +58,8 @@ internal class EventsChainNKR1041Test {
 
             converterFacade.handleMath(context)
             delay(meltTimeout + 1000L)
-            assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(false, context.events.first().isActive)
+            assertEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertEquals(false, context.eventList.first().isActive)
             assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
             assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
         }
@@ -109,7 +109,7 @@ internal class EventsChainNKR1041Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(false, context.events.first().isActive)
+            assertNotEquals(false, context.eventList.first().isActive)
             assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
             assertNotEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
             assertEquals(ModelSignalerSound.ModelSignalerSoundType.SOUND_1, context.signaler.sound.type)

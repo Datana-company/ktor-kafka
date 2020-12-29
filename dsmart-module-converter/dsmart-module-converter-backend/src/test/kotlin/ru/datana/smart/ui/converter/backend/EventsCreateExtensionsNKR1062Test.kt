@@ -30,7 +30,7 @@ internal class EventsCreateExtensionsNKR1062Test {
             angles = ModelAngles(angle = 50.0)
             slagRate = ModelSlagRate(steelRate = 0.7, slagRate = 0.3)
             meltInfo = ModelMeltInfo(id = "test-melt-id")
-            currentState = CurrentState(avgStreamRate = slagRate.slagRate, lastAngles = angles, currentMeltInfo = meltInfo)
+            currentState = CurrentState(lastAvgSlagRate = slagRate.slagRate, lastAngles = angles, currentMeltInfo = meltInfo)
             context = ConverterBeContext(
                 meltInfo = meltInfo,
                 streamRateWarningPoint = 0.23,

@@ -60,7 +60,7 @@ internal class EventsChainNKR906Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
+            assertEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
             assertEquals(0.1, context.streamRateWarningPoint)
             assertNotEquals(0.2, context.streamRateWarningPoint)
         }

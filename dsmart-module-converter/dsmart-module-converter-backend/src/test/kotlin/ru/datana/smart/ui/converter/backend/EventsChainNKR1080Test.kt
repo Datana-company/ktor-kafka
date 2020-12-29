@@ -27,17 +27,19 @@ internal class EventsChainNKR1080Test {
                 category = ModelEvent.Category.WARNING
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastSteelRate = 0.011,
+                avgStreamRate = 0.11
+            )
+
             val converterFacade = converterFacadeTest(
                 meltTimeout = 3000L,
                 roundingWeight = 0.1,
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.16,
                 reactionTime = 3000L,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    lastSteelRate = 0.011,
-                    avgStreamRate = 0.11
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
 
@@ -54,9 +56,9 @@ internal class EventsChainNKR1080Test {
             converterFacade.handleMath(context)
             delay(6000)
 
-            assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
-            assertEquals(false, context.events.first().isActive)
+            assertEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertEquals(ModelEvent.ExecutionStatus.NONE, context.eventList.first().executionStatus)
+            assertEquals(false, context.eventList.first().isActive)
             assertEquals("", context.meltInfo.id)
         }
     }
@@ -72,17 +74,19 @@ internal class EventsChainNKR1080Test {
                 category = ModelEvent.Category.WARNING
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastSteelRate = 0.011,
+                avgStreamRate = 0.011
+            )
+
             val converterFacade = converterFacadeTest(
                 meltTimeout = 3000L,
                 roundingWeight = 0.1,
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.16,
                 reactionTime = 1000L,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    lastSteelRate = 0.011,
-                    avgStreamRate = 0.011
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
 
@@ -100,8 +104,8 @@ internal class EventsChainNKR1080Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
-            assertNotEquals(true, context.events.first().isActive)
+            assertNotEquals(ModelEvent.ExecutionStatus.NONE, context.eventList.first().executionStatus)
+            assertNotEquals(true, context.eventList.first().isActive)
             assertNotEquals("", context.meltInfo.id)
         }
     }

@@ -22,13 +22,15 @@ internal class SignalerNKR1061Test {
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastSteelRate = 0.16,
+                avgStreamRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    lastSteelRate = 0.16,
-                    avgStreamRate = 0.16
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -61,13 +63,15 @@ internal class SignalerNKR1061Test {
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastSteelRate = 0.16,
+                avgStreamRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    lastSteelRate = 0.16,
-                    avgStreamRate = 0.16
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -103,11 +107,13 @@ internal class SignalerNKR1061Test {
                 category = ModelEvent.Category.WARNING
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                avgStreamRate = 0.11
+            )
+
             val converterFacade = converterFacadeTest(
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.11
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -140,13 +146,15 @@ internal class SignalerNKR1061Test {
                 category = ModelEvent.Category.WARNING
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                avgStreamRate = 0.13,
+                lastSteelRate = 0.13
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.13,
-                    lastSteelRate = 0.13
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -182,12 +190,14 @@ internal class SignalerNKR1061Test {
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                avgStreamRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.16
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -220,12 +230,14 @@ internal class SignalerNKR1061Test {
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgStreamRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.16
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -260,11 +272,14 @@ internal class SignalerNKR1061Test {
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
+
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                avgStreamRate = 0.11
+            )
+
             val converterFacade = converterFacadeTest(
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.11
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -296,11 +311,14 @@ internal class SignalerNKR1061Test {
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
+
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgStreamRate = 0.11
+            )
+
             val converterFacade = converterFacadeTest(
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.11
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -337,12 +355,14 @@ internal class SignalerNKR1061Test {
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 62.0,
+                avgStreamRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 62.0,
-                    avgStreamRate = 0.16
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -375,12 +395,14 @@ internal class SignalerNKR1061Test {
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                avgStreamRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.16
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -416,11 +438,13 @@ internal class SignalerNKR1061Test {
                 category = ModelEvent.Category.WARNING
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 62.0,
+                avgStreamRate = 0.11
+            )
+
             val converterFacade = converterFacadeTest(
-                currentState = createCurrentStateForTest(
-                    lastAngle = 62.0,
-                    avgStreamRate = 0.11
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
@@ -456,15 +480,17 @@ internal class SignalerNKR1061Test {
                 category = ModelEvent.Category.WARNING
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                avgStreamRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 streamRateWarningPoint = 0.1,
                 reactionTime = 3000,
                 sirenLimitTime = 3000,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.16
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
             val context = converterBeContextTest(
