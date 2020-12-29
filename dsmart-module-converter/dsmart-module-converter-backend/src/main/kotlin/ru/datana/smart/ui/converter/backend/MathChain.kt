@@ -11,7 +11,6 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelFrame
-import java.time.Instant
 
 /*
 * MathChain - цепочка обработки данных из матмодели (кадры и содержание потока).
@@ -76,7 +75,7 @@ class MathChain(
 //                        val curState = currentState.get() //TODO remove
 //                        curState.lastSlagRate = slagRate  //
                         //currentStateRepository.updateSlagRate(meltInfo.id, slagRate)
-                        currentStateRepository.addSlagRate(converterId, Instant.now(), slagRate)
+                        currentStateRepository.addSlagRate(converterId, slagRate)
                     }
                 }
 

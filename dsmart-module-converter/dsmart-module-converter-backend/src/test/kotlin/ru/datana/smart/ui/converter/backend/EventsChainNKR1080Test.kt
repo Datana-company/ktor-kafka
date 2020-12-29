@@ -57,7 +57,7 @@ internal class EventsChainNKR1080Test {
             assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
             assertEquals(false, context.events.first().isActive)
-            assertEquals("", context.currentState.get().currentMeltInfo.id)
+            assertEquals("", context.meltInfo.id)
         }
     }
 
@@ -102,7 +102,7 @@ internal class EventsChainNKR1080Test {
             assertEquals(CorStatus.SUCCESS, context.status)
             assertNotEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
             assertNotEquals(true, context.events.first().isActive)
-            assertNotEquals("", context.currentState.get().currentMeltInfo.id)
+            assertNotEquals("", context.meltInfo.id)
         }
     }
 }

@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap
 data class CurrentState(
     var currentMeltInfo: ModelMeltInfo = ModelMeltInfo.NONE,
     var lastAngles: ModelAngles = ModelAngles.NONE,
-    var slagRates: ConcurrentHashMap<Instant, ModelSlagRate> = ConcurrentHashMap(),
+    var slagRates: MutableList<ModelSlagRate> = mutableListOf(),
     //var lastSlagRate: ModelSlagRate = ModelSlagRate.NONE,
     var avgStreamRate: Double = Double.MIN_VALUE,
     var lastTimeAngles: Instant = Instant.EPOCH,

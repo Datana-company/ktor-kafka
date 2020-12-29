@@ -35,7 +35,7 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
         return cache.get(id)?.toModel()?: throw CurrentStateRepoNotFoundException(id)
     }
 
-    override suspend fun getAllSlagRates(id: String): ConcurrentHashMap<Instant, ModelSlagRate> {
+    override suspend fun getAllSlagRates(id: String): MutableList<ModelSlagRate> {
         if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
         return cache.get(id)?.toModel()?.slagRates?: throw CurrentStateRepoNotFoundException(id)
     }
@@ -95,11 +95,11 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
         return save(dto.copy(avgStreamRate = avgStreamRate)).avgStreamRate?: Double.MIN_VALUE
     }
 
-    override suspend fun addSlagRate(id: String, timestamp: Instant, slagRate: ModelSlagRate): CurrentState {
+    override suspend fun addSlagRate(id: String, slagRate: ModelSlagRate): CurrentState {
         if (id.isBlank()) throw CurrentStateRepoWrongIdException(id)
         var dto = cache.get(id)?: throw CurrentStateRepoNotFoundException(id)
-        if (dto.slagRates == null) dto = dto.copy(slagRates = ConcurrentHashMap())
-        dto.slagRates!![timestamp.toEpochMilli()] = CurrentStateInMemorySlagRate.of(slagRate)
+        if (dto.slagRates == null) dto = dto.copy(slagRates = mutableListOf())
+        dto.slagRates!!.add(CurrentStateInMemorySlagRate.of(slagRate))
         return save(dto).toModel()
     }
 

@@ -26,12 +26,14 @@ internal class EventsChainNKR1031Test {
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                avgStreamRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.16
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
 
@@ -70,12 +72,14 @@ internal class EventsChainNKR1031Test {
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgStreamRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.16
-                ),
+                currentStateRepository = stateRepository,
                 converterRepository = repository
             )
 
