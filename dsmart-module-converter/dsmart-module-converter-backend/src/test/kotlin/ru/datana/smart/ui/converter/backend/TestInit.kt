@@ -18,7 +18,7 @@ import kotlin.time.toDuration
 @OptIn(ExperimentalTime::class)
 fun converterFacadeTest(
     currentStateRepository: ICurrentStateRepository? = null,
-    converterRepository: IEventRepository? = null,
+    eventRepository: IEventRepository? = null,
     wsManager: IWsManager? = null,
     wsSignalerManager: IWsSignalerManager? = null,
     dataTimeout: Long? = null,
@@ -35,7 +35,7 @@ fun converterFacadeTest(
 ) =
     ConverterFacade(
         currentStateRepository = currentStateRepository?: CurrentStateRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
-        eventRepository = converterRepository ?: EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
+        eventRepository = eventRepository ?: EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
         wsManager = wsManager ?: WsManager(),
         wsSignalerManager = wsSignalerManager ?: WsSignalerManager(),
         dataTimeout = dataTimeout ?: 3000L,
@@ -105,7 +105,7 @@ suspend fun createCurrentStateRepositoryForTest(
     lastSource: Double? = null,
     lastSteelRate: Double? = null,
     lastSlagRate: Double? = null,
-    avgStreamRate: Double? = null,
+    lastAvgSlagRate: Double? = null,
     lastTimeAngles: Instant? = null,
     lastTimeFrame: Instant? = null
 ): CurrentStateRepositoryInMemory = CurrentStateRepositoryInMemory(
@@ -124,7 +124,7 @@ suspend fun createCurrentStateRepositoryForTest(
                     steelRate = lastSteelRate?: Double.MIN_VALUE,
                     slagRate = lastSlagRate?: Double.MIN_VALUE
             )),
-            lastAvgSlagRate = avgStreamRate ?: Double.MIN_VALUE,
+            lastAvgSlagRate = lastAvgSlagRate ?: Double.MIN_VALUE,
             lastTimeAngles = lastTimeAngles?: Instant.EPOCH,
             lastTimeFrame = lastTimeFrame?: Instant.EPOCH
         )
@@ -132,7 +132,7 @@ suspend fun createCurrentStateRepositoryForTest(
 }
 
 @OptIn(ExperimentalTime::class)
-suspend fun createRepositoryWithEventForTest(
+suspend fun createEventRepositoryForTest(
     eventType: ModelEvent.EventType,
     timeStart: Instant,
     angleStart: Double? = null,

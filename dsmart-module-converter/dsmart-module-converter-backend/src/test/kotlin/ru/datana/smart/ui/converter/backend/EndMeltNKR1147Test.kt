@@ -27,7 +27,7 @@ internal class EndMeltNKR1147Test {
             val timeStart = Instant.now()
             val meltTimeout = 5000L
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 category = ModelEvent.Category.CRITICAL
@@ -35,14 +35,14 @@ internal class EndMeltNKR1147Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                avgStreamRate = 0.2
+                lastAvgSlagRate = 0.2
             )
 
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 meltTimeout = meltTimeout,
                 currentStateRepository = stateRepository,
-                converterRepository = repository
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -76,7 +76,7 @@ internal class EndMeltNKR1147Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                avgStreamRate = 0.01
+                lastAvgSlagRate = 0.01
             )
 
             val converterFacade = converterFacadeTest(
@@ -116,7 +116,7 @@ internal class EndMeltNKR1147Test {
             val timeStart = Instant.now()
             val meltTimeout = 5000L
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 category = ModelEvent.Category.CRITICAL
@@ -124,7 +124,7 @@ internal class EndMeltNKR1147Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                avgStreamRate = 0.2
+                lastAvgSlagRate = 0.2
             )
 
             val converterFacade = converterFacadeTest(
@@ -132,7 +132,7 @@ internal class EndMeltNKR1147Test {
                 meltTimeout = meltTimeout,
                 eventMode = ModelEventMode.SLAG,
                 currentStateRepository = stateRepository,
-                converterRepository = repository
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -168,7 +168,7 @@ internal class EndMeltNKR1147Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                avgStreamRate = 0.01
+                lastAvgSlagRate = 0.01
             )
 
             val converterFacade = converterFacadeTest(

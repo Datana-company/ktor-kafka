@@ -20,7 +20,7 @@ internal class EventsChainNKR1080Test {
     fun isExecutionStatusNoneIfMeltFinishNKR1080() {
         runBlocking {
             val timeStart = Instant.now()
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 60.0,
@@ -30,7 +30,7 @@ internal class EventsChainNKR1080Test {
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
                 lastSteelRate = 0.011,
-                avgStreamRate = 0.11
+                lastAvgSlagRate = 0.11
             )
 
             val converterFacade = converterFacadeTest(
@@ -40,7 +40,7 @@ internal class EventsChainNKR1080Test {
                 streamRateCriticalPoint = 0.16,
                 reactionTime = 3000L,
                 currentStateRepository = stateRepository,
-                converterRepository = repository
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -67,7 +67,7 @@ internal class EventsChainNKR1080Test {
     fun isExecutionStatusNoneIfMeltFinishNKR1080_WithFalseParameterTest() {
         runBlocking {
             val timeStart = Instant.now()
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart =timeStart.minusMillis(1000L),
                 angleStart = 68.0,
@@ -77,7 +77,7 @@ internal class EventsChainNKR1080Test {
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
                 lastSteelRate = 0.011,
-                avgStreamRate = 0.011
+                lastAvgSlagRate = 0.011
             )
 
             val converterFacade = converterFacadeTest(
@@ -87,7 +87,7 @@ internal class EventsChainNKR1080Test {
                 streamRateCriticalPoint = 0.16,
                 reactionTime = 1000L,
                 currentStateRepository = stateRepository,
-                converterRepository = repository
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(

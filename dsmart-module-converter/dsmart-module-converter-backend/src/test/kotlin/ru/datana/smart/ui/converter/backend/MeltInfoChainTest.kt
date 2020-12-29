@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.CurrentState
+import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.repository.inmemory.currentstate.CurrentStateRepositoryInMemory
 import kotlin.test.*
 import kotlin.time.DurationUnit
@@ -26,7 +27,9 @@ internal class MeltInfoChainTest {
                 irCameraId = "ir-cam-25",
             )
             converterFacade = converterFacadeTest(
-                currentStateRepository = createCurrentStateRepositoryForTest()
+                currentStateRepository = createCurrentStateRepositoryForTest(
+                    meltInfo = meltInfoTest(converterId = "converter1")
+                )
             )
             context = converterBeContextTest(
                 meltInfo = meltInfo

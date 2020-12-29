@@ -20,7 +20,7 @@ internal class EventsChainNKR1041Test {
         runBlocking {
             val timeStart = Instant.now()
             val meltTimeout = 5000L
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 66.0,
@@ -29,7 +29,7 @@ internal class EventsChainNKR1041Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 66.0,
-                avgStreamRate = 0.14,
+                lastAvgSlagRate = 0.14,
                 lastSteelRate = 0.14
             )
 
@@ -40,7 +40,7 @@ internal class EventsChainNKR1041Test {
                 streamRateCriticalPoint = 0.34,
                 reactionTime = 3000,
                 currentStateRepository = stateRepository,
-                converterRepository = repository
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -70,7 +70,7 @@ internal class EventsChainNKR1041Test {
     fun isEventActiveAfterReactionTimeNKR1041_WithFalseParameterTest() {
         runBlocking {
             val timeStart = Instant.now()
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 66.0,
@@ -79,7 +79,7 @@ internal class EventsChainNKR1041Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 66.0,
-                avgStreamRate = 0.18,
+                lastAvgSlagRate = 0.18,
                 lastSteelRate = 0.14
             )
 
@@ -90,7 +90,7 @@ internal class EventsChainNKR1041Test {
                 streamRateCriticalPoint = 0.13,
                 reactionTime = 3000,
                 currentStateRepository = stateRepository,
-                converterRepository = repository
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
