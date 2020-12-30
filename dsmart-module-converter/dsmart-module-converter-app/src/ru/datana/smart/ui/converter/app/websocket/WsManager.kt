@@ -16,9 +16,11 @@ class WsManager : IWsManager {
 
     suspend fun addSession(session: DefaultWebSocketSession, context: ConverterBeContext) {
         wsSessions += session
-        val currentMeltId = context.currentMeltId
-        val events = context.eventsRepository.getAllByMeltId(currentMeltId)
-        context.events = events
+        val currentMeltId = context.currentStateRepository.currentMeltId(context.converterId) // что-то здесь не так
+        val eventList = context.eventRepository.getAllByMeltId(currentMeltId)
+        val slagRateList = context.currentStateRepository.getAllSlagRates(currentMeltId)
+        context.eventList = eventList
+        context.slagRateList = slagRateList?: mutableListOf()
         val wsConverterState = context.toWsResponseConverterState()
         val converterStateSerializedString =
             kotlinxSerializer.encodeToString(WsDsmartResponseConverterState.serializer(), wsConverterState)
@@ -73,10 +75,10 @@ class WsManager : IWsManager {
         send(meltInfoSerializedString)
     }
 
-    override suspend fun sendSlagRate(context: ConverterBeContext) {
-        val wsSlagRate = context.toWsConverterResponseSlagRate()
+    override suspend fun sendSlagRates(context: ConverterBeContext) {
+        val wsSlagRate = context.toWsConverterResponseSlagRates()
         val slagRateSerializedString =
-            kotlinxSerializer.encodeToString(WsDsmartResponseConverterSlagRate.serializer(), wsSlagRate)
+            kotlinxSerializer.encodeToString(WsDsmartResponseConverterSlagRates.serializer(), wsSlagRate)
         logger.biz(
             msg = "Send SlagRate",
             data = object {

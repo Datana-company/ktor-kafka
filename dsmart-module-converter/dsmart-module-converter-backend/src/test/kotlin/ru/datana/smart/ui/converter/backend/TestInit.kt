@@ -5,8 +5,10 @@ import ru.datana.smart.ui.converter.app.websocket.WsSignalerManager
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.*
+import ru.datana.smart.ui.converter.common.repositories.ICurrentStateRepository
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
+import ru.datana.smart.ui.converter.repository.inmemory.currentstate.CurrentStateRepositoryInMemory
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.DurationUnit
@@ -15,7 +17,8 @@ import kotlin.time.toDuration
 
 @OptIn(ExperimentalTime::class)
 fun converterFacadeTest(
-    converterRepository: IEventRepository? = null,
+    currentStateRepository: ICurrentStateRepository? = null,
+    eventRepository: IEventRepository? = null,
     wsManager: IWsManager? = null,
     wsSignalerManager: IWsSignalerManager? = null,
     dataTimeout: Long? = null,
@@ -26,13 +29,15 @@ fun converterFacadeTest(
     reactionTime: Long? = null,
     sirenLimitTime: Long? = null,
     roundingWeight: Double? = null,
-    currentState: AtomicReference<CurrentState>? = null,
     converterId: String? = null,
     framesBasePath: String? = null,
     scheduleCleaner: AtomicReference<ScheduleCleaner>? = null,
 ) =
     ConverterFacade(
-        converterRepository = converterRepository ?: EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
+        currentStateRepository = currentStateRepository?: CurrentStateRepositoryInMemory(
+            ttl = 10.toDuration(DurationUnit.MINUTES),
+            converterId = defaultMeltInfoTest().devices.converter.id),
+        eventRepository = eventRepository ?: EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
         wsManager = wsManager ?: WsManager(),
         wsSignalerManager = wsSignalerManager ?: WsSignalerManager(),
         dataTimeout = dataTimeout ?: 3000L,
@@ -43,7 +48,6 @@ fun converterFacadeTest(
         reactionTime = reactionTime ?: 3000L,
         sirenLimitTime = sirenLimitTime ?: 10000L,
         roundingWeight = roundingWeight ?: 0.1,
-        currentState = currentState ?: AtomicReference(CurrentState.NONE),
         converterId = converterId ?: "converter1",
         framesBasePath = framesBasePath ?: "123",
         scheduleCleaner = scheduleCleaner ?: AtomicReference(ScheduleCleaner.NONE)
@@ -67,36 +71,45 @@ fun converterBeContextTest(
         externalEvent = externalEvent ?: ModelEvent.NONE
     )
 
-fun createCurrentStateForTest(
+
+@OptIn(ExperimentalTime::class)
+suspend fun createCurrentStateRepositoryForTest(
+    converterId: String? = null,
+    meltInfo: ModelMeltInfo? = null,
     lastAngleTime: Instant? = null,
     lastAngle: Double? = null,
     lastSource: Double? = null,
     lastSteelRate: Double? = null,
     lastSlagRate: Double? = null,
-    avgStreamRate: Double? = null
-)
-    : AtomicReference<CurrentState> {
-    val currentState = AtomicReference(
+    lastAvgSlagRate: Double? = null,
+    lastTimeAngles: Instant? = null,
+    lastTimeFrame: Instant? = null
+): CurrentStateRepositoryInMemory = CurrentStateRepositoryInMemory(
+    ttl = 10.toDuration(DurationUnit.MINUTES),
+    converterId = converterId?: defaultMeltInfoTest().devices.converter.id
+).apply {
+    create(
         CurrentState(
-            currentMeltInfo = defaultMeltInfoTest(),
+            currentMeltInfo = meltInfo?: defaultMeltInfoTest(),
             lastAngles = ModelAngles(
                 angleTime = lastAngleTime ?: Instant.MIN,
                 angle = lastAngle ?: Double.MIN_VALUE,
                 source = lastSource ?: Double.MIN_VALUE
             ),
-
-            lastSlagRate = ModelSlagRate(
-                steelRate = lastSteelRate ?: Double.MIN_VALUE,
-                slagRate = lastSlagRate ?: Double.MIN_VALUE
-            ),
-            avgStreamRate = avgStreamRate ?: Double.MIN_VALUE
+            slagRateList = mutableListOf(
+                ModelSlagRate(
+                    steelRate = lastSteelRate?: Double.MIN_VALUE,
+                    slagRate = lastSlagRate?: Double.MIN_VALUE
+            )),
+            lastAvgSlagRate = lastAvgSlagRate ?: Double.MIN_VALUE,
+            lastTimeAngles = lastTimeAngles?: Instant.EPOCH,
+            lastTimeFrame = lastTimeFrame?: Instant.EPOCH
         )
     )
-    return currentState
 }
 
 @OptIn(ExperimentalTime::class)
-suspend fun createRepositoryWithEventForTest(
+suspend fun createEventRepositoryForTest(
     eventType: ModelEvent.EventType,
     timeStart: Instant,
     angleStart: Double? = null,

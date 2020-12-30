@@ -1,0 +1,23 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ApplicationKt" type="JetRunConfigurationType" nameIsGenerated="true">
+    <module name="datana-smart-ui.dsmart-module-converter.dsmart-module-converter-app.main" />
+    <option name="VM_PARAMETERS" value="" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="PASS_PARENT_ENVS" value="true" />
+    <option name="MAIN_CLASS_NAME" value="ru.datana.smart.ui.converter.app.ApplicationKt" />
+    <option name="WORKING_DIRECTORY" value="" />
+    <envs>
+      <env name="KAFKA_BOOTSTRAP_SERVERS" value="172.29.40.58:9092" />
+      <env name="LOGS_KAFKA_HOSTS" value="172.29.40.58:9092" />
+      <env name="KAFKA_TOPIC_MATH" value="dev-converter-math" />
+      <env name="KAFKA_TOPIC_META" value="dev-converter-meta" />
+      <env name="KAFKA_TOPIC_ANGLES" value="dev-converter-angles" />
+      <env name="KAFKA_TOPIC_VIDEO" value="dev-converter-video" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

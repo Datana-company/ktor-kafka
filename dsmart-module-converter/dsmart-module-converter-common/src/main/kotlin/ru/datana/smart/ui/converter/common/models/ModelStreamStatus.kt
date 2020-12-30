@@ -5,5 +5,6 @@ enum class ModelStreamStatus {
     WARNING,
     INFO,
     NORMAL,
+    END,
     NONE
 }

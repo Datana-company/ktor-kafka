@@ -12,10 +12,12 @@ import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.junit.BeforeClass
+import org.junit.Ignore
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
+@Ignore
 internal class ExtEventsKafkaTest {
 
     // Сообщение для инициализации плавки

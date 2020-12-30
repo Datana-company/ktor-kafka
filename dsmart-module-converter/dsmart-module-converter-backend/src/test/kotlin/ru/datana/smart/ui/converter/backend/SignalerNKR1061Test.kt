@@ -15,21 +15,23 @@ internal class SignalerNKR1061Test {
         runBlocking {
             val timeStart = Instant.now()
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastSteelRate = 0.16,
+                lastAvgSlagRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    lastSteelRate = 0.16,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 timeStart = timeStart,
@@ -54,21 +56,23 @@ internal class SignalerNKR1061Test {
     @Test
     fun signalerTestCase9NKR1061WithFalseParameterTest() {
         runBlocking {
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastSteelRate = 0.16,
+                lastAvgSlagRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    lastSteelRate = 0.16,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 meltInfo = defaultMeltInfoTest(),
@@ -96,19 +100,21 @@ internal class SignalerNKR1061Test {
         runBlocking {
             val timeStart = Instant.now()
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastAvgSlagRate = 0.11
+            )
+
             val converterFacade = converterFacadeTest(
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.11
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 timeStart = timeStart,
@@ -133,21 +139,23 @@ internal class SignalerNKR1061Test {
     @Test
     fun signalerTestCase10NKR1061WithFalseParameterTest() {
         runBlocking {
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(4000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastAvgSlagRate = 0.13,
+                lastSteelRate = 0.13
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.13,
-                    lastSteelRate = 0.13
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 meltInfo = defaultMeltInfoTest(),
@@ -175,20 +183,22 @@ internal class SignalerNKR1061Test {
         runBlocking {
             val timeStart = Instant.now()
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastAvgSlagRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 timeStart = timeStart,
@@ -213,20 +223,22 @@ internal class SignalerNKR1061Test {
     @Test
     fun signalerTestCase13NKR1061WithFalseParameterTest() {
         runBlocking {
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                lastAvgSlagRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 meltInfo = defaultMeltInfoTest(),
@@ -254,18 +266,21 @@ internal class SignalerNKR1061Test {
         runBlocking {
             val timeStart = Instant.now()
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
+
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastAvgSlagRate = 0.11
+            )
+
             val converterFacade = converterFacadeTest(
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.11
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 timeStart = timeStart,
@@ -290,18 +305,21 @@ internal class SignalerNKR1061Test {
     @Test
     fun signalerTestCase14NKR1061WithFalseParameterTest() {
         runBlocking {
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
+
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                lastAvgSlagRate = 0.11
+            )
+
             val converterFacade = converterFacadeTest(
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.11
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 meltInfo = defaultMeltInfoTest(),
@@ -330,20 +348,22 @@ internal class SignalerNKR1061Test {
         runBlocking {
             val timeStart = Instant.now()
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 62.0,
+                lastAvgSlagRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 62.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 timeStart = timeStart,
@@ -368,20 +388,22 @@ internal class SignalerNKR1061Test {
     @Test
     fun signalerTestCase15NKR1061_WithFalseParameterTest() {
         runBlocking {
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = Instant.now().minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastAvgSlagRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 meltInfo = defaultMeltInfoTest(),
@@ -409,19 +431,21 @@ internal class SignalerNKR1061Test {
         runBlocking {
             val timeStart = Instant.now()
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 62.0,
+                lastAvgSlagRate = 0.11
+            )
+
             val converterFacade = converterFacadeTest(
-                currentState = createCurrentStateForTest(
-                    lastAngle = 62.0,
-                    avgStreamRate = 0.11
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 timeStart = timeStart,
@@ -449,11 +473,16 @@ internal class SignalerNKR1061Test {
     fun signalerTestCase16NKR1061_WithFalseParameterTest() {
         runBlocking {
             val timeStart = Instant.now()
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
+            )
+
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastAvgSlagRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -461,11 +490,8 @@ internal class SignalerNKR1061Test {
                 streamRateWarningPoint = 0.1,
                 reactionTime = 3000,
                 sirenLimitTime = 3000,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
             val context = converterBeContextTest(
                 timeStart = timeStart,

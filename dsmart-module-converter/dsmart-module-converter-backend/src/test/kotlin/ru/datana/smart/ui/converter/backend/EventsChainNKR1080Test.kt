@@ -20,11 +20,17 @@ internal class EventsChainNKR1080Test {
     fun isExecutionStatusNoneIfMeltFinishNKR1080() {
         runBlocking {
             val timeStart = Instant.now()
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 60.0,
                 category = ModelEvent.Category.WARNING
+            )
+
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastSteelRate = 0.011,
+                lastAvgSlagRate = 0.11
             )
 
             val converterFacade = converterFacadeTest(
@@ -33,12 +39,8 @@ internal class EventsChainNKR1080Test {
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.16,
                 reactionTime = 3000L,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    lastSteelRate = 0.011,
-                    avgStreamRate = 0.11
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -54,10 +56,10 @@ internal class EventsChainNKR1080Test {
             converterFacade.handleMath(context)
             delay(6000)
 
-            assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
-            assertEquals(false, context.events.first().isActive)
-            assertEquals("", context.currentState.get().currentMeltInfo.id)
+            assertEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertEquals(ModelEvent.ExecutionStatus.NONE, context.eventList.first().executionStatus)
+            assertEquals(false, context.eventList.first().isActive)
+            assertEquals("", context.meltInfo.id)
         }
     }
 
@@ -65,11 +67,17 @@ internal class EventsChainNKR1080Test {
     fun isExecutionStatusNoneIfMeltFinishNKR1080_WithFalseParameterTest() {
         runBlocking {
             val timeStart = Instant.now()
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart =timeStart.minusMillis(1000L),
                 angleStart = 68.0,
                 category = ModelEvent.Category.WARNING
+            )
+
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastSteelRate = 0.011,
+                lastAvgSlagRate = 0.011
             )
 
             val converterFacade = converterFacadeTest(
@@ -78,12 +86,8 @@ internal class EventsChainNKR1080Test {
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.16,
                 reactionTime = 1000L,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    lastSteelRate = 0.011,
-                    avgStreamRate = 0.011
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -100,9 +104,9 @@ internal class EventsChainNKR1080Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(ModelEvent.ExecutionStatus.NONE, context.events.first().executionStatus)
-            assertNotEquals(true, context.events.first().isActive)
-            assertNotEquals("", context.currentState.get().currentMeltInfo.id)
+            assertNotEquals(ModelEvent.ExecutionStatus.NONE, context.eventList.first().executionStatus)
+            assertNotEquals(true, context.eventList.first().isActive)
+            assertNotEquals("", context.meltInfo.id)
         }
     }
 }

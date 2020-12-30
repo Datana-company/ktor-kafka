@@ -27,20 +27,22 @@ internal class EndMeltNKR1147Test {
             val timeStart = Instant.now()
             val meltTimeout = 5000L
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastAvgSlagRate = 0.2
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 meltTimeout = meltTimeout,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.2
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -56,9 +58,9 @@ internal class EndMeltNKR1147Test {
             converterFacade.handleMath(context)
             delay(meltTimeout + 1000L)
 
-            assertEquals(1, context.events.size)
-            assertEquals(ModelEvent.Category.CRITICAL, context.events.first().category)
-            assertEquals(false, context.events.first().isActive)
+            assertEquals(1, context.eventList.size)
+            assertEquals(ModelEvent.Category.CRITICAL, context.eventList.first().category)
+            assertEquals(false, context.eventList.first().isActive)
         }
     }
 
@@ -72,13 +74,15 @@ internal class EndMeltNKR1147Test {
             val timeStart = Instant.now()
             val meltTimeout = 5000L
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastAvgSlagRate = 0.01
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 meltTimeout = meltTimeout,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.01
-                )
+                currentStateRepository = stateRepository
             )
 
             val context = converterBeContextTest(
@@ -94,9 +98,9 @@ internal class EndMeltNKR1147Test {
             converterFacade.handleMath(context)
             delay(meltTimeout + 1000L)
 
-            assertEquals(1, context.events.size)
-            assertEquals(ModelEvent.Category.INFO, context.events.first().category)
-            assertEquals(false, context.events.first().isActive)
+            assertEquals(1, context.eventList.size)
+            assertEquals(ModelEvent.Category.INFO, context.eventList.first().category)
+            assertEquals(false, context.eventList.first().isActive)
         }
     }
 
@@ -112,21 +116,23 @@ internal class EndMeltNKR1147Test {
             val timeStart = Instant.now()
             val meltTimeout = 5000L
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 category = ModelEvent.Category.CRITICAL
+            )
+
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastAvgSlagRate = 0.2
             )
 
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 meltTimeout = meltTimeout,
                 eventMode = ModelEventMode.SLAG,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.2
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -142,9 +148,9 @@ internal class EndMeltNKR1147Test {
             converterFacade.handleMath(context)
             delay(meltTimeout + 1000L)
 
-            assertEquals(1, context.events.size)
-            assertEquals(ModelEvent.Category.CRITICAL, context.events.first().category)
-            assertEquals(false, context.events.first().isActive)
+            assertEquals(1, context.eventList.size)
+            assertEquals(ModelEvent.Category.CRITICAL, context.eventList.first().category)
+            assertEquals(false, context.eventList.first().isActive)
         }
     }
 
@@ -160,14 +166,16 @@ internal class EndMeltNKR1147Test {
             val timeStart = Instant.now()
             val meltTimeout = 5000L
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                lastAvgSlagRate = 0.01
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 meltTimeout = meltTimeout,
                 eventMode = ModelEventMode.SLAG,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.01
-                )
+                currentStateRepository = stateRepository
             )
 
             val context = converterBeContextTest(
@@ -183,9 +191,9 @@ internal class EndMeltNKR1147Test {
             converterFacade.handleMath(context)
             delay(meltTimeout + 1000L)
 
-            assertEquals(1, context.events.size)
-            assertEquals(ModelEvent.Category.INFO, context.events.first().category)
-            assertEquals(false, context.events.first().isActive)
+            assertEquals(1, context.eventList.size)
+            assertEquals(ModelEvent.Category.INFO, context.eventList.first().category)
+            assertEquals(false, context.eventList.first().isActive)
         }
     }
 }

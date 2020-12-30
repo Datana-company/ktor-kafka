@@ -1,5 +1,6 @@
 package ru.datana.smart.ui.converter.common.utils
 
+import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import java.lang.IllegalArgumentException
 import kotlin.math.roundToInt
 
@@ -14,3 +15,7 @@ fun Double.toPercent(): Int {
 fun Double?.isEmpty() = this == null || this == Double.MIN_VALUE
 
 fun Double?.isNotEmpty() = !isEmpty()
+
+fun ModelMeltInfo?.isEmpty() = this == null || this == ModelMeltInfo.NONE
+
+fun ModelMeltInfo?.isNotEmpty() = !isEmpty()
