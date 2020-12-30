@@ -81,7 +81,8 @@ suspend fun createCurrentStateRepositoryForTest(
     lastSource: Double? = null,
     lastSteelRate: Double? = null,
     lastSlagRate: Double? = null,
-    lastAvgSlagRate: Double? = null,
+    avgSteelRate: Double? = null,
+    avgSlagRate: Double? = null,
     lastTimeAngles: Instant? = null,
     lastTimeFrame: Instant? = null
 ): CurrentStateRepositoryInMemory = CurrentStateRepositoryInMemory(
@@ -99,9 +100,12 @@ suspend fun createCurrentStateRepositoryForTest(
             slagRateList = mutableListOf(
                 ModelSlagRate(
                     steelRate = lastSteelRate?: Double.MIN_VALUE,
-                    slagRate = lastSlagRate?: Double.MIN_VALUE
+                    slagRate = lastSlagRate?: Double.MIN_VALUE,
+                    avgSteelRate = avgSteelRate ?: Double.MIN_VALUE,
+                    avgSlagRate = avgSlagRate ?: Double.MIN_VALUE,
             )),
-            lastAvgSlagRate = lastAvgSlagRate ?: Double.MIN_VALUE,
+            lastAvgSteelRate = avgSteelRate ?: Double.MIN_VALUE,
+            lastAvgSlagRate = avgSlagRate ?: Double.MIN_VALUE,
             lastTimeAngles = lastTimeAngles?: Instant.EPOCH,
             lastTimeFrame = lastTimeFrame?: Instant.EPOCH
         )

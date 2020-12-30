@@ -35,7 +35,7 @@ internal class EndMeltNKR1147Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                lastAvgSlagRate = 0.2
+                avgSteelRate = 0.2
             )
 
             val converterFacade = converterFacadeTest(
@@ -76,7 +76,7 @@ internal class EndMeltNKR1147Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                lastAvgSlagRate = 0.01
+                avgSteelRate = 0.01
             )
 
             val converterFacade = converterFacadeTest(
@@ -124,7 +124,7 @@ internal class EndMeltNKR1147Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                lastAvgSlagRate = 0.2
+                avgSlagRate = 0.2
             )
 
             val converterFacade = converterFacadeTest(
@@ -168,7 +168,7 @@ internal class EndMeltNKR1147Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                lastAvgSlagRate = 0.01
+                avgSlagRate = 0.01
             )
 
             val converterFacade = converterFacadeTest(

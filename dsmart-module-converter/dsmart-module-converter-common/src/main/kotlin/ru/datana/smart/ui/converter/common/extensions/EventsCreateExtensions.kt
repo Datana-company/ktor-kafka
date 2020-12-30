@@ -39,7 +39,7 @@ suspend fun ConverterBeContext.eventSlagInfoReached(setActive: Boolean = true) =
 suspend fun ConverterBeContext.eventSteelInfoReached(setActive: Boolean = true) = this.setEventReached(
         setActive = setActive,
         message = """
-                   Достигнут предел потерь металла в потоке – ${currentStateRepository.lastAvgSlagRate(converterId).toPercent()}%.
+                   Достигнут предел потерь металла в потоке – ${currentStateRepository.lastAvgSteelRate(converterId).toPercent()}%.
                   """.trimIndent()){
              this.eventInfo()
     }
@@ -55,7 +55,7 @@ suspend fun ConverterBeContext.eventSlagWarningReached(setActive: Boolean = true
 suspend fun ConverterBeContext.eventSteelWarningReached(setActive: Boolean = true) = this.setEventReached(
     setActive = setActive,
     message = """
-              В потоке детектирован металл – ${currentStateRepository.lastAvgSlagRate(converterId).toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
+              В потоке детектирован металл – ${currentStateRepository.lastAvgSteelRate(converterId).toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                """.trimIndent()){
     this.eventWarning()
 }
@@ -71,7 +71,7 @@ suspend fun ConverterBeContext.eventSlagCriticalReached(setActive: Boolean = tru
 suspend fun ConverterBeContext.eventSteelCriticalReached(setActive: Boolean = true) = this.setEventReached(
     setActive = setActive,
     message = """
-              В потоке детектирован металл – ${currentStateRepository.lastAvgSlagRate(converterId).toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
+              В потоке детектирован металл – ${currentStateRepository.lastAvgSteelRate(converterId).toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
                """.trimIndent()){
     this.eventCritical()
 }
