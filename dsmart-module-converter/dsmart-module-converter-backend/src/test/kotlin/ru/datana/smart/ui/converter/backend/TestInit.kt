@@ -36,7 +36,8 @@ fun converterFacadeTest(
     ConverterFacade(
         currentStateRepository = currentStateRepository?: CurrentStateRepositoryInMemory(
             ttl = 10.toDuration(DurationUnit.MINUTES),
-            converterId = defaultMeltInfoTest().devices.converter.id),
+            converterId = defaultMeltInfoTest().devices.converter.id,
+            timeLimit = 60L),
         eventRepository = eventRepository ?: EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
         wsManager = wsManager ?: WsManager(),
         wsSignalerManager = wsSignalerManager ?: WsSignalerManager(),
@@ -83,10 +84,12 @@ suspend fun createCurrentStateRepositoryForTest(
     lastSlagRate: Double? = null,
     lastAvgSlagRate: Double? = null,
     lastTimeAngles: Instant? = null,
-    lastTimeFrame: Instant? = null
+    lastTimeFrame: Instant? = null,
+    timeLimit: Long? = null
 ): CurrentStateRepositoryInMemory = CurrentStateRepositoryInMemory(
     ttl = 10.toDuration(DurationUnit.MINUTES),
-    converterId = converterId?: defaultMeltInfoTest().devices.converter.id
+    converterId = converterId?: defaultMeltInfoTest().devices.converter.id,
+    timeLimit = timeLimit?: 60L
 ).apply {
     create(
         CurrentState(

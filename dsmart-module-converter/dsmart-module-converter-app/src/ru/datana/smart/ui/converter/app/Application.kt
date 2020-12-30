@@ -108,6 +108,10 @@ fun Application.module(testing: Boolean = false) {
         environment.config.property("ktor.repository.inmemory.state.storageDuration").getString().trim().toInt()
     }
 
+    val slagRatesTimeLimit: Long by lazy {
+        environment.config.property("ktor.repository.inmemory.state.timeLimit").getString().trim().toLong()
+    }
+
     // TODO: в будущем найти место, куда пристроить генератор
 //    val metalRateEventGenerator = MetalRateEventGenerator(
 //        timeout = metalRateEventGenTimeout,
@@ -120,7 +124,8 @@ fun Application.module(testing: Boolean = false) {
     val eventRepository = EventRepositoryInMemory(ttl = eventStorageDuration.toDuration(DurationUnit.MINUTES))
     val currentStateRepository = CurrentStateRepositoryInMemory(
         ttl = stateStorageDuration.toDuration(DurationUnit.HOURS),
-        converterId = converterId) //TODO изменить на значение из конфига
+        converterId = converterId,
+        timeLimit = slagRatesTimeLimit)
 
     val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
     val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)

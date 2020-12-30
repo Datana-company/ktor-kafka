@@ -19,7 +19,7 @@ object CalcAvgSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
         } else {
             context.slagRate.slagRate
         }
-        val lastAvgSlagRate = context.currentStateRepository.lastAvgSlagRate(context.converterId)
+        val lastAvgSlagRate = context.currentStateRepository.lastAvgSlagRate()
         val roundingWeight = context.roundingWeight
         // если усреднённое значение ещё не было высчитано,
         // то берётся текущее значение процента содержания
@@ -29,7 +29,7 @@ object CalcAvgSlagRateHandler: IKonveyorHandler<ConverterBeContext> {
         } else {
             currentSlagRate
         }
-        context.currentStateRepository.updateLastAvgSlagRate(context.converterId, avgSlagRate)
+        context.currentStateRepository.updateLastAvgSlagRate(avgSlagRate)
         context.slagRate = ModelSlagRate(
             slagRateTime = context.timeStart,
             steelRate = context.slagRate.steelRate,
