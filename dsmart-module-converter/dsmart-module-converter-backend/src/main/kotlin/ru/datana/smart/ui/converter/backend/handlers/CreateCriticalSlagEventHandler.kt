@@ -6,7 +6,6 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.extensions.eventSlagCriticalReached
 import ru.datana.smart.ui.converter.common.models.ModelEvent
-import ru.datana.smart.ui.converter.common.utils.toPercent
 
 /*
 * CreateCriticalSlagEventHandler - создаётся событие типа "Критическая ситуация" по содержанию шлака.
@@ -18,7 +17,7 @@ object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
         }
 
         context.eventSlagCriticalReached()
-        context.eventsRepository.create(context.activeEvent)
+        context.eventRepository.create(context.activeEvent)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

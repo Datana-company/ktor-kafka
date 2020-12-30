@@ -65,7 +65,7 @@ class SlagEventsChain(
             }
             // конвейер событий при завершении плавки
             konveyor {
-                on { meltInfo.id.isEmpty() }
+                on { streamStatus == ModelStreamStatus.END }
                 +SetEventInactiveStatusHandler // задаётся статус активности у текущего события
                 +UpdateEventHandler // обновление текущего события
                 +CreateSuccessMeltSlagEventHandler // создание события об успешном завершении плавки
@@ -75,7 +75,7 @@ class SlagEventsChain(
             handler {
                 onEnv { status == CorStatus.STARTED }
                 exec {
-                    events = eventsRepository.getAllByMeltId(currentMeltId)
+                    eventList = eventRepository.getAllByMeltId(meltInfo.id)
                 }
             }
 

@@ -20,11 +20,16 @@ internal class SignalerNKR905Test {
     fun isEventActiveAfterSirenLimitTimeNKR905() {
         runBlocking {
             val timeStart = Instant.now()
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
+            )
+
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgSteelRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -34,11 +39,8 @@ internal class SignalerNKR905Test {
                 streamRateCriticalPoint = 0.34,
                 reactionTime = 3000,
                 sirenLimitTime = 3000,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(

@@ -34,8 +34,7 @@ object WsSendAnglesHandler: IKonveyorHandler<ConverterBeContext> {
                 context.angles = ModelAngles.NONE
 
                 // задаётся текущее значение угла в репозиторий текущего состояния
-                val curState = context.currentState.get()
-                curState.lastAngles = context.angles
+                context.currentStateRepository.updateAngles(context.angles)
 
                 // отправка пустых данных об угле по web-socket
                 context.wsManager.sendAngles(context)
@@ -44,8 +43,7 @@ object WsSendAnglesHandler: IKonveyorHandler<ConverterBeContext> {
         }
 
         // задаём текущее значение угла в репозиторий текущего состояния
-        val curState = context.currentState.get()
-        curState.lastAngles = context.angles
+        context.currentStateRepository.updateAngles(context.angles)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

@@ -19,20 +19,22 @@ internal class EventsChainNKR1031Test {
     fun isEventActiveNKR1031() {
         runBlocking {
             val timeStart = Instant.now()
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                avgSteelRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -49,10 +51,10 @@ internal class EventsChainNKR1031Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(ModelEvent.Category.CRITICAL, context.events.first().category)
-            assertEquals(false, context.events.first().isActive)
-            assertNotEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertNotEquals(true, context.events.first().isActive)
+            assertEquals(ModelEvent.Category.CRITICAL, context.eventList.first().category)
+            assertEquals(false, context.eventList.first().isActive)
+            assertNotEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertNotEquals(true, context.eventList.first().isActive)
         }
     }
     /**  NKR-1031
@@ -63,20 +65,22 @@ internal class EventsChainNKR1031Test {
     fun isEventActiveNKR1031_WithFalseParameterTest() {
         runBlocking {
             val timeStart = Instant.now()
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
             )
 
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgSteelRate = 0.16
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.5,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -93,8 +97,8 @@ internal class EventsChainNKR1031Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertEquals(true, context.events.first().isActive)
-            assertNotEquals(false, context.events.first().isActive)
+            assertEquals(true, context.eventList.first().isActive)
+            assertNotEquals(false, context.eventList.first().isActive)
         }
     }
 
