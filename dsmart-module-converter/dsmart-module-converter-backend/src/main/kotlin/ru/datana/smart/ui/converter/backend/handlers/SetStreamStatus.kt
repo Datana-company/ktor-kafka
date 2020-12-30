@@ -18,12 +18,12 @@ object SetStreamStatus: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         with(context) {
             val avgSlagRate = if (eventMode == ModelEventMode.STEEL) {
-                currentStateRepository.lastAvgSteelRate(converterId)
+                currentStateRepository.lastAvgSteelRate()
             } else {
-                currentStateRepository.lastAvgSlagRate(converterId)
+                currentStateRepository.lastAvgSlagRate()
             }
 
-            val currentMeltInfo = currentStateRepository.currentMeltInfo(converterId)
+            val currentMeltInfo = currentStateRepository.currentMeltInfo()
             context.streamStatus = if (currentMeltInfo.isNotEmpty() && avgSlagRate.isNotEmpty()
                 && streamRateCriticalPoint.isNotEmpty() && streamRateWarningPoint.isNotEmpty()) {
                     if (avgSlagRate.toPercent() > streamRateCriticalPoint.toPercent()) ModelStreamStatus.CRITICAL

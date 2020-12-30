@@ -13,8 +13,8 @@ import ru.datana.smart.ui.converter.common.utils.calcAvgValue
 object CalcAvgRateHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         with(context) {
-            val lastAvgSteelRate = currentStateRepository.lastAvgSteelRate(context.converterId)
-            val lastAvgSlagRate = currentStateRepository.lastAvgSlagRate(context.converterId)
+            val lastAvgSteelRate = currentStateRepository.lastAvgSteelRate()
+            val lastAvgSlagRate = currentStateRepository.lastAvgSlagRate()
             val currentSteelRate = slagRate.steelRate
             val currentSlagRate = slagRate.slagRate
             // высчитываем усреднённое значение металла
@@ -22,8 +22,8 @@ object CalcAvgRateHandler: IKonveyorHandler<ConverterBeContext> {
             // высчитываем усреднённое значение шлака
             val avgSlagRate = currentSlagRate.calcAvgValue(lastAvgSlagRate, roundingWeight)
             // сохраняем данные
-            currentStateRepository.updateLastAvgSteelRate(converterId, avgSteelRate)
-            currentStateRepository.updateLastAvgSlagRate(converterId, avgSlagRate)
+            currentStateRepository.updateLastAvgSteelRate(avgSteelRate)
+            currentStateRepository.updateLastAvgSlagRate(avgSlagRate)
             slagRate = ModelSlagRate(
                 slagRateTime = timeStart,
                 steelRate = currentSteelRate,
