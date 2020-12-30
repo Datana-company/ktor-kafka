@@ -1,10 +1,9 @@
 package ru.datana.smart.common.ktor.kafka
 
-import io.ktor.application.feature
-import io.ktor.application.log
-import io.ktor.routing.Route
-import io.ktor.routing.application
+import io.ktor.application.*
+import io.ktor.routing.*
 import kotlinx.coroutines.launch
+import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.common.errors.WakeupException
 import org.slf4j.LoggerFactory
 import java.time.Duration
@@ -25,7 +24,8 @@ fun Route.kafka(topics: Collection<String>, handle: suspend KtorKafkaConsumerCon
                 val records = consumer.poll(Duration.ofSeconds(1))
                 if (!records.isEmpty) {
                     log.debug("Pulled records: {}", records.count())
-                    KtorKafkaConsumerContext(consumer, records).handle()
+                    KtorKafkaConsumerContext(consumer, records)
+                        .handle()
                 } else {
                     log.debug("No records pulled")
                 }

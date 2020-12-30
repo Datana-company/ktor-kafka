@@ -10,6 +10,7 @@ import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.ProducerRecord
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
+import ru.datana.smart.common.ktor.kafka.kafkaString
 import ru.datana.smart.converter.transport.mlui.models.ConverterMeltInfo
 import ru.datana.smart.converter.transport.mlui.models.ConverterTransportAngle
 import ru.datana.smart.converter.transport.mlui.models.ConverterTransportMlUi
@@ -57,7 +58,7 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
 
-        kafka(listOf(topicMeta, topicMath)) {
+        kafkaString(listOf(topicMeta, topicMath)) {
             records.sortedByDescending { it.offset() }
 //                на самом деле они уже отсортированы сначала по топику, затем по offset по убыванию
                 .distinctBy { it.topic() }

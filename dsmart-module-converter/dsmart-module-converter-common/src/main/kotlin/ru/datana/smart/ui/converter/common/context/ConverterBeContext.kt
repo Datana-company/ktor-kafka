@@ -38,7 +38,8 @@ data class ConverterBeContext(
     var signaler: ModelSignaler = ModelSignaler.NONE,
     var converterId: String = "",
     var framesBasePath: String = "",
-    var converterFacade: IConverterFacade = IConverterFacade.NONE
+    var converterFacade: IConverterFacade = IConverterFacade.NONE,
+    val topic: String = ""
 ) {
     val currentMeltInfo: ModelMeltInfo
         get() = currentState.get().currentMeltInfo
@@ -51,4 +52,6 @@ data class ConverterBeContext(
         }
     val currentAngle: Double
         get() = currentState.get().lastAngles.angle
+
+    fun hasErrors() = errors.isNotEmpty()
 }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
+import ru.datana.smart.converter.transport.math.ConverterTransportMlUiOuterClass
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.app.common.EventMode
 import ru.datana.smart.ui.converter.app.mappings.*
@@ -20,6 +21,8 @@ import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.app.websocket.WsSignalerManager
 import ru.datana.smart.ui.converter.backend.ConverterFacade
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
+import ru.datana.smart.ui.converter.common.context.CorError
+import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
@@ -119,10 +122,11 @@ fun Application.module(testing: Boolean = false) {
     val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)
 
     val websocketContext = ConverterBeContext(
-        currentState = currentState,
-        eventsRepository = userEventsRepository,
         streamRateWarningPoint = streamRateWarningPoint,
-        sirenLimitTime = sirenLimitTime
+        sirenLimitTime = sirenLimitTime,
+        eventsRepository = userEventsRepository,
+        currentState = currentState,
+        topic = ""
     )
 
     val converterFacade = ConverterFacade(
@@ -166,69 +170,71 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-//        webSocket("/ws_signaler") {
-//            println("/ws_signaler --- onConnect")
-//            wsSignalerManager.init(this, websocketContext)
-//            try {
-//                for (frame in incoming) {
-//                }
-//            } catch (e: ClosedReceiveChannelException) {
-//                println("onClose ${closeReason.await()}")
-//            } catch (e: Throwable) {
-//                logger.error("Error within websocket block due to: ${closeReason.await()}", e)
-//            } finally {
-//                wsSignalerManager.close(this)
-//            }
-//        }
+        kafka(listOf(topicMath)) {
+            var lastMessageTime = Instant.MIN
+            val x = items.items
+                .map {
+                    try {
+                        val mathTransport = ConverterTransportMlUiOuterClass.ConverterTransportMlUi.parseFrom(it.value)
+                        ConverterBeContext(
+                            timeStart = Instant.now(),
+                            topic = it.topic
+                        ) //.of(mathTransport)
+                    } catch (e: Throwable) {
+                        e.printStackTrace()
+                        ConverterBeContext(
+                            timeStart = Instant.now(),
+                            topic = it.topic,
+                            errors = mutableListOf(CorError(message = e.message ?: "")),
+                            status = CorStatus.ERROR
+                        )
+                    }
+                }
+                .filter {
+                    val res = ! it.hasErrors()
+                    if (! res) {
+                        logger.error(
+                            msg = "Kafka message parsing error",
+                            data = object {
+                                val metricType = "converter-backend-KafkaController-error-math"
+                                //                        val mathModel = kafkaModel
+                                val topic = it.topic
+                                val error = it.errors
+                            },
+                        )
+                    }
+                    res
+                }
+                .filter {
+                    val res = it.frame.frameTime > lastMessageTime
+                    logger.biz(
+                        msg = "Math model object got",
+                        data = object {
+                            val metricType = "converter-backend-KafkaController-got-math"
+                            //                        val mathModel = kafkaModel
+                            val topic = it.topic
+                            val toBeHandled = res
+                        },
+                    )
+                    res
+                }
+                .forEach {
+                    lastMessageTime = it.frame.frameTime
+                    converterFacade.handleMath(it)
+                }
+        }
 
-        kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles, topicEvents)) {
+        kafka(listOf(topicMeta, topicAngles, topicEvents)) {
             try {
                 records.sortedByDescending { it.offset() }
 //                на самом деле они уже отсортированы сначала по топику, затем по offset по убыванию
+//                    TODO Это ерунда. Никакого отношения к времени offset не имеет и порядок не гарантирован
+//                    Нужно сначала сконвертировать объект в контекст и уже только потом делать сортировку и
+//                    фильтрацию по реальному времени
                     .distinctBy { it.topic() }
                     .map { it.toInnerModel() }
                     .forEach { record ->
                         when (val topic = record.topic) {
-                            // получаем данные из топика с данными из матмодели
-                            topicMath -> {
-                                // десериализация данных из кафки
-                                val kafkaModel = toConverterTransportMlUi(record)
-                                // логирование
-                                logger.biz(
-                                    msg = "Math model object got",
-                                    data = object {
-                                        val metricType = "converter-backend-KafkaController-got-math"
-                                        val mathModel = kafkaModel
-                                        val topic = topic
-                                    },
-                                )
-                                // инициализация контекста
-                                val context = ConverterBeContext(
-                                    timeStart = Instant.now()
-                                )
-                                // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
-                                context.setSlagRate(kafkaModel)
-                                context.setFrame(kafkaModel)
-                                context.setMeltInfo(kafkaModel)
-                                println("topic = math, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-                                // вызов цепочки обработки данных из матмодели
-                                converterFacade.handleMath(context)
-                            }
-//                            // получаем данные из топика с данными из видеоадаптера
-//                            topicVideo -> {
-//                                // десериализация данных из кафки
-//                                val kafkaModel = toConverterTransportViMl(record)
-//                                // инициализация контекста
-//                                val context = ConverterBeContext(
-//                                    timeStart = Instant.now()
-//                                )
-//                                // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
-//                                context.setFrame(kafkaModel)
-//                                context.setMeltInfo(kafkaModel)
-//                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-//                                // вызов цепочки обработки данных из видеоадаптера
-//                                converterFacade.handleFrame(context)
-//                            }
                             // получаем данные из топика мета
                             topicMeta -> {
                                 // десериализация данных из кафки
@@ -244,7 +250,8 @@ fun Application.module(testing: Boolean = false) {
                                 )
                                 // инициализация контекста
                                 val context = ConverterBeContext(
-                                    timeStart = Instant.now()
+                                    timeStart = Instant.now(),
+                                    topic = ""
                                 )
                                 // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
                                 context.setMeltInfo(kafkaModel)
@@ -267,7 +274,8 @@ fun Application.module(testing: Boolean = false) {
                                 )
                                 // инициализация контекста
                                 val context = ConverterBeContext(
-                                    timeStart = Instant.now()
+                                    timeStart = Instant.now(),
+                                    topic = ""
                                 )
                                 // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
                                 context.setAngles(kafkaModel)
@@ -278,7 +286,7 @@ fun Application.module(testing: Boolean = false) {
                             }
                             // получаем данные из топика с внешними событиями
                             topicEvents -> {
-                                 // десериализация данных из кафки
+                                // десериализация данных из кафки
                                 val kafkaModel = toConverterTransportExternalEvents(record)
                                 // логирование
                                 logger.biz(
@@ -291,9 +299,10 @@ fun Application.module(testing: Boolean = false) {
                                 )
                                 // инициализация контекста
                                 val context = ConverterBeContext(
-                                    timeStart = Instant.now()
+                                    timeStart = Instant.now(),
+                                    topic = ""
                                 )
-                                 // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
+                                // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
                                 context.setExternalEvent(kafkaModel)
                                 println("topic = events, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
                                 // вызов цепочки обработки внешних событий

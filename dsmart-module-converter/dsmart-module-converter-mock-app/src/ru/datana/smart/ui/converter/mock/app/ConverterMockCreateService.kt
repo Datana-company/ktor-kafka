@@ -83,7 +83,7 @@ class ConverterMockCreateService(
             meltNumber = requestToSave.meltNumber,
             crewNumber = requestToSave.crewNumber,
             shiftNumber = requestToSave.shiftNumber,
-            mode = ConverterMeltInfo.Mode.EMULATION,
+            mode = ConverterWorkMode.EMULATION,
             devices = ConverterMeltDevices(
                 converter = ConverterDevicesConverter(
                     id = requestToSave.converterId,

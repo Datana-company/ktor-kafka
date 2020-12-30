@@ -75,8 +75,10 @@ dependencies {
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
     implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-angle:$converterTransportVersion")
     implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-meta:$converterTransportVersion")
-    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-mlui:$converterTransportVersion")
-    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-viml:$converterTransportVersion")
+    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-mathkt:$converterTransportVersion")
+//    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-mlui:$converterTransportVersion")
+//    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-viml:$converterTransportVersion")
+    implementation("com.google.protobuf:protobuf-java:3.14.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
 

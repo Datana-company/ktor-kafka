@@ -12,10 +12,12 @@ import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.junit.BeforeClass
+import org.junit.Ignore
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
+@Ignore
 internal class ExtEventsKafkaTest {
 
     // Сообщение для инициализации плавки
@@ -45,6 +47,7 @@ internal class ExtEventsKafkaTest {
     @Test
     fun testConversation() {
         with(engine) {
+
             val kafkaServers: String by lazy {
                 environment.config.property("ktor.kafka.bootstrap.servers").getString().trim()
             }
@@ -70,13 +73,13 @@ internal class ExtEventsKafkaTest {
                 }
                 // 2) Запускаем плавку. Это нужно чтобы у extEvent-ов была принадлежность к плавке (проставлен meltId).
                 kafkaProducer.send(ProducerRecord("gitlab-converter-meta", meltInitJson))
-                withTimeout(3000) {
+                withTimeout(3001) {
                     val meltInitMsg = (incoming.receive() as Frame.Text).readText()
                     println(" +++ meltInitMsg: $meltInitMsg")
                 }
                 // 3) Отправляем собственно тестовое сообщение (extEvent)
                 kafkaProducer.send(ProducerRecord("gitlab-converter-events", jsonString))
-                withTimeout(3000) {
+                withTimeout(3002) {
                     val actualJson = (incoming.receive() as Frame.Text).readText()
                     println(" +++ actualJson: $actualJson")
                     assertTrue(actualJson.contains(testMsg))

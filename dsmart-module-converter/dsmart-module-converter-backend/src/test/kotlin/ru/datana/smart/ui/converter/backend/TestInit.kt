@@ -58,13 +58,14 @@ fun converterBeContextTest(
     externalEvent: ModelEvent? = null
 ) =
     ConverterBeContext(
-        timeStart = timeStart ?: Instant.now(),
-        reactionTime = Long.MIN_VALUE,
-        meltInfo = meltInfo ?: defaultMeltInfoTest(),
         angles = angles ?: ModelAngles.NONE,
+        meltInfo = meltInfo ?: defaultMeltInfoTest(),
         frame = frame ?: ModelFrame.NONE,
         slagRate = slagRate ?: ModelSlagRate.NONE,
-        externalEvent = externalEvent ?: ModelEvent.NONE
+        externalEvent = externalEvent ?: ModelEvent.NONE,
+        timeStart = timeStart ?: Instant.now(),
+        reactionTime = Long.MIN_VALUE,
+        topic = ""
     )
 
 fun createCurrentStateForTest(

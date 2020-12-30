@@ -25,10 +25,11 @@ internal class EventsCreateExtensionsNKR1062Test {
         currentState = CurrentState( avgStreamRate = slagRate.slagRate, lastAngles = angles, currentMeltInfo = meltInfo)
         context = ConverterBeContext(
             meltInfo = meltInfo,
-            streamRateWarningPoint = 0.23,
+            timeStart = Instant.parse("2020-12-20T18:35:24.010Z"),
             streamRateCriticalPoint = 0.29,
+            streamRateWarningPoint = 0.23,
             currentState = AtomicReference(currentState),
-            timeStart = Instant.parse("2020-12-20T18:35:24.010Z")
+            topic = ""
         )
     }
 
