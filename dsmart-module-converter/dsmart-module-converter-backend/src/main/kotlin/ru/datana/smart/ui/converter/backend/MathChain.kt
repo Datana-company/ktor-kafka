@@ -65,15 +65,15 @@ class MathChain(
 //                    res
 //                }
 
-                +CalcAvgSlagRateHandler // вычисление усреднённого значения
+                +CalcAvgRateHandler // вычисление усреднённого значения
 
                 // обновление информации о последнем значении содержания потока,
                 // а затем достаются все данные по содержанию потока, касающиеся текущей плавки
                 handler {
                     on { status == CorStatus.STARTED }
                     exec {
-                        currentStateRepository.addSlagRate(converterId, slagRate)
-                        slagRateList = currentStateRepository.getAllSlagRates(converterId)?: mutableListOf()
+                        currentStateRepository.addSlagRate(slagRate)
+                        slagRateList = currentStateRepository.getAllSlagRates() ?: mutableListOf()
                     }
                 }
 

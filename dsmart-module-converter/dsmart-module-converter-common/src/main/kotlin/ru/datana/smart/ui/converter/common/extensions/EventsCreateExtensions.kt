@@ -31,7 +31,7 @@ suspend fun ConverterBeContext.eventExternalReceived(setActive: Boolean = true):
 suspend fun ConverterBeContext.eventSlagInfoReached(setActive: Boolean = true) = this.setEventReached(
     setActive = setActive,
     message = """
-                   Достигнут предел потерь шлака в потоке – ${currentStateRepository.lastAvgSlagRate(converterId).toPercent()}%.
+                   Достигнут предел потерь шлака в потоке – ${currentStateRepository.lastAvgSlagRate().toPercent()}%.
                   """.trimIndent()){
     this.eventInfo()
 }
@@ -39,7 +39,7 @@ suspend fun ConverterBeContext.eventSlagInfoReached(setActive: Boolean = true) =
 suspend fun ConverterBeContext.eventSteelInfoReached(setActive: Boolean = true) = this.setEventReached(
         setActive = setActive,
         message = """
-                   Достигнут предел потерь металла в потоке – ${currentStateRepository.lastAvgSlagRate(converterId).toPercent()}%.
+                   Достигнут предел потерь металла в потоке – ${currentStateRepository.lastAvgSteelRate().toPercent()}%.
                   """.trimIndent()){
              this.eventInfo()
     }
@@ -47,7 +47,7 @@ suspend fun ConverterBeContext.eventSteelInfoReached(setActive: Boolean = true) 
 suspend fun ConverterBeContext.eventSlagWarningReached(setActive: Boolean = true) = this.setEventReached(
     setActive = setActive,
     message = """
-              В потоке детектирован шлак – ${currentStateRepository.lastAvgSlagRate(converterId).toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
+              В потоке детектирован шлак – ${currentStateRepository.lastAvgSlagRate().toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                """.trimIndent()){
     this.eventWarning()
 }
@@ -55,7 +55,7 @@ suspend fun ConverterBeContext.eventSlagWarningReached(setActive: Boolean = true
 suspend fun ConverterBeContext.eventSteelWarningReached(setActive: Boolean = true) = this.setEventReached(
     setActive = setActive,
     message = """
-              В потоке детектирован металл – ${currentStateRepository.lastAvgSlagRate(converterId).toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
+              В потоке детектирован металл – ${currentStateRepository.lastAvgSteelRate().toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
                """.trimIndent()){
     this.eventWarning()
 }
@@ -63,7 +63,7 @@ suspend fun ConverterBeContext.eventSteelWarningReached(setActive: Boolean = tru
 suspend fun ConverterBeContext.eventSlagCriticalReached(setActive: Boolean = true) = this.setEventReached(
     setActive = setActive,
     message = """
-              В потоке детектирован шлак – ${currentStateRepository.lastAvgSlagRate(converterId).toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
+              В потоке детектирован шлак – ${currentStateRepository.lastAvgSlagRate().toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
                """.trimIndent()){
     this.eventCritical()
 }
@@ -71,7 +71,7 @@ suspend fun ConverterBeContext.eventSlagCriticalReached(setActive: Boolean = tru
 suspend fun ConverterBeContext.eventSteelCriticalReached(setActive: Boolean = true) = this.setEventReached(
     setActive = setActive,
     message = """
-              В потоке детектирован металл – ${currentStateRepository.lastAvgSlagRate(converterId).toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
+              В потоке детектирован металл – ${currentStateRepository.lastAvgSteelRate().toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
                """.trimIndent()){
     this.eventCritical()
 }
@@ -107,21 +107,21 @@ private suspend fun ConverterBeContext.eventInfo():ModelEvent = this.eventBase()
     model.type = ModelEvent.EventType.STREAM_RATE_INFO_EVENT
     model.title = ModelEvent.Category.INFO.title
     model.category = ModelEvent.Category.INFO
-    model.angleStart = currentStateRepository.currentAngle(converterId)
+    model.angleStart = currentStateRepository.currentAngle()
 }
 
 private suspend fun ConverterBeContext.eventWarning():ModelEvent = this.eventBase().also { model ->
     model.type = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT
     model.title = ModelEvent.Category.WARNING.title
     model.category = ModelEvent.Category.WARNING
-    model.angleStart = currentStateRepository.currentAngle(converterId)
+    model.angleStart = currentStateRepository.currentAngle()
 }
 
 private suspend fun ConverterBeContext.eventCritical():ModelEvent = this.eventBase().also { model ->
     model.type = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT
     model.title = ModelEvent.Category.CRITICAL.title
     model.category = ModelEvent.Category.CRITICAL
-    model.angleStart = currentStateRepository.currentAngle(converterId)
+    model.angleStart = currentStateRepository.currentAngle()
 }
 
 private suspend fun ConverterBeContext.eventSuccess():ModelEvent = this.eventBase().also { model ->

@@ -7,7 +7,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
-import ru.datana.smart.ui.converter.common.models.*
 
 /*
 * WsSendMathSlagRatesHandler - происходит отправка данных о содержании потока на фронтенд через web-socket.
@@ -35,7 +34,7 @@ object WsSendMathSlagRatesHandler: IKonveyorHandler<ConverterBeContext> {
 
                 // задаётся текущее содержание потока в репозиторий текущего состояния
                 //context.currentStateRepository.updateSlagRate(null, context.slagRate)
-                context.currentStateRepository.addSlagRate(context.converterId, context.slagRate)
+                context.currentStateRepository.addSlagRate(context.slagRate)
 
                 // отправка пустых данных о содержании потока по web-socket
                 context.wsManager.sendSlagRates(context)
@@ -45,7 +44,7 @@ object WsSendMathSlagRatesHandler: IKonveyorHandler<ConverterBeContext> {
 
         // задаётся текущее содержание потока в репозиторий текущего состояния
         //context.currentStateRepository.updateSlagRate(null, context.slagRate)
-        context.currentStateRepository.addSlagRate(context.converterId, context.slagRate)
+        context.currentStateRepository.addSlagRate(context.slagRate)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

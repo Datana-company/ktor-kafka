@@ -32,7 +32,7 @@ internal class EventsChainNKR906Test {
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 66.0,
                 lastSteelRate = 0.14,
-                lastAvgSlagRate = 0.14
+                avgSteelRate = 0.14
             )
 
             val converterFacade = converterFacadeTest(

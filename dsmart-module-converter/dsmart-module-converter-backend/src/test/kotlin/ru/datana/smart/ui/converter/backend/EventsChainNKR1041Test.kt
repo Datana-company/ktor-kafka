@@ -29,7 +29,7 @@ internal class EventsChainNKR1041Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 66.0,
-                lastAvgSlagRate = 0.14,
+                avgSteelRate = 0.14,
                 lastSteelRate = 0.14
             )
 
@@ -79,7 +79,7 @@ internal class EventsChainNKR1041Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 66.0,
-                lastAvgSlagRate = 0.18,
+                avgSteelRate = 0.18,
                 lastSteelRate = 0.14
             )
 

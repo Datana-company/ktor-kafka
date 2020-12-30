@@ -12,11 +12,11 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 object FrameTimeFilterHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         val frameTime = context.frame.frameTime
-        val lastTime = context.currentStateRepository.lastTimeFrame(context.converterId)
+        val lastTime = context.currentStateRepository.lastTimeFrame()
         if (lastTime > frameTime) {
             context.status = CorStatus.FINISHED
         } else {
-            context.currentStateRepository.updateLastTimeFrame(context.converterId, frameTime)
+            context.currentStateRepository.updateLastTimeFrame(frameTime)
         }
 
     }

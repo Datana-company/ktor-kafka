@@ -28,16 +28,17 @@ internal class EventsCreateExtensionsNKR1062Test {
     fun contextInit(){
         runBlocking {
             angles = ModelAngles(angle = 50.0)
-            slagRate = ModelSlagRate(steelRate = 0.7, slagRate = 0.3)
+            slagRate = ModelSlagRate(steelRate = 0.3, slagRate = 0.3)
             meltInfo = ModelMeltInfo(id = "test-melt-id")
-            currentState = CurrentState(lastAvgSlagRate = slagRate.slagRate, slagRateList = mutableListOf(slagRate), lastAngles = angles, currentMeltInfo = meltInfo)
+            currentState = CurrentState(lastAvgSteelRate = slagRate.steelRate, lastAvgSlagRate = slagRate.slagRate, slagRateList = mutableListOf(slagRate), lastAngles = angles, currentMeltInfo = meltInfo)
             context = ConverterBeContext(
                 meltInfo = meltInfo,
                 streamRateWarningPoint = 0.23,
                 streamRateCriticalPoint = 0.29,
                 currentStateRepository = CurrentStateRepositoryInMemory(
                     ttl = 60.toDuration(DurationUnit.SECONDS),
-                    converterId = "converter1").apply {
+                    converterId = "converter1",
+                    timeLimit = 60L).apply {
                     create(currentState)
                 },
                 timeStart = Instant.parse("2020-12-20T18:35:24.010Z")

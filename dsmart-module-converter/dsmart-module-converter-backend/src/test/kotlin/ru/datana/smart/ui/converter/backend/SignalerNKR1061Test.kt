@@ -25,7 +25,7 @@ internal class SignalerNKR1061Test {
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
                 lastSteelRate = 0.16,
-                lastAvgSlagRate = 0.16
+                avgSteelRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -66,7 +66,7 @@ internal class SignalerNKR1061Test {
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
                 lastSteelRate = 0.16,
-                lastAvgSlagRate = 0.16
+                avgSteelRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -109,7 +109,7 @@ internal class SignalerNKR1061Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                lastAvgSlagRate = 0.11
+                avgSteelRate = 0.11
             )
 
             val converterFacade = converterFacadeTest(
@@ -148,7 +148,7 @@ internal class SignalerNKR1061Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                lastAvgSlagRate = 0.13,
+                avgSteelRate = 0.13,
                 lastSteelRate = 0.13
             )
 
@@ -192,7 +192,7 @@ internal class SignalerNKR1061Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                lastAvgSlagRate = 0.16
+                avgSteelRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -232,7 +232,7 @@ internal class SignalerNKR1061Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 66.0,
-                lastAvgSlagRate = 0.16
+                avgSteelRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -275,7 +275,7 @@ internal class SignalerNKR1061Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                lastAvgSlagRate = 0.11
+                avgSteelRate = 0.11
             )
 
             val converterFacade = converterFacadeTest(
@@ -314,7 +314,7 @@ internal class SignalerNKR1061Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 66.0,
-                lastAvgSlagRate = 0.11
+                avgSteelRate = 0.11
             )
 
             val converterFacade = converterFacadeTest(
@@ -357,7 +357,7 @@ internal class SignalerNKR1061Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 62.0,
-                lastAvgSlagRate = 0.16
+                avgSteelRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -397,7 +397,7 @@ internal class SignalerNKR1061Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                lastAvgSlagRate = 0.16
+                avgSteelRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -440,7 +440,7 @@ internal class SignalerNKR1061Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 62.0,
-                lastAvgSlagRate = 0.11
+                avgSteelRate = 0.11
             )
 
             val converterFacade = converterFacadeTest(
@@ -482,7 +482,7 @@ internal class SignalerNKR1061Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 60.0,
-                lastAvgSlagRate = 0.16
+                avgSteelRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(

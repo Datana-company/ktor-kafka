@@ -4,57 +4,63 @@ import ru.datana.smart.ui.converter.common.models.*
 import java.time.Instant
 
 interface ICurrentStateRepository {
-    suspend fun get(id: String): CurrentState?
-    suspend fun getAllSlagRates(id: String): MutableList<ModelSlagRate>?
-    suspend fun currentMeltInfo(id: String): ModelMeltInfo?
-    suspend fun currentMeltId(id: String): String
-    suspend fun currentAngle(id: String): Double
-    suspend fun lastAvgSlagRate(id: String): Double
-    suspend fun lastTimeAngles(id: String): Instant
-    suspend fun lastTimeFrame(id: String): Instant
+    suspend fun get(): CurrentState?
+    suspend fun getAllSlagRates(): MutableList<ModelSlagRate>?
+    suspend fun currentMeltInfo(): ModelMeltInfo?
+    suspend fun currentMeltId(): String
+    suspend fun currentAngle(): Double
+    suspend fun lastAvgSteelRate(): Double
+    suspend fun lastAvgSlagRate(): Double
+    suspend fun lastTimeAngles(): Instant
+    suspend fun lastTimeFrame(): Instant
     suspend fun create(currentState: CurrentState): CurrentState
     suspend fun update(currentState: CurrentState): CurrentState
-    suspend fun delete(id: String): CurrentState
+    suspend fun delete(): CurrentState
     suspend fun updateMeltInfo(meltInfo: ModelMeltInfo): ModelMeltInfo?
-    suspend fun updateAngles(id: String, lastAngles: ModelAngles): ModelAngles?
-    suspend fun addSlagRate(id: String, slagRate: ModelSlagRate): CurrentState?
-    suspend fun updateLastAvgSlagRate(id: String, avgSlagRate: Double): Double?
-    suspend fun updateLastTimeAngles(id: String, lastTimeAngles: Instant): Instant?
-    suspend fun updateLastTimeFrame(id: String, lastTimeFrame: Instant): Instant?
+    suspend fun updateAngles(lastAngles: ModelAngles): ModelAngles?
+    suspend fun addSlagRate(slagRate: ModelSlagRate): CurrentState?
+    suspend fun updateLastAvgSteelRate(avgSteelRate: Double): Double?
+    suspend fun updateLastAvgSlagRate(avgSlagRate: Double): Double?
+    suspend fun updateLastTimeAngles(lastTimeAngles: Instant): Instant?
+    suspend fun updateLastTimeFrame(lastTimeFrame: Instant): Instant?
 
 
     companion object {
         val NONE = object : ICurrentStateRepository{
 
-            override suspend fun get(id: String): CurrentState? {
+            override suspend fun get(): CurrentState? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun getAllSlagRates(id: String): MutableList<ModelSlagRate>? {
+            override suspend fun getAllSlagRates(): MutableList<ModelSlagRate>? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun currentMeltInfo(id: String): ModelMeltInfo? {
+            override suspend fun currentMeltInfo(): ModelMeltInfo? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun currentMeltId(id: String): String {
+            override suspend fun currentMeltId(): String {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun currentAngle(id: String): Double {
+            override suspend fun currentAngle(): Double {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun lastAvgSlagRate(id: String): Double {
+            override suspend fun lastAvgSteelRate(): Double {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun lastTimeAngles(id: String): Instant {
+            override suspend fun lastAvgSlagRate(): Double {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun lastTimeFrame(id: String): Instant {
+            override suspend fun lastTimeAngles(): Instant {
+                TODO("Not yet implemented")
+            }
+
+            override suspend fun lastTimeFrame(): Instant {
                 TODO("Not yet implemented")
             }
 
@@ -66,7 +72,7 @@ interface ICurrentStateRepository {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun delete(id: String): CurrentState {
+            override suspend fun delete(): CurrentState {
                 TODO("Not yet implemented")
             }
 
@@ -74,23 +80,27 @@ interface ICurrentStateRepository {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun updateAngles(id: String, lastAngles: ModelAngles): ModelAngles? {
+            override suspend fun updateAngles(lastAngles: ModelAngles): ModelAngles? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun updateLastAvgSlagRate(id: String, avgSlagRate: Double): Double? {
+            override suspend fun updateLastAvgSteelRate(avgSlagRate: Double): Double? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun addSlagRate(id: String, slagRate: ModelSlagRate): CurrentState? {
+            override suspend fun updateLastAvgSlagRate(avgSlagRate: Double): Double? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun updateLastTimeAngles(id: String, lastTimeAngles: Instant): Instant? {
+            override suspend fun addSlagRate(slagRate: ModelSlagRate): CurrentState? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun updateLastTimeFrame(id: String, lastTimeFrame: Instant): Instant? {
+            override suspend fun updateLastTimeAngles(lastTimeAngles: Instant): Instant? {
+                TODO("Not yet implemented")
+            }
+
+            override suspend fun updateLastTimeFrame(lastTimeFrame: Instant): Instant? {
                 TODO("Not yet implemented")
             }
 

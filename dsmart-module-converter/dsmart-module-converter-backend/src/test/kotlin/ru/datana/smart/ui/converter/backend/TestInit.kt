@@ -36,7 +36,8 @@ fun converterFacadeTest(
     ConverterFacade(
         currentStateRepository = currentStateRepository?: CurrentStateRepositoryInMemory(
             ttl = 10.toDuration(DurationUnit.MINUTES),
-            converterId = defaultMeltInfoTest().devices.converter.id),
+            converterId = defaultMeltInfoTest().devices.converter.id,
+            timeLimit = 60L),
         eventRepository = eventRepository ?: EventRepositoryInMemory(ttl = 10.toDuration(DurationUnit.MINUTES)),
         wsManager = wsManager ?: WsManager(),
         wsSignalerManager = wsSignalerManager ?: WsSignalerManager(),
@@ -81,12 +82,15 @@ suspend fun createCurrentStateRepositoryForTest(
     lastSource: Double? = null,
     lastSteelRate: Double? = null,
     lastSlagRate: Double? = null,
-    lastAvgSlagRate: Double? = null,
+    avgSteelRate: Double? = null,
+    avgSlagRate: Double? = null,
     lastTimeAngles: Instant? = null,
-    lastTimeFrame: Instant? = null
+    lastTimeFrame: Instant? = null,
+    timeLimit: Long? = null
 ): CurrentStateRepositoryInMemory = CurrentStateRepositoryInMemory(
     ttl = 10.toDuration(DurationUnit.MINUTES),
-    converterId = converterId?: defaultMeltInfoTest().devices.converter.id
+    converterId = converterId?: defaultMeltInfoTest().devices.converter.id,
+    timeLimit = timeLimit?: 60L
 ).apply {
     create(
         CurrentState(
@@ -99,9 +103,12 @@ suspend fun createCurrentStateRepositoryForTest(
             slagRateList = mutableListOf(
                 ModelSlagRate(
                     steelRate = lastSteelRate?: Double.MIN_VALUE,
-                    slagRate = lastSlagRate?: Double.MIN_VALUE
+                    slagRate = lastSlagRate?: Double.MIN_VALUE,
+                    avgSteelRate = avgSteelRate ?: Double.MIN_VALUE,
+                    avgSlagRate = avgSlagRate ?: Double.MIN_VALUE,
             )),
-            lastAvgSlagRate = lastAvgSlagRate ?: Double.MIN_VALUE,
+            lastAvgSteelRate = avgSteelRate ?: Double.MIN_VALUE,
+            lastAvgSlagRate = avgSlagRate ?: Double.MIN_VALUE,
             lastTimeAngles = lastTimeAngles?: Instant.EPOCH,
             lastTimeFrame = lastTimeFrame?: Instant.EPOCH
         )

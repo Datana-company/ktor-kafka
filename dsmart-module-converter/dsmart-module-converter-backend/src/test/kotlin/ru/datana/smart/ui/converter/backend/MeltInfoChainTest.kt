@@ -41,7 +41,7 @@ internal class MeltInfoChainTest {
             converterFacade.handleMeltInfo(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(context.meltInfo.id, context.currentStateRepository.currentMeltId(context.converterId))
+            assertNotEquals(context.meltInfo.id, context.currentStateRepository.currentMeltId())
         }
 
     }

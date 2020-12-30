@@ -50,6 +50,7 @@ private fun toWsConverterSlagRateModel(modelSlagRate: ModelSlagRate) =
         slagRateTime = modelSlagRate.slagRateTime.takeIf { it != Instant.MIN }?.toEpochMilli(),
         steelRate = modelSlagRate.steelRate.takeIf { it != Double.MIN_VALUE },
         slagRate = modelSlagRate.slagRate.takeIf { it != Double.MIN_VALUE },
+        avgSteelRate = modelSlagRate.avgSteelRate.takeIf { it != Double.MIN_VALUE },
         avgSlagRate = modelSlagRate.avgSlagRate.takeIf { it != Double.MIN_VALUE }
     )
 
