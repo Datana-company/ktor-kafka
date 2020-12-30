@@ -86,7 +86,6 @@ class WsManager : IWsManager {
                 val wsSlagRate = wsSlagRate
             }
         )
-        println("slagRateSerializedString = $slagRateSerializedString")
         send(slagRateSerializedString)
     }
 
