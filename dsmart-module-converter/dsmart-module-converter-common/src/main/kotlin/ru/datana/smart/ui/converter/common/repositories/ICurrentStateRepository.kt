@@ -9,6 +9,7 @@ interface ICurrentStateRepository {
     suspend fun currentMeltInfo(): ModelMeltInfo?
     suspend fun currentMeltId(): String
     suspend fun currentAngle(): Double
+    suspend fun lastAvgSteelRate(): Double
     suspend fun lastAvgSlagRate(): Double
     suspend fun lastTimeAngles(): Instant
     suspend fun lastTimeFrame(): Instant
@@ -18,6 +19,7 @@ interface ICurrentStateRepository {
     suspend fun updateMeltInfo(meltInfo: ModelMeltInfo): ModelMeltInfo?
     suspend fun updateAngles(lastAngles: ModelAngles): ModelAngles?
     suspend fun addSlagRate(slagRate: ModelSlagRate): CurrentState?
+    suspend fun updateLastAvgSteelRate(avgSteelRate: Double): Double?
     suspend fun updateLastAvgSlagRate(avgSlagRate: Double): Double?
     suspend fun updateLastTimeAngles(lastTimeAngles: Instant): Instant?
     suspend fun updateLastTimeFrame(lastTimeFrame: Instant): Instant?
@@ -43,6 +45,10 @@ interface ICurrentStateRepository {
             }
 
             override suspend fun currentAngle(): Double {
+                TODO("Not yet implemented")
+            }
+
+            override suspend fun lastAvgSteelRate(): Double {
                 TODO("Not yet implemented")
             }
 
@@ -75,6 +81,10 @@ interface ICurrentStateRepository {
             }
 
             override suspend fun updateAngles(lastAngles: ModelAngles): ModelAngles? {
+                TODO("Not yet implemented")
+            }
+
+            override suspend fun updateLastAvgSteelRate(avgSlagRate: Double): Double? {
                 TODO("Not yet implemented")
             }
 

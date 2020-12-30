@@ -16,6 +16,15 @@ fun Double?.isEmpty() = this == null || this == Double.MIN_VALUE
 
 fun Double?.isNotEmpty() = !isEmpty()
 
+fun Double.calcAvgValue(avg: Double, weight: Double): Double {
+    return if (this.isNotEmpty()) {
+        this * weight + avg * (1 - weight)
+//        avg + (this - avg) * weight
+    } else {
+        this
+    }
+}
+
 fun ModelMeltInfo?.isEmpty() = this == null || this == ModelMeltInfo.NONE
 
 fun ModelMeltInfo?.isNotEmpty() = !isEmpty()

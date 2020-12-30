@@ -50,6 +50,10 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
         return cache.get(converterId)?.lastAngles?.angle?: Double.MIN_VALUE
     }
 
+    override suspend fun lastAvgSteelRate(): Double {
+        return cache.get(converterId)?.lastAvgSteelRate ?: Double.MIN_VALUE
+    }
+
     override suspend fun lastAvgSlagRate(): Double {
         return cache.get(converterId)?.lastAvgSlagRate ?: Double.MIN_VALUE
     }
@@ -92,6 +96,11 @@ class CurrentStateRepositoryInMemory @OptIn(ExperimentalTime::class) constructor
         if (dto.slagRateList == null) dto = dto.copy(slagRateList = mutableListOf())
         dto.slagRateList!!.add(CurrentStateInMemorySlagRate.of(slagRate))
         return save(dto).toModel()
+    }
+
+    override suspend fun updateLastAvgSteelRate(avgSteelRate: Double): Double? {
+        val dto = cache.get(converterId)?: return null
+        return save(dto.copy(lastAvgSteelRate = avgSteelRate)).lastAvgSteelRate
     }
 
     override suspend fun updateLastAvgSlagRate(avgSlagRate: Double): Double? {

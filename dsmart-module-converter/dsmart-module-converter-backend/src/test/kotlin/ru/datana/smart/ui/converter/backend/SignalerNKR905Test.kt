@@ -29,7 +29,7 @@ internal class SignalerNKR905Test {
 
             val stateRepository = createCurrentStateRepositoryForTest(
                 lastAngle = 66.0,
-                lastAvgSlagRate = 0.16
+                avgSteelRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(

@@ -4,6 +4,8 @@ import codes.spectrum.konveyor.IKonveyorEnvironment
 import codes.spectrum.konveyor.IKonveyorHandler
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorStatus
+import ru.datana.smart.ui.converter.common.models.ModelEventMode
+import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.models.ModelStreamStatus
 import ru.datana.smart.ui.converter.common.utils.isEmpty
 import ru.datana.smart.ui.converter.common.utils.isNotEmpty
@@ -15,8 +17,13 @@ import ru.datana.smart.ui.converter.common.utils.toPercent
 object SetStreamStatus: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
         with(context) {
-            val avgSlagRate = currentStateRepository.lastAvgSlagRate()
-            val currentMeltInfo = currentStateRepository.currentMeltInfo()
+            val avgSlagRate = if (eventMode == ModelEventMode.STEEL) {
+                currentStateRepository.lastAvgSteelRate(converterId)
+            } else {
+                currentStateRepository.lastAvgSlagRate(converterId)
+            }
+
+            val currentMeltInfo = currentStateRepository.currentMeltInfo(converterId)
             context.streamStatus = if (currentMeltInfo.isNotEmpty() && avgSlagRate.isNotEmpty()
                 && streamRateCriticalPoint.isNotEmpty() && streamRateWarningPoint.isNotEmpty()) {
                     if (avgSlagRate.toPercent() > streamRateCriticalPoint.toPercent()) ModelStreamStatus.CRITICAL
