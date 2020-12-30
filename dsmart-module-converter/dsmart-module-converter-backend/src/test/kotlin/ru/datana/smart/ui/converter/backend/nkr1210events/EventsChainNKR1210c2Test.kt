@@ -55,4 +55,45 @@ internal class EventsChainNKR1210c2Test {
             assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
         }
     }
+
+    @Test
+    fun `Show slag critical alert`(){
+        runBlocking {
+            val timeStart = Instant.now()
+
+            val converterFacade = converterFacadeTest(
+                roundingWeight = 0.1,
+                streamRateWarningPoint = 0.1,
+                streamRateCriticalPoint = 0.15,
+                reactionTime = 3000L,
+                currentState = createCurrentStateForTest(
+                    lastAngle = 66.0,
+                    avgStreamRate = 0.09
+                ),
+                eventMode = ModelEventMode.SLAG
+            )
+
+            val context = converterBeContextTest(
+                timeStart = timeStart,
+                meltInfo = defaultMeltInfoTest(),
+                slagRate = ModelSlagRate(
+                    slagRate = 0.74
+                ),
+                frame = ModelFrame(
+                    frameTime = timeStart
+                )
+            )
+
+            assertEquals(0, context.events.size)
+
+            converterFacade.handleMath(context)
+            val event = context.events.first()
+
+            assertEquals(ModelEvent.Category.CRITICAL, event.category)
+            assertTrue { event.isActive}
+            assertEquals(ModelEvent.ExecutionStatus.NONE, event.executionStatus)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context.signaler.level )
+            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
+        }
+    }
 }
