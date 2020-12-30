@@ -16,6 +16,8 @@ interface IWsManager {
 
     suspend fun sendEvents(context: ConverterBeContext)
 
+    suspend fun sendStreamStatus(context: ConverterBeContext)
+
     companion object {
         val NONE = object: IWsManager {
             override suspend fun sendFinish(context: ConverterBeContext) {
@@ -39,6 +41,9 @@ interface IWsManager {
             }
 
             override suspend fun sendEvents(context: ConverterBeContext) {
+                TODO("Not yet implemented")
+            }
+            override suspend fun sendStreamStatus(context: ConverterBeContext) {
                 TODO("Not yet implemented")
             }
         }

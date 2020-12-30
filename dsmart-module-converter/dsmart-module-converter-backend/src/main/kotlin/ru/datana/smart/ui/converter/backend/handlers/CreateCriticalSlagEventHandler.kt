@@ -17,7 +17,7 @@ object CreateCriticalSlagEventHandler : IKonveyorHandler<ConverterBeContext> {
             return
         }
 
-        context.activeEvent = context.eventSlagCriticalReached()
+        context.eventSlagCriticalReached()
         context.eventsRepository.create(context.activeEvent)
     }
 

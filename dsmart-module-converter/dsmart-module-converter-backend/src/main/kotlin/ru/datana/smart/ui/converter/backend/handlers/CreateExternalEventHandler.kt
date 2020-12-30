@@ -16,7 +16,7 @@ object CreateExternalEventHandler : IKonveyorHandler<ConverterBeContext> {
             return
         }
 
-        context.activeEvent = context.eventExternalReceived()
+        context.eventExternalReceived()
         context.eventsRepository.create(context.activeEvent)
     }
 

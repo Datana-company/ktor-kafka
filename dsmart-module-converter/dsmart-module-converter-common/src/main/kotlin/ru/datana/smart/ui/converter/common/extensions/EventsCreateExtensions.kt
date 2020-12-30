@@ -10,68 +10,99 @@ import java.util.*
  *  Функции-расширения контекста конвертера для создания событий
  */
 
-fun ConverterBeContext.eventExternalReceived():ModelEvent = ModelEvent(
-    meltId = currentMeltId,
-    type = ModelEvent.EventType.EXTERNAL_EVENT,
-    timeStart = timeStart,
-    timeFinish = timeStart,
-    title = ModelEvent.Category.INFO.title,
-    textMessage = externalEvent.textMessage,
-    alertRuleId = externalEvent.alertRuleId,
-    containerId = externalEvent.containerId,
-    component = externalEvent.component,
-    timestamp = externalEvent.timestamp,
-    level = externalEvent.level,
-    loggerName = externalEvent.loggerName,
-    category = ModelEvent.Category.INFO
-)
-
-fun ConverterBeContext.eventSlagInfoReached():ModelEvent = this.eventInfo().also { model ->
-    model.textMessage = """
-                     Достигнут предел потерь шлака в потоке – ${this.avgStreamRate.toPercent()}%.
-                     """.trimIndent()
+fun ConverterBeContext.eventExternalReceived(setActive: Boolean = true):ModelEvent {
+    val event = ModelEvent(
+        meltId = currentMeltId,
+        type = ModelEvent.EventType.EXTERNAL_EVENT,
+        timeStart = timeStart,
+        timeFinish = timeStart,
+        title = ModelEvent.Category.INFO.title,
+        textMessage = externalEvent.textMessage,
+        alertRuleId = externalEvent.alertRuleId,
+        containerId = externalEvent.containerId,
+        component = externalEvent.component,
+        timestamp = externalEvent.timestamp,
+        level = externalEvent.level,
+        loggerName = externalEvent.loggerName,
+        category = ModelEvent.Category.INFO
+    )
+    if (setActive) this.activeEvent = event
+    return event
 }
 
-fun ConverterBeContext.eventMetalInfoReached():ModelEvent = this.eventInfo().also { model ->
-    model.textMessage = """
-                     Достигнут предел потерь металла в потоке – ${this.avgStreamRate.toPercent()}%.
-                     """.trimIndent()
+fun ConverterBeContext.eventSlagInfoReached(setActive: Boolean = true) = this.setEventReached(
+    setActive = setActive,
+    message = """
+                   Достигнут предел потерь шлака в потоке – ${this.avgStreamRate.toPercent()}%.
+                  """.trimIndent()){
+    this.eventInfo()
 }
 
-fun ConverterBeContext.eventSlagWarningReached():ModelEvent = this.eventWarning().also { model ->
-    model.textMessage = """
-                    В потоке детектирован шлак – ${this.avgStreamRate.toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
-                    """.trimIndent()
+fun ConverterBeContext.eventSteelInfoReached(setActive: Boolean = true) = this.setEventReached(
+        setActive = setActive,
+        message = """
+                   Достигнут предел потерь металла в потоке – ${this.avgStreamRate.toPercent()}%.
+                  """.trimIndent()){
+             this.eventInfo()
+    }
+
+fun ConverterBeContext.eventSlagWarningReached(setActive: Boolean = true) = this.setEventReached(
+    setActive = setActive,
+    message = """
+              В потоке детектирован шлак – ${this.avgStreamRate.toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
+               """.trimIndent()){
+    this.eventWarning()
 }
 
-fun ConverterBeContext.eventMetalWarningReached():ModelEvent = this.eventWarning().also { model ->
-    model.textMessage = """
-                    В потоке детектирован металл – ${this.avgStreamRate.toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
-                    """.trimIndent()
+fun ConverterBeContext.eventSteelWarningReached(setActive: Boolean = true) = this.setEventReached(
+    setActive = setActive,
+    message = """
+              В потоке детектирован металл – ${this.avgStreamRate.toPercent()}% сверх допустимой нормы ${this.streamRateWarningPoint.toPercent()}%. Верните конвертер в вертикальное положение.
+               """.trimIndent()){
+    this.eventWarning()
 }
 
-fun ConverterBeContext.eventSlagCriticalReached():ModelEvent = this.eventCritical().also { model ->
-    model.textMessage = """
-                    В потоке детектирован шлак – ${this.avgStreamRate.toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
-                    """.trimIndent()
+fun ConverterBeContext.eventSlagCriticalReached(setActive: Boolean = true) = this.setEventReached(
+    setActive = setActive,
+    message = """
+              В потоке детектирован шлак – ${this.avgStreamRate.toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
+               """.trimIndent()){
+    this.eventCritical()
 }
 
-fun ConverterBeContext.eventMetalCriticalReached():ModelEvent = this.eventCritical().also { model ->
-    model.textMessage = """
-                    В потоке детектирован металл – ${this.avgStreamRate.toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
-                    """.trimIndent()
+fun ConverterBeContext.eventSteelCriticalReached(setActive: Boolean = true) = this.setEventReached(
+    setActive = setActive,
+    message = """
+              В потоке детектирован металл – ${this.avgStreamRate.toPercent()}%, процент потерь превышает критическое значение – ${this.streamRateCriticalPoint.toPercent()}%. Верните конвертер в вертикальное положение!
+               """.trimIndent()){
+    this.eventCritical()
 }
 
-fun ConverterBeContext.eventSlagSuccessReached():ModelEvent = this.eventSuccess().also { model ->
-    model.textMessage = """
-                    Допустимая норма потерь шлака ${this.streamRateWarningPoint.toPercent()}% не была превышена.
-                    """.trimIndent()
+fun ConverterBeContext.eventSlagSuccessReached(setActive: Boolean = true) = this.setEventReached(
+    setActive = setActive,
+    message = """
+              Допустимая норма потерь шлака ${this.streamRateWarningPoint.toPercent()}% не была превышена.
+               """.trimIndent()){
+    this.eventSuccess()
 }
 
-fun ConverterBeContext.eventMetalSuccessReached():ModelEvent = this.eventSuccess().also { model ->
-    model.textMessage = """
-                    Допустимая норма потерь металла ${this.streamRateWarningPoint.toPercent()}% не была превышена.
-                    """.trimIndent()
+fun ConverterBeContext.eventSteelSuccessReached(setActive: Boolean = true) = this.setEventReached(
+    setActive = setActive,
+    message = """
+              Допустимая норма потерь металла ${this.streamRateWarningPoint.toPercent()}% не была превышена.
+               """.trimIndent()){
+    this.eventSuccess()
+}
+
+private inline fun ConverterBeContext.setEventReached(
+    setActive: Boolean,
+    message: String,
+    crossinline eventBlock: ConverterBeContext.() -> ModelEvent): ModelEvent {
+    val event = eventBlock().also {
+        it.textMessage = message
+    }
+    if (setActive) this.activeEvent = event
+    return event
 }
 
 private fun ConverterBeContext.eventInfo():ModelEvent = this.eventBase().also { model ->
