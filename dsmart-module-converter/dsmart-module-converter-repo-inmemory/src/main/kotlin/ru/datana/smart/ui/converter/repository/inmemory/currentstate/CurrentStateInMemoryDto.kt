@@ -5,6 +5,7 @@ import ru.datana.smart.ui.converter.common.models.ModelAngles
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
 import ru.datana.smart.ui.converter.common.models.ModelSlagRate
 import java.time.Instant
+import java.util.*
 
 
 data class CurrentStateInMemoryDto(
@@ -14,7 +15,8 @@ data class CurrentStateInMemoryDto(
     val lastTimeAngles: Long? = null,
     val lastTimeFrame: Long? = null,
     val lastAvgSlagRate: Double? = null,
-    val slagRateList: MutableList<CurrentStateInMemorySlagRate>? = null
+    val slagRateList: MutableList<CurrentStateInMemorySlagRate>? = null,
+    val optimisticLock: UUID? = null
 ) {
     fun  toModel() = CurrentState(
         currentMeltInfo = meltInfo?.toModel() ?: ModelMeltInfo.NONE,
