@@ -23,11 +23,16 @@ internal class EventsChainNKR1210c10Test {
             val timeStart = Instant.now()
             val meltTimeout = 10000L
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
+            )
+
+            val currentStateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgSteelRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -37,11 +42,8 @@ internal class EventsChainNKR1210c10Test {
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.15,
                 reactionTime = 3000L,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = currentStateRepository,
+                eventRepository = repository
             )
 
             val context1 = converterBeContextTest(
@@ -69,7 +71,7 @@ internal class EventsChainNKR1210c10Test {
             )
 
             converterFacade.handleMath(context1)
-            var oldEvent = context1.events.first()
+            var oldEvent = context1.eventList.first()
 
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, oldEvent.executionStatus)
@@ -79,8 +81,8 @@ internal class EventsChainNKR1210c10Test {
 
 
             converterFacade.handleMath(context2)
-            oldEvent = context2.events.last()
-            val newEvent = context2.events.first()
+            oldEvent = context2.eventList.last()
+            val newEvent = context2.eventList.first()
 
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, oldEvent.executionStatus)
@@ -100,11 +102,16 @@ internal class EventsChainNKR1210c10Test {
             val timeStart = Instant.now()
             val meltTimeout = 10000L
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
+            )
+
+            val currentStateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgSlagRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -114,11 +121,8 @@ internal class EventsChainNKR1210c10Test {
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.15,
                 reactionTime = 3000L,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository,
+                currentStateRepository = currentStateRepository,
+                eventRepository = repository,
                 eventMode = ModelEventMode.SLAG
             )
 
@@ -147,7 +151,7 @@ internal class EventsChainNKR1210c10Test {
             )
 
             converterFacade.handleMath(context1)
-            var oldEvent = context1.events.first()
+            var oldEvent = context1.eventList.first()
 
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, oldEvent.executionStatus)
@@ -157,8 +161,8 @@ internal class EventsChainNKR1210c10Test {
 
 
             converterFacade.handleMath(context2)
-            oldEvent = context2.events.last()
-            val newEvent = context2.events.first()
+            oldEvent = context2.eventList.last()
+            val newEvent = context2.eventList.first()
 
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, oldEvent.executionStatus)

@@ -19,11 +19,16 @@ internal class EventsChainNKR1210c14Test {
             val timeStart = Instant.now()
             val meltTimeout = 10000L
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
+            )
+
+            val currentStateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                avgSteelRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -33,11 +38,8 @@ internal class EventsChainNKR1210c14Test {
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.15,
                 reactionTime = 3000L,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository
+                currentStateRepository = currentStateRepository,
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -55,9 +57,9 @@ internal class EventsChainNKR1210c14Test {
 
             converterFacade.handleMath(context)
 
-            assertEquals(2, context.events.size)
-            val newEvent = context.events.first()
-            val oldEvent = context.events.last()
+            assertEquals(2, context.eventList.size)
+            val newEvent = context.eventList.first()
+            val oldEvent = context.eventList.last()
 
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertFalse { oldEvent.isActive }
@@ -77,11 +79,16 @@ internal class EventsChainNKR1210c14Test {
             val timeStart = Instant.now()
             val meltTimeout = 10000L
 
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_CRITICAL_EVENT,
                 timeStart = timeStart.minusMillis(3000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.CRITICAL
+            )
+
+            val currentStateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 60.0,
+                avgSlagRate = 0.16
             )
 
             val converterFacade = converterFacadeTest(
@@ -91,11 +98,8 @@ internal class EventsChainNKR1210c14Test {
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.15,
                 reactionTime = 3000L,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 60.0,
-                    avgStreamRate = 0.16
-                ),
-                converterRepository = repository,
+                currentStateRepository = currentStateRepository,
+                eventRepository = repository,
                 eventMode = ModelEventMode.SLAG
             )
 
@@ -114,9 +118,9 @@ internal class EventsChainNKR1210c14Test {
 
             converterFacade.handleMath(context)
 
-            assertEquals(2, context.events.size)
-            val newEvent = context.events.first()
-            val oldEvent = context.events.last()
+            assertEquals(2, context.eventList.size)
+            val newEvent = context.eventList.first()
+            val oldEvent = context.eventList.last()
 
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertFalse { oldEvent.isActive }

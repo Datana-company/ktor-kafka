@@ -21,15 +21,17 @@ internal class EventsChainNKR1210c2Test {
         runBlocking {
             val timeStart = Instant.now()
 
+            val currentStateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgSteelRate = 0.09
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.15,
                 reactionTime = 3000L,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.09
-                )
+                currentStateRepository = currentStateRepository
             )
 
             val context = converterBeContextTest(
@@ -43,10 +45,10 @@ internal class EventsChainNKR1210c2Test {
                 )
             )
 
-            assertEquals(0, context.events.size)
+            assertEquals(0, context.eventList.size)
 
             converterFacade.handleMath(context)
-            val event = context.events.first()
+            val event = context.eventList.first()
 
             assertEquals(ModelEvent.Category.CRITICAL, event.category)
             assertTrue { event.isActive}
@@ -61,15 +63,17 @@ internal class EventsChainNKR1210c2Test {
         runBlocking {
             val timeStart = Instant.now()
 
+            val currentStateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgSlagRate = 0.09
+            )
+
             val converterFacade = converterFacadeTest(
                 roundingWeight = 0.1,
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.15,
                 reactionTime = 3000L,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.09
-                ),
+                currentStateRepository = currentStateRepository,
                 eventMode = ModelEventMode.SLAG
             )
 
@@ -84,10 +88,10 @@ internal class EventsChainNKR1210c2Test {
                 )
             )
 
-            assertEquals(0, context.events.size)
+            assertEquals(0, context.eventList.size)
 
             converterFacade.handleMath(context)
-            val event = context.events.first()
+            val event = context.eventList.first()
 
             assertEquals(ModelEvent.Category.CRITICAL, event.category)
             assertTrue { event.isActive}

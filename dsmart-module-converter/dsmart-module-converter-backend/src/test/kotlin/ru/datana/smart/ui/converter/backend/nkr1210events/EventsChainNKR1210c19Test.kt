@@ -21,6 +21,10 @@ internal class EventsChainNKR1210c19Test {
             val dataTimeout = 3000L
             val meltTimeout = 10000L
 
+            val currentStateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgSteelRate = 0.09
+            )
 
             val converterFacade = converterFacadeTest(
                 meltTimeout = meltTimeout,
@@ -29,10 +33,7 @@ internal class EventsChainNKR1210c19Test {
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.15,
                 reactionTime = 3000L,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    avgStreamRate = 0.09
-                )
+                currentStateRepository = currentStateRepository
             )
 
             val context1 = converterBeContextTest(
@@ -56,14 +57,14 @@ internal class EventsChainNKR1210c19Test {
 
             converterFacade.handleMath(context1)
 
-            assertEquals(0, context1.events.size)
+            assertEquals(0, context1.eventList.size)
             assertEquals(ModelAngles.NONE, context1.angles)
             //assertEquals(ModelFrame.NONE, context1.frame)
 
             converterFacade.handleMath(context2)
 
-            assertEquals(1, context2.events.size)
-            val event = context2.events.first()
+            assertEquals(1, context2.eventList.size)
+            val event = context2.eventList.first()
             assertEquals(ModelEvent.Category.INFO, event.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, event.executionStatus)
             assertFalse { event.isActive }
