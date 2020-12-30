@@ -10,6 +10,7 @@ import io.ktor.routing.*
 import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import of
 import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
@@ -172,51 +173,32 @@ fun Application.module(testing: Boolean = false) {
 
         kafka(listOf(topicMath)) {
             var lastMessageTime = Instant.MIN
-            val x = items.items
+            items.items
                 .map {
                     try {
                         val mathTransport = ConverterTransportMlUiOuterClass.ConverterTransportMlUi.parseFrom(it.value)
                         ConverterBeContext(
                             timeStart = Instant.now(),
                             topic = it.topic
-                        ) //.of(mathTransport)
+                        ).of(mathTransport)
                     } catch (e: Throwable) {
-                        e.printStackTrace()
-                        ConverterBeContext(
+                        val ctx = ConverterBeContext(
                             timeStart = Instant.now(),
                             topic = it.topic,
                             errors = mutableListOf(CorError(message = e.message ?: "")),
                             status = CorStatus.ERROR
                         )
-                    }
-                }
-                .filter {
-                    val res = ! it.hasErrors()
-                    if (! res) {
                         logger.error(
                             msg = "Kafka message parsing error",
                             data = object {
                                 val metricType = "converter-backend-KafkaController-error-math"
                                 //                        val mathModel = kafkaModel
-                                val topic = it.topic
-                                val error = it.errors
+                                val topic = ctx.topic
+                                val error = ctx.errors
                             },
                         )
+                        ctx
                     }
-                    res
-                }
-                .filter {
-                    val res = it.frame.frameTime > lastMessageTime
-                    logger.biz(
-                        msg = "Math model object got",
-                        data = object {
-                            val metricType = "converter-backend-KafkaController-got-math"
-                            //                        val mathModel = kafkaModel
-                            val topic = it.topic
-                            val toBeHandled = res
-                        },
-                    )
-                    res
                 }
                 .forEach {
                     lastMessageTime = it.frame.frameTime
