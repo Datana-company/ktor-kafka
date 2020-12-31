@@ -16,7 +16,6 @@ class ProtobufTest {
         val ba: ByteArray = mo.toByteArray()
 
         val dmo: ConverterTransportMlUiOuterClass.ConverterTransportMlUi = ConverterTransportMlUiOuterClass.ConverterTransportMlUi.parseFrom(ba)
-        println(dmo.frame)
         assertEquals("123", dmo.frameId)
 
     }
