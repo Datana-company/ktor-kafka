@@ -6,11 +6,11 @@ import ru.datana.smart.common.transport.models.ws.IWsDsmartResponseError
 import ru.datana.smart.ui.converter.common.Config
 
 @Serializable
-@SerialName("converter-slag-rate-update")
-data class WsDsmartResponseConverterSlagRate(
-    override val data: WsDsmartConverterSlagRate? = null,
+@SerialName("converter-slag-rates-update")
+data class WsDsmartResponseConverterSlagRates(
+    override val data: WsDsmartConverterSlagRateList? = null,
     override val errors: List<IWsDsmartResponseError>? = null,
-    override val event: String? = "converter-slag-rate-update"
-) : IWsDsmartResponse<WsDsmartConverterSlagRate> {
+    override val event: String? = "converter-slag-rates-update"
+) : IWsDsmartResponse<WsDsmartConverterSlagRateList> {
     override val module: String? = Config.moduleName
 }

@@ -3,6 +3,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WsDsmartConverterSlagRate(
+    val slagRateTime: Long? = null,
     val steelRate: Double? = null,
-    val slagRate: Double? = null
+    val slagRate: Double? = null,
+    val avgSteelRate: Double? = null,
+    val avgSlagRate: Double? = null
 )

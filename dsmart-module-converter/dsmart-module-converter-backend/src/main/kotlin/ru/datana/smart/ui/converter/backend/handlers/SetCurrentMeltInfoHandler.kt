@@ -8,6 +8,7 @@ import ru.datana.smart.ui.converter.common.models.CurrentState
 
 /*
 * SetCurrentMeltInfoHandler - в репозиторий текущего состояния задаётся текущие данные о плавке.
+* Создаем CurrentState
 * */
 object SetCurrentMeltInfoHandler: IKonveyorHandler<ConverterBeContext> {
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
@@ -15,8 +16,8 @@ object SetCurrentMeltInfoHandler: IKonveyorHandler<ConverterBeContext> {
         val currentState = CurrentState(
             currentMeltInfo = context.meltInfo
         )
-        context.currentState.set(currentState)
-        println("added topic = meta, currentMeltId = ${context.currentMeltId}")
+        context.currentStateRepository.create(currentState)
+        println("added topic = meta, currentMeltId = ${context.meltInfo.id}")
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

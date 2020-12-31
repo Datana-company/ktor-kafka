@@ -16,7 +16,7 @@ object UpdateEventHandler: IKonveyorHandler<ConverterBeContext> {
                 return
 
             timeFinish = context.timeStart
-            context.eventsRepository.update(this)
+            context.eventRepository.update(this)
 
             if (!isActive) {
                 context.activeEvent = ModelEvent.NONE

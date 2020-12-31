@@ -10,6 +10,7 @@ import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.ModelMeltInfo
+import ru.datana.smart.ui.converter.common.models.ModelStreamStatus
 
 /*
 * WsSendMeltFinishHandler - конец плавки.
@@ -29,11 +30,11 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
             jobMeltFinish = GlobalScope.launch {
                 // происходит ожидание в течение заданного времени (MELT_TIMEOUT)
                 delay(context.meltTimeout)
-                // сбор контекста перед вызовом цепочек с обработкой событий и светофора
-                context.meltInfo = ModelMeltInfo.NONE
-                context.avgStreamRate = Double.MIN_VALUE
+                // сброс контекста перед вызовом цепочек с обработкой событий и светофора
                 context.status = CorStatus.STARTED
-
+                context.slagRateList = mutableListOf()
+                // сброс данных в репозитории текущего состояния
+                context.currentStateRepository.update(CurrentState.NONE)
                 // вызов цепочки обработки событий по шлаку или по металлу
                 if (context.eventMode == ModelEventMode.STEEL) {
                     context.converterFacade.handleSteelEvents(context)
@@ -42,8 +43,8 @@ object WsSendMeltFinishHandler: IKonveyorHandler<ConverterBeContext> {
                 }
                 // вызов цепочки обработки светофора
                 context.converterFacade.handleSignaler(context)
-                // сброс данных в репозитории текущего состояния
-                context.currentState.set(CurrentState.NONE)
+                // сброс данных о плавке в контексте
+                context.meltInfo = ModelMeltInfo.NONE
                 // отправка данных о статусе потока
                 context.wsManager.sendStreamStatus(context)
                 // отправка данных об окончании плавки

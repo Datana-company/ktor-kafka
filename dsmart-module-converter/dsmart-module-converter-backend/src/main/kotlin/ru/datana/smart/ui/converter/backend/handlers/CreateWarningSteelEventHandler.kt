@@ -17,7 +17,7 @@ object CreateWarningSteelEventHandler : IKonveyorHandler<ConverterBeContext> {
         }
 
         context.eventSteelWarningReached()
-        context.eventsRepository.create(context.activeEvent)
+        context.eventRepository.create(context.activeEvent)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

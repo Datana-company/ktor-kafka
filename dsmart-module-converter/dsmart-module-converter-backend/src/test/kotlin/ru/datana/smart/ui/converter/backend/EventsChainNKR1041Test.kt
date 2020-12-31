@@ -20,11 +20,17 @@ internal class EventsChainNKR1041Test {
         runBlocking {
             val timeStart = Instant.now()
             val meltTimeout = 5000L
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
+            )
+
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgSteelRate = 0.14,
+                lastSteelRate = 0.14
             )
 
             val converterFacade = converterFacadeTest(
@@ -33,12 +39,8 @@ internal class EventsChainNKR1041Test {
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.34,
                 reactionTime = 3000,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    lastSteelRate = 0.14,
-                    avgStreamRate = 0.14
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -56,8 +58,8 @@ internal class EventsChainNKR1041Test {
 
             converterFacade.handleMath(context)
             delay(meltTimeout + 1000L)
-            assertEquals(ModelEvent.Category.WARNING, context.events.first().category)
-            assertEquals(false, context.events.first().isActive)
+            assertEquals(ModelEvent.Category.WARNING, context.eventList.first().category)
+            assertEquals(false, context.eventList.first().isActive)
             assertEquals(ModelSignalerSound.NONE, context.signaler.sound)
             assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
         }
@@ -68,11 +70,17 @@ internal class EventsChainNKR1041Test {
     fun isEventActiveAfterReactionTimeNKR1041_WithFalseParameterTest() {
         runBlocking {
             val timeStart = Instant.now()
-            val repository = createRepositoryWithEventForTest(
+            val repository = createEventRepositoryForTest(
                 eventType = ModelEvent.EventType.STREAM_RATE_WARNING_EVENT,
                 timeStart = timeStart.minusMillis(1000L),
                 angleStart = 66.0,
                 category = ModelEvent.Category.WARNING
+            )
+
+            val stateRepository = createCurrentStateRepositoryForTest(
+                lastAngle = 66.0,
+                avgSteelRate = 0.18,
+                lastSteelRate = 0.14
             )
 
             val converterFacade = converterFacadeTest(
@@ -81,12 +89,8 @@ internal class EventsChainNKR1041Test {
                 streamRateWarningPoint = 0.1,
                 streamRateCriticalPoint = 0.13,
                 reactionTime = 3000,
-                currentState = createCurrentStateForTest(
-                    lastAngle = 66.0,
-                    lastSteelRate = 0.14,
-                    avgStreamRate = 0.18
-                ),
-                converterRepository = repository
+                currentStateRepository = stateRepository,
+                eventRepository = repository
             )
 
             val context = converterBeContextTest(
@@ -105,7 +109,7 @@ internal class EventsChainNKR1041Test {
             converterFacade.handleMath(context)
 
             assertEquals(CorStatus.SUCCESS, context.status)
-            assertNotEquals(false, context.events.first().isActive)
+            assertNotEquals(false, context.eventList.first().isActive)
             assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
             assertNotEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
             assertEquals(ModelSignalerSound.ModelSignalerSoundType.SOUND_1, context.signaler.sound.type)

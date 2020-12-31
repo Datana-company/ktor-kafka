@@ -25,9 +25,10 @@ import ru.datana.smart.ui.converter.common.context.ConverterBeContext
 import ru.datana.smart.ui.converter.common.context.CorError
 import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.CurrentState
+import java.time.Duration
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 import ru.datana.smart.ui.converter.repository.inmemory.EventRepositoryInMemory
-import java.time.Duration
+import ru.datana.smart.ui.converter.repository.inmemory.currentstate.CurrentStateRepositoryInMemory
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.DurationUnit
@@ -104,8 +105,15 @@ fun Application.module(testing: Boolean = false) {
     val roundingWeight: Double by lazy {
         environment.config.property("ktor.conveyor.roundingWeight").getString().trim().toDouble()
     }
-    val storageDuration: Int by lazy {
-        environment.config.property("ktor.repository.inmemory.storageDuration").getString().trim().toInt()
+    val eventStorageDuration: Int by lazy {
+        environment.config.property("ktor.repository.inmemory.event.storageDuration").getString().trim().toInt()
+    }
+    val stateStorageDuration: Int by lazy {
+        environment.config.property("ktor.repository.inmemory.state.storageDuration").getString().trim().toInt()
+    }
+
+    val slagRatesTimeLimit: Long by lazy {
+        environment.config.property("ktor.repository.inmemory.state.timeLimit").getString().trim().toLong()
     }
 
     // TODO: в будущем найти место, куда пристроить генератор
@@ -117,21 +125,26 @@ fun Application.module(testing: Boolean = false) {
 //    )
 //    metalRateEventGenerator.start()
 
-    val userEventsRepository = EventRepositoryInMemory(ttl = storageDuration.toDuration(DurationUnit.MINUTES))
+    val eventRepository = EventRepositoryInMemory(ttl = eventStorageDuration.toDuration(DurationUnit.MINUTES))
+    val currentStateRepository = CurrentStateRepositoryInMemory(
+        ttl = stateStorageDuration.toDuration(DurationUnit.HOURS),
+        converterId = converterId,
+        timeLimit = slagRatesTimeLimit)
 
     val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
     val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)
 
     val websocketContext = ConverterBeContext(
+        converterId = converterId,
+        eventRepository = eventRepository,
+        currentStateRepository = currentStateRepository,
         streamRateWarningPoint = streamRateWarningPoint,
-        sirenLimitTime = sirenLimitTime,
-        eventsRepository = userEventsRepository,
-        currentState = currentState,
-        topic = ""
+        sirenLimitTime = sirenLimitTime
     )
 
     val converterFacade = ConverterFacade(
-        converterRepository = userEventsRepository,
+        currentStateRepository = currentStateRepository,
+        eventRepository = eventRepository,
         wsManager = wsManager,
         wsSignalerManager = wsSignalerManager,
         dataTimeout = dataTimeout,
@@ -233,7 +246,7 @@ fun Application.module(testing: Boolean = false) {
                                 // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now(),
-                                    topic = ""
+                                    topic = topic
                                 )
                                 // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
                                 context.setMeltInfo(kafkaModel)
@@ -257,7 +270,7 @@ fun Application.module(testing: Boolean = false) {
                                 // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now(),
-                                    topic = ""
+                                    topic = topic
                                 )
                                 // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
                                 context.setAngles(kafkaModel)
@@ -282,7 +295,7 @@ fun Application.module(testing: Boolean = false) {
                                 // инициализация контекста
                                 val context = ConverterBeContext(
                                     timeStart = Instant.now(),
-                                    topic = ""
+                                    topic = topic
                                 )
                                 // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
                                 context.setExternalEvent(kafkaModel)

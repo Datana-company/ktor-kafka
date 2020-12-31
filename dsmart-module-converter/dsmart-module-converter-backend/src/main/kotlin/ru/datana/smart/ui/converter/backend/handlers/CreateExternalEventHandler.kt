@@ -17,7 +17,7 @@ object CreateExternalEventHandler : IKonveyorHandler<ConverterBeContext> {
         }
 
         context.eventExternalReceived()
-        context.eventsRepository.create(context.activeEvent)
+        context.eventRepository.create(context.activeEvent)
     }
 
     override fun match(context: ConverterBeContext, env: IKonveyorEnvironment): Boolean {

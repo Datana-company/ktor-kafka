@@ -2,6 +2,7 @@ package ru.datana.smart.ui.converter.common.context
 
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
 import ru.datana.smart.ui.converter.common.models.*
+import ru.datana.smart.ui.converter.common.repositories.ICurrentStateRepository
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
@@ -12,11 +13,14 @@ data class ConverterBeContext(
     var meltInfo: ModelMeltInfo = ModelMeltInfo.NONE,
     var frame: ModelFrame = ModelFrame.NONE,
     var slagRate: ModelSlagRate = ModelSlagRate.NONE,
-    var events: MutableList<ModelEvent> = mutableListOf(),
+    var slagRateList: MutableList<ModelSlagRate> = mutableListOf(),
+    var eventList: MutableList<ModelEvent> = mutableListOf(),
     var activeEvent: ModelEvent = ModelEvent.NONE,
     var externalEvent: ModelEvent = ModelEvent.NONE,
-    var lastTimeAngles: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
-    var lastTimeFrame: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
+    // удалить
+    //var lastTimeAngles: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
+    //var lastTimeFrame: AtomicReference<Instant> = AtomicReference(Instant.EPOCH),
+    //-------------------------------------------
     var streamStatus: ModelStreamStatus = ModelStreamStatus.NONE,
     var status: CorStatus = CorStatus.STARTED,
     var errors: MutableList<CorError> = mutableListOf(),
@@ -32,8 +36,11 @@ data class ConverterBeContext(
     var roundingWeight: Double = Double.MIN_VALUE,
     var dataTimeout: Long = Long.MIN_VALUE,
     var meltTimeout: Long = Long.MIN_VALUE,
-    var eventsRepository: IEventRepository = IEventRepository.NONE,
-    var currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE),
+    var eventRepository: IEventRepository = IEventRepository.NONE,
+    var currentStateRepository: ICurrentStateRepository = ICurrentStateRepository.NONE,
+    // remove
+    //var currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE),
+    //------------------------------------------
     var scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE),
     var signaler: ModelSignaler = ModelSignaler.NONE,
     var converterId: String = "",
@@ -41,17 +48,17 @@ data class ConverterBeContext(
     var converterFacade: IConverterFacade = IConverterFacade.NONE,
     val topic: String = ""
 ) {
-    val currentMeltInfo: ModelMeltInfo
-        get() = currentState.get().currentMeltInfo
-    val currentMeltId: String
-        get() = currentState.get().currentMeltInfo.id
-    var avgStreamRate: Double
-        get() = currentState.get().avgStreamRate
-        set(value) {
-            currentState.get().avgStreamRate = value
-        }
-    val currentAngle: Double
-        get() = currentState.get().lastAngles.angle
+//    val currentMeltInfo: ModelMeltInfo
+//        get() = currentState.get().currentMeltInfo
+//    val currentMeltId: String
+//        get() = currentState.get().currentMeltInfo.id
+//    var avgStreamRate: Double
+//        get() = currentState.get().avgStreamRate
+//        set(value) {
+//            currentState.get().avgStreamRate = value
+//        }
+//    val currentAngle: Double
+//        get() = currentState.get().lastAngles.angle
 
     fun hasErrors() = errors.isNotEmpty()
 }

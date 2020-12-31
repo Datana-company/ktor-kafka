@@ -9,10 +9,12 @@ import ru.datana.smart.ui.converter.common.models.IConverterFacade
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
 import ru.datana.smart.ui.converter.common.repositories.IEventRepository
 import ru.datana.smart.ui.converter.common.models.ModelEventMode
+import ru.datana.smart.ui.converter.common.repositories.ICurrentStateRepository
 import java.util.concurrent.atomic.AtomicReference
 
 class ConverterFacade(
-    converterRepository: IEventRepository = IEventRepository.NONE,
+    currentStateRepository: ICurrentStateRepository = ICurrentStateRepository.NONE,
+    eventRepository: IEventRepository = IEventRepository.NONE,
     wsManager: IWsManager = IWsManager.NONE,
     wsSignalerManager: IWsSignalerManager = IWsSignalerManager.NONE,
     dataTimeout: Long = Long.MIN_VALUE,
@@ -30,7 +32,8 @@ class ConverterFacade(
 
 ): IConverterFacade {
     private val chainSettings = ConverterChainSettings(
-        eventsRepository = converterRepository,
+        currentStateRepository = currentStateRepository,
+        eventRepository = eventRepository,
         wsManager = wsManager,
         wsSignalerManager= wsSignalerManager,
         dataTimeout = dataTimeout,
