@@ -1,9 +1,9 @@
 package ru.datana.smart.ui.converter.common.context
 
-class InnerRecord(
+class InnerRecord<K, V>(
     val topic: String,
     val partition: Int,
     val offset: Long,
-    val key: String,
-    val value: kotlin.ByteArray
+    val key: K,
+    val value: V
 )

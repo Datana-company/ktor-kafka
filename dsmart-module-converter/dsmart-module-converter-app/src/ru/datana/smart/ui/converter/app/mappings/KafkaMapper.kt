@@ -10,7 +10,7 @@ import ru.datana.smart.ui.converter.common.exceptions.ConverterDeserializationEx
 import ru.datana.smart.ui.converter.common.context.InnerRecord
 import ru.datana.smart.ui.extevent.models.ConverterTransportExternalEvent
 
-fun ConsumerRecord<String, ByteArray>.toInnerModel(): InnerRecord = InnerRecord(
+fun <K, V> ConsumerRecord<K, V>.toInnerModel(): InnerRecord<K, V> = InnerRecord(
     topic = topic(),
     partition = partition(),
     offset = offset(),
@@ -25,7 +25,7 @@ val jacksonSerializer: ObjectMapper = ObjectMapper()
     // т.е. мы отменяем проверку строгого соответствия JSON и класса
     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-fun toConverterMeltInfo(record: InnerRecord): ConverterMeltInfo {
+fun <K, V> toConverterMeltInfo(record: InnerRecord<K, V>): ConverterMeltInfo {
     try {
         return jacksonSerializer.readValue(record.value.toString(), ConverterMeltInfo::class.java)!!
     } catch (e: Exception) {
@@ -49,17 +49,17 @@ fun toConverterMeltInfo(record: InnerRecord): ConverterMeltInfo {
 //    }
 //}
 
-fun toConverterTransportAngle(record: InnerRecord): ConverterTransportAngle {
+fun <K, V> toConverterTransportAngle(record: InnerRecord<K, V>): ConverterTransportAngle {
     try {
-        return jacksonSerializer.readValue(record.value, ConverterTransportAngle::class.java)!!
+        return jacksonSerializer.readValue(record.value.toString(), ConverterTransportAngle::class.java)!!
     } catch (e: Exception) {
         throw ConverterDeserializationException(e.message, e.cause)
     }
 }
 
-fun toConverterTransportExternalEvents(record: InnerRecord): ConverterTransportExternalEvent {
+fun <K, V> toConverterTransportExternalEvents(record: InnerRecord<K, V>): ConverterTransportExternalEvent {
     try {
-        return jacksonSerializer.readValue(record.value, ConverterTransportExternalEvent::class.java)!!
+        return jacksonSerializer.readValue(record.value.toString(), ConverterTransportExternalEvent::class.java)!!
     } catch (e: Exception) {
         throw ConverterDeserializationException(e.message, e.cause)
     }

@@ -3,18 +3,18 @@ package ru.datana.smart.common.ktor.kafka
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import java.time.Instant
 
-class ConsumerItem(
+class ConsumerItem<K,V>(
     val time: Instant,
-    val key: String,
-    val value: ByteArray,
+    val key: K,
+    val value: V,
     val topic: String,
     val partition: Int,
     val offset: Long,
     val headers: Map<String, ByteArray>
 )
 
-class ConsumerItems(val items: Sequence<ConsumerItem>) {
-    constructor(records: ConsumerRecords<String, ByteArray>) : this(
+class ConsumerItems<K,V>(val items: Sequence<ConsumerItem<K,V>>) {
+    constructor(records: ConsumerRecords<K,V>) : this(
         records
             .asSequence()
             .map {

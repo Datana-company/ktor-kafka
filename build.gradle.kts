@@ -16,4 +16,11 @@ subprojects {
 //        kotlinOptions.suppressWarnings = true
         kotlinOptions.jvmTarget = "11"
     }
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven { url = uri("https://kotlin.bintray.com/ktor") }
+        maven { url = uri("https://nexus.datana.ru/repository/datana-release/") }
+    }
 }
