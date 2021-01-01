@@ -12,6 +12,7 @@ import ru.datana.smart.converter.transport.math.*
 import ru.datana.smart.converter.transport.meta.models.*
 import java.time.Instant
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 internal class MathTopicTest {
 
@@ -20,7 +21,7 @@ internal class MathTopicTest {
     val mathConsumer = TestConsumer<String, ByteArray>()
 
     val meltInit = ConverterMeltInfo(
-        id = "converter1-2019328013-1608140222293",
+        id = MELT_ID,
         timeStart = Instant.now().toEpochMilli(),
         meltNumber = "1234",
         steelGrade = "X12-34",
@@ -50,11 +51,11 @@ internal class MathTopicTest {
         .setFrameTime(Instant.now().toEpochMilli())
         .setMeltInfo(
             ConverterMeltInfoOuterClass.ConverterMeltInfo.newBuilder()
+                .setId(MELT_ID)
                 .setCrewNumber("1")
                 .setMeltNumber("12354123")
                 .setShiftNumber("2")
                 .setSteelGrade("X456-DF")
-                .setId("melt-id-2354234")
                 .setDevices(
                     ConverterMeltDevicesOuterClass.ConverterMeltDevices.newBuilder()
                         .setConverter(
@@ -100,7 +101,7 @@ internal class MathTopicTest {
                     println(" +++ kafkaInitMsg: $kafkaInitMsg")
                 }
 
-                // 2) Запускаем плавку. Это нужно чтобы у extEvent-ов была принадлежность к плавке (проставлен meltId).
+                // 2) Запускаем плавку.
                 metaConsumer.send(TOPIC_META, "", objectmapper.writeValueAsString(meltInit))
                 withTimeout(3001) {
                     repeat(3) {
@@ -109,14 +110,17 @@ internal class MathTopicTest {
                     }
                 }
 
-                // 3) Отправляем собственно тестовое сообщение (extEvent)
+                // 3) Отправляем сообщение от матмодели
                 mathConsumer.send(TOPIC_MATH, "1", mathMessage.toByteArray())
                 withTimeout(3002) {
-                    while (true) {
-                        val json = (incoming.receive() as Frame.Text).readText()
-                        println(" +++ mathJson: $json")
+                    var json = ""
+                    repeat(2) {
+                        val jsonMath = (incoming.receive() as Frame.Text).readText()
+                        println(" +++ mathJson: $jsonMath")
+                        json += jsonMath
                     }
-//                    assertTrue(actualJson.contains(testMsg))
+                    assertTrue(json.contains("\"image\":\"AAECAw==\""), "Image must be sent")
+                    assertTrue(json.contains("\"steelRate\":0.12"), "Steel rate must be handled")
                 }
             }
         }
@@ -128,5 +132,6 @@ internal class MathTopicTest {
         const val TOPIC_ANGLES = "topic-other"
         const val TOPIC_EVENTS = "topic-other"
         const val CONVERTER_ID = "converter-xx"
+        const val MELT_ID = "melt-id-345"
     }
 }
