@@ -16,6 +16,7 @@ import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
+import ru.datana.smart.common.ktor.kafka.TestConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
 import ru.datana.smart.converter.transport.math.ConverterTransportMlUiOuterClass
 import ru.datana.smart.logger.datanaLogger
@@ -86,8 +87,10 @@ fun Application.module(
     val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
 //    val framesBasePath by lazy { environment.config.property("paths.base.frames").getString().trim() }
     val eventMode: EventMode by lazy {
-        EventMode.valueOf(environment.config.propertyOrNull("ktor.conveyor.eventMode")
-            ?.getString()?.trim() ?: "STEEL" )
+        EventMode.valueOf(
+            environment.config.propertyOrNull("ktor.conveyor.eventMode")
+                ?.getString()?.trim() ?: "STEEL"
+        )
     }
     val dataTimeout: Long by lazy {
         environment.config.propertyOrNull("ktor.conveyor.dataTimeout")
@@ -240,9 +243,11 @@ fun Application.module(
 
         kafka<String, String> {
             consumer = kafkaMetaConsumer
+            pollInterval = 500
             topics(topicMeta, topicAngles, topicEvents) {
                 try {
-                    records.sortedByDescending { it.offset() }
+                    records
+                        .sortedByDescending { it.offset() }
 //                на самом деле они уже отсортированы сначала по топику, затем по offset по убыванию
 //                    TODO Это ерунда. Никакого отношения к времени offset не имеет и порядок не гарантирован
 //                    Нужно сначала сконвертировать объект в контекст и уже только потом делать сортировку и
@@ -336,19 +341,3 @@ fun Application.module(
         }
     }
 }
-
-// TODO: дописать метод
-//suspend inline fun <reified T, reified K> KtorKafkaConsumerContext.handleMessage(block: (InnerRecord<String, String>) -> Unit) {
-//    try {
-//        val context = ConverterBeContext()
-//
-//        val kafkaModel = toConverterTransportMlUi(record)
-//        val conveyorModel = toModelAnalysis(kafkaModel) // rate
-////        val context = ConverterBeContext(
-////            analysis = conveyorModel // добавить поля и маппинг функции
-////        )
-//        converterFacade.handleSlagRate(context)
-//    } catch (e: Throwable) {
-//
-//    }
-//}

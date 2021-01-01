@@ -50,9 +50,7 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
         while (!isClosed.get()) {
             val records = consumer.poll(Duration.ofMillis(routeConfig.pollInterval))
             if (!records.isEmpty) {
-                println("records cycle -")
                 log.debug("Pulled records: {}", records.count())
-                println("records cycle |")
                 handlers.forEach { handlerObj ->
                     val handler = handlerObj.handler
                     KtorKafkaConsumerContext(consumer, records)

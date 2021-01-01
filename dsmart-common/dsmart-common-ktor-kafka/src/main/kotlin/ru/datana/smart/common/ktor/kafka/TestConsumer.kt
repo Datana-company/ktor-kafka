@@ -6,14 +6,29 @@ import org.apache.kafka.common.MetricName
 import org.apache.kafka.common.PartitionInfo
 import org.apache.kafka.common.TopicPartition
 import java.time.Duration
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.locks.ReentrantReadWriteLock
 import java.util.regex.Pattern
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 class TestConsumer<K, V> : Consumer<K, V> {
     private val _topics = mutableMapOf<String, MutableList<Pair<K, V>>>()
+    private val lock = ReentrantReadWriteLock()
+
+    fun getTopics() = lock.read {
+        _topics
+            .map { it.key to it.value.toList() }
+            .toMap()
+    }
 
     fun send(topic: String, key: K, body: V) {
-        _topics[topic]?.add(key to body) ?: throw RuntimeException("No subscription")
+        lock.write {
+            _topics[topic]?.also { queue ->
+                queue.add(key to body)
+            } ?: throw RuntimeException("No subscription")
+        }
     }
 
     override fun close() {}
@@ -26,7 +41,7 @@ class TestConsumer<K, V> : Consumer<K, V> {
         .map { TopicPartition(it, 0) }
         .toMutableSet()
 
-    override fun subscription(): MutableSet<String> = _topics.keys.toMutableSet()
+    override fun subscription(): MutableSet<String> = lock.read { _topics.keys.toMutableSet() }
 
     override fun subscribe(topics: MutableCollection<String>?) {
         topics?.forEach {
@@ -54,52 +69,64 @@ class TestConsumer<K, V> : Consumer<K, V> {
         _topics.clear()
     }
 
-    override fun poll(timeout: Long): ConsumerRecords<K, V> = ConsumerRecords(
-        _topics
-            .map { msgs ->
-                val pair = TopicPartition(msgs.key, 0) to msgs.value.map { msg ->
-                    ConsumerRecord<K, V>(
-                        msgs.key,
-                        0,
-                        0,
-                        msg.first,
-                        msg.second
-                    )
-                }
-                msgs.value.clear()
-                pair
+    override fun poll(timeout: Long): ConsumerRecords<K, V> {
+        Thread.sleep(100L)
+        return ConsumerRecords(
+            lock.read {
+                _topics
+                    .map { msgs ->
+                        val pair = TopicPartition(msgs.key, 0) to msgs.value.map { msg ->
+                            ConsumerRecord<K, V>(
+                                msgs.key,
+                                0,
+                                0,
+                                msg.first,
+                                msg.second
+                            )
+                        }
+                        msgs.value.clear()
+                        pair
+                    }
+                    .toMap()
             }
-            .toMap()
-    )
+        )
+    }
 
     override fun poll(timeout: Duration?): ConsumerRecords<K, V> = poll(0L)
 
     override fun commitSync() {
-        TODO("Not yet implemented")
+        commitAsync()
     }
 
     override fun commitSync(timeout: Duration?) {
-        TODO("Not yet implemented")
+        commitAsync()
     }
 
     override fun commitSync(offsets: MutableMap<TopicPartition, OffsetAndMetadata>?) {
-        TODO("Not yet implemented")
+        commitAsync()
     }
 
     override fun commitSync(offsets: MutableMap<TopicPartition, OffsetAndMetadata>?, timeout: Duration?) {
-        TODO("Not yet implemented")
+        commitAsync()
     }
 
     override fun commitAsync() {
-        TODO("Not yet implemented")
+        lock.write {
+            _topics.values.forEach {
+                it.clear()
+            }
+        }
     }
 
     override fun commitAsync(callback: OffsetCommitCallback?) {
-        TODO("Not yet implemented")
+        commitAsync()
     }
 
-    override fun commitAsync(offsets: MutableMap<TopicPartition, OffsetAndMetadata>?, callback: OffsetCommitCallback?) {
-        TODO("Not yet implemented")
+    override fun commitAsync(
+        offsets: MutableMap<TopicPartition, OffsetAndMetadata>?,
+        callback: OffsetCommitCallback?
+    ) {
+        commitAsync()
     }
 
     override fun seek(partition: TopicPartition?, offset: Long) {
