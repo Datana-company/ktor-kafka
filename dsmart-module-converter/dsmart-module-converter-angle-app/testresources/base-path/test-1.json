@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "angle": 33,
+      "timeShift": 9000
+    },
+    {
+      "angle": 34,
+      "timeShift": 10000
+    },
+    {
+      "angle": 35,
+      "timeShift": 11000
+    }
+  ]
+}

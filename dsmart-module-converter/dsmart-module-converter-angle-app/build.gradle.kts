@@ -55,6 +55,7 @@ repositories {
 dependencies {
 
     implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
+    implementation(project(":dsmart-module-converter:dsmart-module-converter-common"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -64,14 +65,15 @@ dependencies {
 
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
     implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-angle:$converterTransportVersion")
-//    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-meta:$converterTransportVersion")
-    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-mlui:$converterTransportVersion")
+    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-meta:$converterTransportVersion")
+    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-mathkt:$converterTransportVersion")
 
     implementation("codes.spectrum:konveyor:$konveyorVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
     implementation("com.google.guava:guava:$guavaVersion")
-    implementation(kotlin("test-junit"))
+    implementation("com.google.protobuf:protobuf-java:3.14.0")
 
+    testImplementation(kotlin("test-junit"))
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 
