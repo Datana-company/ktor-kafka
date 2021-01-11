@@ -13,7 +13,7 @@ import java.util.regex.Pattern
 import kotlin.concurrent.read
 import kotlin.concurrent.write
 
-class TestConsumer<K, V> : Consumer<K, V> {
+class TestConsumer<K, V>(val duration: Duration = Duration.ofMillis(100)) : Consumer<K, V> {
     private val _topics = mutableMapOf<String, MutableList<Pair<K, V>>>()
     private val lock = ReentrantReadWriteLock()
 
@@ -70,7 +70,7 @@ class TestConsumer<K, V> : Consumer<K, V> {
     }
 
     override fun poll(timeout: Long): ConsumerRecords<K, V> {
-        Thread.sleep(100L)
+        Thread.sleep(duration.toMillis())
         return ConsumerRecords(
             lock.read {
                 _topics
