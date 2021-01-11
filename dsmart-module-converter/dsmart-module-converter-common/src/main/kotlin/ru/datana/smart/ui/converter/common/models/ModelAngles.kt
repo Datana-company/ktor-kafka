@@ -9,6 +9,6 @@ class ModelAngles(
 ) {
 
     companion object {
-        val NONE = ModelAngles()
+       val NONE = ModelAngles()
     }
 }
