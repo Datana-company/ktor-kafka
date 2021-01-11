@@ -17,7 +17,7 @@ class KafkaRouteConfig<K, V>(
 
     fun topic(name: String, handler: suspend KtorKafkaConsumerContext<K,V>.() -> Unit) {
         _topicHandlers.add(
-            KtorKafkaHandler<K,V>(topic = name, handler = handler)
+            KtorKafkaHandler(topic = name, handler = handler)
         )
     }
     fun topics(vararg names: String, handler: suspend KtorKafkaConsumerContext<K,V>.() -> Unit) {

@@ -30,7 +30,8 @@ fun Application.module(
     routing {
         kafka<String, String> {
             consumer = mockConsumer
-            topic("ui-temperature") {
+            pollInterval = 15L
+            topic(topic) {
                 items.items.forEach {
                     feedBack.add(it.value)
                 }
@@ -44,7 +45,7 @@ class TestKafkaApplication {
     @Test
     fun test() {
         val feedBack: MutableList<String> = ConcurrentList()
-        val consumer: TestConsumer<String, String> = TestConsumer<String, String>(duration = Duration.ofMillis(20))
+        val consumer: TestConsumer<String, String> = TestConsumer(duration = Duration.ofMillis(20))
         withTestApplication({
             (environment.config as MapApplicationConfig).apply {
                 put("xxx", "yyy")
@@ -56,6 +57,7 @@ class TestKafkaApplication {
             )
         }) {
             runBlocking {
+                delay(60L)
                 consumer.send(TOPIC, "xx1", "yy")
                 consumer.send(TOPIC, "xx2", "zz")
 
