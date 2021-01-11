@@ -51,8 +51,7 @@ internal class EventsChainNKR1210c8Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.WARNING
+                )
             )
 
             converterFacade.handleMath(context)
@@ -109,8 +108,7 @@ internal class EventsChainNKR1210c8Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.WARNING
+                )
             )
 
             converterFacade.handleMath(context)

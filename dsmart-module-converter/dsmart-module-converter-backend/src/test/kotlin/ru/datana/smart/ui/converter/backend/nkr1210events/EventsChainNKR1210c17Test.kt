@@ -7,7 +7,6 @@ import java.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 internal class EventsChainNKR1210c17Test {
 
@@ -30,7 +29,7 @@ internal class EventsChainNKR1210c17Test {
             )
 
             val currentStateRepository = createCurrentStateRepositoryForTest(
-                lastAngle = 60.0,
+                lastAngle = 66.0,
                 avgSteelRate = 0.16
             )
 
@@ -45,7 +44,16 @@ internal class EventsChainNKR1210c17Test {
                 eventRepository = repository
             )
 
-            val context = converterBeContextTest(
+            val contextAngles = converterBeContextTest(
+                timeStart = timeStart,
+                meltInfo = defaultMeltInfoTest(),
+                angles = ModelAngles(
+                    angle = 60.0,
+                    angleTime = timeStart
+                )
+            )
+
+            val contextMath = converterBeContextTest(
                 timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
@@ -53,19 +61,18 @@ internal class EventsChainNKR1210c17Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.CRITICAL,
-                signalerSoundType = ModelSignalerSound.ModelSignalerSoundType.SOUND_1
+                )
             )
 
-            converterFacade.handleMath(context)
-            val oldEvent = context.eventList.last()
+            converterFacade.handleAngles(contextAngles)
+            converterFacade.handleMath(contextMath)
+            val oldEvent = contextMath.eventList.last()
 
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertFalse { oldEvent.isActive }
             assertEquals(ModelEvent.ExecutionStatus.COMPLETED, oldEvent.executionStatus)
-            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
-            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, contextMath.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, contextMath.signaler.sound.type)
         }
     }
 
@@ -83,7 +90,7 @@ internal class EventsChainNKR1210c17Test {
             )
 
             val currentStateRepository = createCurrentStateRepositoryForTest(
-                lastAngle = 60.0,
+                lastAngle = 66.0,
                 avgSlagRate = 0.16
             )
 
@@ -99,7 +106,16 @@ internal class EventsChainNKR1210c17Test {
                 eventMode = ModelEventMode.SLAG
             )
 
-            val context = converterBeContextTest(
+            val contextAngles = converterBeContextTest(
+                timeStart = timeStart,
+                meltInfo = defaultMeltInfoTest(),
+                angles = ModelAngles(
+                    angle = 60.0,
+                    angleTime = timeStart
+                )
+            )
+
+            val contextMath = converterBeContextTest(
                 timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
@@ -107,19 +123,18 @@ internal class EventsChainNKR1210c17Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.CRITICAL,
-                signalerSoundType = ModelSignalerSound.ModelSignalerSoundType.SOUND_1
+                )
             )
 
-            converterFacade.handleMath(context)
-            val oldEvent = context.eventList.last()
+            converterFacade.handleAngles(contextAngles)
+            converterFacade.handleMath(contextMath)
+            val oldEvent = contextMath.eventList.last()
 
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertFalse { oldEvent.isActive }
             assertEquals(ModelEvent.ExecutionStatus.COMPLETED, oldEvent.executionStatus)
-            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, context.signaler.level)
-            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.NO_SIGNAL, contextMath.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, contextMath.signaler.sound.type)
         }
     }
 }

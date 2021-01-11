@@ -55,9 +55,7 @@ internal class EventsChainNKR1210c11Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.CRITICAL,
-                signalerSoundType = ModelSignalerSound.ModelSignalerSoundType.SOUND_1
+                )
             )
 
             converterFacade.handleMath(context)
@@ -114,9 +112,7 @@ internal class EventsChainNKR1210c11Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.CRITICAL,
-                signalerSoundType = ModelSignalerSound.ModelSignalerSoundType.SOUND_1
+                )
             )
 
             converterFacade.handleMath(context)

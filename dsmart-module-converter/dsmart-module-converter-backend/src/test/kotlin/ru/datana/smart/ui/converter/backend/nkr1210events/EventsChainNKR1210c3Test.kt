@@ -56,8 +56,7 @@ internal class EventsChainNKR1210c3Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.WARNING
+                )
             )
 
             val context2 = converterBeContextTest(
@@ -135,8 +134,7 @@ internal class EventsChainNKR1210c3Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.WARNING
+                )
             )
 
             val context2 = converterBeContextTest(

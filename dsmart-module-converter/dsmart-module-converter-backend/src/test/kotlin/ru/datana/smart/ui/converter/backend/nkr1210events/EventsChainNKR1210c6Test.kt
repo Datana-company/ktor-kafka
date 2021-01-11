@@ -14,7 +14,6 @@ internal class EventsChainNKR1210c6Test {
      * NKR-1210
      * Проверка, что статус рекомендации не меняется, если угол наклона уменьшился больше, чем на 5 градусов,
      * но время реакции еще не истекло
-     * FAIL: рекомендация становится неактивной
      */
     @Test
     fun `event status is still the same after angle decrease but reaction time is no wasted`(){
@@ -30,7 +29,7 @@ internal class EventsChainNKR1210c6Test {
             )
 
             val currentStateRepository = createCurrentStateRepositoryForTest(
-                lastAngle = 60.0,
+                lastAngle = 66.0,
                 avgSteelRate = 0.12
             )
 
@@ -45,7 +44,16 @@ internal class EventsChainNKR1210c6Test {
                 eventRepository = repository
             )
 
-            val context = converterBeContextTest(
+            val contextAngles = converterBeContextTest(
+                timeStart = timeStart,
+                meltInfo = defaultMeltInfoTest(),
+                angles = ModelAngles(
+                    angle = 60.0,
+                    angleTime = timeStart
+                )
+            )
+
+            val contextMath = converterBeContextTest(
                 timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
@@ -53,18 +61,16 @@ internal class EventsChainNKR1210c6Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.WARNING
+                )
             )
 
-            converterFacade.handleMath(context)
-            val event = context.eventList.first()
+            converterFacade.handleAngles(contextAngles)
+            converterFacade.handleMath(contextMath)
+            val event = contextMath.eventList.first()
 
             assertEquals(ModelEvent.Category.WARNING, event.category)
             assertTrue { event.isActive }
             assertEquals(ModelEvent.ExecutionStatus.NONE, event.executionStatus)
-            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, context.signaler.level)
-            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
         }
     }
 
@@ -82,7 +88,7 @@ internal class EventsChainNKR1210c6Test {
             )
 
             val currentStateRepository = createCurrentStateRepositoryForTest(
-                lastAngle = 60.0,
+                lastAngle = 66.0,
                 avgSlagRate = 0.12
             )
 
@@ -98,7 +104,16 @@ internal class EventsChainNKR1210c6Test {
                 eventMode = ModelEventMode.SLAG
             )
 
-            val context = converterBeContextTest(
+            val contextAngles = converterBeContextTest(
+                timeStart = timeStart,
+                meltInfo = defaultMeltInfoTest(),
+                angles = ModelAngles(
+                    angle = 60.0,
+                    angleTime = timeStart
+                )
+            )
+
+            val contextMath = converterBeContextTest(
                 timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
@@ -106,18 +121,16 @@ internal class EventsChainNKR1210c6Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.WARNING
+                )
             )
 
-            converterFacade.handleMath(context)
-            val event = context.eventList.first()
+            converterFacade.handleAngles(contextAngles)
+            converterFacade.handleMath(contextMath)
+            val event = contextMath.eventList.first()
 
             assertEquals(ModelEvent.Category.WARNING, event.category)
             assertTrue { event.isActive }
             assertEquals(ModelEvent.ExecutionStatus.NONE, event.executionStatus)
-            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, context.signaler.level)
-            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
         }
     }
 }

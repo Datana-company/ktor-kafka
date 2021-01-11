@@ -1,5 +1,6 @@
 package ru.datana.smart.ui.converter.backend.nkr1210events
 
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import ru.datana.smart.ui.converter.backend.*
 import ru.datana.smart.ui.converter.common.models.*
@@ -11,9 +12,10 @@ internal class EventsChainNKR1210c18Test {
     /**
      * NKR-1210
      * Проверка, что сирена отключается при достижении предела ее звучания sirenLimitTime
-     * FAILED
+     * FAILED: Время звучания сирены проверяется на фронте?
      */
-    //@Test
+    @Ignore
+    @Test
     fun `siren is off after sirenLimitTime`(){
         runBlocking {
             val timeStart = Instant.now()
@@ -41,7 +43,7 @@ internal class EventsChainNKR1210c18Test {
                 eventRepository = repository
             )
 
-            val context1 = converterBeContextTest(
+            val context = converterBeContextTest(
                 timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
@@ -49,26 +51,13 @@ internal class EventsChainNKR1210c18Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.CRITICAL,
-                signalerSoundType = ModelSignalerSound.ModelSignalerSoundType.SOUND_1,
-                sirenLimitTime = sirenTimeOut.toInt()
-            )
-
-            val context2 = converterBeContextTest(
-                timeStart = timeStart.plusMillis(2000L),
-                meltInfo = defaultMeltInfoTest(),
-                slagRate = ModelSlagRate(
-                    steelRate = 0.18
-                ),
-                frame = ModelFrame(
-                    frameTime = timeStart.plusMillis(2000L)
                 )
             )
 
-            converterFacade.handleMath(context1)
-            var newEvent = context1.eventList.first()
-            var oldEvent = context1.eventList.last()
+
+            converterFacade.handleMath(context)
+            var newEvent = context.eventList.first()
+            var oldEvent = context.eventList.last()
 
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.FAILED, oldEvent.executionStatus)
@@ -76,20 +65,20 @@ internal class EventsChainNKR1210c18Test {
             assertEquals(ModelEvent.Category.CRITICAL, newEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, newEvent.executionStatus)
             assertTrue { newEvent.isActive }
-            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context1.signaler.level)
-            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context1.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context.signaler.level)
+            assertNotEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
 
 
-            converterFacade.handleMath(context2)
-            oldEvent = context2.eventList.last()
-            newEvent = context2.eventList.first()
+            delay(2000)
+            oldEvent = context.eventList.last()
+            newEvent = context.eventList.first()
 
-            assertEquals(2, context2.eventList.size)
+            assertEquals(2, context.eventList.size)
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.FAILED, oldEvent.executionStatus)
             assertFalse { oldEvent.isActive }
-            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context2.signaler.level)
-            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context2.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.CRITICAL, context.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
             assertEquals(ModelEvent.Category.CRITICAL, newEvent.category)
             assertEquals(ModelEvent.ExecutionStatus.NONE, newEvent.executionStatus)
             assertTrue { newEvent.isActive }

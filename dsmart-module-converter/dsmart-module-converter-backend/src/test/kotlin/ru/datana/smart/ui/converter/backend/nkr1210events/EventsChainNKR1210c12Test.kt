@@ -47,7 +47,16 @@ internal class EventsChainNKR1210c12Test {
                 eventRepository = repository
             )
 
-            val context = converterBeContextTest(
+            val contextAngles = converterBeContextTest(
+                timeStart = timeStart,
+                meltInfo = defaultMeltInfoTest(),
+                angles = ModelAngles(
+                    angle = 60.0,
+                    angleTime = timeStart
+                )
+            )
+
+            val contextMath = converterBeContextTest(
                 timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
@@ -55,14 +64,13 @@ internal class EventsChainNKR1210c12Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.CRITICAL,
-                signalerSoundType = ModelSignalerSound.ModelSignalerSoundType.SOUND_1
+                )
             )
 
-            converterFacade.handleMath(context)
-            val newEvent = context.eventList.first()
-            val oldEvent = context.eventList.last()
+            converterFacade.handleAngles(contextAngles)
+            converterFacade.handleMath(contextMath)
+            val newEvent = contextMath.eventList.first()
+            val oldEvent = contextMath.eventList.last()
 
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertFalse { oldEvent.isActive }
@@ -71,8 +79,8 @@ internal class EventsChainNKR1210c12Test {
             assertTrue { newEvent.isActive }
             assertEquals(ModelEvent.ExecutionStatus.NONE, newEvent.executionStatus)
 
-            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, context.signaler.level)
-            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, contextMath.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, contextMath.signaler.sound.type)
         }
     }
 
@@ -90,7 +98,7 @@ internal class EventsChainNKR1210c12Test {
             )
 
             val currentStateRepository = createCurrentStateRepositoryForTest(
-                lastAngle = 60.0,
+                lastAngle = 66.0,
                 avgSlagRate = 0.16
             )
 
@@ -106,7 +114,16 @@ internal class EventsChainNKR1210c12Test {
                 eventMode = ModelEventMode.SLAG
             )
 
-            val context = converterBeContextTest(
+            val contextAngles = converterBeContextTest(
+                timeStart = timeStart,
+                meltInfo = defaultMeltInfoTest(),
+                angles = ModelAngles(
+                    angle = 60.0,
+                    angleTime = timeStart
+                )
+            )
+
+            val contextMath = converterBeContextTest(
                 timeStart = timeStart,
                 meltInfo = defaultMeltInfoTest(),
                 slagRate = ModelSlagRate(
@@ -114,14 +131,13 @@ internal class EventsChainNKR1210c12Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.CRITICAL,
-                signalerSoundType = ModelSignalerSound.ModelSignalerSoundType.SOUND_1
+                )
             )
 
-            converterFacade.handleMath(context)
-            val newEvent = context.eventList.first()
-            val oldEvent = context.eventList.last()
+            converterFacade.handleAngles(contextAngles)
+            converterFacade.handleMath(contextMath)
+            val newEvent = contextMath.eventList.first()
+            val oldEvent = contextMath.eventList.last()
 
             assertEquals(ModelEvent.Category.CRITICAL, oldEvent.category)
             assertFalse { oldEvent.isActive }
@@ -130,8 +146,8 @@ internal class EventsChainNKR1210c12Test {
             assertTrue { newEvent.isActive }
             assertEquals(ModelEvent.ExecutionStatus.NONE, newEvent.executionStatus)
 
-            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, context.signaler.level)
-            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, context.signaler.sound.type)
+            assertEquals(ModelSignaler.ModelSignalerLevel.WARNING, contextMath.signaler.level)
+            assertEquals(ModelSignalerSound.ModelSignalerSoundType.NONE, contextMath.signaler.sound.type)
         }
     }
 }

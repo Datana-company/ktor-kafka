@@ -54,9 +54,7 @@ internal class EventsChainNKR1210c10Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.CRITICAL,
-                signalerSoundType = ModelSignalerSound.ModelSignalerSoundType.SOUND_1
+                )
             )
 
             val context2 = converterBeContextTest(
@@ -134,9 +132,7 @@ internal class EventsChainNKR1210c10Test {
                 ),
                 frame = ModelFrame(
                     frameTime = timeStart
-                ),
-                signalerLevel = ModelSignaler.ModelSignalerLevel.CRITICAL,
-                signalerSoundType = ModelSignalerSound.ModelSignalerSoundType.SOUND_1
+                )
             )
 
             val context2 = converterBeContextTest(
