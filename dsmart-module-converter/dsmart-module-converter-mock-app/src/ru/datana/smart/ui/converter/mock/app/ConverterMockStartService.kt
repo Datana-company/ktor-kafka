@@ -60,7 +60,7 @@ class ConverterMockStartService(
             steelGrade = "unknown",
             crewNumber = "0",
             shiftNumber = "-1",
-            mode = ConverterMeltInfo.Mode.EMULATION,
+            mode = ConverterWorkMode.EMULATION,
             devices = ConverterMeltDevices(
                 converter = ConverterDevicesConverter(
                     id = "converterUnk",

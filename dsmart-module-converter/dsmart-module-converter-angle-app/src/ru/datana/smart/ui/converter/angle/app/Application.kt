@@ -1,38 +1,48 @@
 package ru.datana.smart.ui.converter.angle.app
 
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.application.*
-import io.ktor.routing.routing
+import io.ktor.routing.*
 import io.ktor.util.*
+import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.producer.KafkaProducer
+import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerConfig
-import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.common.serialization.ByteArrayDeserializer
+import org.apache.kafka.common.serialization.StringDeserializer
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
-import ru.datana.smart.converter.transport.mlui.models.ConverterMeltInfo
-import ru.datana.smart.converter.transport.mlui.models.ConverterTransportAngle
-import ru.datana.smart.converter.transport.mlui.models.ConverterTransportMlUi
-import ru.datana.smart.ui.converter.angle.app.mappings.toInnerModel
+import ru.datana.smart.converter.transport.math.ConverterTransportMlUiOuterClass
+import ru.datana.smart.logger.datanaLogger
+import ru.datana.smart.ui.converter.angle.app.cor.ConverterAngLogics
+import ru.datana.smart.ui.converter.angle.app.mappings.of
+import ru.datana.smart.ui.converter.angle.app.mappings.toAngleMessage
 import ru.datana.smart.ui.converter.angle.app.models.AngleSchedule
-import java.io.File
+import ru.datana.smart.ui.converter.angle.app.models.ConverterAngContext
+import ru.datana.smart.ui.converter.common.context.CorError
+import ru.datana.smart.ui.converter.common.context.CorStatus
+import java.time.Instant
 import java.util.*
-import kotlin.math.abs
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused")
 @kotlin.jvm.JvmOverloads
 @KtorExperimentalAPI
-fun Application.module(testing: Boolean = false) {
+fun Application.module(
+    testing: Boolean = false,
+    kafkaMetaConsumer: Consumer<String, String>? = null,
+    kafkaMathConsumer: Consumer<String, ByteArray>? = null,
+    kafkaAnglesProducer: Producer<String, String>? = null
+) {
 
-    install(KtorKafkaConsumer) {
-    }
+    val logger = datanaLogger(::main::class.java)
 
-    val scheduleBasePath by lazy { environment.config.property("paths.schedule.base ").getString().trim() }
+    install(KtorKafkaConsumer)
+
+    val scheduleBasePath by lazy { environment.config.property("paths.schedule.base").getString().trim() }
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
     val topicMath by lazy { environment.config.property("ktor.kafka.consumer.topic.math").getString().trim() }
-    var angleSchedule: AngleSchedule? = null
+    val angleSchedule = AngleSchedule()
     val kafkaServers: String by lazy {
         environment.config.property("ktor.kafka.bootstrap.servers").getString().trim()
     }
@@ -40,77 +50,119 @@ fun Application.module(testing: Boolean = false) {
         environment.config.property("ktor.kafka.producer.topic.angle").getString().trim()
     }
     val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
-    val jacksonSerializer: ObjectMapper = ObjectMapper().configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true)
-    val kafkaProducer: KafkaProducer<String, String> by lazy {
-        val props = Properties().apply {
-            put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServers)
-            put("acks", "all")
-            put("retries", 3)
-            put("batch.size", 16384)
-            put("linger.ms", 1)
-            put("buffer.memory", 33554432)
-            put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-            put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+    val kafkaProducer by lazy {
+        kafkaAnglesProducer ?: run {
+            val props = Properties().apply {
+                put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServers)
+                put("acks", "all")
+                put("retries", 3)
+                put("batch.size", 16384)
+                put("linger.ms", 1)
+                put("buffer.memory", 33554432)
+                put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+                put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+            }
+            KafkaProducer(props)
         }
-        KafkaProducer<String, String>(props)
     }
+
+    val chain = ConverterAngLogics(
+        converterId = converterId,
+        producer = kafkaProducer,
+        angleSchedule = angleSchedule,
+        topicAngle = topicAngle,
+        scheduleBasePath = scheduleBasePath
+    )
 
     routing {
 
-        kafka(listOf(topicMeta, topicMath)) {
-            records.sortedByDescending { it.offset() }
-//                на самом деле они уже отсортированы сначала по топику, затем по offset по убыванию
-                .distinctBy { it.topic() }
-                .map { it.toInnerModel() }
-                .forEach { record ->
-                    when (record.topic) {
-                        topicMath -> {
-                            println("-------- MATH")
-                            val mlui = jacksonSerializer.readValue(
-                                record.value,
-                                ConverterTransportMlUi::class.java
+        kafka<String, ByteArray> {
+            pollInterval = 60L
+            keyDeserializer = StringDeserializer::class.java
+            valDeserializer = ByteArrayDeserializer::class.java
+            consumer = kafkaMathConsumer
+            topic(topicMath) {
+                items.items
+                    .map {
+                        try {
+                            val mathTransport =
+                                ConverterTransportMlUiOuterClass.ConverterTransportMlUi.parseFrom(it.value)
+                            val ctx = ConverterAngContext(
+                                timeStart = Instant.now(),
+                                topic = it.topic
+                            ).of(mathTransport)
+                            logger.biz(
+                                msg = "Math model object got",
+                                data = object {
+                                    val metricType = "converter-angles-KafkaController-got-math"
+                                    val metaModel = ctx.meltInfo
+                                    val topic = it.topic
+                                },
                             )
-                            if (converterId == mlui.meltInfo?.devices?.converter?.id
-                                && angleSchedule != null
-                                && mlui.frameTime != null
-                                && mlui.meltInfo?.timeStart != null
-                            ) {
-                                val timeShift = mlui.frameTime!! - mlui.meltInfo?.timeStart!!
-                                val closestMessage = angleSchedule?.items?.minByOrNull {
-                                    abs(it.timeShift?.let { ts -> ts - timeShift } ?: Long.MAX_VALUE)
-                                }
-                                println(closestMessage)
-                                val converterTransportAngle = ConverterTransportAngle(
-                                    meltInfo = mlui.meltInfo,
-                                    angleTime = mlui.frameTime,
-                                    angle = closestMessage?.angle
-                                )
-                                val key = "${mlui.meltInfo?.timeStart}-${closestMessage?.timeShift}"
-                                val json = jacksonSerializer.writeValueAsString(converterTransportAngle)
-                                val sendingRecord = ProducerRecord(topicAngle, key, json)
-                                kafkaProducer.send(sendingRecord)
-                            }
-                        }
-                        topicMeta -> {
-                            println("---- META")
-                            val metaInfo = jacksonSerializer.readValue(
-                                record.value,
-                                ConverterMeltInfo::class.java
+                            ctx
+                        } catch (e: Throwable) {
+                            val ctx = ConverterAngContext(
+                                timeStart = Instant.now(),
+                                topic = it.topic,
+                                errors = mutableListOf(CorError(message = e.message ?: "")),
+                                status = CorStatus.ERROR
                             )
-                            if (converterId == metaInfo.devices?.converter?.id) {
-                                val scheduleRelativePath = metaInfo?.devices?.selsyn?.uri
-                                val scheduleAbsolutePath = "${scheduleBasePath}/${scheduleRelativePath}"
-
-                                val json = File(scheduleAbsolutePath).readText(Charsets.UTF_8)
-                                angleSchedule = jacksonSerializer.readValue(
-                                    json,
-                                    AngleSchedule::class.java
-                                )
-                            }
+                            logger.error(
+                                msg = "Kafka message parsing error",
+                                data = object {
+                                    val metricType = "converter-angles-KafkaController-error-math"
+                                    //                        val mathModel = kafkaModel
+                                    val topic = ctx.topic
+                                    val error = ctx.errors
+                                },
+                            )
+                            ctx
                         }
                     }
-                }
-            commitAll()
+                    .forEach { ctx ->
+                        chain.exec(ctx)
+                        ctx.toAngleMessage()?.also { record ->
+                            kafkaProducer.send(record)
+                            logger.biz(
+                                msg = "Angles model object sent",
+                                data = object {
+                                    val metricType = "converter-angles-KafkaController-send-andles"
+                                    val metaModel = ctx.meltInfo
+                                    val topic = ctx.topic
+                                },
+                            )
+                        } ?: logger.debug("No data to send")
+                    }
+                commitAll()
+            }
+        }
+
+        kafka<String, String> {
+            consumer = kafkaMetaConsumer
+            pollInterval = 500
+            topic(topicMeta) {
+                items.items
+                    .map {
+                        val ctx = ConverterAngContext(
+                            timeStart = Instant.now(),
+                            topic = it.topic
+                        ).of(it)
+                        logger.biz(
+                            msg = "Meta model object got",
+                            data = object {
+                                val metricType = "converter-backend-KafkaController-got-meta"
+                                val metaModel = ctx.meltInfo
+                                val topic = it.topic
+                            },
+                        )
+                        ctx
+                    }
+                    .forEach { ctx ->
+                        // вызов цепочки обработки меты
+                        chain.exec(ctx)
+                    }
+                commitAll()
+            }
         }
     }
 }

@@ -10,9 +10,15 @@ import io.ktor.routing.*
 import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import of
+import org.apache.kafka.clients.consumer.Consumer
+import org.apache.kafka.common.serialization.ByteArrayDeserializer
+import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.event.Level
 import ru.datana.smart.common.ktor.kafka.KtorKafkaConsumer
+import ru.datana.smart.common.ktor.kafka.TestConsumer
 import ru.datana.smart.common.ktor.kafka.kafka
+import ru.datana.smart.converter.transport.math.ConverterTransportMlUiOuterClass
 import ru.datana.smart.logger.datanaLogger
 import ru.datana.smart.ui.converter.app.common.EventMode
 import ru.datana.smart.ui.converter.app.mappings.*
@@ -20,6 +26,8 @@ import ru.datana.smart.ui.converter.app.websocket.WsManager
 import ru.datana.smart.ui.converter.app.websocket.WsSignalerManager
 import ru.datana.smart.ui.converter.backend.ConverterFacade
 import ru.datana.smart.ui.converter.common.context.ConverterBeContext
+import ru.datana.smart.ui.converter.common.context.CorError
+import ru.datana.smart.ui.converter.common.context.CorStatus
 import ru.datana.smart.ui.converter.common.models.CurrentState
 import java.time.Duration
 import ru.datana.smart.ui.converter.common.models.ScheduleCleaner
@@ -36,7 +44,11 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @OptIn(ExperimentalTime::class)
 @Suppress("unused") // Referenced in application.conf
 @KtorExperimentalAPI
-fun Application.module(testing: Boolean = false) {
+fun Application.module(
+    testing: Boolean = false,
+    kafkaMetaConsumer: Consumer<String, String>? = null,
+    kafkaMathConsumer: Consumer<String, ByteArray>? = null
+) {
     val logger = datanaLogger(::main::class.java)
 
     install(CallLogging) {
@@ -62,29 +74,31 @@ fun Application.module(testing: Boolean = false) {
         masking = false
     }
 
-    install(KtorKafkaConsumer)
+    install(KtorKafkaConsumer) {
+
+    }
 
     val wsManager = WsManager()
     val wsSignalerManager = WsSignalerManager()
     val topicMeta by lazy { environment.config.property("ktor.kafka.consumer.topic.meta").getString().trim() }
     val topicMath by lazy { environment.config.property("ktor.kafka.consumer.topic.math").getString().trim() }
-    val topicVideo by lazy { environment.config.property("ktor.kafka.consumer.topic.video").getString().trim() }
     val topicAngles by lazy { environment.config.property("ktor.kafka.consumer.topic.angles").getString().trim() }
     val topicEvents by lazy { environment.config.property("ktor.kafka.consumer.topic.events").getString().trim() }
     val converterId by lazy { environment.config.property("ktor.datana.converter.id").getString().trim() }
-    val framesBasePath by lazy { environment.config.property("paths.base.frames").getString().trim() }
-//    val metalRateEventGenTimeout: Long by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.timeout").getString().trim().toLong() }
-//    val metalRateEventGenMax: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.maxValue").getString().trim().toDouble() }
-//    val metalRateEventGenMin: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.minValue").getString().trim().toDouble() }
-//    val metalRateEventGenChange: Double by lazy { environment.config.property("ktor.conveyor.metalRateEventGen.changeValue").getString().trim().toDouble() }
+//    val framesBasePath by lazy { environment.config.property("paths.base.frames").getString().trim() }
     val eventMode: EventMode by lazy {
-        EventMode.valueOf(environment.config.property("ktor.conveyor.eventMode").getString().trim())
+        EventMode.valueOf(
+            environment.config.propertyOrNull("ktor.conveyor.eventMode")
+                ?.getString()?.trim() ?: "STEEL"
+        )
     }
     val dataTimeout: Long by lazy {
-        environment.config.property("ktor.conveyor.dataTimeout").getString().trim().toLong()
+        environment.config.propertyOrNull("ktor.conveyor.dataTimeout")
+            ?.getString()?.trim()?.toLong() ?: 3000
     }
     val meltTimeout: Long by lazy {
-        environment.config.property("ktor.conveyor.meltTimeout").getString().trim().toLong()
+        environment.config.propertyOrNull("ktor.conveyor.meltTimeout")
+            ?.getString()?.trim()?.toLong() ?: 10000
     }
     val streamRateCriticalPoint: Double by lazy {
         environment.config.property("ktor.conveyor.streamRatePoint.critical").getString().trim().toDouble()
@@ -93,23 +107,28 @@ fun Application.module(testing: Boolean = false) {
         environment.config.property("ktor.conveyor.streamRatePoint.warning").getString().trim().toDouble()
     }
     val reactionTime: Long by lazy {
-        environment.config.property("ktor.conveyor.reactionTime").getString().trim().toLong()
+        environment.config.propertyOrNull("ktor.conveyor.reactionTime")
+            ?.getString()?.trim()?.toLong() ?: 3000
     }
     val sirenLimitTime: Long by lazy {
-        environment.config.property("ktor.conveyor.sirenLimitTime").getString().trim().toLong()
+        environment.config.propertyOrNull("ktor.conveyor.sirenLimitTime")
+            ?.getString()?.trim()?.toLong() ?: 3000
     }
     val roundingWeight: Double by lazy {
         environment.config.property("ktor.conveyor.roundingWeight").getString().trim().toDouble()
     }
     val eventStorageDuration: Int by lazy {
-        environment.config.property("ktor.repository.inmemory.event.storageDuration").getString().trim().toInt()
+        environment.config.propertyOrNull("ktor.repository.inmemory.event.storageDuration")
+            ?.getString()?.trim()?.toInt() ?: 10
     }
     val stateStorageDuration: Int by lazy {
-        environment.config.property("ktor.repository.inmemory.state.storageDuration").getString().trim().toInt()
+        environment.config.propertyOrNull("ktor.repository.inmemory.state.storageDuration")
+            ?.getString()?.trim()?.toInt() ?: 2
     }
 
     val slagRatesTimeLimit: Long by lazy {
-        environment.config.property("ktor.repository.inmemory.state.timeLimit").getString().trim().toLong()
+        environment.config.propertyOrNull("ktor.repository.inmemory.state.timeLimit")
+            ?.getString()?.trim()?.toLong() ?: 60
     }
 
     // TODO: в будущем найти место, куда пристроить генератор
@@ -125,7 +144,8 @@ fun Application.module(testing: Boolean = false) {
     val currentStateRepository = CurrentStateRepositoryInMemory(
         ttl = stateStorageDuration.toDuration(DurationUnit.HOURS),
         converterId = converterId,
-        timeLimit = slagRatesTimeLimit)
+        timeLimit = slagRatesTimeLimit
+    )
 
     val currentState: AtomicReference<CurrentState> = AtomicReference(CurrentState.NONE)
     val scheduleCleaner: AtomicReference<ScheduleCleaner> = AtomicReference(ScheduleCleaner.NONE)
@@ -153,7 +173,7 @@ fun Application.module(testing: Boolean = false) {
         roundingWeight = roundingWeight,
         currentState = currentState,
         converterId = converterId,
-        framesBasePath = framesBasePath,
+//        framesBasePath = framesBasePath,
         scheduleCleaner = scheduleCleaner
     )
 
@@ -180,163 +200,144 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-//        webSocket("/ws_signaler") {
-//            println("/ws_signaler --- onConnect")
-//            wsSignalerManager.init(this, websocketContext)
-//            try {
-//                for (frame in incoming) {
-//                }
-//            } catch (e: ClosedReceiveChannelException) {
-//                println("onClose ${closeReason.await()}")
-//            } catch (e: Throwable) {
-//                logger.error("Error within websocket block due to: ${closeReason.await()}", e)
-//            } finally {
-//                wsSignalerManager.close(this)
-//            }
-//        }
+        kafka<String, ByteArray> {
+            pollInterval = 60L
+            keyDeserializer = StringDeserializer::class.java
+            valDeserializer = ByteArrayDeserializer::class.java
+            consumer = kafkaMathConsumer
+            topic(topicMath) {
+                items.items
+                    .map {
+                        try {
+                            val mathTransport =
+                                ConverterTransportMlUiOuterClass.ConverterTransportMlUi.parseFrom(it.value)
+                            ConverterBeContext(
+                                timeStart = Instant.now(),
+                                topic = it.topic
+                            ).of(mathTransport)
+                        } catch (e: Throwable) {
+                            val ctx = ConverterBeContext(
+                                timeStart = Instant.now(),
+                                topic = it.topic,
+                                errors = mutableListOf(CorError(message = e.message ?: "")),
+                                status = CorStatus.ERROR
+                            )
+                            logger.error(
+                                msg = "Kafka message parsing error",
+                                data = object {
+                                    val metricType = "converter-backend-KafkaController-error-math"
 
-        kafka(listOf(topicMath, topicVideo, topicMeta, topicAngles, topicEvents)) {
-            try {
-                records.sortedByDescending { it.offset() }
-//                на самом деле они уже отсортированы сначала по топику, затем по offset по убыванию
-                    .distinctBy { it.topic() }
-                    .map { it.toInnerModel() }
-                    .forEach { record ->
-                        when (val topic = record.topic) {
-                            // получаем данные из топика с данными из матмодели
-                            topicMath -> {
-                                // десериализация данных из кафки
-                                val kafkaModel = toConverterTransportMlUi(record)
-                                // логирование
-                                logger.biz(
-                                    msg = "Math model object got",
-                                    data = object {
-                                        val metricType = "converter-backend-KafkaController-got-math"
-                                        val mathModel = kafkaModel
-                                        val topic = topic
-                                    },
-                                )
-                                // инициализация контекста
-                                val context = ConverterBeContext(
-                                    timeStart = Instant.now()
-                                )
-                                // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
-                                context.setSlagRate(kafkaModel)
-                                context.setFrame(kafkaModel)
-                                context.setMeltInfo(kafkaModel)
-                                println("topic = math, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-                                // вызов цепочки обработки данных из матмодели
-                                converterFacade.handleMath(context)
-                            }
-//                            // получаем данные из топика с данными из видеоадаптера
-//                            topicVideo -> {
-//                                // десериализация данных из кафки
-//                                val kafkaModel = toConverterTransportViMl(record)
-//                                // инициализация контекста
-//                                val context = ConverterBeContext(
-//                                    timeStart = Instant.now()
-//                                )
-//                                // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
-//                                context.setFrame(kafkaModel)
-//                                context.setMeltInfo(kafkaModel)
-//                                println("topic = video, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-//                                // вызов цепочки обработки данных из видеоадаптера
-//                                converterFacade.handleFrame(context)
-//                            }
-                            // получаем данные из топика мета
-                            topicMeta -> {
-                                // десериализация данных из кафки
-                                val kafkaModel = toConverterMeltInfo(record)
-                                // логирование
-                                logger.biz(
-                                    msg = "Meta model object got",
-                                    data = object {
-                                        val metricType = "converter-backend-KafkaController-got-meta"
-                                        val metaModel = kafkaModel
-                                        val topic = topic
-                                    },
-                                )
-                                // инициализация контекста
-                                val context = ConverterBeContext(
-                                    timeStart = Instant.now()
-                                )
-                                // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
-                                context.setMeltInfo(kafkaModel)
-                                println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-                                // вызов цепочки обработки меты
-                                converterFacade.handleMeltInfo(context)
-                            }
-                            // получаем данные из топика углов
-                            topicAngles -> {
-                                // десериализация данных из кафки
-                                val kafkaModel = toConverterTransportAngle(record)
-                                // логирование
-                                logger.biz(
-                                    msg = "Angles model object got",
-                                    data = object {
-                                        val metricType = "converter-backend-KafkaController-got-angle"
-                                        val anglesModel = kafkaModel
-                                        val topic = topic
-                                    },
-                                )
-                                // инициализация контекста
-                                val context = ConverterBeContext(
-                                    timeStart = Instant.now()
-                                )
-                                // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
-                                context.setAngles(kafkaModel)
-                                context.setMeltInfo(kafkaModel)
-                                println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-                                // вызов цепочки обработки углов
-                                converterFacade.handleAngles(context)
-                            }
-                            // получаем данные из топика с внешними событиями
-                            topicEvents -> {
-                                 // десериализация данных из кафки
-                                val kafkaModel = toConverterTransportExternalEvents(record)
-                                // логирование
-                                logger.biz(
-                                    msg = "Events model object got",
-                                    data = object {
-                                        val metricType = "converter-backend-KafkaController-got-event"
-                                        val eventsModel = kafkaModel
-                                        val topic = topic
-                                    },
-                                )
-                                // инициализация контекста
-                                val context = ConverterBeContext(
-                                    timeStart = Instant.now()
-                                )
-                                 // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
-                                context.setExternalEvent(kafkaModel)
-                                println("topic = events, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-                                // вызов цепочки обработки внешних событий
-                                converterFacade.handleExternalEvents(context)
-                            }
+                                    //                        val mathModel = kafkaModel
+                                    val topic = ctx.topic
+                                    val error = ctx.errors
+                                },
+                            )
+                            ctx
                         }
                     }
-            } catch (e: Throwable) {
-                val msg = e.message ?: ""
-                logger.error(msg)
-            } finally {
-                commitAll()
+                    .forEach {
+                        converterFacade.handleMath(it)
+                    }
+            }
+        }
+
+        kafka<String, String> {
+            consumer = kafkaMetaConsumer
+            pollInterval = 500
+            topics(topicMeta, topicAngles, topicEvents) {
+                try {
+                    records
+                        .sortedByDescending { it.offset() }
+//                на самом деле они уже отсортированы сначала по топику, затем по offset по убыванию
+//                    TODO Это ерунда. Никакого отношения к времени offset не имеет и порядок не гарантирован
+//                    Нужно сначала сконвертировать объект в контекст и уже только потом делать сортировку и
+//                    фильтрацию по реальному времени
+                        .distinctBy { it.topic() }
+                        .map { it.toInnerModel() }
+                        .forEach { record ->
+                            when (val topic = record.topic) {
+                                // получаем данные из топика мета
+                                topicMeta -> {
+                                    // десериализация данных из кафки
+                                    val kafkaModel = toConverterMeltInfo(record)
+                                    // логирование
+                                    logger.biz(
+                                        msg = "Meta model object got",
+                                        data = object {
+                                            val metricType = "converter-backend-KafkaController-got-meta"
+                                            val metaModel = kafkaModel
+                                            val topic = topic
+                                        },
+                                    )
+                                    // инициализация контекста
+                                    val context = ConverterBeContext(
+                                        timeStart = Instant.now(),
+                                        topic = topic
+                                    )
+                                    // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
+                                    context.setMeltInfo(kafkaModel)
+                                    println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                    // вызов цепочки обработки меты
+                                    converterFacade.handleMeltInfo(context)
+                                }
+                                // получаем данные из топика углов
+                                topicAngles -> {
+                                    // десериализация данных из кафки
+                                    val kafkaModel = toConverterTransportAngle(record)
+                                    // логирование
+                                    logger.biz(
+                                        msg = "Angles model object got",
+                                        data = object {
+                                            val metricType = "converter-backend-KafkaController-got-angle"
+                                            val anglesModel = kafkaModel
+                                            val topic = topic
+                                        },
+                                    )
+                                    // инициализация контекста
+                                    val context = ConverterBeContext(
+                                        timeStart = Instant.now(),
+                                        topic = topic
+                                    )
+                                    // маппинг траспортных моделей во внутренние модели конвейера и добавление их в контекст
+                                    context.setAngles(kafkaModel)
+                                    context.setMeltInfo(kafkaModel)
+                                    println("topic = angles, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                    // вызов цепочки обработки углов
+                                    converterFacade.handleAngles(context)
+                                }
+                                // получаем данные из топика с внешними событиями
+                                topicEvents -> {
+                                    // десериализация данных из кафки
+                                    val kafkaModel = toConverterTransportExternalEvents(record)
+                                    // логирование
+                                    logger.biz(
+                                        msg = "Events model object got",
+                                        data = object {
+                                            val metricType = "converter-backend-KafkaController-got-event"
+                                            val eventsModel = kafkaModel
+                                            val topic = topic
+                                        },
+                                    )
+                                    // инициализация контекста
+                                    val context = ConverterBeContext(
+                                        timeStart = Instant.now(),
+                                        topic = topic
+                                    )
+                                    // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
+                                    context.setExternalEvent(kafkaModel)
+                                    println("topic = events, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+                                    // вызов цепочки обработки внешних событий
+                                    converterFacade.handleExternalEvents(context)
+                                }
+                            }
+                        }
+                } catch (e: Throwable) {
+                    val msg = e.message ?: ""
+                    logger.error(msg)
+                } finally {
+                    commitAll()
+                }
             }
         }
     }
 }
-
-// TODO: дописать метод
-//suspend inline fun <reified T, reified K> KtorKafkaConsumerContext.handleMessage(block: (InnerRecord<String, String>) -> Unit) {
-//    try {
-//        val context = ConverterBeContext()
-//
-//        val kafkaModel = toConverterTransportMlUi(record)
-//        val conveyorModel = toModelAnalysis(kafkaModel) // rate
-////        val context = ConverterBeContext(
-////            analysis = conveyorModel // добавить поля и маппинг функции
-////        )
-//        converterFacade.handleSlagRate(context)
-//    } catch (e: Throwable) {
-//
-//    }
-//}

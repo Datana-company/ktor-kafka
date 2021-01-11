@@ -19,18 +19,18 @@ object EncodeBase64Handler : IKonveyorHandler<ConverterBeContext> {
 //    val logger = datanaLogger(EncodeBase64Handler::class.java)
 
     override suspend fun exec(context: ConverterBeContext, env: IKonveyorEnvironment) {
-        val imagePath = "${context.framesBasePath}/${context.frame.framePath}"
+//        val imagePath = "${context.framesBasePath}/${context.frame.framePath}"
 
         try {
-            val bytes = File(imagePath).readBytes()
+//            val bytes = File(imagePath).readBytes()
 
 //            Для тестов
 //            val folder = if (context.frame.channel == ModelFrame.Channels.CAMERA) "camera" else "math"
 //            val bytes = File("C:\\Users\\Dmitrij\\Desktop\\Project\\datana-smart-ui\\dsmart-module-converter\\dsmart-module-converter-app/resources/images/$folder/${Random.nextInt(0, 12)}.png").readBytes()
 
-            context.frame.image = Base64.getEncoder().encodeToString(bytes)
+            context.frame.image = Base64.getEncoder().encodeToString(context.frame.buffer)
         } catch (e: Throwable) {
-            println("Файл $imagePath не найден")
+//            println("Файл $imagePath не найден")
         }
     }
 

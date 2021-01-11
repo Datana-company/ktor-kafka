@@ -7,7 +7,8 @@ data class ModelFrame(
     var frameTime: Instant = Instant.MIN,
     var framePath: String = "",
     var image: String = "",
-    var channel: Channels = Channels.NONE
+    var channel: Channels = Channels.NONE,
+    var buffer: ByteArray = ByteArray(0)
 ) {
 
     companion object {

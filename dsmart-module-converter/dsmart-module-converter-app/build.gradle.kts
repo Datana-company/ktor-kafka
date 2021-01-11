@@ -5,6 +5,7 @@ val kafkaVersion: String by project
 val dsmartLoggingVersion: String by project
 val serializationVersion: String by project
 val converterTransportVersion: String by project
+val konveyorVersion: String by project
 
 plugins {
     application
@@ -58,10 +59,6 @@ dependencies {
     implementation(project(":dsmart-module-converter:dsmart-module-converter-backend"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-repo-inmemory"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-ws-models"))
-//    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-mlui"))
-//    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-viml"))
-//    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-meta"))
-//    implementation(project(":dsmart-module-converter:dsmart-module-converter-models-angle"))
     implementation(project(":dsmart-module-converter:dsmart-module-converter-models-extevent"))
     implementation(project(":dsmart-common:dsmart-common-ktor-kafka"))
 
@@ -75,8 +72,11 @@ dependencies {
     implementation("ru.datana.smart:datana-smart-logging-core:$dsmartLoggingVersion")
     implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-angle:$converterTransportVersion")
     implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-meta:$converterTransportVersion")
-    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-mlui:$converterTransportVersion")
-    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-viml:$converterTransportVersion")
+    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-mathkt:$converterTransportVersion")
+//    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-mlui:$converterTransportVersion")
+//    implementation("ru.datana.smart.converter.transport:dsmart-module-converter-models-viml:$converterTransportVersion")
+    implementation("com.google.protobuf:protobuf-java:3.14.0")
+    implementation("codes.spectrum:konveyor:$konveyorVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
 
