@@ -7,13 +7,13 @@ import ru.datana.smart.ui.converter.common.exceptions.ConverterDeserializationEx
 import ru.datana.smart.ui.converter.common.models.*
 import java.time.Instant
 
-fun ConverterBeContext.of(item: ConsumerItem<String, String>): ConverterBeContext {
-    val transporModel = fromConsumerItem(item)
+fun ConverterBeContext.ofMeta(item: ConsumerItem<String, String>): ConverterBeContext {
+    val transporModel: ConverterMeltInfo = metaFromConsumerItem(item)
     setMeltInfo(transporModel)
     return this
 }
 
-fun fromConsumerItem(item: ConsumerItem<String, String>): ConverterMeltInfo {
+fun metaFromConsumerItem(item: ConsumerItem<String, String>): ConverterMeltInfo {
     try {
         return jacksonSerializer.readValue(item.value, ConverterMeltInfo::class.java)!!
     } catch (e: Exception) {

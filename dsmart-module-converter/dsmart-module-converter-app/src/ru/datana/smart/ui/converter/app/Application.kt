@@ -223,10 +223,9 @@ fun Application.module(
                                 status = CorStatus.ERROR
                             )
                             logger.error(
-                                msg = "Kafka message parsing error",
+                                msg = "Kafka message ${it.topic} parsing error\n/${e.message}/",
                                 data = object {
                                     val metricType = "converter-backend-KafkaController-error-math"
-
                                     //                        val mathModel = kafkaModel
                                     val topic = ctx.topic
                                     val error = ctx.errors
@@ -244,6 +243,8 @@ fun Application.module(
         kafka<String, String> {
             consumer = kafkaMetaConsumer
             pollInterval = 500
+            keyDeserializer = StringDeserializer::class.java
+            valDeserializer = StringDeserializer::class.java
             topics(topicMeta) {
                 items.items
                     .map {
@@ -251,7 +252,7 @@ fun Application.module(
                             val ctx = ConverterBeContext(
                                 timeStart = Instant.now(),
                                 topic = it.topic
-                            ).of(it)
+                            ).ofMeta(it)
                             logger.biz(
                                 msg = "Meta model object got",
                                 data = object {
@@ -268,8 +269,9 @@ fun Application.module(
                                 errors = mutableListOf(CorError(message = e.message ?: "")),
                                 status = CorStatus.ERROR
                             )
+                            e.printStackTrace()
                             logger.error(
-                                msg = "Kafka message parsing error",
+                                msg = "Kafka message ${it.topic} parsing error\n/${e.message}/",
                                 data = object {
                                     val metricType = "converter-backend-KafkaController-error-meta"
                                     val topic = ctx.topic
@@ -289,6 +291,8 @@ fun Application.module(
         kafka<String, String> {
             consumer = kafkaMetaConsumer
             pollInterval = 50
+            keyDeserializer = StringDeserializer::class.java
+            valDeserializer = StringDeserializer::class.java
             topics(topicAngles, topicEvents) {
                 try {
                     records
@@ -301,30 +305,6 @@ fun Application.module(
                         .map { it.toInnerModel() }
                         .forEach { record ->
                             when (val topic = record.topic) {
-                                // получаем данные из топика мета
-//                                topicMeta -> {
-//                                    // десериализация данных из кафки
-//                                    val kafkaModel = toConverterMeltInfo(record)
-//                                    // логирование
-//                                    logger.biz(
-//                                        msg = "Meta model object got",
-//                                        data = object {
-//                                            val metricType = "converter-backend-KafkaController-got-meta"
-//                                            val metaModel = kafkaModel
-//                                            val topic = topic
-//                                        },
-//                                    )
-//                                    // инициализация контекста
-//                                    val context = ConverterBeContext(
-//                                        timeStart = Instant.now(),
-//                                        topic = topic
-//                                    )
-//                                    // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
-//                                    context.setMeltInfo(kafkaModel)
-//                                    println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-//                                    // вызов цепочки обработки меты
-//                                    converterFacade.handleMeltInfo(context)
-//                                }
                                 // получаем данные из топика углов
                                 topicAngles -> {
                                     // десериализация данных из кафки

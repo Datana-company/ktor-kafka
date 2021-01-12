@@ -145,8 +145,8 @@ internal class MathTopicTest {
                 }
 
                 // 2) Запускаем плавку.
-//                metaConsumer.send(TOPIC_META, "", objectmapper.writeValueAsString(meltInit))
-                metaConsumer.send(TOPIC_META, "", meltInitStr)
+                metaConsumer.send(TOPIC_META, "", objectmapper.writeValueAsString(meltInit))
+//                metaConsumer.send(TOPIC_META, "", meltInitStr)
                 withTimeout(3001) {
                     repeat(1) {
                         val meltInitMsg = (incoming.receive() as Frame.Text).readText()

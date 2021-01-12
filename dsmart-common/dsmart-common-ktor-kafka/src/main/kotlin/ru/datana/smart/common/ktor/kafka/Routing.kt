@@ -14,7 +14,6 @@ import java.time.Duration
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
-//fun Route.kafka(topics: Collection<String>, handle: suspend KtorKafkaConsumerContext.() -> Unit) {
 @OptIn(KtorExperimentalAPI::class)
 fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
 
@@ -22,8 +21,6 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
     val isClosed = AtomicBoolean(false)
     val appConfig = this@kafka.application.environment.config
     val log = datanaLogger(this::class.java)
-
-//    val log = datanaLogger().getLogger("ru.datana.smart.common.ktor.kafka:Route.kafka")
 
     feature.launch {
         val routeConfig = KafkaRouteConfig<K, V>(
@@ -63,38 +60,4 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
 
         consumer.close()
     }
-
-//    val feature = application.feature(KtorKafkaConsumer)
-//    val consumer = feature.kafkaConsumer
-//    val isClosed = AtomicBoolean(false)
-//    val log = LoggerFactory.getLogger("ru.datana.smart.common.ktor.kafka:Route.kafka")
-//
-//    feature.launch {
-//        try {
-//            consumer.subscribe(topics)
-//
-//            while (!isClosed.get()) {
-//                val records = consumer.poll(Duration.ofSeconds(1))
-//                if (!records.isEmpty) {
-//                    log.debug("Pulled records: {}", records.count())
-//                    KtorKafkaConsumerContext(consumer, records)
-//                        .handle()
-//                } else {
-//                    log.debug("No records pulled")
-//                }
-//            }
-//        } catch (e: Throwable) {
-//            log.debug("Caught exception: {}", e.stackTrace)
-//            when (e) {
-//                is WakeupException -> log.debug("Consumer waked up")
-//                else -> log.debug("Polling failed, caught exception: {}", e.stackTrace)
-//            }
-//        } finally {
-//            log.debug("Commit offset synchronously")
-//            consumer.commitSync()
-//            consumer.close()
-//            log.debug("Consumer successfully closed")
-//        }
-//    }
 }
-
