@@ -17,7 +17,11 @@ fun fromConsumerItem(item: ConsumerItem<String, String>): ConverterMeltInfo {
     try {
         return jacksonSerializer.readValue(item.value, ConverterMeltInfo::class.java)!!
     } catch (e: Exception) {
-        throw ConverterDeserializationException(e.message, e.cause)
+        throw ConverterDeserializationException(
+            message = e.message,
+            cause = e.cause,
+            source = item.value
+        )
     }
 }
 

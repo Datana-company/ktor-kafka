@@ -247,19 +247,37 @@ fun Application.module(
             topics(topicMeta) {
                 items.items
                     .map {
-                        val ctx = ConverterBeContext(
-                            timeStart = Instant.now(),
-                            topic = it.topic
-                        ).of(it)
-                        logger.biz(
-                            msg = "Meta model object got",
-                            data = object {
-                                val metricType = "converter-backend-KafkaController-got-meta"
-                                val metaModel = ctx.meltInfo
-                                val topic = it.topic
-                            },
-                        )
-                        ctx
+                        try {
+                            val ctx = ConverterBeContext(
+                                timeStart = Instant.now(),
+                                topic = it.topic
+                            ).of(it)
+                            logger.biz(
+                                msg = "Meta model object got",
+                                data = object {
+                                    val metricType = "converter-backend-KafkaController-got-meta"
+                                    val metaModel = ctx.meltInfo
+                                    val topic = it.topic
+                                },
+                            )
+                            ctx
+                        } catch (e: Throwable) {
+                            val ctx = ConverterBeContext(
+                                timeStart = Instant.now(),
+                                topic = it.topic,
+                                errors = mutableListOf(CorError(message = e.message ?: "")),
+                                status = CorStatus.ERROR
+                            )
+                            logger.error(
+                                msg = "Kafka message parsing error",
+                                data = object {
+                                    val metricType = "converter-backend-KafkaController-error-meta"
+                                    val topic = ctx.topic
+                                    val error = ctx.errors
+                                },
+                            )
+                            ctx
+                        }
                     }
                     .forEach { ctx ->
                         converterFacade.handleMeltInfo(ctx)

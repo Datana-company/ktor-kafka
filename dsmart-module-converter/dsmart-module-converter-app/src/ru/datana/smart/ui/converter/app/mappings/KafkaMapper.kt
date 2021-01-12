@@ -29,7 +29,7 @@ fun <K, V> toConverterMeltInfo(record: InnerRecord<K, V>): ConverterMeltInfo {
     try {
         return jacksonSerializer.readValue(record.value.toString(), ConverterMeltInfo::class.java)!!
     } catch (e: Exception) {
-        throw ConverterDeserializationException(e.message, e.cause)
+        throw ConverterDeserializationException(e.message, e.cause, record.value?.toString())
     }
 }
 
@@ -53,7 +53,7 @@ fun <K, V> toConverterTransportAngle(record: InnerRecord<K, V>): ConverterTransp
     try {
         return jacksonSerializer.readValue(record.value.toString(), ConverterTransportAngle::class.java)!!
     } catch (e: Exception) {
-        throw ConverterDeserializationException(e.message, e.cause)
+        throw ConverterDeserializationException(e.message, e.cause, record.value?.toString())
     }
 }
 
@@ -61,6 +61,6 @@ fun <K, V> toConverterTransportExternalEvents(record: InnerRecord<K, V>): Conver
     try {
         return jacksonSerializer.readValue(record.value.toString(), ConverterTransportExternalEvent::class.java)!!
     } catch (e: Exception) {
-        throw ConverterDeserializationException(e.message, e.cause)
+        throw ConverterDeserializationException(e.message, e.cause, record.value?.toString())
     }
 }

@@ -40,47 +40,47 @@ internal class MathTopicTest {
         )
     )
 
-//    val meltInit = """
-//        {
-//           "id": "$MELT_ID",
-//           "timeStart": ${Instant.now().toEpochMilli()},
-//           "meltNumber": "111616",
-//           "steelGrade": "X65ME",
-//           "crewNumber": "1",
-//           "shiftNumber": "1",
-//           "mode": "emulation",
-//           "devices": {
-//              "converter": {
-//                 "deviceType": "ConverterDevicesConverter",
-//                 "id": "$CONVERTER_ID",
-//                 "name": "Конвертер 1",
-//                 "uri": null,
-//                 "type": null
-//              },
-//              "irCamera": {
-//                 "deviceType": "ConverterDevicesIrCamera",
-//                 "id": "ir-cam-25",
-//                 "name": "Камера 25",
-//                 "uri": "case-Финал1/Финал1.ravi",
-//                 "type": "file"
-//              },
-//              "selsyn": {
-//                 "deviceType": "ConverterDevicesSelsyn",
-//                 "id": "conv1-selsyn1",
-//                 "name": "Angles mesurement",
-//                 "uri": "case-Финал1/selsyn.json",
-//                 "type": "file"
-//              },
-//              "slagRate": {
-//                 "deviceType": "ConverterDevicesSlagRate",
-//                 "id": "conv1-slagRate1",
-//                 "name": "Slag and steel rates resolution",
-//                 "uri": "case-Финал1/slag-rate.json",
-//                 "type": "file"
-//              }
-//           }
-//        }
-//    """.trimIndent()
+    val meltInitStr = """
+        {
+           "id": "$MELT_ID",
+           "timeStart": ${Instant.now().toEpochMilli()},
+           "meltNumber": "111616",
+           "steelGrade": "X65ME",
+           "crewNumber": "1",
+           "shiftNumber": "1",
+           "mode": "emulation",
+           "devices": {
+              "converter": {
+                 "deviceType": "ConverterDevicesConverter",
+                 "id": "$CONVERTER_ID",
+                 "name": "Конвертер 1",
+                 "uri": null,
+                 "type": null
+              },
+              "irCamera": {
+                 "deviceType": "ConverterDevicesIrCamera",
+                 "id": "ir-cam-25",
+                 "name": "Камера 25",
+                 "uri": "case-Финал1/Финал1.ravi",
+                 "type": "file"
+              },
+              "selsyn": {
+                 "deviceType": "ConverterDevicesSelsyn",
+                 "id": "conv1-selsyn1",
+                 "name": "Angles mesurement",
+                 "uri": "case-Финал1/selsyn.json",
+                 "type": "file"
+              },
+              "slagRate": {
+                 "deviceType": "ConverterDevicesSlagRate",
+                 "id": "conv1-slagRate1",
+                 "name": "Slag and steel rates resolution",
+                 "uri": "case-Финал1/slag-rate.json",
+                 "type": "file"
+              }
+           }
+        }
+    """.trimIndent()
 
     val mathMessage = ConverterTransportMlUiOuterClass.ConverterTransportMlUi.newBuilder()
         .setMath(
@@ -145,8 +145,8 @@ internal class MathTopicTest {
                 }
 
                 // 2) Запускаем плавку.
-                metaConsumer.send(TOPIC_META, "", objectmapper.writeValueAsString(meltInit))
-//                metaConsumer.send(TOPIC_META, "", meltInit)
+//                metaConsumer.send(TOPIC_META, "", objectmapper.writeValueAsString(meltInit))
+                metaConsumer.send(TOPIC_META, "", meltInitStr)
                 withTimeout(3001) {
                     repeat(1) {
                         val meltInitMsg = (incoming.receive() as Frame.Text).readText()
