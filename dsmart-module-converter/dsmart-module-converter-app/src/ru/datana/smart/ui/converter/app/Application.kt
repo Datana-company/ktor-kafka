@@ -244,7 +244,34 @@ fun Application.module(
         kafka<String, String> {
             consumer = kafkaMetaConsumer
             pollInterval = 500
-            topics(topicMeta, topicAngles, topicEvents) {
+            topics(topicMeta) {
+                items.items
+                    .map {
+                        val ctx = ConverterBeContext(
+                            timeStart = Instant.now(),
+                            topic = it.topic
+                        ).of(it)
+                        logger.biz(
+                            msg = "Meta model object got",
+                            data = object {
+                                val metricType = "converter-backend-KafkaController-got-meta"
+                                val metaModel = ctx.meltInfo
+                                val topic = it.topic
+                            },
+                        )
+                        ctx
+                    }
+                    .forEach { ctx ->
+                        converterFacade.handleMeltInfo(ctx)
+                        println("DONE meta")
+                    }
+            }
+        }
+
+        kafka<String, String> {
+            consumer = kafkaMetaConsumer
+            pollInterval = 50
+            topics(topicAngles, topicEvents) {
                 try {
                     records
                         .sortedByDescending { it.offset() }
@@ -257,29 +284,29 @@ fun Application.module(
                         .forEach { record ->
                             when (val topic = record.topic) {
                                 // получаем данные из топика мета
-                                topicMeta -> {
-                                    // десериализация данных из кафки
-                                    val kafkaModel = toConverterMeltInfo(record)
-                                    // логирование
-                                    logger.biz(
-                                        msg = "Meta model object got",
-                                        data = object {
-                                            val metricType = "converter-backend-KafkaController-got-meta"
-                                            val metaModel = kafkaModel
-                                            val topic = topic
-                                        },
-                                    )
-                                    // инициализация контекста
-                                    val context = ConverterBeContext(
-                                        timeStart = Instant.now(),
-                                        topic = topic
-                                    )
-                                    // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
-                                    context.setMeltInfo(kafkaModel)
-                                    println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
-                                    // вызов цепочки обработки меты
-                                    converterFacade.handleMeltInfo(context)
-                                }
+//                                topicMeta -> {
+//                                    // десериализация данных из кафки
+//                                    val kafkaModel = toConverterMeltInfo(record)
+//                                    // логирование
+//                                    logger.biz(
+//                                        msg = "Meta model object got",
+//                                        data = object {
+//                                            val metricType = "converter-backend-KafkaController-got-meta"
+//                                            val metaModel = kafkaModel
+//                                            val topic = topic
+//                                        },
+//                                    )
+//                                    // инициализация контекста
+//                                    val context = ConverterBeContext(
+//                                        timeStart = Instant.now(),
+//                                        topic = topic
+//                                    )
+//                                    // маппинг траспортной модели во внутренную модель конвейера и добавление её в контекст
+//                                    context.setMeltInfo(kafkaModel)
+//                                    println("topic = meta, currentMeltId = ${currentState.get().currentMeltInfo.id}, meltId = ${context.meltInfo.id}")
+//                                    // вызов цепочки обработки меты
+//                                    converterFacade.handleMeltInfo(context)
+//                                }
                                 // получаем данные из топика углов
                                 topicAngles -> {
                                     // десериализация данных из кафки

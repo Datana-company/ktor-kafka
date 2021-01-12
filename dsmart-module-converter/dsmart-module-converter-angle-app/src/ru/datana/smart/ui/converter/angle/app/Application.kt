@@ -150,7 +150,7 @@ fun Application.module(
                         logger.biz(
                             msg = "Meta model object got",
                             data = object {
-                                val metricType = "converter-backend-KafkaController-got-meta"
+                                val metricType = "converter-angles-KafkaController-got-meta"
                                 val metaModel = ctx.meltInfo
                                 val topic = it.topic
                             },
