@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "ru.datana.smart.common.ktor.kafka"
-version = "0.6.1"
+version = "0.6.2"
 
 repositories {
     jcenter()
