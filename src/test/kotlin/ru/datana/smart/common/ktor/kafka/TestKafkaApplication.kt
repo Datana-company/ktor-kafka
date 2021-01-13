@@ -10,12 +10,12 @@ import io.ktor.util.collections.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.apache.kafka.clients.consumer.Consumer
+import org.apache.kafka.common.serialization.ByteArrayDeserializer
+import org.apache.kafka.common.serialization.StringDeserializer
 import java.time.Duration
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-
-fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(
@@ -29,6 +29,8 @@ fun Application.module(
 
     routing {
         kafka<String, String> {
+            keyDeserializer = StringDeserializer::class.java
+            valDeserializer = StringDeserializer::class.java
             consumer = mockConsumer
             pollInterval = 15L
             topic(topic) {
