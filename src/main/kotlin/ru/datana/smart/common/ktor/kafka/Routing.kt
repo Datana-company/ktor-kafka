@@ -19,7 +19,7 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
     val feature = application.feature(KtorKafkaConsumer)
     val isClosed = AtomicBoolean(false)
     val appConfig = this@kafka.application.environment.config
-    val log = LoggerFactory.getLogger(this::class.java)
+    val log = LoggerFactory.getLogger("ru.datana.smart.common.ktor.kafka.Route.kafka")
 
     feature.launch {
         val routeConfig = KafkaRouteConfig<K, V>(
@@ -41,16 +41,31 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
         }
 
         val handlers = routeConfig.topicHandlers
-        consumer.subscribe(handlers.map { it.topic }.toList())
+        val topics = handlers.map { it.topic }.toList()
+        try {
+            consumer.subscribe(topics)
+        } catch (e: Throwable) {
+            log.error("Error subscribing topics $topics", e)
+            throw e
+        }
 
         while (!isClosed.get()) {
-            val records = consumer.poll(Duration.ofMillis(routeConfig.pollInterval))
+            val records = try {
+                consumer.poll(Duration.ofMillis(routeConfig.pollInterval))
+            } catch (e: Throwable) {
+                log.error("Error polling data from $topics", e)
+                throw e
+            }
             if (!records.isEmpty) {
-                log.debug("Pulled records: {}", records.count())
+                log.debug("Pulled {} records from topics {}", records.count(), topics)
                 handlers.forEach { handlerObj ->
-                    val handler = handlerObj.handler
-                    KtorKafkaConsumerContext(consumer, records)
-                        .apply { this.handler() }
+                    try {
+                        val handler = handlerObj.handler
+                        KtorKafkaConsumerContext(consumer, records)
+                            .apply { this.handler() }
+                    } catch (e: Throwable) {
+                        log.error("Error handling kafka records from topics $topics", e)
+                    }
                 }
             } else {
                 log.info("No records pulled")
