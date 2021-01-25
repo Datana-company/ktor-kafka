@@ -68,7 +68,7 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
                     }
                 }
             } else {
-                log.info("No records pulled")
+                log.trace("No records pulled from topics {}", topics)
             }
         }
 
