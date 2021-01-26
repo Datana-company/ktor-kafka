@@ -60,17 +60,17 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
                 log.error("Error polling data from $topics", e)
                 throw e
             }
-            log.trace("after consumer poll", topics)
+            log.trace("after consumer poll, {}", topics)
             if (!records.isEmpty) {
                 log.debug("Pulled {} records from topics {}", records.count(), topics)
                 handlers.forEach { handlerObj ->
                     try {
-                        log.trace("before handle init", topics)
+                        log.trace("before handle init, {}", topics)
                         val handler = handlerObj.handler
-                        log.trace("after handler init", topics)
+                        log.trace("after handler init, {}", topics)
                         KtorKafkaConsumerContext(consumer, records)
                             .apply { this.handler() }
-                        log.trace("record handling finished", topics)
+                        log.trace("record handling finished, {}", topics)
                     } catch (e: Throwable) {
                         log.error("Error handling kafka records from topics $topics", e)
                     }
