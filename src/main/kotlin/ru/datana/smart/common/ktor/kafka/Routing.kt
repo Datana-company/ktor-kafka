@@ -5,6 +5,7 @@ import io.ktor.config.*
 import io.ktor.routing.*
 import io.ktor.util.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -50,19 +51,26 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
         }
 
         while (!isClosed.get()) {
+            log.trace("before consumer poll {}", topics)
             val records = try {
-                consumer.poll(Duration.ofMillis(routeConfig.pollInterval))
+                withTimeout(1000L) {
+                    consumer.poll(Duration.ofMillis(routeConfig.pollInterval))
+                }
             } catch (e: Throwable) {
                 log.error("Error polling data from $topics", e)
                 throw e
             }
+            log.trace("after consumer poll, {}", topics)
             if (!records.isEmpty) {
                 log.debug("Pulled {} records from topics {}", records.count(), topics)
                 handlers.forEach { handlerObj ->
                     try {
+                        log.trace("before handle init, {}", topics)
                         val handler = handlerObj.handler
+                        log.trace("after handler init, {}", topics)
                         KtorKafkaConsumerContext(consumer, records)
                             .apply { this.handler() }
+                        log.trace("record handling finished, {}", topics)
                     } catch (e: Throwable) {
                         log.error("Error handling kafka records from topics $topics", e)
                     }
@@ -71,7 +79,8 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
                 log.trace("No records pulled from topics {}", topics)
             }
         }
-
+        log.trace("before consumer close, {}", topics)
         consumer.close()
+        log.trace("after consumer close, {}", topics)
     }
 }
