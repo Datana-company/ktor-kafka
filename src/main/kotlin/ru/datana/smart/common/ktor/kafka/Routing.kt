@@ -5,6 +5,7 @@ import io.ktor.config.*
 import io.ktor.routing.*
 import io.ktor.util.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -52,7 +53,9 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
         while (!isClosed.get()) {
             log.trace("before consumer poll {}", topics)
             val records = try {
-                consumer.poll(Duration.ofMillis(routeConfig.pollInterval))
+                withTimeout(1000L) {
+                    consumer.poll(Duration.ofMillis(routeConfig.pollInterval))
+                }
             } catch (e: Throwable) {
                 log.error("Error polling data from $topics", e)
                 throw e
