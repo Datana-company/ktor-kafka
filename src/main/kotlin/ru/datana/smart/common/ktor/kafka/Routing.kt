@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
+import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -39,11 +40,12 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
         ).apply(config)
         val consumer = routeConfig.consumer ?: run {
             val props = Properties()
-            props["bootstrap.servers"] = routeConfig.brokers
-            props["client.id"] = routeConfig.clientId
-            props["group.id"] = routeConfig.groupId
-            props["key.deserializer"] = routeConfig.keyDeserializer
-            props["value.deserializer"] = routeConfig.valDeserializer
+            props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = routeConfig.brokers
+            props[ConsumerConfig.CLIENT_ID_CONFIG] = routeConfig.clientId
+            props[ConsumerConfig.GROUP_ID_CONFIG] = routeConfig.groupId
+            props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = routeConfig.keyDeserializer
+            props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = routeConfig.valDeserializer
+            props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
             KafkaConsumer(props)
         }
 
