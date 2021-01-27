@@ -46,6 +46,8 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
             props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = routeConfig.keyDeserializer
             props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = routeConfig.valDeserializer
             props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
+            props[ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG] = 1048576
+            props[ConsumerConfig.FETCH_MAX_BYTES_CONFIG] = 52428800
             KafkaConsumer(props)
         }
 
