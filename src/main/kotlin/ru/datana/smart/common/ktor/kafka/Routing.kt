@@ -4,8 +4,10 @@ import io.ktor.application.*
 import io.ktor.config.*
 import io.ktor.routing.*
 import io.ktor.util.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.withContext
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -13,6 +15,9 @@ import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
+
+private val consumersCount = AtomicInteger(0)
 
 @OptIn(KtorExperimentalAPI::class)
 fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
@@ -21,8 +26,9 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
     val isClosed = AtomicBoolean(false)
     val appConfig = this@kafka.application.environment.config
     val log = LoggerFactory.getLogger("ru.datana.smart.common.ktor.kafka.Route.kafka")
+    val consumerCoroutineContext = newSingleThreadContext("KtorKafkaConsumer-${consumersCount.getAndIncrement()}")
 
-    feature.launch {
+    feature.launch(context = consumerCoroutineContext) {
         val routeConfig = KafkaRouteConfig<K, V>(
             pollInterval = appConfig.propertyOrNull("ktor.kafka.consumer.poll_ms")?.getString()?.toLongOrNull() ?: 60L,
             brokers = appConfig.propertyOrNull("ktor.kafka.bootstrap.servers")?.getString() ?: "localhost:9092",
@@ -51,11 +57,8 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
         }
 
         while (!isClosed.get()) {
-            log.trace("before consumer poll {}", topics)
             val records = try {
-                withTimeout(1000L) {
-                    consumer.poll(Duration.ofMillis(routeConfig.pollInterval))
-                }
+                consumer.poll(Duration.ofMillis(routeConfig.pollInterval))
             } catch (e: Throwable) {
                 log.error("Error polling data from $topics", e)
                 throw e
@@ -63,24 +66,22 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
             log.trace("after consumer poll, {}", topics)
             if (!records.isEmpty) {
                 log.debug("Pulled {} records from topics {}", records.count(), topics)
-                handlers.forEach { handlerObj ->
-                    try {
-                        log.trace("before handle init, {}", topics)
-                        val handler = handlerObj.handler
-                        log.trace("after handler init, {}", topics)
-                        KtorKafkaConsumerContext(consumer, records)
-                            .apply { this.handler() }
-                        log.trace("record handling finished, {}", topics)
-                    } catch (e: Throwable) {
-                        log.error("Error handling kafka records from topics $topics", e)
+                withContext(Dispatchers.Default) {
+                    handlers.forEach { handlerObj ->
+                        try {
+                            val handler = handlerObj.handler
+                            KtorKafkaConsumerContext(consumer, records)
+                                .apply { this.handler() }
+                        } catch (e: Throwable) {
+                            log.error("Error handling kafka records from topics $topics", e)
+                        }
                     }
                 }
             } else {
                 log.trace("No records pulled from topics {}", topics)
             }
         }
-        log.trace("before consumer close, {}", topics)
+
         consumer.close()
-        log.trace("after consumer close, {}", topics)
     }
 }
