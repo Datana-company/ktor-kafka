@@ -17,6 +17,9 @@ import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 class TestProducer<K, V>() : Producer<K, V> {
 
@@ -24,9 +27,10 @@ class TestProducer<K, V>() : Producer<K, V> {
 
     private val executor = Executors.newSingleThreadExecutor()
     private val records: MutableList<ConsumerRecord<K,V>> = mutableListOf()
+    private val lock = ReentrantReadWriteLock()
 
-    fun clean() = records.clear()
-    fun getSent() = records.toList()
+    fun clean() = lock.write { records.clear() }
+    fun getSent() = lock.read { records.toList() }
 
     override fun close() {}
 
@@ -53,19 +57,21 @@ class TestProducer<K, V>() : Producer<K, V> {
     override fun abortTransaction() {}
 
     override fun send(record: ProducerRecord<K, V>): Future<RecordMetadata> {
-        records.add(
-            ConsumerRecord<K,V>(
-                record.topic(),
-                record.partition() ?: 0,
-                0,
-                record.timestamp() ?: Instant.now().toEpochMilli(),
-                TimestampType.CREATE_TIME,
-                0L,
-                0,0,
-                record.key(),
-                record.value()
+        lock.write {
+            records.add(
+                ConsumerRecord<K,V>(
+                    record.topic(),
+                    record.partition() ?: 0,
+                    0,
+                    record.timestamp() ?: Instant.now().toEpochMilli(),
+                    TimestampType.CREATE_TIME,
+                    0L,
+                    0,0,
+                    record.key(),
+                    record.value()
+                )
             )
-        )
+        }
         logger.debug("record is recorded")
         return executor.submit {
             RecordMetadata(
