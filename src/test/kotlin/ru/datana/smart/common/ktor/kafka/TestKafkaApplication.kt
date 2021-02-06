@@ -10,7 +10,8 @@ import io.ktor.util.collections.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.apache.kafka.clients.consumer.Consumer
-import org.apache.kafka.common.serialization.ByteArrayDeserializer
+import org.apache.kafka.clients.producer.Producer
+import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.serialization.StringDeserializer
 import java.time.Duration
 import kotlin.test.Test
@@ -20,8 +21,9 @@ import kotlin.test.assertTrue
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(
     mockConsumer: Consumer<String, String>? = null,
-    topic: String = "",
-    feedBack: MutableList<String> = mutableListOf()
+    mockProducer: Producer<String, String>? = null,
+    topicIn: String = "",
+    topicOt: String = "",
 ) {
 
     install(KtorKafkaConsumer) {
@@ -33,9 +35,11 @@ fun Application.module(
             valDeserializer = StringDeserializer::class.java
             consumer = mockConsumer
             pollInterval = 15L
-            topic(topic) {
+            topic(topicIn) {
                 items.items.forEach {
-                    feedBack.add(it.value)
+                    mockProducer?.send(ProducerRecord(
+                        topicOt, "Result: ${it.value}"
+                    ))
                 }
             }
         }
@@ -46,33 +50,36 @@ class TestKafkaApplication {
     @OptIn(KtorExperimentalAPI::class)
     @Test
     fun test() {
-        val feedBack: MutableList<String> = ConcurrentList()
         val consumer: TestConsumer<String, String> = TestConsumer(duration = Duration.ofMillis(20))
+        val producer: TestProducer<String, String> = TestProducer()
         withTestApplication({
             (environment.config as MapApplicationConfig).apply {
                 put("xxx", "yyy")
             }
             module(
                 mockConsumer = consumer,
-                topic = TOPIC,
-                feedBack = feedBack
+                mockProducer = producer,
+                topicIn = TOPIC_IN,
+                topicOt = TOPIC_OT,
             )
         }) {
             runBlocking {
                 delay(60L)
-                consumer.send(TOPIC, "xx1", "yy")
-                consumer.send(TOPIC, "xx2", "zz")
+                consumer.send(TOPIC_IN, "xx1", "yy")
+                consumer.send(TOPIC_IN, "xx2", "zz")
 
                 delay(30L)
 
                 assertTrue("Must contain two messages") {
-                    feedBack.contains("yy") && feedBack.contains("zz")
+                    val feedBack = producer.getSent().map { it.value() }
+                    feedBack.contains("Result: yy") && feedBack.contains("Result: zz")
                 }
             }
         }
     }
 
     companion object {
-        const val TOPIC = "some-topic"
+        const val TOPIC_IN = "some-topic-in"
+        const val TOPIC_OT = "some-topic-ot"
     }
 }
