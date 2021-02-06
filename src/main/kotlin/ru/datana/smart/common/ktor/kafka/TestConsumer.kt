@@ -75,16 +75,20 @@ class TestConsumer<K, V>(val duration: Duration = Duration.ofMillis(100)) : Cons
             lock.read {
                 _topics
                     .map { msgs ->
-                        val pair = TopicPartition(msgs.key, 0) to msgs.value.map { msg ->
-                            ConsumerRecord<K, V>(
-                                msgs.key,
-                                0,
-                                0,
-                                msg.first,
-                                msg.second
-                            )
-                        }
-                        msgs.value.clear()
+                        val pair = TopicPartition(msgs.key, 0) to msgs
+                            .value
+                            .map { msg ->
+                                ConsumerRecord<K, V>(
+                                    msgs.key,
+                                    0,
+                                    0,
+                                    msg.first,
+                                    msg.second
+                                )
+                            }
+                            .toList()
+
+                        lock.write { msgs.value.clear() }
                         pair
                     }
                     .toMap()
