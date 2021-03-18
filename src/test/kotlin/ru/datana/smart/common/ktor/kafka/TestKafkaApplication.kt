@@ -82,7 +82,7 @@ class TestKafkaApplication {
     @KtorExperimentalAPI
     @Test
     fun testTopics() {
-        val topics = listOf("topic-1", "topic-2")
+        val topics = listOf("topic-1", "topic-2", "topic-3")
         val consumer: TestConsumer<String, String> = TestConsumer(duration = Duration.ofMillis(20))
         val producer: TestProducer<String, String> = TestProducer()
         withTestApplication({
@@ -98,11 +98,13 @@ class TestKafkaApplication {
         }) {
             runBlocking {
                 delay(50L)
-                consumer.send(topics.first(), "testKey", "testBody")
+                consumer.send(topics[0], "testKey", "testBody")
+                consumer.send(topics[1], "testKey2", "testBody2")
                 delay(30L)
-                assertTrue("Must contain one message") {
+                assertTrue("Must contain two message") {
                     val feedBack = producer.getSent().map { it.value() }
-                    feedBack.contains("Result: testBody") && feedBack.size == 1
+                    println(feedBack)
+                    feedBack.contains("Result: testBody") && feedBack.size == 2
                 }
             }
         }
