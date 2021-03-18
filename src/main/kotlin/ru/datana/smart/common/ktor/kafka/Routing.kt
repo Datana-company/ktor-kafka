@@ -76,9 +76,10 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
                         try {
                             val handler = handlerObj.handler
                             val curTopic = handlerObj.topic
-                            val curPartition = records.partitions().firstOrNull { it.topic() == curTopic }
-                            val curRecords = records.records(curTopic).toList()
-                            KtorKafkaConsumerContext(consumer, ConsumerRecords(mapOf(curPartition to curRecords)))
+                            val currentRecords = records.partitions()
+                                .filter { it.topic() == curTopic }
+                                .associateWith { records.records(it) }
+                            KtorKafkaConsumerContext(consumer, ConsumerRecords(currentRecords))
                                 .apply { this.handler() }
                         } catch (e: Throwable) {
                             log.error("Error handling kafka records from topics $topics", e)
