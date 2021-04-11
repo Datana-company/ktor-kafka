@@ -6,7 +6,6 @@ import io.ktor.config.*
 import io.ktor.routing.routing
 import io.ktor.server.testing.*
 import io.ktor.util.*
-import io.ktor.util.collections.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.apache.kafka.clients.consumer.Consumer
@@ -22,8 +21,8 @@ import kotlin.test.assertTrue
 fun Application.module(
     mockConsumer: Consumer<String, String>? = null,
     mockProducer: Producer<String, String>? = null,
-    topicIn: String = "",
-    topicOt: String = "",
+    topicsIn: List<String> = listOf(),
+    topicOut: String = "",
 ) {
 
     install(KtorKafkaConsumer) {
@@ -35,11 +34,13 @@ fun Application.module(
             valDeserializer = StringDeserializer::class.java
             consumer = mockConsumer
             pollInterval = 15L
-            topic(topicIn) {
+            topics(*topicsIn.toTypedArray()) {
                 items.items.forEach {
-                    mockProducer?.send(ProducerRecord(
-                        topicOt, "Result: ${it.value}"
-                    ))
+                    mockProducer?.send(
+                        ProducerRecord(
+                            topicOut, "Result: ${it.value}"
+                        )
+                    )
                 }
             }
         }
@@ -59,8 +60,8 @@ class TestKafkaApplication {
             module(
                 mockConsumer = consumer,
                 mockProducer = producer,
-                topicIn = TOPIC_IN,
-                topicOt = TOPIC_OT,
+                topicsIn = listOf(TOPIC_IN),
+                topicOut = TOPIC_OUT,
             )
         }) {
             runBlocking {
@@ -78,8 +79,39 @@ class TestKafkaApplication {
         }
     }
 
+    @KtorExperimentalAPI
+    @Test
+    fun testTopics() {
+        val topics = listOf("topic-1", "topic-2", "topic-3")
+        val consumer: TestConsumer<String, String> = TestConsumer(duration = Duration.ofMillis(20))
+        val producer: TestProducer<String, String> = TestProducer()
+        withTestApplication({
+            (environment.config as MapApplicationConfig).apply {
+                put("xxx", "yyy")
+            }
+            module(
+                mockConsumer = consumer,
+                mockProducer = producer,
+                topicsIn = topics,
+                topicOut = TOPIC_OUT
+            )
+        }) {
+            runBlocking {
+                delay(50L)
+                consumer.send(topics[0], "testKey", "testBody")
+                consumer.send(topics[1], "testKey2", "testBody2")
+                delay(30L)
+                assertTrue("Must contain two message") {
+                    val feedBack = producer.getSent().map { it.value() }
+                    println(feedBack)
+                    feedBack.contains("Result: testBody") && feedBack.size == 2
+                }
+            }
+        }
+    }
+
     companion object {
         const val TOPIC_IN = "some-topic-in"
-        const val TOPIC_OT = "some-topic-ot"
+        const val TOPIC_OUT = "some-topic-out"
     }
 }

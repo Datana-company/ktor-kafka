@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -74,7 +75,11 @@ fun <K, V> Route.kafka(config: KafkaRouteConfig<K, V>.() -> Unit) {
                     handlers.forEach { handlerObj ->
                         try {
                             val handler = handlerObj.handler
-                            KtorKafkaConsumerContext(consumer, records)
+                            val curTopic = handlerObj.topic
+                            val currentRecords = records.partitions()
+                                .filter { it.topic() == curTopic }
+                                .associateWith { records.records(it) }
+                            KtorKafkaConsumerContext(consumer, ConsumerRecords(currentRecords))
                                 .apply { this.handler() }
                         } catch (e: Throwable) {
                             log.error("Error handling kafka records from topics $topics", e)
