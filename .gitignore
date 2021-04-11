@@ -2,3 +2,4 @@
 /.gradle
 /buildSrc
 /.idea
+/out
